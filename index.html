@@ -89,14 +89,17 @@
   .msg.err{ color:#f87171; }
 
   /* Market Overview */
-  .overview{ display:grid; -columns: 1fr; gap:12px; }
-  @media (min-width: 900px){ .overview{ -columns: 360px 1fr; } }
+  .overview{ display:grid; grid-template-columns: 1fr; gap:12px; }
+  @media (min-width: 900px){ .overview{ grid-template-columns: 360px 1fr; } }
+ 
   .overview-card{ background:#111827; border-radius:12px; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,0.45); }
   .overview-note{ font-size:11px; color:#9ca3af; margin-top:8px; }
   .donut-wrap{ width:100%; max-width:340px; aspect-ratio:1/1; margin:0 auto; }
   .donut-wrap canvas{ width:100% !important; height:100% !important; margin-top:0; }
-  .kpi-grid{ display:grid; -columns: repeat(1, minmax(0,1fr)); gap:10px; }
-  @media (min-width: 560px){ .kpi-grid{ -columns: repeat(2, minmax(0,1fr)); } }
+ 
+  .kpi-grid{ display:grid; grid-template-columns: repeat(1, minmax(0,1fr)); gap:10px; }
+  @media (min-width: 560px){ .kpi-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+ 
   .kpi{ border:1px solid #1f2937; border-radius:12px; padding:10px 12px; background:#0b1220; }
   .kpi-label{ font-size:11px; color:#9ca3af; }
   .kpi-value{ margin-top:6px; font-size:16px; font-weight:700; color:#f9fafb; }
