@@ -117,6 +117,26 @@
   .seg.eth{ background:rgba(96,165,250,0.85); }
   .seg.stable{ background:rgba(52,211,153,0.85); }
   .seg.other{ background:rgba(156,163,175,0.55); }
+  /* Footer */
+  .site-footer{
+    margin-top: 28px;
+    padding: 18px 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: rgba(229,231,235,0.85);
+  }
+  .footer-inner{ max-width: 1200px; margin: 0 auto; }
+  .footer-note{ font-size: 12px; line-height: 1.6; opacity: 0.95; }
+  .footer-links{
+    display: flex; flex-wrap: wrap; gap: 10px 14px;
+    margin-top: 10px;
+  }
+  .footer-links a{
+    font-size: 12px;
+    color: rgba(229,231,235,0.9);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .footer-copy{ margin-top: 10px; font-size: 12px; opacity: 0.75; }
 
 </style>
 </head>
@@ -917,5 +937,24 @@
     init(false);
   })();
 </script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-note">
+      免責：CoinRaderは情報提供目的であり投資助言ではありません。投資判断は自己責任でお願いします。<br>
+      Data: CoinGecko（API制限・通信障害等により表示が遅延/欠損する場合があります）/ 広告・PRを含む場合があります。
+    </div>
+
+    <nav class="footer-links" aria-label="Footer links">
+      <a href="./disclaimer.html">免責・リスク</a>
+      <a href="./data-sources.html">データソース</a>
+      <a href="./ads-pr.html">広告・PR表記</a>
+      <a href="./privacy.html">プライバシーポリシー</a>
+      <a href="./contact.html">お問い合わせ</a>
+      <a href="./about.html">運営者情報</a>
+    </nav>
+
+    <div class="footer-copy">© CoinRader / Operator: CatGhosts</div>
+  </div>
+</footer>
 </body>
 </html>
