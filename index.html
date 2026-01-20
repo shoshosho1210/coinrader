@@ -38,7 +38,10 @@
   .linkbtn:hover{ border-color:#6b7280; }
 
   .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:12px; align-items:stretch; }
-
+  /* 1200px以上は5列固定 */
+  @media (min-width: 1200px){
+    .grid{ grid-template-columns: repeat(5, minmax(0,1fr)); }
+  }
   /* responsive columns (uniform across sections) */
   @media (min-width: 560px){ .grid{ grid-template-columns:repeat(2,minmax(220px,1fr)); } }
   @media (min-width: 820px){ .grid{ grid-template-columns:repeat(3,minmax(220px,1fr)); } }
