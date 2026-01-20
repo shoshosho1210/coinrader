@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CoinRader - 暗号資産ダッシュボード</title>
+<style>
+  *{ box-sizing:border-box; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:#0f172a; color:#e5e7eb; margin:0; padding:12px;
+  }
+  h1{ margin:6px 4px 10px; font-size:20px; letter-spacing:.2px; }
+
+  .topbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 4px 10px; }
+  .pill{ border:1px solid #374151; background:#111827; color:#e5e7eb; border-radius:999px; padding:6px 10px; font-size:12px; }
+  .keybox{ display:flex; gap:8px; align-items:center; flex:1 1 520px; }
+  .keybox input{
+    flex:1; min-width:260px; padding:8px 12px; border-radius:999px;
+    border:1px solid #374151; background:#0b1220; color:#e5e7eb;
+    outline:none;
+  }
+  .btn{
+    padding:8px 12px; border-radius:999px; border:1px solid #374151;
+    background:#111827; color:#e5e7eb; cursor:pointer; font-size:12px;
+  }
+  .btn.primary{ background:#1e88e5; border-color:#1e88e5; color:#fff; }
+  .btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+  .nav{ display:flex; gap:8px; flex-wrap:wrap; margin:0 4px 14px; }
+  .nav .btn{ padding:6px 12px; font-size:12px; }
+
+  section{ margin:0 4px 18px; }
+  .section-header{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin:0 0 10px; }
+  .section-title{ font-size:15px; font-weight:700; color:#f9fafb; }
+  .section-sub{ font-size:12px; color:#9ca3af; margin-top:3px; }
+  .section-actions{ display:flex; gap:8px; align-items:center; }
+  .linkbtn{
+    display:inline-flex; align-items:center; justify-content:center;
+    text-decoration:none; color:#e5e7eb;
+    border:1px solid #374151; background:#111827;
+    padding:6px 10px; border-radius:999px; font-size:12px;
+  }
+  .linkbtn:hover{ border-color:#6b7280; }
+
+  .grid{ display:grid; grid-template-columns:repeat(1,minmax(220px,1fr)); gap:12px; align-items:stretch; }
+
+  /* responsive columns (uniform across sections) */
+  @media (min-width: 560px){ .grid{ grid-template-columns:repeat(2,minmax(220px,1fr)); } }
+  @media (min-width: 820px){ .grid{ grid-template-columns:repeat(3,minmax(220px,1fr)); } }
+  @media (min-width: 1100px){ .grid{ grid-template-columns:repeat(4,minmax(220px,1fr)); } }
+  @media (min-width: 1400px){ .grid{ grid-template-columns:repeat(5,minmax(220px,1fr)); } }
+  .card{
+    position:relative; background:#111827; border-radius:12px; padding:10px 12px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.45); cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+    overflow:hidden;
+    min-width:0;
+  }
+  .card:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.5); }
+
+  .card.up{ border-left:4px solid #1e88e5; }
+  .card.down{ border-left:4px solid #d32f2f; }
+
+  .rank-badge{
+    position:absolute; top:8px; left:8px; width:32px; height:20px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; border-radius:6px; color:#fff;
+    background:#374151; z-index:2;
+  }
+  .rank-1{ background:#facc15; color:#111827; }
+  .rank-2{ background:#9ca3af; color:#111827; }
+  .rank-3{ background:#b45309; color:#fff; }
+
+  .card-header{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .coin-header{ display:flex; align-items:center; gap:8px; padding-left:36px; min-width:0; }
+  .coin-icon{ width:28px; height:28px; border-radius:50%; }
+  .coin-name{ font-weight:600; font-size:14px; color:#f9fafb; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px; }
+  .coin-symbol{ font-size:11px; color:#9ca3af; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .price{ font-size:15px; font-weight:600; color:#f9fafb; text-align:right; }
+  .meta{ font-size:11px; color:#9ca3af; text-align:right; margin-top:2px; }
+  .change{ font-size:12px; text-align:right; margin-top:2px; }
+  .positive{ color:#4ade80; }
+  .negative{ color:#f87171; }
+
+  canvas{ display:block; width:100% !important; height:48px !important; margin-top:6px; }
+
+  .msg{ grid-column:1 / -1; padding:10px 8px; color:#9ca3af; }
+  .msg.err{ color:#f87171; }
+
+  /* Market Overview */
+  .overview{ display:grid; grid-template-columns: 1fr; gap:12px; }
+  @media (min-width: 900px){ .overview{ grid-template-columns: 360px 1fr; } }
+  .overview-card{ background:#111827; border-radius:12px; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,0.45); }
+  .overview-note{ font-size:11px; color:#9ca3af; margin-top:8px; }
+  .donut-wrap{ width:100%; max-width:340px; aspect-ratio:1/1; margin:0 auto; }
+  .donut-wrap canvas{ width:100% !important; height:100% !important; margin-top:0; }
+  .kpi-grid{ display:grid; grid-template-columns: repeat(1, minmax(0,1fr)); gap:10px; }
+  @media (min-width: 560px){ .kpi-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  .kpi{ border:1px solid #1f2937; border-radius:12px; padding:10px 12px; background:#0b1220; }
+  .kpi-label{ font-size:11px; color:#9ca3af; }
+  .kpi-value{ margin-top:6px; font-size:16px; font-weight:700; color:#f9fafb; }
+
+  .kpi-canvas{ width:100% !important; height:70px !important; margin-top:8px; }
+  .kpi-canvas.tall{ height:90px !important; }
+
+  .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
+
+  .barline{ margin-top:8px; height:10px; width:100%; border-radius:999px; overflow:hidden; background:#0f172a; border:1px solid #1f2937; display:flex; }
+  .bar-up{ background:rgba(30,136,229,0.75); height:100%; }
+  .bar-down{ background:rgba(211,47,47,0.75); height:100%; }
+  .bar-flat{ background:rgba(156,163,175,0.55); height:100%; }
+
+  .centerbar{ margin-top:8px; height:10px; width:100%; border-radius:999px; overflow:hidden; background:#0f172a; border:1px solid #1f2937; position:relative; }
+  .centerline{ position:absolute; left:50%; top:0; width:1px; height:100%; background:#334155; }
+  .centerfill{ position:absolute; top:0; height:100%; border-radius:999px; }
+  .centerfill.pos{ background:rgba(30,136,229,0.75); }
+  .centerfill.neg{ background:rgba(211,47,47,0.75); }
+
+  .stackbar{ margin-top:8px; height:10px; width:100%; border-radius:999px; overflow:hidden; background:#0f172a; border:1px solid #1f2937; display:flex; }
+  .seg{ height:100%; }
+  .seg.btc{ background:rgba(250,204,21,0.85); }
+  .seg.eth{ background:rgba(96,165,250,0.85); }
+  .seg.stable{ background:rgba(52,211,153,0.85); }
+  .seg.other{ background:rgba(156,163,175,0.55); }
+
+  .footer{margin:24px 4px 8px; padding-top:14px; border-top:1px solid #1f2937; color:#9ca3af; font-size:12px;}
+  .footer a{color:#cbd5e1; text-decoration:none;}
+  .footer a:hover{text-decoration:underline;}
+  .footer .links{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
+  .footer .small{color:#6b7280; font-size:11px; line-height:1.5;}
+</style>
+</head>
+<body>
+
+<h1>CoinRader</h1>
+
+<div class="topbar">
+  <div class="pill" id="statusPill">状態: 初期化中…</div>
+  <div class="pill" id="updatedPill">更新: --</div>
+  <div class="keybox">
+    <input id="apiKeyInput" placeholder="CoinGecko Demo APIキー（CG-…）を貼り付け" />
+    <button class="btn primary" onclick="saveKey()">保存</button>
+    <button class="btn" onclick="clearKey()">クリア</button>
+  </div>
+  <button class="btn" id="refreshBtn" onclick="refreshData()">更新</button>
+</div>
+
+<div class="nav">
+  <button class="btn" onclick="scrollToId('sec-trend')">トレンド</button>
+  <button class="btn" onclick="scrollToId('sec-gainers')">上昇率</button>
+  <button class="btn" onclick="scrollToId('sec-volume')">出来高</button>
+  <button class="btn" onclick="scrollToId('sec-mcap')">時価総額</button>
+  <button class="btn" onclick="scrollToId('sec-overview')">概況</button>
+</div>
+
+<section id="sec-trend">
+  <div class="section-header">
+    <div>
+      <div class="section-title">トレンド TOP5</div>
+      <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener">もっと見る</a>
+    </div>
+  </div>
+  <div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
+</section>
+
+<section id="sec-gainers">
+  <div class="section-header">
+    <div>
+      <div class="section-title">上昇率 TOP5</div>
+      <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener">もっと見る</a>
+    </div>
+  </div>
+  <div class="grid" id="grid-gainers"><div class="msg">データ取得中…</div></div>
+</section>
+
+<section id="sec-volume">
+  <div class="section-header">
+    <div>
+      <div class="section-title">出来高 TOP5</div>
+      <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener">もっと見る</a>
+    </div>
+  </div>
+  <div class="grid" id="grid-volume"><div class="msg">データ取得中…</div></div>
+</section>
+
+<section id="sec-mcap">
+  <div class="section-header">
+    <div>
+      <div class="section-title">時価総額 TOP20</div>
+      <div class="section-sub">時価総額上位20（JPY）</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="https://www.coingecko.com/ja" target="_blank" rel="noopener">もっと見る</a>
+    </div>
+  </div>
+  <div class="grid" id="grid-mcap"><div class="msg">データ取得中…</div></div>
+</section>
+
+<section id="sec-overview">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Market Overview</div>
+      <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="https://www.coingecko.com" target="_blank" rel="noopener">もっと見る</a>
+    </div>
+  </div>
+
+  <div class="overview" id="overviewWrap">
+    <div class="overview-card">
+      <div class="donut-wrap"><canvas id="domChart"></canvas></div>
+      <div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
+    </div>
+
+    <div class="overview-card">
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">上昇 / 下落（7d推移 / 上位250）</div>
+          <div class="kpi-value" id="kpiBreadth">-</div>
+          <div class="kpi-sub" id="kpiBreadthSub">上位250の各銘柄について、7日前→現在のスパークライン（7d）から「開始点比でプラス/マイナス」を判定。各時点の上昇/下落/中立の銘柄数を推移表示。</div>
+          <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">平均リターン（7d推移 / 上位250）</div>
+          <div class="kpi-value" id="kpiAvgChange">-</div>
+          <div class="kpi-sub" id="kpiAvgSub">上位250の各時点における「開始点比リターン（%）」の平均。0を基準に＋青/−赤で塗り分け。</div>
+          <canvas class="kpi-canvas" id="avgLine"></canvas>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">上位250 時価総額合計（推定7d推移 / JPY）</div>
+          <div class="kpi-value" id="kpiTotalMcap">-</div>
+          <div class="kpi-sub">推定: 各銘柄の現在の時価総額×(各時点価格/現在価格) を合算（供給一定の近似）。</div>
+          <canvas class="kpi-canvas" id="mcapLine"></canvas>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">上位250 出来高合計（推定7d推移 / JPY）</div>
+          <div class="kpi-value" id="kpiTotalVol">-</div>
+          <div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定。厳密な推移には追加APIが必要。</div>
+          <canvas class="kpi-canvas" id="volLine"></canvas>
+        </div>
+      </div>
+      <div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7dスパークライン」から算出しています（時価総額/出来高の推移は近似・推定）。</div>
+    </div>
+  </div>
+
+  <div class="msg" id="overviewMsg" style="display:none"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  if (typeof Chart !== "undefined" && Chart.registerables) { Chart.register.apply(null, Chart.registerables); }
+
+  // ============ API Key ============
+  const KEY_STORAGE = 'cg_demo_api_key_v1';
+  let COINGECKO_API_KEY = localStorage.getItem(KEY_STORAGE) || '';
+  const apiKeyInput = document.getElementById('apiKeyInput');
+  apiKeyInput.value = COINGECKO_API_KEY;
+
+  function saveKey(){
+    const v = (apiKeyInput.value || '').trim();
+    COINGECKO_API_KEY = v;
+    if (v) localStorage.setItem(KEY_STORAGE, v);
+    setStatus('キーを保存しました。再読み込みします…');
+    setTimeout(() => location.reload(), 350);
+  }
+  function clearKey(){
+    localStorage.removeItem(KEY_STORAGE);
+    COINGECKO_API_KEY = '';
+    apiKeyInput.value = '';
+    setStatus('キーをクリアしました（キーなしで試します）');
+  }
+
+  // ============ Refresh / Rate-limit friendly ============
+  const REFRESH_COOLDOWN_MS = 60 * 1000; // 60s
+  let lastRefreshAt = 0;
+  let refreshTimer = null;
+  const refreshBtn = document.getElementById('refreshBtn');
+
+  function setStatus(text){ document.getElementById('statusPill').textContent = '状態: ' + text; }
+  function setUpdated(d){
+    const el = document.getElementById('updatedPill');
+    const dt = (d instanceof Date) ? d : new Date();
+    el.textContent = '更新: ' + dt.toLocaleString('ja-JP', { hour12:false });
+  }
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  function tickRefreshButton(){
+    const now = Date.now();
+    const remain = Math.max(0, (lastRefreshAt + REFRESH_COOLDOWN_MS) - now);
+    if (remain > 0){
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = `更新（${Math.ceil(remain/1000)}s）`;
+    } else {
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = '更新';
+    }
+  }
+
+  function markRefreshed(){
+    lastRefreshAt = Date.now();
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = setInterval(tickRefreshButton, 250);
+    tickRefreshButton();
+  }
+
+  async function refreshData(){
+    const now = Date.now();
+    if (now < lastRefreshAt + REFRESH_COOLDOWN_MS){
+      tickRefreshButton();
+      setStatus('更新は少し待ってください');
+      return;
+    }
+    await init(true);
+  }
+
+  function scrollToId(id){
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  // ============ Fetch helpers ============
+  async function cgFetch(url, options = {}){
+    const headers = { ...(options.headers || {}) };
+    if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
+    return fetch(url, { ...options, headers });
+  }
+
+  async function fetchWithTimeout(url, timeoutMs = 15000, options = {}){
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try{
+      return await cgFetch(url, { ...options, signal: controller.signal });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // 429/5xx を少しだけリトライ（Retry-After対応）
+  async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
+    let lastErr = null;
+    for (let attempt=0; attempt<=retries; attempt++){
+      try{
+        const res = await fetchWithTimeout(url, timeoutMs);
+        if (res.ok) return await res.json();
+
+        let bodyText = '';
+        try{ bodyText = await res.text(); }catch(e){}
+        console.warn('API not ok:', res.status, url, bodyText.slice(0,200));
+
+        if (res.status === 429 || (res.status >= 500 && res.status <= 599)){
+          // Retry-After があれば尊重
+          if (attempt < retries){
+            const ra = res.headers.get('retry-after');
+            const waitMs = ra ? (parseInt(ra,10) * 1000) : (600 * (attempt+1));
+            await sleep(Math.min(waitMs, 5000));
+            continue;
+          }
+        }
+
+        throw new Error(`HTTP ${res.status}`);
+
+      } catch(e){
+        lastErr = e;
+        if (attempt < retries){
+          await sleep(500 * (attempt+1));
+          continue;
+        }
+      }
+    }
+    throw lastErr || new Error('fetch failed');
+  }
+
+  function yen(n){
+    if (typeof n !== 'number') return '-';
+    return n.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
+  }
+
+  function openCoinGecko(coin){
+    const id = coin?.id;
+    if (id){
+      const url = `https://www.coingecko.com/en/coins/${encodeURIComponent(id)}`;
+      window.open(url, '_blank', 'noopener');
+    } else {
+      const q = encodeURIComponent(coin?.name || coin?.symbol || '');
+      window.open(`https://www.coingecko.com/en/search?query=${q}`, '_blank', 'noopener');
+    }
+  }
+
+  // ============ Data ============
+  let marketsTop = [];          // top250
+  let trendingCoins = [];
+
+  async function loadMarketsTop250(){
+    const url = 'https://api.coingecko.com/api/v3/coins/markets'
+      + '?vs_currency=jpy'
+      + '&order=market_cap_desc'
+      + '&per_page=250&page=1'
+      + '&sparkline=true'
+      + '&price_change_percentage=24h';
+
+    marketsTop = await fetchJsonRetry(url, {retries:2});
+    if (!Array.isArray(marketsTop)) marketsTop = [];
+  }
+
+  async function loadTrendingTop5(){
+    const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
+    const trendJson = await fetchJsonRetry(trendUrl, {retries:2});
+
+    const ids = (trendJson.coins || [])
+      .map(c => c.item?.id)
+      .filter(Boolean)
+      .slice(0,5);
+
+    if (!ids.length){ trendingCoins = []; return; }
+
+    // まず top250 から拾う
+    const byIdTop = new Map(marketsTop.map(x => [x.id, x]));
+
+    // もし不足があれば、そのidsだけ markets で1回取得（最小）
+    const missing = ids.filter(id => !byIdTop.has(id));
+    if (missing.length){
+      const mUrl = 'https://api.coingecko.com/api/v3/coins/markets'
+        + '?vs_currency=jpy'
+        + '&ids=' + encodeURIComponent(missing.join(','))
+        + '&sparkline=true'
+        + '&price_change_percentage=24h';
+      const extra = await fetchJsonRetry(mUrl, {retries:2});
+      const extraArr = Array.isArray(extra) ? extra : [];
+      for (const x of extraArr) byIdTop.set(x.id, x);
+    }
+
+    trendingCoins = ids.map(id => byIdTop.get(id)).filter(Boolean);
+  }
+
+  function buildMarketCapTop20(){
+    return marketsTop.slice(0,20);
+  }
+
+  function buildGainersTop5(){
+    return marketsTop
+      .filter(c => typeof c.price_change_percentage_24h === 'number')
+      .slice()
+      .sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h)
+      .slice(0,5);
+  }
+
+  function buildVolumeTop5(){
+    return marketsTop
+      .filter(c => typeof c.total_volume === 'number')
+      .slice()
+      .sort((a,b) => b.total_volume - a.total_volume)
+      .slice(0,5);
+  }
+
+  // ============ Market Overview ============
+  const STABLE_IDS = new Set(['tether','usd-coin','dai','first-digital-usd','true-usd','ethena-usde']);
+
+  function fmtPct(n){
+    if (typeof n !== 'number' || !isFinite(n)) return '-';
+    const s = (n>=0?'+':'');
+    return s + n.toFixed(2) + '%';
+  }
+
+  function buildOverview(){
+    const arr = marketsTop || [];
+    const n = arr.length;
+    let totalMcap = 0;
+    let totalVol = 0;
+
+    let up = 0, down = 0, flat = 0;
+    let sumChg = 0, chgN = 0;
+
+    // Composition (market cap)
+    let btc = 0, eth = 0, stable = 0, other = 0;
+    // Composition (volume)
+    let btcV = 0, ethV = 0, stableV = 0, otherV = 0;
+
+    for (const c of arr){
+      const mc = (typeof c.market_cap === 'number' && isFinite(c.market_cap)) ? c.market_cap : 0;
+      const vol = (typeof c.total_volume === 'number' && isFinite(c.total_volume)) ? c.total_volume : 0;
+      totalMcap += mc;
+      totalVol += vol;
+
+      const chg = c.price_change_percentage_24h;
+      if (typeof chg === 'number' && isFinite(chg)){
+        if (chg > 0) up++;
+        else if (chg < 0) down++;
+        else flat++;
+        sumChg += chg;
+        chgN++;
+      }
+
+      if (c.id === 'bitcoin'){ btc += mc; btcV += vol; }
+      else if (c.id === 'ethereum'){ eth += mc; ethV += vol; }
+      else if (STABLE_IDS.has(c.id)){ stable += mc; stableV += vol; }
+      else { other += mc; otherV += vol; }
+    }
+
+    const avgChg = chgN ? (sumChg / chgN) : null;
+
+    const labels = ['BTC','ETH','ステーブル','Others'];
+    const values = [btc, eth, stable, Math.max(0, other)];
+    const volValues = [btcV, ethV, stableV, Math.max(0, otherV)];
+
+    return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, chgN, n };
+  }
+
+  function drawDonut(canvasId, labels, values){
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const total = values.reduce((a,b)=>a+(typeof b==='number'?b:0), 0) || 1;
+    const dataVals = values.map(v => (typeof v==='number' && isFinite(v)) ? v : 0);
+
+    // 見やすい落ち着いた色（サイトの雰囲気に合わせる）
+    const colors = ['rgba(250, 204, 21, 0.85)','rgba(96, 165, 250, 0.85)','rgba(52, 211, 153, 0.85)','rgba(156, 163, 175, 0.55)'];
+
+    charts[canvasId] = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data: dataVals, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#e5e7eb', boxWidth: 10, padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed || 0;
+                const p = (v/total)*100;
+                return ` ${ctx.label}: ${p.toFixed(2)}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function renderOverview(){
+    const msg = document.getElementById('overviewMsg');
+    msg.style.display = 'none';
+
+    if (!marketsTop || !marketsTop.length){
+      msg.className = 'msg err';
+      msg.textContent = '概況を計算できませんでした（marketsが空です）';
+      msg.style.display = 'block';
+      return;
+    }
+
+    const o = buildOverview();
+
+    // Breadth
+    document.getElementById('kpiBreadth').textContent = `上昇 ${o.up} / 下落 ${o.down}`;
+    const breadthSub = document.getElementById('kpiBreadthSub');
+    if (breadthSub){
+      const baseTxt = `対象: 上位250（取得 ${o.n}）のうち、24h騰落率が取得できた ${o.chgN} 銘柄を集計`;
+      const flatTxt = (o.flat > 0) ? `（中立 ${o.flat}）` : '';
+      breadthSub.textContent = `${baseTxt}${flatTxt}`;
+    }
+
+    const denom = (o.up + o.down + o.flat) || 1;
+    const upPct = (o.up / denom) * 100;
+    const flatPct = (o.flat / denom) * 100;
+    const downPct = (o.down / denom) * 100;
+    const barUp = document.getElementById('barUp');
+    const barFlat = document.getElementById('barFlat');
+    const barDown = document.getElementById('barDown');
+    if (barUp) barUp.style.width = `${upPct}%`;
+    if (barFlat) barFlat.style.width = `${flatPct}%`;
+    if (barDown) barDown.style.width = `${downPct}%`;
+
+    // Average change
+    document.getElementById('kpiAvgChange').textContent = fmtPct(o.avgChg);
+    const avgFill = document.getElementById('avgFill');
+    if (avgFill){
+      const maxRange = 5; // ±5% を目安に可視化（超過はクリップ）
+      const v = (typeof o.avgChg === 'number' && isFinite(o.avgChg)) ? o.avgChg : 0;
+      const w = Math.min(Math.abs(v), maxRange) / maxRange * 50; // 0..50
+      if (v >= 0){
+        avgFill.className = 'centerfill pos';
+        avgFill.style.left = '50%';
+        avgFill.style.width = `${w}%`;
+      } else {
+        avgFill.className = 'centerfill neg';
+        avgFill.style.left = `${50 - w}%`;
+        avgFill.style.width = `${w}%`;
+      }
+    }
+
+    // Totals
+    document.getElementById('kpiTotalMcap').textContent = yen(o.totalMcap);
+    document.getElementById('kpiTotalVol').textContent = yen(o.totalVol);
+
+    // Composition bars (market cap)
+    const totalM = (o.values || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
+    const mPct = (o.values || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalM)*100);
+    const setW = (id, w) => { const el = document.getElementById(id); if (el) el.style.width = `${w}%`; };
+    setW('mcapSegBtc', mPct[0] || 0);
+    setW('mcapSegEth', mPct[1] || 0);
+    setW('mcapSegStable', mPct[2] || 0);
+    setW('mcapSegOther', mPct[3] || 0);
+
+    // Composition bars (volume)
+    const totalV = (o.volValues || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
+    const vPct = (o.volValues || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalV)*100);
+    setW('volSegBtc', vPct[0] || 0);
+    setW('volSegEth', vPct[1] || 0);
+    setW('volSegStable', vPct[2] || 0);
+    setW('volSegOther', vPct[3] || 0);
+
+
+
+    // ---- Overview line series (API追加なし: sparkline_in_7d から算出) ----
+    try {
+      const seriesLen = (marketsTop && marketsTop[0] && marketsTop[0].sparkline_in_7d && marketsTop[0].sparkline_in_7d.price) ? marketsTop[0].sparkline_in_7d.price.length : 0;
+      if (seriesLen > 2) {
+        const upArr = new Array(seriesLen).fill(0);
+        const downArr = new Array(seriesLen).fill(0);
+        const flatArr = new Array(seriesLen).fill(0);
+        const avgArr = new Array(seriesLen).fill(0);
+        const mcapArr = new Array(seriesLen).fill(0);
+        const volArr = new Array(seriesLen).fill(0);
+        const cntArr = new Array(seriesLen).fill(0);
+
+        for (let i=0;i<marketsTop.length;i++){
+          const c = marketsTop[i];
+          const sp = c && c.sparkline_in_7d && c.sparkline_in_7d.price;
+          if (!sp || sp.length !== seriesLen) continue;
+          const p0 = sp[0];
+          const plast = sp[seriesLen-1];
+          if (!(p0>0) || !(plast>0)) continue;
+          const mcNow = (typeof c.market_cap === 'number' && isFinite(c.market_cap)) ? c.market_cap : 0;
+          const volNow = (typeof c.total_volume === 'number' && isFinite(c.total_volume)) ? c.total_volume : 0;
+          for (let t=0;t<seriesLen;t++){
+            const pt = sp[t];
+            if (!(pt>0)) continue;
+            const ret = (pt/p0 - 1) * 100;
+            if (ret > 0) upArr[t] += 1;
+            else if (ret < 0) downArr[t] += 1;
+            else flatArr[t] += 1;
+            avgArr[t] += ret;
+            cntArr[t] += 1;
+            // 推定: supply一定近似
+            if (mcNow>0) mcapArr[t] += mcNow * (pt/plast);
+            if (volNow>0) volArr[t] += volNow * (pt/plast);
+          }
+        }
+        for (let t=0;t<seriesLen;t++){
+          if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t];
+        }
+
+        // Labels: just indexes (Chart.js will hide axis anyway)
+        const labels = Array.from({length: seriesLen}, (_,i)=>i);
+
+        // Breadth chart (3 lines)
+        makeLineChart('breadthLine', labels, [
+          {label:'上昇', data: upArr, border:'rgba(30,136,229,0.9)', fill:false},
+          {label:'下落', data: downArr, border:'rgba(211,47,47,0.9)', fill:false},
+          {label:'中立', data: flatArr, border:'rgba(156,163,175,0.7)', fill:false},
+        ], {yBeginAtZero:true});
+
+        // Avg return chart (0 baseline fill)
+        makeBaselineChart('avgLine', labels, avgArr);
+
+        // Market cap estimate (normalize to last for readability)
+        makeNormalizedLine('mcapLine', labels, mcapArr);
+
+        // Volume estimate (normalize)
+        makeNormalizedLine('volLine', labels, volArr);
+      }
+    } catch(e) { console.warn('overview series failed', e); }
+
+    drawDonut('domChart', o.labels, o.values);
+  }
+
+// ============ Charts / Rendering ============
+  const charts = {};
+  function clearCharts(){
+    Object.values(charts).forEach(c => { try{ c.destroy(); }catch(e){} });
+    Object.keys(charts).forEach(k => delete charts[k]);
+  }
+
+  function drawSparkline(canvasId, points){
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const data = Array.isArray(points) ? points.filter(v => typeof v === 'number' && isFinite(v)) : [];
+    if (data.length < 2) return;
+
+    const baseline = data[0];
+    let minV = baseline, maxV = baseline;
+    for (const v of data){
+      if (v < minV) minV = v;
+      if (v > maxV) maxV = v;
+    }
+    const pad = (maxV - minV) * 0.06 || 1;
+    minV -= pad;
+    maxV += pad;
+
+    charts[canvasId] = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: data.map((_, i) => i),
+        datasets: [{
+          data,
+          pointRadius: 0,
+          borderWidth: 2,
+          borderColor: '#e5e7eb',
+          tension: 0.25,
+          fill: {
+            target: { value: baseline },
+            above: 'rgba(30, 136, 229, 0.25)',
+            below: 'rgba(211, 47, 47, 0.25)'
+          }
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false, suggestedMin: minV, suggestedMax: maxV }
+        }
+      }
+    });
+  }
+
+
+  function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
+
+  function makeLineChart(canvasId, labels, series, opts){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const datasets = series.map(s => ({
+      label: s.label,
+      data: s.data,
+      pointRadius: 0,
+      borderWidth: 2,
+      borderColor: s.border,
+      tension: 0.25,
+      fill: false,
+    }));
+    charts[canvasId] = new Chart(canvas, {
+      type: 'line',
+      data: { labels: labels, datasets: datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero) } }
+      }
+    });
+  }
+
+  function makeBaselineChart(canvasId, labels, dataArr){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    charts[canvasId] = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: dataArr,
+          pointRadius: 0,
+          borderWidth: 2,
+          borderColor: '#e5e7eb',
+          tension: 0.25,
+          fill: {
+            target: { value: 0 },
+            above: 'rgba(30, 136, 229, 0.22)',
+            below: 'rgba(211, 47, 47, 0.22)'
+          }
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, animation:false,
+        plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+        scales:{ x:{display:false}, y:{display:false} }
+      }
+    });
+  }
+
+  function makeNormalizedLine(canvasId, labels, dataArr){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const last = dataArr && dataArr.length ? dataArr[dataArr.length-1] : 0;
+    const norm = (last && isFinite(last) && last!=0) ? dataArr.map(v => (v/last)*100) : dataArr.map(_=>0);
+    charts[canvasId] = new Chart(canvas, {
+      type:'line',
+      data:{ labels: labels, datasets:[{
+        data: norm,
+        pointRadius:0,
+        borderWidth:2,
+        borderColor:'#e5e7eb',
+        tension:0.25,
+        fill:false
+      }]},
+      options:{ responsive:true, maintainAspectRatio:false, animation:false,
+        plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+        scales:{ x:{display:false}, y:{display:false} }
+      }
+    });
+  }
+
+  function renderInto(gridId, coins, mode, sectionKey){
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+
+    if (!coins || !coins.length){
+      grid.innerHTML = '<div class="msg err">データを取得できませんでした（API制限・キー無効・通信失敗の可能性）</div>';
+      return;
+    }
+
+    coins.forEach((coin, idx) => {
+      const change = coin.price_change_percentage_24h;
+      const trendClass = (typeof change === 'number') ? (change >= 0 ? 'up' : 'down') : '';
+      const changeClass = (typeof change === 'number') ? (change >= 0 ? 'positive' : 'negative') : '';
+
+      const card = document.createElement('div');
+      card.className = `card ${trendClass}`;
+      card.onclick = () => openCoinGecko(coin);
+
+      const rankCls = idx===0 ? 'rank-1' : idx===1 ? 'rank-2' : idx===2 ? 'rank-3' : '';
+
+      const pctText = (typeof change === 'number')
+        ? ((change>=0?'+':'') + change.toFixed(2) + '%')
+        : '-';
+
+      const rankText = coin.market_cap_rank ? ('#' + coin.market_cap_rank) : '-';
+      const volMeta = (typeof coin.total_volume === 'number')
+        ? `出来高(24h): ${yen(coin.total_volume)}`
+        : '出来高(24h): -';
+
+      const extraMeta = (mode==='mcap')
+        ? `時価総額: ${yen(coin.market_cap)} / 順位: ${rankText}`
+        : `時価総額順位: ${rankText}`;
+
+      const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
+
+      card.innerHTML = `
+        <div class="rank-badge ${rankCls}">#${idx+1}</div>
+        <div class="card-header">
+          <div class="coin-header">
+            <img class="coin-icon" src="${coin.image}" alt="${coin.name}">
+            <div>
+              <div class="coin-name">${coin.name}</div>
+              <div class="coin-symbol">${(coin.symbol||'').toUpperCase()}</div>
+            </div>
+          </div>
+          <div>
+            <div class="price">${yen(coin.current_price)}</div>
+            <div class="change ${changeClass}">24h: ${pctText}</div>
+            <div class="meta">${volMeta}</div>
+            <div class="meta">${extraMeta}</div>
+          </div>
+        </div>
+        <canvas id="${canvasId}"></canvas>
+      `;
+
+      grid.appendChild(card);
+
+      const sp = coin?.sparkline_in_7d?.price;
+      drawSparkline(canvasId, sp);
+    });
+  }
+
+  function renderAll(){
+    clearCharts();
+    renderInto('grid-trend', trendingCoins, 'trend', 'trend');
+    renderInto('grid-gainers', buildGainersTop5(), 'gainers', 'gainers');
+    renderInto('grid-volume', buildVolumeTop5(), 'volume', 'volume');
+    renderInto('grid-mcap', buildMarketCapTop20(), 'mcap', 'mcap');
+    renderOverview();
+  }
+
+  function setLoadingAll(){
+    document.getElementById('grid-trend').innerHTML = '<div class="msg">データ取得中…</div>';
+    document.getElementById('grid-gainers').innerHTML = '<div class="msg">データ取得中…</div>';
+    document.getElementById('grid-volume').innerHTML = '<div class="msg">データ取得中…</div>';
+    document.getElementById('grid-mcap').innerHTML = '<div class="msg">データ取得中…</div>';
+    const om = document.getElementById('overviewMsg');
+    if (om){ om.style.display='none'; om.textContent=''; }
+  }
+
+  // ============ Boot ============
+  async function init(fromManualRefresh=false){
+    setLoadingAll();
+
+    try{
+      setStatus('markets取得中…');
+      await loadMarketsTop250();
+
+      if (!marketsTop.length){
+        setStatus('marketsが空です');
+        document.getElementById('grid-mcap').innerHTML = '<div class="msg err">marketsを取得できませんでした。APIキー無効／制限／通信失敗の可能性があります。</div>';
+        document.getElementById('grid-trend').innerHTML = '<div class="msg err">---</div>';
+        document.getElementById('grid-gainers').innerHTML = '<div class="msg err">---</div>';
+        document.getElementById('grid-volume').innerHTML = '<div class="msg err">---</div>';
+        return;
+      }
+
+      setStatus('トレンド取得中…');
+      await loadTrendingTop5();
+
+      setUpdated(new Date());
+      setStatus(fromManualRefresh ? '更新しました' : '表示準備完了');
+      renderAll();
+
+      markRefreshed();
+
+    } catch(e){
+      console.error('init failed:', e);
+      setStatus('エラー');
+      document.getElementById('grid-trend').innerHTML = '<div class="msg err">初期化に失敗しました（API制限・キー無効・通信失敗）。Consoleも確認してください。</div>';
+      document.getElementById('grid-gainers').innerHTML = '<div class="msg err">---</div>';
+      document.getElementById('grid-volume').innerHTML = '<div class="msg err">---</div>';
+      document.getElementById('grid-mcap').innerHTML = '<div class="msg err">---</div>';
+    }
+  }
+
+  // 初回ロード
+  (function boot(){
+    tickRefreshButton();
+    init(false);
+  })();
+</script>
+<footer class="footer">
+  <div class="links">
+    <a href="about.html">運営者情報</a>
+    <a href="disclaimer.html">免責事項</a>
+    <a href="data-sources.html">データソース</a>
+    <a href="ads-pr.html">広告・PR表記</a>
+    <a href="privacy.html">プライバシーポリシー</a>
+    <a href="contact.html">お問い合わせ</a>
+  </div>
+  <div class="small">免責：CoinRaderは情報提供目的であり投資助言ではありません。暗号資産は価格変動が大きく、損失が生じる可能性があります。最終判断は自己責任でお願いします。<br>Data: CoinGecko / Ads: 広告・PRを含む場合があります。<br>© CoinRader</div>
+</footer>
+</body>
+</html>
