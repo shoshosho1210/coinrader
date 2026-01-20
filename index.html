@@ -14,12 +14,6 @@
 
   .topbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 4px 10px; }
   .pill{ border:1px solid #374151; background:#111827; color:#e5e7eb; border-radius:999px; padding:6px 10px; font-size:12px; }
-  .keybox{ display:flex; gap:8px; align-items:center; flex:1 1 520px; }
-  .keybox input{
-    flex:1; min-width:260px; padding:8px 12px; border-radius:999px;
-    border:1px solid #374151; background:#0b1220; color:#e5e7eb;
-    outline:none;
-  }
   .btn{
     padding:8px 12px; border-radius:999px; border:1px solid #374151;
     background:#111827; color:#e5e7eb; cursor:pointer; font-size:12px;
@@ -124,11 +118,6 @@
   .seg.stable{ background:rgba(52,211,153,0.85); }
   .seg.other{ background:rgba(156,163,175,0.55); }
 
-  .footer{margin:24px 4px 8px; padding-top:14px; border-top:1px solid #1f2937; color:#9ca3af; font-size:12px;}
-  .footer a{color:#cbd5e1; text-decoration:none;}
-  .footer a:hover{text-decoration:underline;}
-  .footer .links{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
-  .footer .small{color:#6b7280; font-size:11px; line-height:1.5;}
 </style>
 </head>
 <body>
@@ -138,11 +127,6 @@
 <div class="topbar">
   <div class="pill" id="statusPill">状態: 初期化中…</div>
   <div class="pill" id="updatedPill">更新: --</div>
-  <div class="keybox">
-    <input id="apiKeyInput" placeholder="CoinGecko Demo APIキー（CG-…）を貼り付け" />
-    <button class="btn primary" onclick="saveKey()">保存</button>
-    <button class="btn" onclick="clearKey()">クリア</button>
-  </div>
   <button class="btn" id="refreshBtn" onclick="refreshData()">更新</button>
 </div>
 
@@ -261,25 +245,11 @@
 <script>
   if (typeof Chart !== "undefined" && Chart.registerables) { Chart.register.apply(null, Chart.registerables); }
 
-  // ============ API Key ============
-  const KEY_STORAGE = 'cg_demo_api_key_v1';
-  let COINGECKO_API_KEY = localStorage.getItem(KEY_STORAGE) || '';
-  const apiKeyInput = document.getElementById('apiKeyInput');
-  apiKeyInput.value = COINGECKO_API_KEY;
-
-  function saveKey(){
-    const v = (apiKeyInput.value || '').trim();
-    COINGECKO_API_KEY = v;
-    if (v) localStorage.setItem(KEY_STORAGE, v);
-    setStatus('キーを保存しました。再読み込みします…');
-    setTimeout(() => location.reload(), 350);
-  }
-  function clearKey(){
-    localStorage.removeItem(KEY_STORAGE);
-    COINGECKO_API_KEY = '';
-    apiKeyInput.value = '';
-    setStatus('キーをクリアしました（キーなしで試します）');
-  }
+  // ============ CoinGecko API Key（運営者用）===========
+  // 公開サイトでは入力欄を出さない方がUXが良いため、キーはここに固定してください。
+  // 例: const COINGECKO_API_KEY = 'CG-xxxxxxxxxxxxxxxx';
+  // ※このHTMLは閲覧者にも見えるため、将来的にはWorkersプロキシでキーを隠すのが推奨です。
+  const COINGECKO_API_KEY = '';
 
   // ============ Refresh / Rate-limit friendly ============
   const REFRESH_COOLDOWN_MS = 60 * 1000; // 60s
@@ -947,16 +917,5 @@
     init(false);
   })();
 </script>
-<footer class="footer">
-  <div class="links">
-    <a href="about.html">運営者情報</a>
-    <a href="disclaimer.html">免責事項</a>
-    <a href="data-sources.html">データソース</a>
-    <a href="ads-pr.html">広告・PR表記</a>
-    <a href="privacy.html">プライバシーポリシー</a>
-    <a href="contact.html">お問い合わせ</a>
-  </div>
-  <div class="small">免責：CoinRaderは情報提供目的であり投資助言ではありません。暗号資産は価格変動が大きく、損失が生じる可能性があります。最終判断は自己責任でお願いします。<br>Data: CoinGecko / Ads: 広告・PRを含む場合があります。<br>© CoinRader</div>
-</footer>
 </body>
 </html>
