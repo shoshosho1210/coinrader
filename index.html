@@ -141,6 +141,12 @@
 
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
 
+  .kpi-legend{ margin-top:6px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:11px; color:#9ca3af; }
+  .kpi-legend .item{ display:inline-flex; align-items:center; gap:6px; }
+  .kpi-legend .dot{ width:8px; height:8px; border-radius:999px; display:inline-block; }
+  .kpi-legend .dot.up{ background:rgba(30,136,229,0.9); }
+  .kpi-legend .dot.down{ background:rgba(211,47,47,0.9); }
+
   .barline{ margin-top:8px; height:10px; width:100%; border-radius:999px; overflow:hidden; background:#0f172a; border:1px solid #1f2937; display:flex; }
   .bar-up{ background:rgba(30,136,229,0.75); height:100%; }
   .bar-down{ background:rgba(211,47,47,0.75); height:100%; }
@@ -297,6 +303,7 @@
         <div class="kpi">
           <div class="kpi-label">上昇 / 下落（7d推移 / 上位250）</div>
           <div class="kpi-value" id="kpiBreadth">-</div>
+          <div class="kpi-legend" aria-hidden="true"><span class="item"><span class="dot up"></span>青＝上昇数</span><span class="item"><span class="dot down"></span>赤＝下落数</span></div>
           <div class="kpi-sub" id="kpiBreadthSub">上位250を対象に、7日前を基準にした累積リターンで「上昇/下落/横ばい」を判定し、日次の推移を表示（青＝上昇、赤＝下落、灰＝横ばい）。軸は見やすさのため非表示です。</div>
           <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
         </div>
@@ -315,11 +322,11 @@
         <div class="kpi">
           <div class="kpi-label">上位250 出来高合計（推定7d推移 / JPY）</div>
           <div class="kpi-value" id="kpiTotalVol">-</div>
-          <div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定。厳密な推移には追加APIが必要。</div>
+          <div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。正確な出来高の推移には別データソースが必要です。</div>
           <canvas class="kpi-canvas" id="volLine"></canvas>
         </div>
       </div>
-      <div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7dスパークライン」から算出しています（時価総額/出来高の推移は近似・推定）。</div>
+      <div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7日スパークライン」等から概算しています（目安）。</div>
     </div>
   </div>
 
