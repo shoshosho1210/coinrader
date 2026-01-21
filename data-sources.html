@@ -4,45 +4,110 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>データソース・更新頻度 - CoinRader</title>
-  <link rel="stylesheet" href="_page_style.css" />
-<style>
-  .brandLink{display:inline-block;}
-  .brandLogo{height:28px;width:auto;display:block;}
-</style>
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+
+  <!-- SEO -->
+  <meta name="description" content="CoinRaderのデータソースと更新頻度、欠損時の扱いについての説明ページです。">
+  <link rel="canonical" href="https://coinrader.net/data-sources">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="CoinRader">
+  <meta property="og:title" content="データソース・更新頻度 | CoinRader">
+  <meta property="og:description" content="CoinRaderで利用しているデータソースと更新頻度、欠損時の扱いについて。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://coinrader.net/data-sources">
+  <meta property="og:image" content="https://coinrader.net/ogp.png">
+
+  <!-- X (Twitter) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="データソース・更新頻度 | CoinRader">
+  <meta name="twitter:description" content="CoinRaderで利用しているデータソースと更新頻度、欠損時の扱いについて。">
+  <meta name="twitter:image" content="https://coinrader.net/ogp.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
+
+  <link rel="stylesheet" href="/_page_style.css" />
+
+  <style>
+    /* Brand logo (match index/start) */
+    .brandLink{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+    .brandLogo{ height:28px; width:auto; display:block; }
+
+    /* Ensure this page card is centered like other pages */
+    .card{ max-width: 960px; margin: 0 auto; }
+
+    .lead{ color:#cbd5e1; line-height:1.7; margin: 8px 0 16px; }
+    .sec{ margin-top: 16px; }
+    .sec h2{ margin: 0 0 8px; font-size: 16px; }
+    .list{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.7; }
+    .note{ margin-top: 10px; padding: 10px 12px; border-radius: 12px;
+           background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
+           color:#cbd5e1; font-size:12px; line-height:1.7; }
+  </style>
 </head>
+
 <body>
   <div class="container">
     <div class="header">
-  <a class="brandLink" href="index.html" aria-label="CoinRader Dashboard">
-    <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
-  </a>
-  <a class="back" href="index.html" data-ga="nav_back_from_data_sources">ダッシュボードへ戻る</a>
-</div>
-      <a class="back" href="index.html">ダッシュボードへ戻る</a>
+      <a class="brandLink" href="/" aria-label="CoinRader Home">
+        <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
+      </a>
+      <a class="back" href="/">ダッシュボードへ戻る</a>
     </div>
+
     <div class="card">
       <h1>データソース・更新頻度</h1>
-<h2>データソース</h2>
-<ul>
-<li>CoinGecko API（価格、時価総額、出来高、ランキング等）</li>
-</ul>
-<p>各データの権利は提供元に帰属します。</p>
-<h2>更新頻度</h2>
-<p>データは一定間隔で更新されます。ページ上部の「更新」表示をご確認ください。</p>
-<h2>欠損時の扱い</h2>
-<p>API制限、通信障害、提供元の仕様変更等により一時的にデータが取得できない場合があります。その際は「取得できませんでした」等の表示となる場合があります。</p>
-    </div>
-    <footer class="footer">
-      <div class="links">
-        <a href="about.html">運営者情報</a>
-        <a href="disclaimer.html">免責事項</a>
-        <a href="data-sources.html">データソース</a>
-        <a href="ads-pr.html">広告・PR表記</a>
-        <a href="privacy.html">プライバシーポリシー</a>
-        <a href="contact.html">お問い合わせ</a>
+      <p class="lead">CoinRaderで利用しているデータソース、更新の目安、欠損時の扱いをまとめています。</p>
+
+      <div class="sec">
+        <h2>データソース</h2>
+        <ul class="list">
+          <li>CoinGecko API（価格、時価総額、出来高、ランキング等）</li>
+        </ul>
+        <div class="note">各データの権利は提供元に帰属します。</div>
       </div>
-      <div class="note">© CoinRader</div>
-    </footer>
+
+      <div class="sec">
+        <h2>更新頻度</h2>
+        <ul class="list">
+          <li>データは一定間隔で更新されます。ページ上部の「更新」表示をご確認ください。</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <h2>欠損時の扱い</h2>
+        <ul class="list">
+          <li>API制限、通信障害、提供元の仕様変更等により一時的にデータが取得できない場合があります。</li>
+          <li>その際は「取得できませんでした」等の表示となる場合があります。</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:18px;">
+        <a class="back" href="/">ダッシュボードへ戻る</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="/about.html">運営者情報</a>
+      <a href="/disclaimer.html">免責事項</a>
+      <a href="/data-sources.html">データソース</a>
+      <a href="/ads-pr.html">広告・PR表記</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/contact.html">お問い合わせ</a>
+      <span style="opacity:.7">© CoinRader</span>
+    </div>
   </div>
 </body>
 </html>
