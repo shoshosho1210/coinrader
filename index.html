@@ -202,6 +202,26 @@
     font-weight:700;
   }
   .btn-cta:hover{ background:rgba(255,255,255,.10); }
+  /* ===== CTA (収益導線) ===== */
+  .cta-block{
+    margin: 0 4px 18px;
+    padding: 12px 12px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 12px;
+    background: rgba(255,255,255,.04);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  }
+  .cta-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .cta-title{ font-weight:800; font-size:14px; color:#f9fafb; }
+  .cta-sub{ margin-top:4px; font-size:12px; color:#9ca3af; }
+  .cta-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .cta-note{ margin-top:8px; font-size:11px; color:rgba(229,231,235,.70); }
 
 </style>
 </head>
@@ -228,6 +248,19 @@
   <button class="btn" onclick="scrollToId('sec-mcap')">時価総額</button>
   <button class="btn" onclick="scrollToId('sec-overview')">概況</button>
 </div>
+<section class="cta-block" aria-label="おすすめ取引所導線">
+  <div class="cta-inner">
+    <div class="cta-text">
+      <div class="cta-title">取引所の選び方・おすすめ（広告・PR）</div>
+      <div class="cta-sub">用途別にサクッと比較。口座開設リンクもこちらにまとめています。</div>
+    </div>
+    <div class="cta-actions">
+      <a class="btn primary" href="./ads-pr.html" data-cta="top_to_adspr">おすすめを見る</a>
+      <a class="btn" href="./start.html" data-cta="top_to_start">始め方</a>
+    </div>
+  </div>
+  <div class="cta-note">※当サイトは一部リンクにアフィリエイト広告を含みます。</div>
+</section>
 
 <section id="sec-trend">
   <div class="section-header">
