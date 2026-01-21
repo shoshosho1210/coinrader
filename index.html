@@ -227,7 +227,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">トレンド TOP5</div>
-      <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）</div>
+      <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener">もっと見る</a>
@@ -240,7 +240,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">上昇率 TOP5</div>
-      <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）</div>
+      <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener">もっと見る</a>
@@ -253,7 +253,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">出来高 TOP5</div>
-      <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）</div>
+      <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener">もっと見る</a>
@@ -266,7 +266,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">時価総額 TOP20</div>
-      <div class="section-sub">時価総額上位20（JPY）</div>
+      <div class="section-sub">時価総額上位20（JPY）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja" target="_blank" rel="noopener">もっと見る</a>
@@ -297,13 +297,13 @@
         <div class="kpi">
           <div class="kpi-label">上昇 / 下落（7d推移 / 上位250）</div>
           <div class="kpi-value" id="kpiBreadth">-</div>
-          <div class="kpi-sub" id="kpiBreadthSub">上位250の各銘柄について、7日前→現在のスパークライン（7d）から「開始点比でプラス/マイナス」を判定。各時点の上昇/下落/中立の銘柄数を推移表示。</div>
+          <div class="kpi-sub" id="kpiBreadthSub">上位250を対象に、7日前を基準にした累積リターンで「上昇/下落/横ばい」を判定し、日次の推移を表示（青＝上昇、赤＝下落、灰＝横ばい）。軸は見やすさのため非表示です。</div>
           <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
         </div>
         <div class="kpi">
           <div class="kpi-label">平均リターン（7d推移 / 上位250）</div>
           <div class="kpi-value" id="kpiAvgChange">-</div>
-          <div class="kpi-sub" id="kpiAvgSub">上位250の各時点における「開始点比リターン（%）」の平均。0を基準に＋青/−赤で塗り分け。</div>
+          <div class="kpi-sub" id="kpiAvgSub">上位250の各銘柄について、7日前の価格を基準(0%)として現在までの累積リターンを算出し、その平均を表示します。0より上は平均的に上昇、下は下落。</div>
           <canvas class="kpi-canvas" id="avgLine"></canvas>
         </div>
         <div class="kpi">
@@ -735,6 +735,13 @@
 
         // Avg return chart (0 baseline fill)
         makeBaselineChart('avgLine', labels, avgArr);
+        // KPI表示を「7d推移」ベース（最新点）に合わせる
+        const lastUp = upArr[upArr.length - 1];
+        const lastDown = downArr[downArr.length - 1];
+        const lastAvg = avgArr[avgArr.length - 1];
+        document.getElementById('kpiBreadth').textContent = `上昇 ${lastUp} / 下落 ${lastDown}`;
+        document.getElementById('kpiAvgChange').textContent = fmtPct(lastAvg);
+
 
         // Market cap estimate (normalize to last for readability)
         makeNormalizedLine('mcapLine', labels, mcapArr);
@@ -754,51 +761,50 @@
     Object.keys(charts).forEach(k => delete charts[k]);
   }
 
-  function drawSparkline(canvasId, points){
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
+  function drawSparkline(canvasId, data){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
 
-    const data = Array.isArray(points) ? points.filter(v => typeof v === 'number' && isFinite(v)) : [];
-    if (data.length < 2) return;
+  // データが少ない銘柄は、塗りつぶし（面）を無効化して見た目の誤解を避ける
+  if(!data || data.length < 2){
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  const base = data[0];
+  const enableFill = data.length >= 10;
 
-    const baseline = data[0];
-    let minV = baseline, maxV = baseline;
-    for (const v of data){
-      if (v < minV) minV = v;
-      if (v > maxV) maxV = v;
-    }
-    const pad = (maxV - minV) * 0.06 || 1;
-    minV -= pad;
-    maxV += pad;
+  if(charts[canvasId]) charts[canvasId].destroy();
 
-    charts[canvasId] = new Chart(canvas, {
-      type: 'line',
-      data: {
-        labels: data.map((_, i) => i),
-        datasets: [{
-          data,
-          pointRadius: 0,
-          borderWidth: 2,
-          borderColor: '#e5e7eb',
-          tension: 0.25,
-          fill: {
-            target: { value: baseline },
-            above: 'rgba(30, 136, 229, 0.25)',
-            below: 'rgba(211, 47, 47, 0.25)'
-          }
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: {
-          x: { display: false },
-          y: { display: false, suggestedMin: minV, suggestedMax: maxV }
-        }
+  charts[canvasId] = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: data.map((_, i) => i),
+      datasets: [{
+        data,
+        pointRadius: 0,
+        borderWidth: 2,
+        borderColor: '#e5e7eb',
+        tension: 0.25,
+        fill: enableFill ? {
+          target: { value: base },
+          above: 'rgba(30,136,229,0.22)',
+          below: 'rgba(211,47,47,0.22)'
+        } : false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display:false }, tooltip:{ enabled:false } },
+      scales: {
+        x: { display:false, grid:{ display:false }, ticks:{ display:false } },
+        y: { display:false, grid:{ display:false }, ticks:{ display:false } }
       }
-    });
+    }
+  });
+});
   }
 
 
