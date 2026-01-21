@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>始め方 - CoinRader</title>
+  <link rel="stylesheet" href="_page_style.css" />
+
+  <style>
+    .lead { color:#cbd5e1; line-height:1.7; margin: 8px 0 18px; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px;
+            background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); color:#e5e7eb;}
+    .section { margin-top: 18px; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-top:10px; }
+    .xcard { background:#111827; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:12px; }
+    .xcard h3 { margin:0 0 6px; font-size:16px; }
+    .muted { color:#94a3b8; font-size:12px; line-height:1.6; }
+    .list { margin:8px 0 0; padding-left: 18px; color:#cbd5e1; line-height:1.7; }
+    .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .btn-primary{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px; border-radius:12px;
+      background:#2563eb; color:#fff; font-weight:800; text-decoration:none;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .btn-primary:hover{ filter:brightness(1.05); }
+    .btn-ghost{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px; border-radius:12px;
+      background:rgba(255,255,255,.06); color:#e5e7eb; font-weight:800; text-decoration:none;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .btn-ghost:hover{ background:rgba(255,255,255,.10); }
+    .noteBox{
+      margin-top:12px; padding:10px 12px; border-radius:12px;
+      background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
+      color:#cbd5e1; font-size:12px; line-height:1.7;
+    }
+    .hr { height:1px; background:rgba(255,255,255,.08); margin:14px 0; border:0; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">CoinRader</div>
+      <a class="back" href="index.html">ダッシュボードへ戻る</a>
+    </div>
+
+    <div class="card">
+      <h1>始め方（最短3ステップ）</h1>
+      <p class="lead">
+        CoinRaderは暗号資産の概況を“見やすく”まとめるダッシュボードです。<br>
+        実際の購入は取引所で行います。まずは国内取引所で口座開設 → セキュリティ設定 → 少額購入、の順が安心です。
+      </p>
+
+      <div class="noteBox">
+        <span class="pill">広告・PR</span>
+        将来的に取引所リンクが紹介リンク（アフィリエイト）になる可能性があります。<br>
+        表記方針は <a href="ads-pr.html">広告・PR表記</a> をご確認ください。
+      </div>
+
+      <hr class="hr">
+
+      <div class="section">
+        <h2>ステップ1：国内取引所で口座開設</h2>
+        <p class="muted">まずは「大手・日本語サポート・本人確認がスムーズ」な国内取引所からでOKです。</p>
+
+        <div class="cards">
+          <div class="xcard">
+            <h3>bitFlyer</h3>
+            <div class="muted">大手／使い始めやすい</div>
+            <ul class="list">
+              <li>初心者でも迷いにくいUI</li>
+              <li>セキュリティ設定（2段階認証）は必須</li>
+            </ul>
+            <div class="btnrow">
+              <a class="btn-primary" href="https://bitflyer.com/" target="_blank" rel="noopener"
+                 data-ga="ex_bitflyer_open">公式サイト</a>
+            </div>
+          </div>
+
+          <div class="xcard">
+            <h3>Coincheck</h3>
+            <div class="muted">アプリが分かりやすい／少額から</div>
+            <ul class="list">
+              <li>スマホ中心で始めたい人向け</li>
+              <li>購入前に手数料・スプレッド確認</li>
+            </ul>
+            <div class="btnrow">
+              <a class="btn-primary" href="https://coincheck.com/" target="_blank" rel="noopener"
+                 data-ga="ex_coincheck_open">公式サイト</a>
+            </div>
+          </div>
+
+          <div class="xcard">
+            <h3>SBI VC Trade</h3>
+            <div class="muted">SBI系／国内大手グループ</div>
+            <ul class="list">
+              <li>SBI系サービスと相性が良い場合も</li>
+              <li>取扱銘柄・手数料は事前確認</li>
+            </ul>
+            <div class="btnrow">
+              <a class="btn-primary" href="https://www.sbivc.co.jp/" target="_blank" rel="noopener"
+                 data-ga="ex_sbi_open">公式サイト</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="noteBox">
+          どれを選ぶか迷ったら：<br>
+          ①本人確認のしやすさ ②入出金手数料 ③取扱銘柄 ④アプリの使いやすさ ⑤サポート、の順で見れば失敗しにくいです。
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>ステップ2：セキュリティ設定（必須）</h2>
+        <ul class="list">
+          <li>2段階認証（Authenticator系）をON</li>
+          <li>パスワードは使い回さない（PW管理アプリ推奨）</li>
+          <li>出金先アドレスのホワイトリスト設定があれば活用</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>ステップ3：少額で試して慣れる</h2>
+        <ul class="list">
+          <li>まずは少額（例：数千円）で購入 → 価格変動に慣れる</li>
+          <li>「成行」より「指値」も試してみる（約定の仕組み理解）</li>
+          <li>焦って追いかけない（急騰時ほど注意）</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>CoinRaderの使い方</h2>
+        <ul class="list">
+          <li>トレンド／上昇率／出来高で“今動いている銘柄”を把握</li>
+          <li>時価総額・概況で市場の地合いを確認</li>
+          <li>気になる銘柄は公式情報やチャートで追加調査</li>
+        </ul>
+        <div class="btnrow">
+          <a class="btn-ghost" href="index.html" data-ga="cta_back_dashboard">ダッシュボードへ戻る</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>よくある質問</h2>
+        <div class="xcard">
+          <h3>Q. CoinRaderから直接取引できますか？</h3>
+          <p class="muted">A. いいえ。CoinRaderは情報表示（ダッシュボード）です。売買は各取引所で行います。</p>
+        </div>
+        <div class="xcard" style="margin-top:10px;">
+          <h3>Q. おすすめは1つに絞れますか？</h3>
+          <p class="muted">A. 迷う場合は「本人確認が楽で、アプリが使いやすい」ものからでOKです。条件は人により違うため、上の比較観点で選ぶのが安全です。</p>
+        </div>
+      </div>
+
+      <div class="noteBox">
+        ※本ページは一般的な情報です。投資助言ではありません。最終判断はご自身でお願いします。<br>
+        免責事項：<a href="disclaimer.html">免責事項</a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="links">
+        <a href="about.html">運営者情報</a>
+        <a href="disclaimer.html">免責事項</a>
+        <a href="data-sources.html">データソース</a>
+        <a href="ads-pr.html">広告・PR表記</a>
+        <a href="privacy.html">プライバシーポリシー</a>
+        <a href="contact.html">お問い合わせ</a>
+      </div>
+      <div class="note">© CoinRader</div>
+    </footer>
+  </div>
+
+  <!-- クリック計測（data-ga 付きリンクのみ） -->
+  <script>
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-ga]');
+    if(!a) return;
+    if(window.gtag){
+      gtag('event', 'click', {
+        event_category: 'cta',
+        event_label: a.getAttribute('data-ga'),
+        link_url: a.href
+      });
+    }
+  });
+  </script>
+</body>
+</html>
