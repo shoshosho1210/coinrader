@@ -49,6 +49,7 @@
     margin-top:auto;         /* 追加：ボタンを下揃え */
     align-self:flex-start;   /* 任意：ボタンを伸ばさない */
   }
+  .aff-actions{display:flex;gap:8px;flex-wrap:wrap}
 </style>
 
 
@@ -82,40 +83,68 @@
      口座開設リンクは以下にまとめています（外部サイトへ移動します）。
     </p>
 
-    <div class="aff-cards">
-      <div class="aff-card">
-        <h3>初心者向け</h3>
-        <p style="color:rgba(229,231,235,.8); font-size:13px;">
-          初心者でも迷いにくいUI。まず現物から始めたい人向け。<br>
-          はじめの手順をシンプルにまとめています。
-        </p>
+    <div class="aff-card">
+      <h3>初心者向け</h3>
+      <p style="color:rgba(229,231,235,.8); font-size:13px;">
+        初心者でも迷いにくいUI。まず現物から始めたい人向け。<br>
+        はじめの手順をシンプルにまとめています。
+      </p>
+
+      <div class="aff-actions">
         <a class="btn primary"
            href="/go/coincheck"
            target="_blank" rel="noopener"
            data-aff="coincheck" data-place="adspr_coincheck">
-          無料で口座開設（公式）
+          公式サイト
+        </a>
+
+        <a class="btn"
+          href="/go-pr/coincheck"
+           target="_blank" rel="noopener"
+           data-aff="coincheck" data-place="adspr_coincheck" data-pr="1">
+          キャンペーン（PR）
         </a>
       </div>
+    </div>
 
-      <div class="aff-card">
-        <h3>トレーダー向け</h3>
-        <p style="color:rgba(229,231,235,.8); font-size:13px;">国内大手の安心感。BTC中心で堅実に使いたい人向け。</p>
+    <div class="aff-card">
+      <h3>トレーダー向け</h3>
+      <p style="color:rgba(229,231,235,.8); font-size:13px;">国内大手の安心感。BTC中心で堅実に使いたい人向け。</p>
+
+      <div class="aff-actions">
         <a class="btn primary"
            href="/go/bitflyer"
            target="_blank" rel="noopener"
            data-aff="bitflyer" data-place="adspr_bitflyer">
-          口座開設（公式）
+          公式サイト
+        </a>
+
+        <a class="btn"
+           href="/go-pr/bitflyer"
+           target="_blank" rel="noopener"
+           data-aff="bitflyer" data-place="adspr_bitflyer" data-pr="1">
+          キャンペーン（PR）
         </a>
       </div>
+    </div>
 
-      <div class="aff-card">
-        <h3>アルト銘柄重視</h3>
-        <p style="color:rgba(229,231,235,.8); font-size:13px;">銀行系の安心感。資産運用の延長で使いたい人向け。</p>
+    <div class="aff-card">
+      <h3>アルト銘柄重視</h3>
+      <p style="color:rgba(229,231,235,.8); font-size:13px;">銀行系の安心感。資産運用の延長で使いたい人向け。</p>
+
+      <div class="aff-actions">
         <a class="btn primary"
            href="/go/sbi"
            target="_blank" rel="noopener"
            data-aff="sbi" data-place="adspr_sbi">
-          口座開設（公式）
+          公式サイト
+        </a>
+
+        <a class="btn"
+           href="/go-pr/sbi"
+           target="_blank" rel="noopener"
+           data-aff="sbi" data-place="adspr_sbi" data-pr="1">
+          キャンペーン（PR）
         </a>
       </div>
     </div>
