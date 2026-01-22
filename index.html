@@ -979,6 +979,17 @@ function fetchSparkline1d(coinId){
 }
 
 
+  // 7日スパークラインから「直近24h相当」を切り出す（追加APIを減らして欠損を防ぐ）
+  function derive24hFrom7d(spark7d) {
+    if (!Array.isArray(spark7d)) return [];
+    const len = spark7d.length;
+    if (len <= 2) return spark7d;
+    // 7日→24h は 1/7。Coingecko の sparkline はだいたい時間間隔が一定なので割合で切り出す
+    const n = Math.max(12, Math.round(len / 7));
+    return spark7d.slice(-Math.min(n, len));
+  }
+
+
   function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
 
   function makeLineChart(canvasId, labels, series, opts){
@@ -1116,9 +1127,17 @@ function fetchSparkline1d(coinId){
 
       const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
       if (use24h){
-        fetchSparkline1d(coin.id).then(arr => {
-          if (Array.isArray(arr) && arr.length >= 2) drawSparkline(canvasId, arr);
-        });
+        // まずは markets(sparkline_in_7d) から 24h 相当を切り出して描画（追加APIを減らす）
+        const sp7 = coin?.sparkline_in_7d?.price;
+        const sp24 = derive24hFrom7d(sp7);
+        if (Array.isArray(sp24) && sp24.length >= 2) {
+          drawSparkline(canvasId, sp24);
+        } else {
+          // フォールバック（まれに sparkline が欠ける場合）
+          fetchSparkline1d(coin.id).then(arr => {
+            if (Array.isArray(arr) && arr.length >= 2) drawSparkline(canvasId, arr);
+          });
+        }
       } else {
         const sp = coin?.sparkline_in_7d?.price;
         drawSparkline(canvasId, sp);
