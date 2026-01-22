@@ -567,6 +567,21 @@
     throw lastErr || new Error('fetch failed');
   }
 
+  // ---- UTIL: fetch 7d market chart prices (fallback when sparkline is missing)
+  async function fetchMarketChart7dPrices(coinId, vsCurrency = "jpy") {
+    const url =
+      "https://api.coingecko.com/api/v3/coins/" +
+      encodeURIComponent(coinId) +
+      "/market_chart?vs_currency=" +
+      encodeURIComponent(vsCurrency) +
+      "&days=7";
+    const j = await fetchJsonRetry(url);
+    const prices = (j && j.prices) ? j.prices : [];
+    // prices: [[ts, price], ...] -> [price, ...]
+    return prices.map((p) => p && p.length ? p[1] : null).filter((v) => typeof v === "number" && isFinite(v));
+  }
+
+
   function yen(n){
     if (typeof n !== 'number') return '-';
     return n.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
