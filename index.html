@@ -901,7 +901,6 @@ function drawSparkline(canvasId, data){
   const canvas = document.getElementById(canvasId);
   if(!canvas) return;
 
-  // data を安全に（null/undefined/NaN混入で Chart.js が落ちて以降が描画されなくなるのを防ぐ）
   const raw = Array.isArray(data) ? data : [];
   const cleaned = raw.map(v => (typeof v === "number" && Number.isFinite(v)) ? v : null);
   const finite = cleaned.filter(v => v !== null);
@@ -912,23 +911,32 @@ function drawSparkline(canvasId, data){
     return;
   }
 
-  const base = finite[0];
-  const enableFill = finite.length >= 10;
+  const base = finite[0];                 // ← ベースライン（最初の値）
+  const enableFill = finite.length >= 10; // 少なすぎる時は塗らない
 
   try{
     if(charts[canvasId]) charts[canvasId].destroy();
+
     charts[canvasId] = new Chart(ctx, {
-      type: 'line',
+      type: "line",
       data: {
-        labels: cleaned.map((_, i)=>i),
+        labels: cleaned.map((_, i) => i),
         datasets: [{
           data: cleaned,
-          borderColor: 'rgba(255,255,255,0.85)',
+          borderColor: "rgba(255,255,255,0.85)",
           borderWidth: 1.5,
           pointRadius: 0,
           tension: 0.25,
-          fill: enableFill ? { target: { value: base } } : false,
-          backgroundColor: enableFill ? 'rgba(59,130,246,0.18)' : 'rgba(0,0,0,0)',
+
+          // ★ここがポイント：ベースライン(base)より上/下で塗り分け
+          fill: enableFill ? {
+            target: { value: base },
+            above: "rgba(30,136,229,0.22)", // 青
+            below: "rgba(211,47,47,0.22)"   // 赤
+          } : false,
+
+          // fill の above/below を使うので、dataset の backgroundColor は透明でOK
+          backgroundColor: "rgba(0,0,0,0)",
           spanGaps: true
         }]
       },
@@ -937,12 +945,10 @@ function drawSparkline(canvasId, data){
         maintainAspectRatio: false,
         animation: false,
         plugins: { legend: { display:false }, tooltip: { enabled:false } },
-        scales: { x: { display:false }, y: { display:false } },
-        elements: { line: { capBezierPoints: true } }
+        scales: { x: { display:false }, y: { display:false } }
       }
     });
   }catch(err){
-    // 1つの銘柄が落ちても他のチャート描画を止めない
     console.warn("sparkline render failed:", canvasId, err);
     try{ if(charts[canvasId]) charts[canvasId].destroy(); }catch{}
     ctx.clearRect(0, 0, canvas.width, canvas.height);
