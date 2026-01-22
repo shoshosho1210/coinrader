@@ -10,6 +10,7 @@
       return;
     }
     const p = params || {};
+    p.transport_type = "beacon";
     if (callback) {
       p.event_callback = callback;
       p.event_timeout = 800;
@@ -46,7 +47,7 @@
       // 1) CTA（サイト内導線）
       const ctaId = a.dataset.ga || a.dataset.cta;
       if (ctaId) {
-        if (!newTab && sameOrigin) {
+        if (!newTab) {
           e.preventDefault();
           fire("cta_click", { cta_id: ctaId, link_url: href }, function () {
             location.href = href;
