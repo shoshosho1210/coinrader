@@ -1093,6 +1093,18 @@ function drawSparkline(canvasId, data){
   }
 }
 
+function hasAtLeast2Finite(arr){
+  if(!Array.isArray(arr)) return false;
+  let n = 0;
+  for(const v of arr){
+    if(typeof v === "number" && Number.isFinite(v)){
+      n++;
+      if(n >= 2) return true;
+    }
+  }
+  return false;
+}
+
 // --- Sparkline fallback (when sparkline_in_7d is missing) ---
 const __sparklineFallbackCache = new Map(); // coinId -> Promise<number[]>
 
@@ -1274,7 +1286,7 @@ function fetchSparkline1d(coinId){
         // まずは markets(sparkline_in_7d) から 24h 相当を切り出して描画（追加APIを減らす）
         const sp7 = coin?.sparkline_in_7d?.price;
         const sp24 = derive24hFrom7d(sp7);
-        if (Array.isArray(sp24) && sp24.length >= 2) {
+        if (hasAtLeast2Finite(sp24)) {
           drawSparkline(canvasId, sp24);
         } else {
           // フォールバック（まれに sparkline が欠ける場合）
@@ -1286,7 +1298,7 @@ function fetchSparkline1d(coinId){
         const sp = coin?.sparkline_in_7d?.price;
         drawSparkline(canvasId, sp);
         // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
-        if (!Array.isArray(sp) || sp.length < 2) {
+        if (!hasAtLeast2Finite(sp)) {
           fetchSparkline7dFallback(coin.id).then(arr => {
             if (Array.isArray(arr) && arr.length >= 2) {
               drawSparkline(canvasId, arr);
