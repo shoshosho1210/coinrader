@@ -567,21 +567,6 @@
     throw lastErr || new Error('fetch failed');
   }
 
-  // ---- UTIL: fetch 7d market chart prices (fallback when sparkline is missing)
-  async function fetchMarketChart7dPrices(coinId, vsCurrency = "jpy") {
-    const url =
-      "https://api.coingecko.com/api/v3/coins/" +
-      encodeURIComponent(coinId) +
-      "/market_chart?vs_currency=" +
-      encodeURIComponent(vsCurrency) +
-      "&days=7";
-    const j = await fetchJsonRetry(url);
-    const prices = (j && j.prices) ? j.prices : [];
-    // prices: [[ts, price], ...] -> [price, ...]
-    return prices.map((p) => p && p.length ? p[1] : null).filter((v) => typeof v === "number" && isFinite(v));
-  }
-
-
   function yen(n){
     if (typeof n !== 'number') return '-';
     return n.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
@@ -953,6 +938,22 @@
   }
 
 
+// --- Sparkline fallback (when sparkline_in_7d is missing) ---
+const __sparklineFallbackCache = new Map(); // coinId -> Promise<number[]>
+
+function fetchSparkline7dFallback(coinId){
+  if(!coinId) return Promise.resolve([]);
+  if(__sparklineFallbackCache.has(coinId)) return __sparklineFallbackCache.get(coinId);
+  const url = `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=jpy&days=7`;
+  const p = fetchJsonRetry(url, { retries: 1 }).then(j => {
+    const arr = (j && Array.isArray(j.prices)) ? j.prices.map(x => x && x[1]).filter(v => typeof v === "number") : [];
+    return arr;
+  }).catch(() => []);
+  __sparklineFallbackCache.set(coinId, p);
+  return p;
+}
+
+
   function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
 
   function makeLineChart(canvasId, labels, series, opts){
@@ -1090,6 +1091,14 @@
 
       const sp = coin?.sparkline_in_7d?.price;
       drawSparkline(canvasId, sp);
+        // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
+        if (!Array.isArray(sp) || sp.length < 2) {
+          fetchSparkline7dFallback(coin.id).then(arr => {
+            if (Array.isArray(arr) && arr.length >= 2) {
+              drawSparkline(canvasId, arr);
+            }
+          });
+        }
     });
   }
 
