@@ -591,7 +591,22 @@
   // ============ Data ============
   let marketsTop = [];          // top250
   let trendingCoins = [];
+  const EXCLUDE_MCAP_IDS = new Set([
+    "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
+    "pax-dollar","frax"
+  ]);
 
+  const EXCLUDE_MCAP_KEYWORDS = [
+    "stable","tether","usd coin","us dollar"
+  ];
+
+  function isExcludedForMarketCap(c){
+    const id = (c?.id || "").toLowerCase();
+    const name = (c?.name || "").toLowerCase();
+    const sym = (c?.symbol || "").toLowerCase();
+    if (EXCLUDE_MCAP_IDS.has(id)) return true;
+    return EXCLUDE_MCAP_KEYWORDS.some(k => name.includes(k) || sym.includes(k));
+  }
   async function loadMarketsTop250(){
     const url = 'https://api.coingecko.com/api/v3/coins/markets'
       + '?vs_currency=jpy'
@@ -635,7 +650,10 @@
   }
 
   function buildMarketCapTop20(){
-    return marketsTop.slice(0,20);
+    return marketsTop
+      .filter(c => typeof c.market_cap === "number")
+      .filter(c => !isExcludedForMarketCap(c))   // ← 追加
+      .slice(0,20);
   }
 
   function buildGainersTop5(){
@@ -648,7 +666,7 @@
 
   const EXCLUDE_VOLUME_IDS = new Set([
     "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
-    "bitcoin","ethereum","wrapped-bitcoin","staked-ether"
+    "wrapped-bitcoin","staked-ether"
   ]);
 
   const EXCLUDE_NAME_KEYWORDS = [
