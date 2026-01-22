@@ -646,9 +646,30 @@
       .slice(0,5);
   }
 
+  const EXCLUDE_VOLUME_IDS = new Set([
+    "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
+    "bitcoin","ethereum","wrapped-bitcoin","staked-ether"
+  ]);
+
+  const EXCLUDE_NAME_KEYWORDS = [
+    "usd","us dollar","stable","tether","usd coin",
+    "wrapped","bridged","wormhole","portal",
+    "staked","staking","restaked",
+    "wbtc","weth","steth"
+  ];
+
+  function isExcludedForAltVolume(c){
+    const id = (c?.id || "").toLowerCase();
+    const name = (c?.name || "").toLowerCase();
+    const sym = (c?.symbol || "").toLowerCase();
+    if (EXCLUDE_VOLUME_IDS.has(id)) return true;
+    return EXCLUDE_NAME_KEYWORDS.some(k => name.includes(k) || sym.includes(k));
+  }
+
   function buildVolumeTop5(){
     return marketsTop
-      .filter(c => typeof c.total_volume === 'number')
+      .filter(c => typeof c.total_volume === "number")
+      .filter(c => !isExcludedForAltVolume(c))   // ← 追加
       .slice()
       .sort((a,b) => b.total_volume - a.total_volume)
       .slice(0,5);
