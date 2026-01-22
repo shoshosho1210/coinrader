@@ -325,7 +325,8 @@
     </div>
   </section>
 <div class="topbar">
-    <a class="btn-cta" href="start.html" data-ga="cta_start_header">始め方</a>
+  <a class="btn primary" href="./ads-pr.html" data-ga="cta_top_adspr">おすすめを見る</a>
+  <a class="btn-cta" href="start.html" data-ga="cta_start_header">始め方</a>
 
   <div class="pill" id="statusPill">状態: 初期化中…</div>
   <div class="pill" id="updatedPill">更新: --</div>
@@ -342,11 +343,10 @@
 <section class="cta-block" aria-label="おすすめ取引所導線">
   <div class="cta-inner">
     <div class="cta-text">
-      <div class="cta-title">取引所おすすめ（広告・PR）</div>
-      <div class="cta-sub">国内取引所を用途別に比較。公式サイト/キャンペーン導線をまとめています。</div>
+      <div class="cta-title">取引所の選び方・おすすめ（広告・PR）</div>
+      <div class="cta-sub">用途別にサクッと比較。口座開設リンクもこちらにまとめています。</div>
     </div>
     <div class="cta-actions">
-      <a class="btn primary" href="./ads-pr.html" data-cta="top_to_adspr">取引所おすすめを見る</a>
       <a class="btn" href="./start.html" data-cta="top_to_start">始め方</a>
     </div>
   </div>
@@ -370,7 +370,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">上昇率 TOP5</div>
-      <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+      <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener">もっと見る</a>
@@ -383,7 +383,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">出来高 TOP5</div>
-      <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+      <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener">もっと見る</a>
@@ -953,20 +953,6 @@ function fetchSparkline7dFallback(coinId){
   return p;
 }
 
-// --- Sparkline 24h (1d) for gainers/volume (keeps % change label consistent) ---
-const __sparkline1dCache = new Map(); // coinId -> Promise<number[]>
-function fetchSparkline1d(coinId){
-  if(!coinId) return Promise.resolve([]);
-  if(__sparkline1dCache.has(coinId)) return __sparkline1dCache.get(coinId);
-  const url = `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=jpy&days=1`;
-  const p = fetchJsonRetry(url, { retries: 1 }).then(j => {
-    const arr = (j && Array.isArray(j.prices)) ? j.prices.map(x => x && x[1]).filter(v => typeof v === "number") : [];
-    return arr;
-  }).catch(() => []);
-  __sparkline1dCache.set(coinId, p);
-  return p;
-}
-
 
   function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
 
@@ -1103,14 +1089,8 @@ function fetchSparkline1d(coinId){
 
       grid.appendChild(card);
 
-      const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
-      if (use24h){
-        fetchSparkline1d(coin.id).then(arr => {
-          if (Array.isArray(arr) && arr.length >= 2) drawSparkline(canvasId, arr);
-        });
-      } else {
-        const sp = coin?.sparkline_in_7d?.price;
-        drawSparkline(canvasId, sp);
+      const sp = coin?.sparkline_in_7d?.price;
+      drawSparkline(canvasId, sp);
         // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
         if (!Array.isArray(sp) || sp.length < 2) {
           fetchSparkline7dFallback(coin.id).then(arr => {
@@ -1119,7 +1099,6 @@ function fetchSparkline1d(coinId){
             }
           });
         }
-      }
     });
   }
 
