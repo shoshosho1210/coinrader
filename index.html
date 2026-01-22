@@ -1030,6 +1030,8 @@ function buildMarketCapTop20(){
 
 // ============ Charts / Rendering ============
   const charts = {};
+  const __sparklineAttempts = new Map(); // canvasId -> attempts
+
   function clearCharts(){
     Object.values(charts).forEach(c => { try{ c.destroy(); }catch(e){} });
     Object.keys(charts).forEach(k => delete charts[k]);
@@ -1038,6 +1040,19 @@ function buildMarketCapTop20(){
 function drawSparkline(canvasId, data){
   const canvas = document.getElementById(canvasId);
   if(!canvas) return;
+
+  // If the canvas isn't laid out yet (size 0), retry a few times.
+  const w = canvas.clientWidth || canvas.width;
+  const h = canvas.clientHeight || canvas.height;
+  if(!w || !h){
+    const n = (__sparklineAttempts.get(canvasId) || 0) + 1;
+    if(n <= 8){
+      __sparklineAttempts.set(canvasId, n);
+      requestAnimationFrame(() => drawSparkline(canvasId, data));
+    }
+    return;
+  }
+  __sparklineAttempts.delete(canvasId);
 
   const raw = Array.isArray(data) ? data : [];
   const cleaned = raw.map(v => (typeof v === "number" && Number.isFinite(v)) ? v : null);
@@ -1291,7 +1306,7 @@ function fetchSparkline1d(coinId){
         } else {
           // フォールバック（まれに sparkline が欠ける場合）
           fetchSparkline1d(coin.id).then(arr => {
-            if (Array.isArray(arr) && arr.length >= 2) drawSparkline(canvasId, arr);
+            if (hasAtLeast2Finite(arr)) drawSparkline(canvasId, arr);
           });
         }
       } else {
@@ -1300,9 +1315,7 @@ function fetchSparkline1d(coinId){
         // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
         if (!hasAtLeast2Finite(sp)) {
           fetchSparkline7dFallback(coin.id).then(arr => {
-            if (Array.isArray(arr) && arr.length >= 2) {
-              drawSparkline(canvasId, arr);
-            }
+            if (hasAtLeast2Finite(arr)) { drawSparkline(canvasId, arr); }
           });
         }
       }
