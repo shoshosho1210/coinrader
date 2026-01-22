@@ -486,6 +486,38 @@
   }
   function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
+// ============ Local cache (F5連打対策) ============
+const CACHE_TTL_MS = 5 * 60 * 1000;            // 5分はキャッシュを優先表示
+const BOOT_NETWORK_COOLDOWN_MS = 25 * 1000;    // 25秒以内の再読み込みはネット取得をスキップ（API制限対策）
+const LS_KEYS = {
+  markets: "cg_marketsTop250_jpy_v1",
+  trendingIds: "cg_trendingTop5_ids_v1",
+  lastFetch: "cg_last_fetch_at_v1"
+};
+
+function lsGet(key){
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+function lsSet(key, val){
+  try { localStorage.setItem(key, val); } catch {}
+}
+function readCache(key){
+  const raw = lsGet(key);
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+function writeCache(key, data){
+  lsSet(key, JSON.stringify({ ts: Date.now(), data }));
+}
+function getLastFetchAt(){
+  const v = Number(lsGet(LS_KEYS.lastFetch) || "0");
+  return Number.isFinite(v) ? v : 0;
+}
+function setLastFetchAt(){
+  lsSet(LS_KEYS.lastFetch, String(Date.now()));
+}
+
+
   function tickRefreshButton(){
     const now = Date.now();
     const remain = Math.max(0, (lastRefreshAt + REFRESH_COOLDOWN_MS) - now);
@@ -607,22 +639,81 @@
     if (EXCLUDE_MCAP_IDS.has(id)) return true;
     return EXCLUDE_MCAP_KEYWORDS.some(k => name.includes(k) || sym.includes(k));
   }
-  async function loadMarketsTop250(){
-    const url = 'https://api.coingecko.com/api/v3/coins/markets'
-      + '?vs_currency=jpy'
-      + '&order=market_cap_desc'
-      + '&per_page=250&page=1'
-      + '&sparkline=true'
-      + '&price_change_percentage=24h';
+  async function loadMarketsTop250(forceNetwork=false){
+  const url = 'https://api.coingecko.com/api/v3/coins/markets'
+    + '?vs_currency=jpy'
+    + '&order=market_cap_desc'
+    + '&per_page=250&page=1'
+    + '&sparkline=true'
+    + '&price_change_percentage=24h';
 
-    marketsTop = await fetchJsonRetry(url, {retries:2});
-    if (!Array.isArray(marketsTop)) marketsTop = [];
+  // まずキャッシュで即表示（ネット失敗でも「真っ白」を避ける）
+  const cached = readCache(LS_KEYS.markets);
+  if (cached && Array.isArray(cached.data) && cached.data.length){
+    marketsTop = cached.data;
   }
 
-  async function loadTrendingTop5(){
-    const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
-    const trendJson = await fetchJsonRetry(trendUrl, {retries:2});
+  // F5連打など短時間の再読み込みはネット取得をスキップ（API制限対策）
+  const now = Date.now();
+  const lastFetchAt = getLastFetchAt();
+  const canSkipNetwork = !forceNetwork && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
+  if (canSkipNetwork && marketsTop.length){
+    setStatus('キャッシュ表示中（短時間再読み込み）');
+    return;
+  }
 
+  try{
+    const fresh = await fetchJsonRetry(url, {retries:2});
+    if (Array.isArray(fresh) && fresh.length){
+      marketsTop = fresh;
+      writeCache(LS_KEYS.markets, fresh);
+      setLastFetchAt();
+    } else if (!Array.isArray(marketsTop) || !marketsTop.length){
+      marketsTop = [];
+    }
+  } catch (e){
+    // キャッシュがあるならそれで継続。無いならエラーを投げる
+    if (marketsTop && marketsTop.length){
+      console.warn('markets fetch failed, using cache:', e);
+      setStatus('通信失敗（キャッシュで表示）');
+      return;
+    }
+    throw e;
+  }
+}
+
+
+  async function loadTrendingTop5(forceNetwork=false){
+  const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
+
+  // キャッシュ（idsのみ）から先に組み立て
+  function setFromIds(ids){
+    if (!Array.isArray(ids) || !ids.length){ trendingCoins = []; return; }
+    const byIdTop = new Map(marketsTop.map(x => [x.id, x]));
+    trendingCoins = ids.map(id => byIdTop.get(id)).filter(Boolean);
+  }
+
+  const cached = readCache(LS_KEYS.trendingIds);
+  if (cached && Array.isArray(cached.data) && cached.data.length){
+    setFromIds(cached.data);
+  }
+
+  // markets が取れていない場合は無理に進めない
+  if (!marketsTop.length){
+    trendingCoins = [];
+    return;
+  }
+
+  // F5連打など短時間の再読み込みはネット取得をスキップ（API制限対策）
+  const now = Date.now();
+  const lastFetchAt = getLastFetchAt();
+  const canSkipNetwork = !forceNetwork && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
+  if (canSkipNetwork && trendingCoins.length){
+    return;
+  }
+
+  try{
+    const trendJson = await fetchJsonRetry(trendUrl, {retries:2});
     const ids = (trendJson.coins || [])
       .map(c => c.item?.id)
       .filter(Boolean)
@@ -630,10 +721,10 @@
 
     if (!ids.length){ trendingCoins = []; return; }
 
-    // まず top250 から拾う
+    // top250 から拾う
     const byIdTop = new Map(marketsTop.map(x => [x.id, x]));
 
-    // もし不足があれば、そのidsだけ markets で1回取得（最小）
+    // 不足があれば、そのidsだけ markets で1回取得（最小）
     const missing = ids.filter(id => !byIdTop.has(id));
     if (missing.length){
       const mUrl = 'https://api.coingecko.com/api/v3/coins/markets'
@@ -647,9 +738,17 @@
     }
 
     trendingCoins = ids.map(id => byIdTop.get(id)).filter(Boolean);
+    writeCache(LS_KEYS.trendingIds, ids);
+  } catch (e){
+    if (trendingCoins && trendingCoins.length){
+      console.warn('trending fetch failed, using cache/top:', e);
+      return;
+    }
+    throw e;
   }
+}
 
-  function buildMarketCapTop20(){
+function buildMarketCapTop20(){
     return marketsTop
       .filter(c => typeof c.market_cap === "number")
       .filter(c => !isExcludedForMarketCap(c))   // ← 追加
@@ -1222,7 +1321,7 @@ function fetchSparkline1d(coinId){
 
     try{
       setStatus('markets取得中…');
-      await loadMarketsTop250();
+      await loadMarketsTop250(fromManualRefresh);
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
@@ -1234,7 +1333,7 @@ function fetchSparkline1d(coinId){
       }
 
       setStatus('トレンド取得中…');
-      await loadTrendingTop5();
+      await loadTrendingTop5(fromManualRefresh);
 
       setUpdated(new Date());
       setStatus(fromManualRefresh ? '更新しました' : '表示準備完了');
