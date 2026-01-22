@@ -897,51 +897,57 @@
     Object.keys(charts).forEach(k => delete charts[k]);
   }
 
-  function drawSparkline(canvasId, data){
+function drawSparkline(canvasId, data){
   const canvas = document.getElementById(canvasId);
   if(!canvas) return;
 
-  // データが少ない銘柄は、塗りつぶし（面）を無効化して見た目の誤解を避ける
-  if(!data || data.length < 2){
-    const ctx = canvas.getContext('2d');
+  // data を安全に（null/undefined/NaN混入で Chart.js が落ちて以降が描画されなくなるのを防ぐ）
+  const raw = Array.isArray(data) ? data : [];
+  const cleaned = raw.map(v => (typeof v === "number" && Number.isFinite(v)) ? v : null);
+  const finite = cleaned.filter(v => v !== null);
+
+  const ctx = canvas.getContext("2d");
+  if(finite.length < 2){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     return;
   }
-  const base = data[0];
-  const enableFill = data.length >= 10;
 
-  if(charts[canvasId]) charts[canvasId].destroy();
+  const base = finite[0];
+  const enableFill = finite.length >= 10;
 
-  charts[canvasId] = new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels: data.map((_, i) => i),
-      datasets: [{
-        data,
-        pointRadius: 0,
-        borderWidth: 2,
-        borderColor: '#e5e7eb',
-        tension: 0.25,
-        fill: enableFill ? {
-          target: { value: base },
-          above: 'rgba(30,136,229,0.22)',
-          below: 'rgba(211,47,47,0.22)'
-        } : false,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      plugins: { legend: { display:false }, tooltip:{ enabled:false } },
-      scales: {
-        x: { display:false, grid:{ display:false }, ticks:{ display:false } },
-        y: { display:false, grid:{ display:false }, ticks:{ display:false } }
+  try{
+    if(charts[canvasId]) charts[canvasId].destroy();
+    charts[canvasId] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: cleaned.map((_, i)=>i),
+        datasets: [{
+          data: cleaned,
+          borderColor: 'rgba(255,255,255,0.85)',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.25,
+          fill: enableFill ? { target: { value: base } } : false,
+          backgroundColor: enableFill ? 'rgba(59,130,246,0.18)' : 'rgba(0,0,0,0)',
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: { legend: { display:false }, tooltip: { enabled:false } },
+        scales: { x: { display:false }, y: { display:false } },
+        elements: { line: { capBezierPoints: true } }
       }
-    }
-  });
+    });
+  }catch(err){
+    // 1つの銘柄が落ちても他のチャート描画を止めない
+    console.warn("sparkline render failed:", canvasId, err);
+    try{ if(charts[canvasId]) charts[canvasId].destroy(); }catch{}
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
-
+}
 
 // --- Sparkline fallback (when sparkline_in_7d is missing) ---
 const __sparklineFallbackCache = new Map(); // coinId -> Promise<number[]>
