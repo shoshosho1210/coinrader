@@ -541,7 +541,7 @@ function setLastFetchAt(){
     const now = Date.now();
     if (now < lastRefreshAt + REFRESH_COOLDOWN_MS){
       tickRefreshButton();
-      setStatus('更新は少し待ってください');
+      setStatus('更新まで少しお待ちください');
       return;
     }
     await init(true);
@@ -658,7 +658,7 @@ function setLastFetchAt(){
   const lastFetchAt = getLastFetchAt();
   const canSkipNetwork = !forceNetwork && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
   if (canSkipNetwork && marketsTop.length){
-    setStatus('キャッシュ表示中（短時間再読み込み）');
+    setStatus('保存済みデータを表示中（自動で最新に切り替わります）');
     return;
   }
 
@@ -675,7 +675,7 @@ function setLastFetchAt(){
     // キャッシュがあるならそれで継続。無いならエラーを投げる
     if (marketsTop && marketsTop.length){
       console.warn('markets fetch failed, using cache:', e);
-      setStatus('通信失敗（キャッシュで表示）');
+      setStatus('最新データの取得が遅れています（保存済みデータを表示中）');
       return;
     }
     throw e;
@@ -890,7 +890,7 @@ function buildMarketCapTop20(){
 
     if (!marketsTop || !marketsTop.length){
       msg.className = 'msg err';
-      msg.textContent = '概況を計算できませんでした（marketsが空です）';
+      msg.textContent = '概況データを準備中です。';
       msg.style.display = 'block';
       return;
     }
@@ -1217,7 +1217,7 @@ function fetchSparkline1d(coinId){
     grid.innerHTML = '';
 
     if (!coins || !coins.length){
-      grid.innerHTML = '<div class="msg err">データを取得できませんでした（API制限・キー無効・通信失敗の可能性）</div>';
+      grid.innerHTML = '<div class="msg">最新データの取得が遅れています。時間をおいて再読み込みしてください。</div>';
       return;
     }
 
@@ -1325,10 +1325,10 @@ function fetchSparkline1d(coinId){
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
-        document.getElementById('grid-mcap').innerHTML = '<div class="msg err">marketsを取得できませんでした。APIキー無効／制限／通信失敗の可能性があります。</div>';
-        document.getElementById('grid-trend').innerHTML = '<div class="msg err">---</div>';
-        document.getElementById('grid-gainers').innerHTML = '<div class="msg err">---</div>';
-        document.getElementById('grid-volume').innerHTML = '<div class="msg err">---</div>';
+        document.getElementById('grid-mcap').innerHTML = '<div class="msg">データの取得が遅れています。時間をおいて再読み込みしてください。</div>';
+        document.getElementById('grid-trend').innerHTML = '<div class="msg">---</div>';
+        document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
+        document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
         return;
       }
 
@@ -1343,11 +1343,11 @@ function fetchSparkline1d(coinId){
 
     } catch(e){
       console.error('init failed:', e);
-      setStatus('エラー');
-      document.getElementById('grid-trend').innerHTML = '<div class="msg err">初期化に失敗しました（API制限・キー無効・通信失敗）。Consoleも確認してください。</div>';
-      document.getElementById('grid-gainers').innerHTML = '<div class="msg err">---</div>';
-      document.getElementById('grid-volume').innerHTML = '<div class="msg err">---</div>';
-      document.getElementById('grid-mcap').innerHTML = '<div class="msg err">---</div>';
+      setStatus('取得が一時的に不安定です');
+      document.getElementById('grid-trend').innerHTML = '<div class="msg">データの取得が一時的に不安定です。時間をおいて再読み込みしてください。</div>';
+      document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
+      document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
+      document.getElementById('grid-mcap').innerHTML = '<div class="msg">---</div>';
     }
   }
 
