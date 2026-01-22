@@ -273,6 +273,11 @@
     margin:0 auto 6px;
     padding:0 16px;
   }
+
+  /* sparkline (Chart.js) */
+  .sparkline{width:100% !important; height:64px !important; display:block; margin-top:10px;}
+  .card canvas.sparkline{max-width:100%;}
+
 </style>
 </head>
 <body>
@@ -1098,7 +1103,7 @@ function fetchSparkline1d(coinId){
             <div class="meta">${extraMeta}</div>
           </div>
         </div>
-        <canvas id="${canvasId}"></canvas>
+        <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
       `;
 
       grid.appendChild(card);
