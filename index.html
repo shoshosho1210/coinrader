@@ -37,6 +37,29 @@
 <meta name="twitter:description" content="トレンド/上昇率/出来高/時価総額をひと目で。">
 
 <style>
+  .hero{padding:28px 0 16px;}
+  .hero-inner{max-width:1100px;margin:0 auto;padding:0 16px;}
+  .hero-copy{padding:18px 16px;border:1px solid rgba(255,255,255,.10);border-radius:16px;
+    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));}
+  .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .badge{font-size:12px;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:rgba(229,231,235,.9)}
+  .hero-title{margin:8px 0 8px;font-size:28px;line-height:1.2;letter-spacing:.2px}
+  .hero-sub{margin:0 0 14px;color:rgba(229,231,235,.85);font-size:14px;line-height:1.7}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 6px}
+  .hero-note{margin:10px 0 0;color:rgba(229,231,235,.55);font-size:12px}
+
+  /* PC/スマホの改行制御 */
+  .br-sp{display:none}
+  .br-pc{display:inline}
+
+  @media (max-width: 640px){
+    .hero{padding:18px 0 10px}
+    .hero-title{font-size:22px}
+    .hero-cta .btn{width:100%;text-align:center}
+    .br-sp{display:inline}
+    .br-pc{display:none}
+  }
   *{ box-sizing:border-box; }
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -226,6 +249,46 @@
 </style>
 </head>
 <body>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-badges">
+          <span class="badge">毎日3分</span>
+          <span class="badge">相場の温度感</span>
+          <span class="badge">トレンド把握</span>
+        </div>
+
+        <h1 class="hero-title">
+          暗号資産の“いま”を<br class="br-sp">一画面で把握
+        </h1>
+
+        <p class="hero-sub">
+          時価総額・トレンド・急騰急落をまとめて表示。<br class="br-pc">
+          迷わず「今日の注目」からチェックできます。
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn primary"
+             href="#today"
+             data-cta="hero_today"
+             aria-label="今日の注目へ">
+            今日の注目を見る
+          </a>
+
+          <a class="btn"
+             href="#top20"
+             data-cta="hero_top20"
+             aria-label="主要コインTOPへ">
+            主要コインTOPへ
+          </a>
+        </div>
+
+        <p class="hero-note">
+          ※価格・ランキングは取得元APIの反映タイミングにより遅延する場合があります。
+        </p>
+      </div>
+    </div>
+  </section>
 
 <h1 class="brand">
   <a href="index.html" class="brandLink">
