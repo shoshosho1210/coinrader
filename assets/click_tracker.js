@@ -62,26 +62,26 @@
         return;
       }
 
-      // 2) 公式/PR（外部導線）
-      // - data-aff があるリンクは「取引所ボタン」
-      // - data-pr="1" のときだけ affiliate_click（PR）
-      // - それ以外は outbound_click（公式）
+      // 2) アフィ（外部導線）
       const aff = a.dataset.aff;
       if (aff) {
-        const placement = a.dataset.place || "";
         const isPr = a.dataset.pr === "1";
-        const eventName = isPr ? "affiliate_click" : "outbound_click";
 
-        fire(eventName, {
+        // /go/ や /go-pr/ が同一ドメインでもOK。遷移に負けないよう一旦止める（任意だが推奨）
+        if (!newTab) e.preventDefault();
+
+        fire("affiliate_click", {
           partner: aff,
-          placement: placement,
+          placement: a.dataset.place || "",
+          pr: isPr ? 1 : 0,
           link_url: href,
           link_domain: url.hostname,
-          pr: isPr ? 1 : 0,
+        }, function () {
+          if (!newTab) location.href = href;
         });
-
         return;
       }
+
 
       // 3) その他の外部リンク
       if (!sameOrigin) {
