@@ -15,9 +15,6 @@
     // 遷移が絡むクリックでも落ちにくい
     p.transport_type = "beacon";
 
-    // デバッグしたいなら、ここに置く（p定義後）
-    // console.log("FIRE", eventName, p);
-
     if (callback) {
       p.event_callback = callback;
       p.event_timeout = 800;
