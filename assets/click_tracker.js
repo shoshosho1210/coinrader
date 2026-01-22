@@ -5,6 +5,7 @@
   }
 
   function fire(eventName, params, callback) {
+    console.log("FIRE", eventName, p);
     if (!hasGtag()) {
       if (callback) callback();
       return;
