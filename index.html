@@ -112,6 +112,28 @@
     overflow:hidden;
     min-width:0;
   }
+  /* ===== Card height / bottom alignment (index grids) ===== */
+  .grid .card{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+  }
+
+  /* 上部（ヘッダー/テキスト）は上に寄せたまま */
+  .grid .card .card-header{
+    flex:0 0 auto;
+  }
+
+  /* スパークライン（カード内のcanvas）を常に下端に寄せる */
+  .grid .card canvas{
+    margin-top:auto !important;
+  }
+
+  /* 念のため：余白を統一（カード内の最後が詰まり過ぎないように） */
+  .grid .card canvas{
+    margin-bottom:2px;
+  }
+
   .card:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.5); }
 
   .card.up{ border-left:4px solid #1e88e5; }
