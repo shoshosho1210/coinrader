@@ -1,3 +1,4 @@
+// CLICK_TRACKER_VERSION: 20260122_01
 // assets/ga_click.js
 (function () {
   function hasGtag() {
