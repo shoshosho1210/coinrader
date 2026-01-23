@@ -493,6 +493,8 @@ const LS_KEYS = {
   markets: "cg_marketsTop250_jpy_v1",
   trendingIds: "cg_trendingTop5_ids_v1",
   trendingSnapshot: "cg_trendingTop5_snapshot_v1",
+  gainersSnapshot: "cg_gainersTop5_snapshot_v1",
+  volumeSnapshot: "cg_volumeTop5_snapshot_v1",
   lastFetch: "cg_last_fetch_at_v1"
 };
 
@@ -516,6 +518,38 @@ function getLastFetchAt(){
 }
 function setLastFetchAt(){
   lsSet(LS_KEYS.lastFetch, String(Date.now()));
+}
+
+
+function coinSnapshot(c){
+  if(!c) return null;
+  const sp = c.sparkline_in_7d && Array.isArray(c.sparkline_in_7d.price) ? c.sparkline_in_7d.price : null;
+  const spTrim = sp ? sp.filter(v => typeof v === 'number' && Number.isFinite(v)).slice(-240) : null;
+  return {
+    id: c.id,
+    name: c.name,
+    symbol: c.symbol,
+    image: c.image,
+    market_cap_rank: c.market_cap_rank ?? null,
+    current_price: (typeof c.current_price === 'number' && Number.isFinite(c.current_price)) ? c.current_price : null,
+    market_cap: (typeof c.market_cap === 'number' && Number.isFinite(c.market_cap)) ? c.market_cap : null,
+    total_volume: (typeof c.total_volume === 'number' && Number.isFinite(c.total_volume)) ? c.total_volume : null,
+    price_change_percentage_24h: (typeof c.price_change_percentage_24h === 'number' && Number.isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null,
+    sparkline_in_7d: spTrim ? { price: spTrim } : undefined,
+  };
+}
+
+function writeSnapshot(key, coins){
+  try{
+    const snap = (coins || []).slice(0,5).map(coinSnapshot).filter(Boolean);
+    writeCache(key, snap);
+  }catch(e){}
+}
+
+function readSnapshot(key){
+  const cached = readCache(key);
+  const snap = (cached && Array.isArray(cached.data)) ? cached.data : null;
+  return Array.isArray(snap) ? snap : [];
 }
 
 
@@ -889,6 +923,25 @@ function buildMarketCapTop20(){
       .sort((a,b) => b.total_volume - a.total_volume)
       .slice(0,5);
   }
+function getGainersTop5(){
+  if (marketsTop && marketsTop.length){
+    const coins = buildGainersTop5();
+    writeSnapshot(LS_KEYS.gainersSnapshot, coins);
+    return coins;
+  }
+  return readSnapshot(LS_KEYS.gainersSnapshot);
+}
+
+function getVolumeTop5(){
+  if (marketsTop && marketsTop.length){
+    const coins = buildVolumeTop5();
+    writeSnapshot(LS_KEYS.volumeSnapshot, coins);
+    return coins;
+  }
+  return readSnapshot(LS_KEYS.volumeSnapshot);
+}
+
+
 
   // ============ Market Overview ============
   const STABLE_IDS = new Set(['tether','usd-coin','dai','first-digital-usd','true-usd','ethena-usde']);
@@ -1467,8 +1520,8 @@ function fetchSparkline1d(coinId){
   function renderAll(){
     clearCharts();
     renderInto('grid-trend', trendingCoins, 'trend', 'trend');
-    renderInto('grid-gainers', buildGainersTop5(), 'gainers', 'gainers');
-    renderInto('grid-volume', buildVolumeTop5(), 'volume', 'volume');
+    renderInto('grid-gainers', getGainersTop5(), 'gainers', 'gainers');
+    renderInto('grid-volume', getVolumeTop5(), 'volume', 'volume');
     renderInto('grid-mcap', buildMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
   }
