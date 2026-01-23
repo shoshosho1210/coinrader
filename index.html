@@ -1340,7 +1340,16 @@ function getAltVolumeTop5(){
     const o = buildOverview();
 
     // Breadth
-    document.getElementById('kpiBreadth').textContent = `上昇 ${o.up} / 下落 ${o.down}`;
+    const denom = (o.up + o.down + o.flat) || 1;
+    const upPct = (o.up / denom) * 100;
+    const flatPct = (o.flat / denom) * 100;
+    const downPct = (o.down / denom) * 100;
+
+    const breadthEl = document.getElementById('kpiBreadth');
+    if (breadthEl){
+      breadthEl.textContent = `上昇 ${o.up} / 下落 ${o.down}（上昇率 ${upPct.toFixed(1)}%）`;
+    }
+
     const breadthSub = document.getElementById('kpiBreadthSub');
     if (breadthSub){
       const baseTxt = `対象: 上位250（取得 ${o.n}）のうち、24h騰落率が取得できた ${o.chgN} 銘柄を集計`;
@@ -1348,10 +1357,6 @@ function getAltVolumeTop5(){
       breadthSub.textContent = `${baseTxt}${flatTxt}`;
     }
 
-    const denom = (o.up + o.down + o.flat) || 1;
-    const upPct = (o.up / denom) * 100;
-    const flatPct = (o.flat / denom) * 100;
-    const downPct = (o.down / denom) * 100;
     const barUp = document.getElementById('barUp');
     const barFlat = document.getElementById('barFlat');
     const barDown = document.getElementById('barDown');
