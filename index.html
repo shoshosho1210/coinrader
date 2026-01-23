@@ -110,7 +110,24 @@
     .grid{ grid-template-columns: repeat(5, minmax(0, 1fr)); }
   }
 
-  /* responsive columns (uniform across sections) */
+  
+  /* ===== Smooth auto-refresh (keep cards visible) ===== */
+  .grid.refreshing{ position:relative; }
+  .grid.refreshing::after{
+    content:"更新中…";
+    position:absolute;
+    top:10px; right:12px;
+    font-size:11px;
+    color:rgba(229,231,235,.85);
+    background:rgba(17,24,39,.65);
+    border:1px solid rgba(148,163,184,.25);
+    padding:2px 8px;
+    border-radius:999px;
+    pointer-events:none;
+    z-index:3;
+  }
+  .grid.refreshing .card{ opacity:.96; }
+/* responsive columns (uniform across sections) */
   .card{
     position:relative; background:#111827; border-radius:12px; padding:10px 12px;
     box-shadow:0 6px 18px rgba(0,0,0,0.45); cursor:pointer;
@@ -1862,10 +1879,28 @@ function fetchSparkline1d(coinId){
     const om = document.getElementById('overviewMsg');
     if (om){ om.style.display='none'; om.textContent=''; }
   }
+  // ===== Refresh UI (auto/manual refresh without flicker) =====
+  let HAS_RENDERED_ONCE = false;
+
+  function setRefreshingAll(on){
+    const ids = ['grid-trend','grid-gainers','grid-volume','grid-alt-volume','grid-mcap'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('refreshing', !!on);
+    });
+  }
+
+
 
   // ============ Boot ============
   async function init(fromManualRefresh=false){
-    setLoadingAll();
+    const firstLoad = !HAS_RENDERED_ONCE;
+    if (firstLoad) {
+      setLoadingAll();
+    } else {
+      setRefreshingAll(true);
+      if (!IN_AUTO_REFRESH) setStatus('更新中…');
+    }
 
     try{
       setStatus('markets取得中…');
@@ -1886,16 +1921,23 @@ function fetchSparkline1d(coinId){
       setUpdated();
       if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新しました' : '表示準備完了');
       renderAll();
+      HAS_RENDERED_ONCE = true;
 
       markRefreshed();
 
     } catch(e){
       console.error('init failed:', e);
       setStatus('取得が一時的に不安定です');
-      document.getElementById('grid-trend').innerHTML = '<div class="msg">データの取得が一時的に不安定です。時間をおいて再読み込みしてください。</div>';
-      document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
-      document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
-      document.getElementById('grid-mcap').innerHTML = '<div class="msg">---</div>';
+
+      // 初回ロード時だけ「---」に置き換える（更新時は直前の表示を維持してチラつきを防ぐ）
+      if (firstLoad){
+        document.getElementById('grid-trend').innerHTML = '<div class="msg">データの取得が一時的に不安定です。時間をおいて再読み込みしてください。</div>';
+        document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
+        document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
+        document.getElementById('grid-mcap').innerHTML = '<div class="msg">---</div>';
+      }
+    } finally {
+      if (!firstLoad) setRefreshingAll(false);
     }
   }
 
