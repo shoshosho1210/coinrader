@@ -478,6 +478,11 @@
           <canvas class="kpi-canvas" id="avgLine"></canvas>
         </div>
         <div class="kpi">
+          <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
+          <div class="kpi-value" id="kpiMcap24h">-</div>
+          <div class="kpi-sub">推定: 各銘柄の現在時価総額を24h騰落率で逆算して前日を推定し、全体の増減（率/差額）を算出。</div>
+        </div>
+        <div class="kpi">
           <div class="kpi-label">上位250 時価総額合計（推定7d推移 / JPY）</div>
           <div class="kpi-value" id="kpiTotalMcap">-</div>
           <div class="kpi-sub">推定: 各銘柄の現在の時価総額×(各時点価格/現在価格) を合算（供給一定の近似）。</div>
@@ -772,6 +777,14 @@ async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
   function yen(n){
     if (typeof n !== 'number') return '-';
     return n.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
+  }
+
+  function yenSigned(n){
+    if (typeof n !== 'number' || !isFinite(n)) return '-';
+    const sign = n > 0 ? '+' : (n < 0 ? '-' : '');
+    const abs = Math.abs(n);
+    const cur = abs.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
+    return sign + cur;
   }
 
   
@@ -1203,6 +1216,10 @@ function getAltVolumeTop5(){
     let totalMcap = 0;
     let totalVol = 0;
 
+    // 24h market cap change (estimate): reverse-calc yesterday's market cap from price change
+    // Assumption: circulating supply is roughly constant over 24h.
+    let prevMcapEst = 0;
+
     let up = 0, down = 0, flat = 0;
     let sumChg = 0, chgN = 0;
 
@@ -1219,11 +1236,18 @@ function getAltVolumeTop5(){
 
       const chg = c.price_change_percentage_24h;
       if (typeof chg === 'number' && isFinite(chg)){
+        const denom = 1 + (chg / 100);
+        if (denom > 0 && isFinite(denom)) prevMcapEst += (mc / denom);
+        else prevMcapEst += mc;
+
         if (chg > 0) up++;
         else if (chg < 0) down++;
         else flat++;
         sumChg += chg;
         chgN++;
+      } else {
+        // fallback: if 24h change is missing, keep it neutral (no change)
+        prevMcapEst += mc;
       }
 
       if (c.id === 'bitcoin'){ btc += mc; btcV += vol; }
@@ -1238,7 +1262,10 @@ function getAltVolumeTop5(){
     const values = [btc, eth, stable, Math.max(0, other)];
     const volValues = [btcV, ethV, stableV, Math.max(0, otherV)];
 
-    return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, chgN, n };
+    const mcap24hPct = (prevMcapEst > 0) ? ((totalMcap / prevMcapEst) - 1) * 100 : null;
+    const mcap24hDelta = (prevMcapEst > 0) ? (totalMcap - prevMcapEst) : null;
+
+    return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, chgN, n, mcap24hPct, mcap24hDelta };
   }
 
   function drawDonut(canvasId, labels, values){
@@ -1334,6 +1361,14 @@ function getAltVolumeTop5(){
     // Totals
     document.getElementById('kpiTotalMcap').textContent = yen(o.totalMcap);
     document.getElementById('kpiTotalVol').textContent = yen(o.totalVol);
+
+    // Market cap 24h change (estimate)
+    const mcap24hEl = document.getElementById('kpiMcap24h');
+    if (mcap24hEl){
+      const pct = fmtPct(o.mcap24hPct);
+      const delta = yenSigned(o.mcap24hDelta);
+      mcap24hEl.textContent = `${pct}（${delta}）`;
+    }
 
     // Composition bars (market cap)
     const totalM = (o.values || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
