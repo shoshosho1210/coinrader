@@ -287,6 +287,19 @@
 
 
   /* --- Header (A案: ダッシュボードUI) --- */
+  /* ===== A案：ヘッダー（ロゴ部分）だけ固定 ===== */
+  .appHeader{
+    position: sticky;
+    top: 12px;          /* bodyのpadding:12pxに合わせる */
+    z-index: 1000;      /* カードやチャートより前面に */
+  }
+
+  /* 固定時に下が透けないように（既存の背景に上書きでOK） */
+  .appHeader-inner{
+    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.92);
+  }
+
   .appHeader{ margin: 0 4px 12px; }
   .appHeader-inner{
     display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -307,6 +320,8 @@
     .appHeader-left{ flex-wrap:wrap; }
     .appHeader-right{ width:100%; justify-content:flex-start; }
   }
+  /* セクション見出しが固定ヘッダーに隠れない対策 */
+  section { scroll-margin-top: 110px; }
 </style>
 </head>
 <body>
