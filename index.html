@@ -714,10 +714,14 @@ function setLastFetchAt(){
 
   try{
     const trendJson = await fetchJsonRetry(trendUrl, {retries:2});
-    const ids = (trendJson.coins || [])
-      .map(c => c.item?.id)
+    const trendItems = (trendJson.coins || [])
+      .map(c => c.item)
       .filter(Boolean)
       .slice(0,5);
+
+    const ids = trendItems
+      .map(it => it.id)
+      .filter(Boolean);
 
     if (!ids.length){ trendingCoins = []; return; }
 
@@ -737,7 +741,62 @@ function setLastFetchAt(){
       for (const x of extraArr) byIdTop.set(x.id, x);
     }
 
-    trendingCoins = ids.map(id => byIdTop.get(id)).filter(Boolean);
+    // それでも markets が取れないIDは、trendingレスポンスの item/data から最小オブジェクトを作って表示する
+    const fallbackById = new Map(trendItems.map(it => [it.id, it]));
+    trendingCoins = ids.map(id => {
+      const m = byIdTop.get(id);
+      if (m) return m;
+
+      const it = fallbackById.get(id);
+      if (!it) return null;
+
+      // trending の data は形式が変わることがあるので、防御的に拾う
+      const data = it.data || {};
+      const spark = Array.isArray(data.sparkline) ? data.sparkline
+        : (data.sparkline_in_7d && Array.isArray(data.sparkline_in_7d.price) ? data.sparkline_in_7d.price : null);
+
+      // price_change_percentage_24h がオブジェクトの場合は jpy を優先、なければ最初の数値を拾う
+      let pch = null;
+      const pchAny = data.price_change_percentage_24h;
+      if (typeof pchAny === 'number') pch = pchAny;
+      else if (pchAny && typeof pchAny === 'object'){
+        if (typeof pchAny.jpy === 'number') pch = pchAny.jpy;
+        else {
+          for (const v of Object.values(pchAny)){
+            if (typeof v === 'number'){ pch = v; break; }
+          }
+        }
+      }
+
+      // price / volume は通貨別オブジェクトのことがある（jpy優先）
+      const pickNum = (x) => {
+        if (typeof x === 'number') return x;
+        if (x && typeof x === 'object'){
+          if (typeof x.jpy === 'number') return x.jpy;
+          for (const v of Object.values(x)){
+            if (typeof v === 'number') return v;
+          }
+        }
+        return null;
+      };
+
+      const price = pickNum(data.price);
+      const vol = pickNum(data.total_volume);
+
+      return {
+        id,
+        name: it.name || id,
+        symbol: it.symbol || '',
+        image: it.small || it.thumb || '',
+        market_cap_rank: it.market_cap_rank || null,
+        current_price: price,
+        total_volume: vol,
+        price_change_percentage_24h: pch,
+        // Chart.js の描画系が期待する形に合わせる
+        sparkline_in_7d: spark ? { price: spark } : undefined,
+      };
+    }).filter(Boolean);
+
     writeCache(LS_KEYS.trendingIds, ids);
   } catch (e){
     if (trendingCoins && trendingCoins.length){
