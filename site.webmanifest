@@ -1,0 +1,14 @@
+{
+  "name": "CoinRader",
+  "short_name": "CoinRader",
+  "description": "暗号資産マーケットダッシュボード（時価総額/トレンド/上昇率/出来高）",
+  "start_url": "./start_headerA_footerA.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "./assets/icons/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./assets/icons/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
