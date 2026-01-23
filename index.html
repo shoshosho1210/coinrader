@@ -1243,6 +1243,7 @@ function getAltVolumeTop5(){
 
     let up = 0, down = 0, flat = 0;
     let sumChg = 0, chgN = 0;
+    let chgArr = [];
 
     // Composition (market cap)
     let btc = 0, eth = 0, stable = 0, other = 0;
@@ -1266,6 +1267,7 @@ function getAltVolumeTop5(){
         else flat++;
         sumChg += chg;
         chgN++;
+        chgArr.push(chg);
       } else {
         // fallback: if 24h change is missing, keep it neutral (no change)
         prevMcapEst += mc;
@@ -1279,6 +1281,13 @@ function getAltVolumeTop5(){
 
     const avgChg = chgN ? (sumChg / chgN) : null;
 
+    let medianChg = null;
+    if (chgArr.length){
+      const s = chgArr.slice().sort((a,b)=>a-b);
+      const mid = Math.floor(s.length / 2);
+      medianChg = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+    }
+
     const labels = ['BTC','ETH','ステーブル','Others'];
     const values = [btc, eth, stable, Math.max(0, other)];
     const volValues = [btcV, ethV, stableV, Math.max(0, otherV)];
@@ -1286,7 +1295,7 @@ function getAltVolumeTop5(){
     const mcap24hPct = (prevMcapEst > 0) ? ((totalMcap / prevMcapEst) - 1) * 100 : null;
     const mcap24hDelta = (prevMcapEst > 0) ? (totalMcap - prevMcapEst) : null;
 
-    return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, chgN, n, mcap24hPct, mcap24hDelta };
+    return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, medianChg, chgN, n, mcap24hPct, mcap24hDelta };
   }
 
   function drawDonut(canvasId, labels, values){
@@ -1367,7 +1376,10 @@ function getAltVolumeTop5(){
     if (barDown) barDown.style.width = `${downPct}%`;
 
     // Average change
-    document.getElementById('kpiAvgChange').textContent = fmtPct(o.avgChg);
+    const avgEl = document.getElementById('kpiAvgChange');
+    if (avgEl){
+      avgEl.textContent = `平均 ${fmtPct(o.avgChg)} / 中央値 ${fmtPct(o.medianChg)}`;
+    }
     const avgFill = document.getElementById('avgFill');
     if (avgFill){
       const maxRange = 5; // ±5% を目安に可視化（超過はクリップ）
