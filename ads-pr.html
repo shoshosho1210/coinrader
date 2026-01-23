@@ -50,6 +50,35 @@
     align-self:flex-start;   /* 任意：ボタンを伸ばさない */
   }
   .aff-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  /* Header (compact, dashboard-like) */
+  .pageHeader{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:10px 12px; margin:0 0 14px 0;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+  }
+  .pageHeader-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+  .headerLink{
+    color:#cbd5e1; text-decoration:none; font-size:13px;
+    padding:8px 10px; border-radius:10px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.03);
+  }
+  .headerLink:hover{ filter:brightness(1.15); }
+  .headerCta{
+    color:#0b1220; text-decoration:none; font-size:13px; font-weight:700;
+    padding:8px 12px; border-radius:10px;
+    background:linear-gradient(180deg,#60a5fa,#3b82f6);
+    border:1px solid rgba(59,130,246,.45);
+  }
+  .headerCta:hover{ filter:brightness(1.05); }
+  @media (max-width: 520px){
+    .pageHeader{ align-items:flex-start; }
+    .pageHeader-right{ width:100%; justify-content:flex-start; }
+  }
+
 </style>
 
 
@@ -57,10 +86,15 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div class="brand"><a class="brandLink" href="index.html"><img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader"></a></div>
-      <a class="back" href="index.html">ダッシュボードへ戻る</a>
-    </div>
+    <header class="pageHeader" role="banner">
+      <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
+      </a>
+      <div class="pageHeader-right">
+        <a class="headerLink" href="index.html">ダッシュボード</a>
+        <a class="headerCta" href="start.html" data-ga="cta_start_header">始め方</a>
+      </div>
+    </header>
     <div class="card">
       <h1>広告・PR表記</h1>
 <p>当サイトでは、第三者配信の広告サービスやアフィリエイトプログラムを利用し、広告・紹介料を得る場合があります。</p>
