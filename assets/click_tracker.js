@@ -1,26 +1,38 @@
-// CLICK_TRACKER_VERSION: 20260122_01
-// assets/ga_click.js
+// CLICK_TRACKER_VERSION: 20260122_02
 (function () {
   function hasGtag() {
     return typeof window.gtag === "function";
   }
 
+  function once(fn) {
+    let done = false;
+    return function () {
+      if (done) return;
+      done = true;
+      try { fn && fn(); } catch (_) {}
+    };
+  }
+
   function fire(eventName, params, callback) {
+    const cb = callback ? once(callback) : null;
+
     if (!hasGtag()) {
-      if (callback) callback();
+      if (cb) cb();
       return;
     }
-    const p = params || {};
 
-    // 遷移が絡むクリックでも落ちにくい
+    const p = params || {};
     p.transport_type = "beacon";
 
-    if (callback) {
-      p.event_callback = callback;
+    if (cb) {
+      p.event_callback = cb;
       p.event_timeout = 800;
     }
+
     window.gtag("event", eventName, p);
-    if (callback) setTimeout(callback, 850);
+
+    // 保険（event_callbackが呼ばれない環境向け）※必ず1回だけ
+    if (cb) setTimeout(cb, 850);
   }
 
   function isNewTabClick(a, e) {
@@ -51,8 +63,7 @@
       // 1) CTA（サイト内導線）
       const ctaId = a.dataset.ga || a.dataset.cta;
       if (ctaId) {
-        // ★重要: 履歴を壊さないため、同一オリジンの通常クリックは遷移を止めない
-        // new tab の場合も同様に「送るだけ」
+        // ★重要: 同一オリジンの通常クリックは遷移を止めない（履歴が安定）
         fire("cta_click", {
           cta_id: ctaId,
           placement: a.dataset.placement || a.dataset.place || "",
@@ -62,30 +73,34 @@
           link_domain: url.hostname,
         });
 
-        // 外部に data-ga が付いているケースは稀だが、もしあるなら従来通り止めてもよい。
-        // ただし現状の症状は「内部遷移」で起きているので、まずは止めない運用が安全。
+        // 外部CTAを同一タブで踏ませる設計の場合だけ止める（基本は止めないでOK）
+        // if (!sameOrigin && !newTab) { ... } ←必要ならここに入れる
         return;
+      }
 
       // 2) アフィ（外部導線）
       const aff = a.dataset.aff;
       if (aff) {
         const isPr = a.dataset.pr === "1";
 
-        // /go/ や /go-pr/ が同一ドメインでもOK。遷移に負けないよう一旦止める（任意だが推奨）
+        // 同一タブで外へ飛ばす場合は止めてOK（計測優先）
         if (!newTab) e.preventDefault();
 
-        fire("affiliate_click", {
-          partner: aff,
-          placement: a.dataset.place || "",
-          pr: isPr ? 1 : 0,
-          link_url: href,
-          link_domain: url.hostname,
-        }, function () {
-          if (!newTab) location.href = href;
-        });
+        fire(
+          "affiliate_click",
+          {
+            partner: aff,
+            placement: a.dataset.place || "",
+            pr: isPr ? 1 : 0,
+            link_url: href,
+            link_domain: url.hostname,
+          },
+          function () {
+            if (!newTab) location.href = href;
+          }
+        );
         return;
       }
-
 
       // 3) その他の外部リンク
       if (!sameOrigin) {
