@@ -501,10 +501,7 @@
     }
     const dt = new Date(ts);
     const ago = formatAgo(ts);
-    const at = getLastAttemptAt();
-    const atStr = at ? new Date(at).toLocaleTimeString('ja-JP', {hour12:false}) : '';
-    const extra = (at && at !== ts) ? ` / 試行:${atStr}` : '';
-    el.textContent = '更新: ' + dt.toLocaleString('ja-JP', { hour12:false }) + (ago ? `（${ago}）` : '') + extra;
+    el.textContent = '更新: ' + dt.toLocaleString('ja-JP', { hour12:false }) + (ago ? `（${ago}）` : '');
   }
 
   function setUpdated(){
@@ -521,13 +518,48 @@
   // --- Auto refresh (every 3 min when tab is visible) ---
   const AUTO_REFRESH_MS = 3 * 60 * 1000;
   function startAutoRefresh(){
-    setInterval(() => {
-      try{
-        if (document.visibilityState !== 'visible') return;
-        // 3分ごとに更新。refreshData側で60sクールダウンも効く
-        refreshData();
-      }catch(e){}
-    }, AUTO_REFRESH_MS);
+    let autoMs = 3 * 60 * 1000; // base 3min
+    let failStreak = 0;
+
+    const schedule = (delay) => {
+      setTimeout(async () => {
+        try{
+          if (document.visibilityState !== 'visible'){
+            schedule(autoMs);
+            return;
+          }
+
+          IN_AUTO_REFRESH = true;
+          await refreshData();
+          IN_AUTO_REFRESH = false;
+
+          if (LAST_HTTP_STATUS === 200){
+            failStreak = 0;
+            autoMs = 3 * 60 * 1000;
+          } else if (LAST_HTTP_STATUS === 429 || LAST_HTTP_STATUS === 403){
+            failStreak++;
+            autoMs = Math.min(30 * 60 * 1000, 5 * 60 * 1000 * (2 ** Math.min(failStreak-1, 3))); // 5,10,20,30min
+            setStatus('取得が混み合っています（保存済みデータを表示中）');
+          } else if (LAST_HTTP_STATUS && LAST_HTTP_STATUS !== 200){
+            failStreak++;
+            autoMs = Math.min(15 * 60 * 1000, 3 * 60 * 1000 * (2 ** Math.min(failStreak, 3))); // 3,6,12,15min
+            setStatus('最新データの取得が遅れています（保存済みデータを表示中）');
+          } else {
+            failStreak = 0;
+            autoMs = 3 * 60 * 1000;
+          }
+        }catch(e){
+          IN_AUTO_REFRESH = false;
+          failStreak++;
+          autoMs = Math.min(15 * 60 * 1000, 3 * 60 * 1000 * (2 ** Math.min(failStreak, 3)));
+          setStatus('最新データの取得が遅れています（保存済みデータを表示中）');
+        }finally{
+          schedule(autoMs);
+        }
+      }, delay);
+    };
+
+    schedule(autoMs);
   }
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
@@ -664,7 +696,10 @@ function readSnapshot(key){
   }
 
   // 429/5xx を少しだけリトライ（Retry-After対応）
-  async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
+  let LAST_HTTP_STATUS = 0;
+let LAST_FETCH_ERROR = '';
+let IN_AUTO_REFRESH = false;
+async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
     let lastErr = null;
     for (let attempt=0; attempt<=retries; attempt++){
       try{
@@ -1650,7 +1685,7 @@ function fetchSparkline1d(coinId){
       await loadTrendingTop5(fromManualRefresh);
 
       setUpdated();
-      setStatus(fromManualRefresh ? '更新しました' : '表示準備完了');
+      if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新しました' : '表示準備完了');
       renderAll();
 
       markRefreshed();
