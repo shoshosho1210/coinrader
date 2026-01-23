@@ -1747,6 +1747,86 @@ function fetchSparkline1d(coinId){
   })();
 </script>
 
+<script>
+/* CTA click enrichment (index only): adds placement/partner/pr/link_url while avoiding double count */
+(function(){
+  function hasGtag(){ return typeof window.gtag === 'function'; }
+
+  function isNewTabClick(a, e){
+    return (
+      a.target === '_blank' ||
+      e.metaKey || e.ctrlKey || e.shiftKey ||
+      e.button === 1
+    );
+  }
+
+  function fireCta(params, cb){
+    if (!hasGtag()){
+      if (cb) cb();
+      return;
+    }
+    const p = Object.assign({ transport_type: 'beacon' }, params || {});
+    if (cb){
+      p.event_callback = cb;
+      p.event_timeout = 800;
+    }
+    window.gtag('event', 'cta_click', p);
+    if (cb) setTimeout(cb, 850);
+  }
+
+  function smoothScrollToId(id){
+    const el = document.getElementById(id);
+    if (!el) return false;
+    try{
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }catch(_){
+      el.scrollIntoView(true);
+    }
+    return true;
+  }
+
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a');
+    if (!a || !a.href) return;
+
+    const ctaId = a.dataset.ga || a.dataset.cta;
+    if (!ctaId) return;
+
+    const rawHref = (a.getAttribute('href') || '').trim();
+    const placement = a.dataset.placement || a.dataset.place || '';
+    const partner = a.dataset.partner || '';
+    const pr = Number(a.dataset.pr) || 0;
+    const linkUrl = a.href;
+
+    const newTab = isNewTabClick(a, e);
+
+    // Stop assets/click_tracker.js from also firing cta_click
+    e.stopImmediatePropagation();
+
+    // In-page tabs: keep smooth scroll
+    if (rawHref.startsWith('#')){
+      e.preventDefault();
+      fireCta({ cta_id: ctaId, placement, partner, pr, link_url: linkUrl });
+      const id = rawHref.slice(1);
+      if (!smoothScrollToId(id)){
+        location.hash = rawHref;
+      }
+      return;
+    }
+
+    // Normal navigation
+    if (!newTab){
+      e.preventDefault();
+      fireCta({ cta_id: ctaId, placement, partner, pr, link_url: linkUrl }, function(){
+        location.href = linkUrl;
+      });
+    }else{
+      fireCta({ cta_id: ctaId, placement, partner, pr, link_url: linkUrl });
+    }
+  }, true);
+})();
+</script>
+
 <script src="/assets/click_tracker.js" defer></script>
 
 <footer class="site-footer">
