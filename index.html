@@ -1468,8 +1468,14 @@ function getAltVolumeTop5(){
         const lastUp = upArr[upArr.length - 1];
         const lastDown = downArr[downArr.length - 1];
         const lastAvg = avgArr[avgArr.length - 1];
-        document.getElementById('kpiBreadth').textContent = `上昇 ${lastUp} / 下落 ${lastDown}`;
-        document.getElementById('kpiAvgChange').textContent = fmtPct(lastAvg);
+        const kpiB = document.getElementById('kpiBreadth');
+        if (kpiB){
+          const denom = (Number(lastUp)||0) + (Number(lastDown)||0);
+          const upPct = denom ? ((Number(lastUp)||0) / denom) * 100 : 0;
+          kpiB.textContent = `上昇 ${lastUp} / 下落 ${lastDown}（上昇率 ${upPct.toFixed(1)}%）`;
+        }
+        const kpiAvg = document.getElementById('kpiAvgChange');
+        if (kpiAvg) kpiAvg.textContent = fmtPct(lastAvg);
 
 
         // Market cap estimate (normalize to last for readability)
