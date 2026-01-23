@@ -209,6 +209,7 @@
   .kpi-canvas.tall{ height:90px !important; }
 
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
+  .kpi-meta{ margin-top:6px; font-size:12px; color:#d1d5db; }
 
   .kpi-legend{ margin-top:6px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:11px; color:#9ca3af; }
   .kpi-legend .item{ display:inline-flex; align-items:center; gap:6px; }
@@ -512,6 +513,7 @@
         <div class="kpi">
           <div class="kpi-label">上位250 出来高合計（推定7d推移 / JPY）</div>
           <div class="kpi-value" id="kpiTotalVol">-</div>
+          <div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
           <div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。正確な出来高の推移には別データソースが必要です。</div>
           <canvas class="kpi-canvas" id="volLine"></canvas>
         </div>
@@ -1420,6 +1422,9 @@ function getAltVolumeTop5(){
     // Composition bars (volume)
     const totalV = (o.volValues || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
     const vPct = (o.volValues || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalV)*100);
+    const altRatio = ((((o.volValues || [])[3] || 0) * 1) / totalV) * 100;
+    const elAltRatio = document.getElementById('kpiAltVolRatio');
+    if (elAltRatio) elAltRatio.textContent = `出来高（アルト）比率: ${isFinite(altRatio) ? altRatio.toFixed(1) : '-'}%`;
     setW('volSegBtc', vPct[0] || 0);
     setW('volSegEth', vPct[1] || 0);
     setW('volSegStable', vPct[2] || 0);
