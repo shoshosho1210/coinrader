@@ -694,8 +694,10 @@ function setLastFetchAt(){
   }
 
   const cached = readCache(LS_KEYS.trendingIds);
-  if (cached && Array.isArray(cached.data) && cached.data.length){
-    setFromIds(cached.data);
+  const cachedIds = (cached && Array.isArray(cached.data)) ? cached.data : null;
+  const cachedIdsCount = cachedIds ? cachedIds.length : 0;
+  if (cachedIdsCount){
+    setFromIds(cachedIds);
   }
 
   // markets が取れていない場合は無理に進めない
@@ -708,7 +710,13 @@ function setLastFetchAt(){
   const now = Date.now();
   const lastFetchAt = getLastFetchAt();
   const canSkipNetwork = !forceNetwork && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
-  if (canSkipNetwork && trendingCoins.length){
+
+  // キャッシュIDsから組み立てた結果が5件未満（＝top250に無い銘柄が混ざっている等）の場合は、
+  // クールダウン中でもネット取得を行って欠けを埋める
+  const wantCount = Math.min(5, cachedIdsCount || 5);
+  const hasAllCached = trendingCoins.length >= wantCount;
+
+  if (canSkipNetwork && hasAllCached){
     return;
   }
 
