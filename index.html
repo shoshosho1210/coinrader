@@ -501,7 +501,10 @@
     }
     const dt = new Date(ts);
     const ago = formatAgo(ts);
-    el.textContent = '更新: ' + dt.toLocaleString('ja-JP', { hour12:false }) + (ago ? `（${ago}）` : '');
+    const at = getLastAttemptAt();
+    const atStr = at ? new Date(at).toLocaleTimeString('ja-JP', {hour12:false}) : '';
+    const extra = (at && at !== ts) ? ` / 試行:${atStr}` : '';
+    el.textContent = '更新: ' + dt.toLocaleString('ja-JP', { hour12:false }) + (ago ? `（${ago}）` : '') + extra;
   }
 
   function setUpdated(){
@@ -539,7 +542,8 @@ const LS_KEYS = {
   gainersSnapshot: "cg_gainersTop5_snapshot_v1",
   volumeSnapshot: "cg_volumeTop5_snapshot_v1",
   mcapSnapshot: "cg_mcapTop20_snapshot_v1",
-  lastFetch: "cg_last_fetch_at_v1"
+  lastFetch: "cg_last_fetch_at_v1",
+  lastAttempt: "cg_last_attempt_at_v1"
 };
 
 function lsGet(key){
@@ -562,6 +566,15 @@ function getLastFetchAt(){
 }
 function setLastFetchAt(){
   lsSet(LS_KEYS.lastFetch, String(Date.now()));
+  try{ renderUpdatedPill(); }catch(e){}
+}
+
+function getLastAttemptAt(){
+  const v = Number(lsGet(LS_KEYS.lastAttempt) || "0");
+  return Number.isFinite(v) ? v : 0;
+}
+function setLastAttemptAt(){
+  lsSet(LS_KEYS.lastAttempt, String(Date.now()));
   try{ renderUpdatedPill(); }catch(e){}
 }
 
@@ -624,6 +637,7 @@ function readSnapshot(key){
       setStatus('更新まで少しお待ちください');
       return;
     }
+    setLastAttemptAt();
     await init(true);
   }
 
@@ -1656,6 +1670,7 @@ function fetchSparkline1d(coinId){
     tickRefreshButton();
     startUpdatedTicker();
     startAutoRefresh();
+    setLastAttemptAt();
     init(false);
   })();
 </script>
