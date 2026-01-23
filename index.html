@@ -505,6 +505,14 @@
         </div>
 
         <div class="kpi">
+          <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
+          <div class="kpi-value" id="kpiSentiment">-</div>
+          <div class="kpi-meta" id="kpiSentimentMeta">-</div>
+          <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
+          <canvas class="kpi-canvas" id="sentLine"></canvas>
+        </div>
+
+        <div class="kpi">
           <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
           <div class="kpi-value" id="kpiMcap24h">-</div>
           <div class="kpi-sub">推定: 各銘柄の現在時価総額を24h騰落率で逆算して前日を推定し、全体の増減（率/差額）を算出。</div>
@@ -1518,6 +1526,7 @@ function getAltVolumeTop5(){
 
 
         
+        let lastRsiVal = null;
         // BTC RSI (14) from BTC sparkline (7d)
         try {
           const btc = marketsTop.find(c => c && c.id === 'bitcoin');
@@ -1525,6 +1534,7 @@ function getAltVolumeTop5(){
           if (btcPrices && btcPrices.length >= 20) {
             const rsiSeries = computeRSISeries(btcPrices, 14);
             const last = rsiSeries[rsiSeries.length - 1];
+            lastRsiVal = last;
             const rsiEl = document.getElementById('kpiRsi');
             if (rsiEl && last != null && isFinite(last)) {
               let tag = '中立';
@@ -1544,7 +1554,90 @@ function getAltVolumeTop5(){
               fill: false
             }], { yMin: 0, yMax: 100 });
           }
-        } catch(e) { console.warn('RSI failed', e); }// Market cap estimate (normalize to last for readability)
+        } catch(e) { console.warn('RSI failed', e); }
+
+        // CoinRader Sentiment (0-100) — top250ベース
+        try{
+          const denomS = (Number(lastUp)||0) + (Number(lastDown)||0);
+          const upPctS = denomS ? ((Number(lastUp)||0)/denomS)*100 : 0;
+
+          // 24h change median (top250)
+          const pct24 = marketsTop.map(c => (c && typeof c.price_change_percentage_24h === 'number' && isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null)
+                                .filter(v => v != null);
+          let med24 = null;
+          if (pct24.length){
+            const s = pct24.slice().sort((a,b)=>a-b);
+            const mid = Math.floor(s.length/2);
+            med24 = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+          }
+
+          // Total volume change vs previous refresh (localStorage)
+          const volNow = marketsTop.reduce((acc,c)=> acc + (Number.isFinite(c && c.total_volume)? c.total_volume : 0), 0);
+          const keyVol = 'cr_prev_total_vol';
+          const keyVolTs = 'cr_prev_total_vol_ts';
+          const prevVol = Number(localStorage.getItem(keyVol));
+          const prevVolTs = Number(localStorage.getItem(keyVolTs));
+          let volChgPct = null;
+          if (prevVol && isFinite(prevVol) && prevVol > 0 && prevVolTs && (Date.now() - prevVolTs) < (12*60*60*1000)){
+            volChgPct = (volNow/prevVol - 1) * 100;
+          }
+          localStorage.setItem(keyVol, String(volNow));
+          localStorage.setItem(keyVolTs, String(Date.now()));
+
+          // BTC dominance delta (percentage point) vs previous refresh
+          const totalM = (o.values||[]).reduce((a,b)=>a + (Number.isFinite(+b)? +b : 0), 0);
+          const btcM = (o.values && o.values.length) ? (Number.isFinite(+o.values[0]) ? +o.values[0] : 0) : 0;
+          const btcDom = totalM > 0 ? (btcM/totalM) * 100 : null;
+          const keyDom = 'cr_prev_btc_dom';
+          const prevDom = Number(localStorage.getItem(keyDom));
+          let domDelta = null;
+          if (btcDom != null && isFinite(btcDom) && prevDom && isFinite(prevDom)){
+            domDelta = btcDom - prevDom;
+          }
+          if (btcDom != null && isFinite(btcDom)) localStorage.setItem(keyDom, String(btcDom));
+
+          // Normalize helpers
+          const clamp = (x,min,max)=> Math.max(min, Math.min(max, x));
+          const normBreadth = clamp((upPctS - 50) / 50, -1, 1);             // breadth (0-100%)
+          const normMed24   = (med24 == null) ? 0 : clamp(med24 / 10, -1, 1); // median24h (+/-10%)
+          const normVol     = (volChgPct == null) ? 0 : clamp(volChgPct / 20, -1, 1); // volΔ (+/-20%)
+          const normDom     = (domDelta == null) ? 0 : clamp((-domDelta) / 2, -1, 1);  // dom↓ => risk-on
+          const normRsi     = (lastRsiVal == null || !isFinite(lastRsiVal)) ? 0 : clamp((lastRsiVal - 50) / 20, -1, 1);
+
+          const raw = 0.30*normBreadth + 0.25*normMed24 + 0.20*normVol + 0.10*normDom + 0.15*normRsi;
+          const score = clamp(50 + 50*raw, 0, 100);
+
+          const label = (score>=81) ? '極度の強欲' : (score>=61) ? '強欲' : (score>=41) ? '中立' : (score>=21) ? '恐怖' : '極度の恐怖';
+
+          const elS = document.getElementById('kpiSentiment');
+          if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
+
+          const elM = document.getElementById('kpiSentimentMeta');
+          if (elM){
+            const parts = [];
+            parts.push(`上昇率 ${upPctS.toFixed(1)}%`);
+            if (med24 != null && isFinite(med24)) parts.push(`24h中央値 ${med24.toFixed(2)}%`);
+            if (volChgPct != null && isFinite(volChgPct)) parts.push(`出来高Δ ${volChgPct.toFixed(1)}%`);
+            if (domDelta != null && isFinite(domDelta)) parts.push(`BTC Dom Δ ${domDelta.toFixed(2)}pt`);
+            if (lastRsiVal != null && isFinite(lastRsiVal)) parts.push(`RSI ${lastRsiVal.toFixed(1)}`);
+            elM.textContent = parts.join(' / ');
+          }
+
+          // history sparkline (store last 120 points)
+          const histKey = 'cr_sent_hist';
+          let hist = [];
+          try { hist = JSON.parse(localStorage.getItem(histKey) || '[]'); } catch(_){}
+          if (!Array.isArray(hist)) hist = [];
+          hist.push(Number(score));
+          if (hist.length > 120) hist = hist.slice(-120);
+          localStorage.setItem(histKey, JSON.stringify(hist));
+
+          const labS = hist.map((_,i)=>i);
+          if (charts['sentLine']) { try { charts['sentLine'].destroy(); } catch(_){} }
+          makeLineChart('sentLine', labS, [{label:'Sent', data: hist, border:'rgba(96,165,250,0.9)'}], {yMin:0, yMax:100});
+        }catch(e){ console.warn('sentiment failed', e); }
+
+        // Market cap estimate (normalize to last for readability)
         makeNormalizedLine('mcapLine', labels, mcapArr);
 
         // Market cap last-24h spark (use tail of 7d sparkline)
@@ -1579,7 +1672,7 @@ function getAltVolumeTop5(){
 
     // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
     setTimeout(() => {
-      ['breadthLine','avgLine','mcapLine','mcap24hLine','volLine'].forEach(id => {
+      ['breadthLine','avgLine','rsiLine','sentLine','mcapLine','mcap24hLine','volLine'].forEach(id => {
         try { if (charts[id] && typeof charts[id].resize === 'function') charts[id].resize(); } catch(_){}
       });
     }, 0);
