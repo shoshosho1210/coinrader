@@ -196,6 +196,7 @@
   .overview-note{ font-size:11px; color:#9ca3af; margin-top:8px; }
   .donut-wrap{ width:100%; max-width:340px; aspect-ratio:1/1; margin:0 auto; }
   .donut-wrap canvas{ width:100% !important; height:100% !important; margin-top:0; }
+  .dom-metrics{ margin-top:10px; font-size:12px; color:#cbd5e1; line-height:1.4; text-align:center; }
  
   .kpi-grid{ display:grid; grid-template-columns: repeat(1, minmax(0,1fr)); gap:10px; }
   @media (min-width: 560px){ .kpi-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
@@ -476,6 +477,7 @@
   <div class="overview" id="overviewWrap">
     <div class="overview-card">
       <div class="donut-wrap"><canvas id="domChart"></canvas></div>
+      <div class="dom-metrics" id="domMetrics">-</div>
       <div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
     </div>
 
@@ -1495,6 +1497,21 @@ function getAltVolumeTop5(){
     } catch(e) { console.warn('overview series failed', e); }
 
     drawDonut('domChart', o.labels, o.values);
+    // Dominance text (BTC/ETH/ステーブル/Others)
+    try{
+      const domEl = document.getElementById('domMetrics');
+      if(domEl){
+        const total = (o.values||[]).reduce((a,b)=>a + (Number.isFinite(+b)? +b : 0), 0);
+        if(total > 0){
+          domEl.textContent = (o.labels||[]).map((lab,i)=>{
+            const v = Number.isFinite(+o.values[i]) ? +o.values[i] : 0;
+            return `${lab} ${(v/total*100).toFixed(1)}%`;
+          }).join(' / ');
+        }else{
+          domEl.textContent = '-';
+        }
+      }
+    }catch(_){}
 
     // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
     setTimeout(() => {
