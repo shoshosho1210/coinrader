@@ -492,6 +492,7 @@ const BOOT_NETWORK_COOLDOWN_MS = 25 * 1000;    // 25秒以内の再読み込み�
 const LS_KEYS = {
   markets: "cg_marketsTop250_jpy_v1",
   trendingIds: "cg_trendingTop5_ids_v1",
+  trendingSnapshot: "cg_trendingTop5_snapshot_v1",
   lastFetch: "cg_last_fetch_at_v1"
 };
 
@@ -686,18 +687,29 @@ function setLastFetchAt(){
   async function loadTrendingTop5(forceNetwork=false){
   const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
 
-  // キャッシュ（idsのみ）から先に組み立て
-  function setFromIds(ids){
-    if (!Array.isArray(ids) || !ids.length){ trendingCoins = []; return; }
+  // キャッシュ（ids + 最小スナップショット）から先に組み立て
+  function setFromCache(ids, snap){
+    const idsArr = Array.isArray(ids) ? ids : (Array.isArray(snap) ? snap.map(x => x && x.id).filter(Boolean) : []);
+    if (!idsArr.length){ trendingCoins = []; return; }
+
     const byIdTop = new Map(marketsTop.map(x => [x.id, x]));
-    trendingCoins = ids.map(id => byIdTop.get(id)).filter(Boolean);
+    const byIdSnap = new Map((Array.isArray(snap) ? snap : []).filter(Boolean).map(x => [x.id, x]));
+
+    trendingCoins = idsArr
+      .map(id => byIdTop.get(id) || byIdSnap.get(id))
+      .filter(Boolean);
   }
 
-  const cached = readCache(LS_KEYS.trendingIds);
-  const cachedIds = (cached && Array.isArray(cached.data)) ? cached.data : null;
+  const cachedIdsObj = readCache(LS_KEYS.trendingIds);
+  const cachedSnapObj = readCache(LS_KEYS.trendingSnapshot);
+  const cachedIds = (cachedIdsObj && Array.isArray(cachedIdsObj.data)) ? cachedIdsObj.data : null;
+  const cachedSnap = (cachedSnapObj && Array.isArray(cachedSnapObj.data)) ? cachedSnapObj.data : null;
+
   const cachedIdsCount = cachedIds ? cachedIds.length : 0;
-  if (cachedIdsCount){
-    setFromIds(cachedIds);
+  const cachedSnapCount = cachedSnap ? cachedSnap.length : 0;
+
+  if (cachedIdsCount || cachedSnapCount){
+    setFromCache(cachedIds, cachedSnap);
   }
 
   // markets が取れていない場合は無理に進めない
@@ -713,7 +725,7 @@ function setLastFetchAt(){
 
   // キャッシュIDsから組み立てた結果が5件未満（＝top250に無い銘柄が混ざっている等）の場合は、
   // クールダウン中でもネット取得を行って欠けを埋める
-  const wantCount = Math.min(5, cachedIdsCount || 5);
+  const wantCount = Math.min(5, cachedIdsCount || cachedSnapCount || 5);
   const hasAllCached = trendingCoins.length >= wantCount;
 
   if (canSkipNetwork && hasAllCached){
@@ -806,6 +818,25 @@ function setLastFetchAt(){
     }).filter(Boolean);
 
     writeCache(LS_KEYS.trendingIds, ids);
+
+    // 最小スナップショットも保存（TOP250外の銘柄でも次回F5で5件を維持するため）
+    const snap = (trendingCoins || []).slice(0,5).map(c => {
+      const sp = c && c.sparkline_in_7d && Array.isArray(c.sparkline_in_7d.price) ? c.sparkline_in_7d.price : null;
+      // localStorage肥大化を防ぐため、スパークラインは末尾最大240点だけ保持
+      const spTrim = sp ? sp.filter(v => typeof v === 'number' && Number.isFinite(v)).slice(-240) : null;
+      return {
+        id: c.id,
+        name: c.name,
+        symbol: c.symbol,
+        image: c.image,
+        market_cap_rank: c.market_cap_rank ?? null,
+        current_price: (typeof c.current_price === 'number' && Number.isFinite(c.current_price)) ? c.current_price : null,
+        total_volume: (typeof c.total_volume === 'number' && Number.isFinite(c.total_volume)) ? c.total_volume : null,
+        price_change_percentage_24h: (typeof c.price_change_percentage_24h === 'number' && Number.isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null,
+        sparkline_in_7d: spTrim ? { price: spTrim } : undefined,
+      };
+    });
+    writeCache(LS_KEYS.trendingSnapshot, snap);
   } catch (e){
     if (trendingCoins && trendingCoins.length){
       console.warn('trending fetch failed, using cache/top:', e);
