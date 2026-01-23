@@ -1309,6 +1309,21 @@ function fetchSparkline1d(coinId){
 
       grid.appendChild(card);
 
+      // Sparkline: be defensive. If anything goes wrong, fall back to a tiny synthetic line.
+      const ensureSparklineLater = () => {
+        // If no chart instance after layout/async, draw a 2-point synthetic line as last resort.
+        setTimeout(() => {
+          try{
+            if (!charts[canvasId]){
+              const syn = buildSyntheticSparkline(coin);
+              if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
+            }
+          }catch(_e){}
+        }, 600);
+      };
+
+      try{
+
       const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
       if (use24h){
         // まずは markets(sparkline_in_7d) から 24h 相当を切り出して描画（追加APIを減らす）
@@ -1342,6 +1357,12 @@ function fetchSparkline1d(coinId){
           });
         }
       }
+      } catch(e){
+        console.warn('sparkline failed:', coin?.id || coin?.symbol || idx, e);
+        const syn = buildSyntheticSparkline(coin);
+        if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
+      }
+      ensureSparklineLater();
     });
   }
 
