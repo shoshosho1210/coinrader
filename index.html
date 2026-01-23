@@ -317,16 +317,26 @@
       </a>
 
       <nav class="headerNav" aria-label="セクション">
-        <button class="btn tab" onclick="scrollToId('sec-trend')">トレンド</button>
-        <button class="btn tab" onclick="scrollToId('sec-gainers')">上昇率</button>
-        <button class="btn tab" onclick="scrollToId('sec-volume')">出来高</button>
-        <button class="btn tab" onclick="scrollToId('sec-mcap')">時価総額</button>
-        <button class="btn tab" onclick="scrollToId('sec-overview')">概況</button>
-      </nav>
+        <a class="btn tab" href="#sec-trend"
+           data-ga="tab_trend" data-placement="index_header_tabs" data-partner="" data-pr="0"
+           onclick="scrollToId('sec-trend'); return false;">トレンド</a>
+        <a class="btn tab" href="#sec-gainers"
+           data-ga="tab_gainers" data-placement="index_header_tabs" data-partner="" data-pr="0"
+           onclick="scrollToId('sec-gainers'); return false;">上昇率</a>
+        <a class="btn tab" href="#sec-volume"
+           data-ga="tab_volume" data-placement="index_header_tabs" data-partner="" data-pr="0"
+           onclick="scrollToId('sec-volume'); return false;">出来高</a>
+        <a class="btn tab" href="#sec-mcap"
+           data-ga="tab_mcap" data-placement="index_header_tabs" data-partner="" data-pr="0"
+           onclick="scrollToId('sec-mcap'); return false;">時価総額</a>
+        <a class="btn tab" href="#sec-overview"
+           data-ga="tab_overview" data-placement="index_header_tabs" data-partner="" data-pr="0"
+           onclick="scrollToId('sec-overview'); return false;">概況</a>
+</nav>
     </div>
 
     <div class="appHeader-right">
-      <a class="btn-cta" href="/start" data-ga="cta_start_header">始め方</a>
+      <a class="btn-cta" href="/start" data-ga="cta_start_header" data-placement="index_header" data-partner="" data-pr="0">始め方</a>
       <div class="pill" id="statusPill">状態: 初期化中…</div>
       <div class="pill" id="updatedPill">更新: --</div>
       <button class="btn" id="refreshBtn" onclick="refreshData()">更新</button>
@@ -344,8 +354,8 @@
       <div class="cta-sub">国内取引所を用途別に比較。公式サイト/キャンペーン導線をまとめています。</div>
     </div>
     <div class="cta-actions">
-      <a class="btn primary" href="/ads-pr" data-cta="top_to_adspr">取引所おすすめを見る</a>
-      <a class="btn" href="/start" data-cta="top_to_start">始め方</a>
+      <a class="btn primary" href="/ads-pr" data-cta="top_to_adspr" data-placement="index_cta_block" data-partner="" data-pr="0">取引所おすすめを見る</a>
+      <a class="btn" href="/start" data-cta="top_to_start" data-placement="index_cta_block" data-partner="" data-pr="0">始め方</a>
     </div>
   </div>
   <div class="cta-note">※当サイトは一部リンクにアフィリエイト広告を含みます。</div>
@@ -358,7 +368,7 @@
       <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener">もっと見る</a>
+      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener" data-ga="ext_coingecko_trending" data-placement="index_trend_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
   <div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
@@ -371,7 +381,7 @@
       <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener">もっと見る</a>
+      <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener" data-ga="ext_coingecko_gainers" data-placement="index_gainers_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
   <div class="grid" id="grid-gainers"><div class="msg">データ取得中…</div></div>
@@ -384,7 +394,7 @@
       <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener">もっと見る</a>
+      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener" data-ga="ext_coingecko_high_volume" data-placement="index_volume_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
   <div class="grid" id="grid-volume"><div class="msg">データ取得中…</div></div>
@@ -397,7 +407,7 @@
       <div class="section-sub">時価総額上位20（JPY）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja" target="_blank" rel="noopener">もっと見る</a>
+      <a class="linkbtn" href="https://www.coingecko.com/ja" target="_blank" rel="noopener" data-ga="ext_coingecko_home" data-placement="index_mcap_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
   <div class="grid" id="grid-mcap"><div class="msg">データ取得中…</div></div>
@@ -410,7 +420,7 @@
       <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com" target="_blank" rel="noopener">もっと見る</a>
+      <a class="linkbtn" href="https://www.coingecko.com" target="_blank" rel="noopener" data-ga="ext_coingecko_home" data-placement="index_overview_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
 
@@ -731,15 +741,29 @@ async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
     return n.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
   }
 
-  function openCoinGecko(coin){
+  
+function coinGeckoUrlFor(coin){
     const id = coin?.id;
-    if (id){
-      const url = `https://www.coingecko.com/en/coins/${encodeURIComponent(id)}`;
-      window.open(url, '_blank', 'noopener');
-    } else {
-      const q = encodeURIComponent(coin?.name || coin?.symbol || '');
-      window.open(`https://www.coingecko.com/en/search?query=${q}`, '_blank', 'noopener');
-    }
+    if (id) return `https://www.coingecko.com/en/coins/${encodeURIComponent(id)}`;
+    const q = encodeURIComponent(coin?.name || coin?.symbol || '');
+    return `https://www.coingecko.com/en/search?query=${q}`;
+  }
+
+  function fireCtaClick({ cta_id, placement, partner, pr, link_url }){
+    if (typeof gtag !== 'function') return;
+    gtag('event', 'cta_click', {
+      cta_id: cta_id || '',
+      placement: placement || '',
+      partner: partner || '',
+      pr: Number(pr) || 0,
+      link_url: link_url || '',
+      transport_type: 'beacon'
+    });
+  }
+
+  function openCoinGecko(coin){
+    const url = coinGeckoUrlFor(coin);
+    window.open(url, '_blank', 'noopener');
   }
 
   // ============ Data ============
@@ -1536,7 +1560,26 @@ function fetchSparkline1d(coinId){
 
       const card = document.createElement('div');
       card.className = `card ${trendClass}`;
-      card.onclick = () => openCoinGecko(coin);
+
+      const placementMap = {
+        trend: 'index_card_trend',
+        gainers: 'index_card_gainers',
+        volume: 'index_card_volume',
+        mcap: 'index_card_mcap'
+      };
+      const placement = placementMap[sectionKey] || `index_card_${sectionKey}`;
+
+      card.onclick = () => {
+        const url = coinGeckoUrlFor(coin);
+        fireCtaClick({
+          cta_id: 'card_open',
+          placement,
+          partner: 'coingecko',
+          pr: 0,
+          link_url: url
+        });
+        window.open(url, '_blank', 'noopener');
+      };
 
       const rankCls = idx===0 ? 'rank-1' : idx===1 ? 'rank-2' : idx===2 ? 'rank-3' : '';
 
