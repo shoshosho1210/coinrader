@@ -714,14 +714,14 @@ function setLastFetchAt(){
 
   try{
     const trendJson = await fetchJsonRetry(trendUrl, {retries:2});
+    // NOTE: /search/trending の先頭5件に欠損(item/idなし)が混ざることがあるため、
+    // idがあるものだけを拾ってから上位5件に絞る（#5が欠ける問題の対策）
     const trendItems = (trendJson.coins || [])
       .map(c => c.item)
-      .filter(Boolean)
+      .filter(it => it && it.id)
       .slice(0,5);
 
-    const ids = trendItems
-      .map(it => it.id)
-      .filter(Boolean);
+    const ids = trendItems.map(it => it.id);
 
     if (!ids.length){ trendingCoins = []; return; }
 
