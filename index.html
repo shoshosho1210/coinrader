@@ -1108,6 +1108,19 @@ function drawSparkline(canvasId, data){
   }
 }
 
+
+function buildSyntheticSparkline(coin){
+  // Last-resort mini sparkline from 24h change (2 points) so the canvas is never blank.
+  const p1 = (coin && typeof coin.current_price === 'number' && Number.isFinite(coin.current_price)) ? coin.current_price : null;
+  const ch = (coin && typeof coin.price_change_percentage_24h === 'number' && Number.isFinite(coin.price_change_percentage_24h)) ? coin.price_change_percentage_24h : null;
+  if(p1 === null || ch === null) return [];
+  const denom = 1 + (ch / 100);
+  if(!Number.isFinite(denom) || denom === 0) return [];
+  const p0 = p1 / denom;
+  if(!Number.isFinite(p0)) return [];
+  return [p0, p1];
+}
+
 function hasAtLeast2Finite(arr){
   if(!Array.isArray(arr)) return false;
   let n = 0;
@@ -1306,7 +1319,12 @@ function fetchSparkline1d(coinId){
         } else {
           // フォールバック（まれに sparkline が欠ける場合）
           fetchSparkline1d(coin.id).then(arr => {
-            if (hasAtLeast2Finite(arr)) drawSparkline(canvasId, arr);
+            if (hasAtLeast2Finite(arr)) {
+              drawSparkline(canvasId, arr);
+            } else {
+              const syn = buildSyntheticSparkline(coin);
+              if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
+            }
           });
         }
       } else {
@@ -1315,7 +1333,12 @@ function fetchSparkline1d(coinId){
         // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
         if (!hasAtLeast2Finite(sp)) {
           fetchSparkline7dFallback(coin.id).then(arr => {
-            if (hasAtLeast2Finite(arr)) { drawSparkline(canvasId, arr); }
+            if (hasAtLeast2Finite(arr)) {
+              drawSparkline(canvasId, arr);
+            } else {
+              const syn = buildSyntheticSparkline(coin);
+              if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
+            }
           });
         }
       }
