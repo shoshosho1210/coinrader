@@ -51,16 +51,20 @@
       // 1) CTA（サイト内導線）
       const ctaId = a.dataset.ga || a.dataset.cta;
       if (ctaId) {
-        if (!newTab) {
-          e.preventDefault();
-          fire("cta_click", { cta_id: ctaId, link_url: href }, function () {
-            location.href = href;
-          });
-        } else {
-          fire("cta_click", { cta_id: ctaId, link_url: href });
-        }
+        // ★重要: 履歴を壊さないため、同一オリジンの通常クリックは遷移を止めない
+        // new tab の場合も同様に「送るだけ」
+        fire("cta_click", {
+          cta_id: ctaId,
+          placement: a.dataset.placement || a.dataset.place || "",
+          partner: a.dataset.partner || "",
+          pr: a.dataset.pr === "1" ? 1 : 0,
+          link_url: href,
+          link_domain: url.hostname,
+        });
+
+        // 外部に data-ga が付いているケースは稀だが、もしあるなら従来通り止めてもよい。
+        // ただし現状の症状は「内部遷移」で起きているので、まずは止めない運用が安全。
         return;
-      }
 
       // 2) アフィ（外部導線）
       const aff = a.dataset.aff;
