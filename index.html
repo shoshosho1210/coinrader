@@ -498,6 +498,8 @@
           <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
           <div class="kpi-value" id="kpiMcap24h">-</div>
           <div class="kpi-sub">推定: 各銘柄の現在時価総額を24h騰落率で逆算して前日を推定し、全体の増減（率/差額）を算出。</div>
+          <canvas class="kpi-canvas" id="mcap24hLine"></canvas>
+          <div class="kpi-sub" style="opacity:.75;margin-top:6px;">※推移は過去24h（7dスパークライン末尾）</div>
         </div>
         <div class="kpi">
           <div class="kpi-label">上位250 時価総額合計（推定7d推移 / JPY）</div>
@@ -1468,6 +1470,14 @@ function getAltVolumeTop5(){
         // Market cap estimate (normalize to last for readability)
         makeNormalizedLine('mcapLine', labels, mcapArr);
 
+        // Market cap last-24h spark (use tail of 7d sparkline)
+        try {
+          const win = Math.min(24, mcapArr.length);
+          if (win >= 3) {
+            makeNormalizedLine('mcap24hLine', labels.slice(-win), mcapArr.slice(-win));
+          }
+        } catch(_){}
+
         // Volume estimate (normalize)
         makeNormalizedLine('volLine', labels, volArr);
       }
@@ -1477,7 +1487,7 @@ function getAltVolumeTop5(){
 
     // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
     setTimeout(() => {
-      ['breadthLine','avgLine','mcapLine','volLine'].forEach(id => {
+      ['breadthLine','avgLine','mcapLine','mcap24hLine','volLine'].forEach(id => {
         try { if (charts[id] && typeof charts[id].resize === 'function') charts[id].resize(); } catch(_){}
       });
     }, 0);
