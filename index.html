@@ -379,7 +379,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">上昇率 TOP5</div>
-      <div class="section-sub">24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+      <div class="section-sub">ステーブルコインを除外した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener" data-ga="ext_coingecko_gainers" data-placement="index_gainers_header" data-partner="coingecko" data-pr="0">もっと見る</a>
@@ -392,7 +392,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">出来高 TOP5</div>
-      <div class="section-sub">24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+      <div class="section-sub">24h出来高TOP5（全体：BTC/ETH/ステーブル含む／時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener" data-ga="ext_coingecko_high_volume" data-placement="index_volume_header" data-partner="coingecko" data-pr="0">もっと見る</a>
@@ -400,6 +400,22 @@
   </div>
   <div class="grid" id="grid-volume"><div class="msg">データ取得中…</div></div>
 </section>
+
+
+<section id="sec-alt-volume">
+  <div class="section-header">
+    <div>
+      <div class="section-title">出来高（アルト）TOP5</div>
+      <div class="section-sub">BTC/ETH/ステーブルを除外した24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener"
+         data-ga="ext_coingecko_high_volume_alt" data-placement="index_alt_volume_header" data-partner="coingecko" data-pr="0">もっと見る</a>
+    </div>
+  </div>
+  <div class="grid" id="grid-alt-volume"><div class="msg">データ取得中…</div></div>
+</section>
+
 
 <section id="sec-mcap">
   <div class="section-header">
@@ -575,9 +591,10 @@ const LS_KEYS = {
   markets: "cg_marketsTop250_jpy_v1",
   trendingIds: "cg_trendingTop5_ids_v1",
   trendingSnapshot: "cg_trendingTop5_snapshot_v1",
-  gainersSnapshot: "cg_gainersTop5_snapshot_v1",
-  volumeSnapshot: "cg_volumeTop5_snapshot_v1",
-  mcapSnapshot: "cg_mcapTop20_snapshot_v1",
+  gainersSnapshot: "cg_gainersTop5_snapshot_v2",
+  volumeSnapshot: "cg_volumeTop5_snapshot_v2",
+  altVolumeSnapshot: "cg_altVolumeTop5_snapshot_v1",
+  mcapSnapshot: "cg_mcapTop20_snapshot_v2",
   lastFetch: "cg_last_fetch_at_v1",
   lastAttempt: "cg_last_attempt_at_v1"
 };
@@ -993,9 +1010,9 @@ function coinGeckoUrlFor(coin){
 }
 
 function buildMarketCapTop20(){
+    // 時価総額は全体（ステーブル含む）
     return marketsTop
       .filter(c => typeof c.market_cap === "number")
-      .filter(c => !isExcludedForMarketCap(c))   // ← 追加
       .slice(0,20);
   }
 
@@ -1029,9 +1046,34 @@ function getMarketCapTop20(){
 
 
 
+
+  // ===== Ranking rules (stable / major) =====
+  const STABLE_IDS = new Set([
+    "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
+    "frax","pax-dollar","paypal-usd","gemini-dollar","paxos-standard","binance-usd","liquity-usd"
+  ]);
+  const STABLE_SYMBOLS = new Set([
+    "usdt","usdc","dai","tusd","usde","fdusd","pyusd","gusd","usdp","busd","lusd","frax"
+  ]);
+  function isStableCoin(c){
+    const id = (c?.id || "").toLowerCase();
+    const sym = (c?.symbol || "").toLowerCase();
+    const name = (c?.name || "").toLowerCase();
+    if (STABLE_IDS.has(id) || STABLE_SYMBOLS.has(sym)) return true;
+    // fallback heuristic (軽め)
+    if (name.includes("stable") && (name.includes("usd") || sym.includes("usd"))) return true;
+    return false;
+  }
+  function isBtcOrEth(c){
+    const id = (c?.id || "").toLowerCase();
+    const sym = (c?.symbol || "").toLowerCase();
+    return id === "bitcoin" || id === "ethereum" || sym === "btc" || sym === "eth";
+  }
+
   function buildGainersTop5(){
     return marketsTop
       .filter(c => typeof c.price_change_percentage_24h === 'number')
+      .filter(c => !isStableCoin(c)) // ステーブル除外
       .slice()
       .sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h)
       .slice(0,5);
@@ -1058,9 +1100,20 @@ function getMarketCapTop20(){
   }
 
   function buildVolumeTop5(){
+    // 全体（BTC/ETH/ステーブル含む）
     return marketsTop
       .filter(c => typeof c.total_volume === "number")
-      .filter(c => !isExcludedForAltVolume(c))   // ← 追加
+      .slice()
+      .sort((a,b) => b.total_volume - a.total_volume)
+      .slice(0,5);
+  }
+
+  function buildAltVolumeTop5(){
+    // アルト：BTC/ETH/ステーブルを除外
+    return marketsTop
+      .filter(c => typeof c.total_volume === "number")
+      .filter(c => !isStableCoin(c))
+      .filter(c => !isBtcOrEth(c))
       .slice()
       .sort((a,b) => b.total_volume - a.total_volume)
       .slice(0,5);
@@ -1085,8 +1138,16 @@ function getVolumeTop5(){
 
 
 
+function getAltVolumeTop5(){
+  if (marketsTop && marketsTop.length){
+    const coins = buildAltVolumeTop5();
+    writeSnapshot(LS_KEYS.altVolumeSnapshot, coins);
+    return coins;
+  }
+  return readSnapshot(LS_KEYS.altVolumeSnapshot);
+}
+
   // ============ Market Overview ============
-  const STABLE_IDS = new Set(['tether','usd-coin','dai','first-digital-usd','true-usd','ethena-usde']);
 
   function fmtPct(n){
     if (typeof n !== 'number' || !isFinite(n)) return '-';
@@ -1688,6 +1749,7 @@ function fetchSparkline1d(coinId){
     renderInto('grid-trend', trendingCoins, 'trend', 'trend');
     renderInto('grid-gainers', getGainersTop5(), 'gainers', 'gainers');
     renderInto('grid-volume', getVolumeTop5(), 'volume', 'volume');
+    renderInto('grid-alt-volume', getAltVolumeTop5(), 'alt_volume', 'alt_volume');
     renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
   }
@@ -1696,6 +1758,8 @@ function fetchSparkline1d(coinId){
     document.getElementById('grid-trend').innerHTML = '<div class="msg">データ取得中…</div>';
     document.getElementById('grid-gainers').innerHTML = '<div class="msg">データ取得中…</div>';
     document.getElementById('grid-volume').innerHTML = '<div class="msg">データ取得中…</div>';
+    const altVolEl = document.getElementById('grid-alt-volume');
+    if (altVolEl) altVolEl.innerHTML = '<div class="msg">データ取得中…</div>';
     document.getElementById('grid-mcap').innerHTML = '<div class="msg">データ取得中…</div>';
     const om = document.getElementById('overviewMsg');
     if (om){ om.style.display='none'; om.textContent=''; }
