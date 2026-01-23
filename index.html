@@ -379,7 +379,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">上昇率 TOP5</div>
-      <div class="section-sub">ステーブルコインを除外した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+      <div class="section-sub">ステーブル除外＋24h出来高8億円以上を優先した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener" data-ga="ext_coingecko_gainers" data-placement="index_gainers_header" data-partner="coingecko" data-pr="0">もっと見る</a>
@@ -591,7 +591,7 @@ const LS_KEYS = {
   markets: "cg_marketsTop250_jpy_v1",
   trendingIds: "cg_trendingTop5_ids_v1",
   trendingSnapshot: "cg_trendingTop5_snapshot_v1",
-  gainersSnapshot: "cg_gainersTop5_snapshot_v2",
+  gainersSnapshot: "cg_gainersTop5_snapshot_v3",
   volumeSnapshot: "cg_volumeTop5_snapshot_v2",
   altVolumeSnapshot: "cg_altVolumeTop5_snapshot_v1",
   mcapSnapshot: "cg_mcapTop20_snapshot_v2",
@@ -1044,7 +1044,8 @@ function getMarketCapTop20(){
   return Array.isArray(snap) ? snap : [];
 }
 
-
+  // 上昇率ノイズ対策：24h出来高 下限（※marketsTopは vs_currency=jpy なので total_volume もJPY）
+  const MIN_GAINERS_24H_VOLUME_JPY = 800_000_000; // 例：8億円（必要に応じて調整）
 
 
   // ===== Ranking rules (stable / major) =====
@@ -1071,13 +1072,37 @@ function getMarketCapTop20(){
   }
 
   function buildGainersTop5(){
-    return marketsTop
-      .filter(c => typeof c.price_change_percentage_24h === 'number')
-      .filter(c => !isStableCoin(c)) // ステーブル除外
+    // ベース条件：24h騰落率が取れる & ステーブル除外
+    const base = marketsTop
+      .filter(c => typeof c.price_change_percentage_24h === 'number' && Number.isFinite(c.price_change_percentage_24h))
+      .filter(c => !isStableCoin(c));
+
+    // 優先：出来高下限を満たす銘柄から上昇率TOP5
+    const primary = base
+      .filter(c => typeof c.total_volume === 'number' && Number.isFinite(c.total_volume))
+      .filter(c => c.total_volume >= MIN_GAINERS_24H_VOLUME_JPY)
       .slice()
-      .sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h)
-      .slice(0,5);
+      .sort((a,b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
+
+    if (primary.length >= 5) return primary.slice(0,5);
+
+    // 不足時：出来高下限なしの候補で補完（出来高が厚い順で安全寄りに埋める）
+    const picked = new Set(primary.map(x => x.id));
+    const fallback = base
+      .filter(c => typeof c.total_volume === 'number' && Number.isFinite(c.total_volume))
+      .slice()
+      .sort((a,b) => (b.total_volume || 0) - (a.total_volume || 0));
+
+    for (const c of fallback){
+      if (primary.length >= 5) break;
+      if (!picked.has(c.id)){
+        primary.push(c);
+        picked.add(c.id);
+      }
+    }
+    return primary.slice(0,5);
   }
+
 
   const EXCLUDE_VOLUME_IDS = new Set([
     "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
