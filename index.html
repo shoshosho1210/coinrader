@@ -278,72 +278,60 @@
   .sparkline{width:100% !important; height:64px !important; display:block; margin-top:10px;}
   .card canvas.sparkline{max-width:100%;}
 
+
+
+  /* --- Header (A案: ダッシュボードUI) --- */
+  .appHeader{ margin: 0 4px 12px; }
+  .appHeader-inner{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:10px 10px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+  }
+  .appHeader-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+  .appHeader-right{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  .brandLogo{ height: 26px; }
+  .headerNav{ display:flex; gap:8px; flex-wrap:wrap; }
+  .btn.tab{ padding:6px 12px; font-size:12px; }
+  .appSubline{ margin:8px 4px 0; font-size:12px; color:#9ca3af; }
+
+  @media (max-width: 820px){
+    .appHeader-inner{ align-items:flex-start; }
+    .appHeader-left{ flex-wrap:wrap; }
+    .appHeader-right{ width:100%; justify-content:flex-start; }
+  }
 </style>
 </head>
 <body>
-<div class="brand">
-  <a href="/" class="brandLink">
-    <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
-  </a>
-</div>
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <div class="hero-badges">
-          <span class="badge">毎日3分</span>
-          <span class="badge">相場の温度感</span>
-          <span class="badge">トレンド把握</span>
-        </div>
+<header class="appHeader" role="banner">
+  <div class="appHeader-inner">
+    <div class="appHeader-left">
+      <a href="/" class="brandLink" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
+      </a>
 
-        <h1 class="hero-title">
-          暗号資産の“いま”を<br class="br-sp">一画面で把握
-        </h1>
-
-        <p class="hero-sub">
-          時価総額・トレンド・急騰急落をまとめて表示。<br class="br-pc">
-          迷わず「今日の注目」からチェックできます。
-        </p>
-
-        <div class="hero-cta">
-          <a class="btn primary"
-             href="#sec-trend"
-             data-cta="hero_trend"
-             aria-label="トレンドTOP5へ"
-             onclick="event.preventDefault(); scrollToId('sec-trend');">
-            今日の注目を見る
-          </a>
-
-          <a class="btn"
-             href="#sec-mcap"
-             data-cta="hero_mcap"
-             aria-label="時価総額TOP20へ"
-             onclick="event.preventDefault(); scrollToId('sec-mcap');">
-            主要コインTOPへ
-          </a>
-
-        </div>
-
-        <p class="hero-note">
-          ※価格・ランキングは取得元APIの反映タイミングにより遅延する場合があります。
-        </p>
-      </div>
+      <nav class="headerNav" aria-label="セクション">
+        <button class="btn tab" onclick="scrollToId('sec-trend')">トレンド</button>
+        <button class="btn tab" onclick="scrollToId('sec-gainers')">上昇率</button>
+        <button class="btn tab" onclick="scrollToId('sec-volume')">出来高</button>
+        <button class="btn tab" onclick="scrollToId('sec-mcap')">時価総額</button>
+        <button class="btn tab" onclick="scrollToId('sec-overview')">概況</button>
+      </nav>
     </div>
-  </section>
-<div class="topbar">
-    <a class="btn-cta" href="start.html" data-ga="cta_start_header">始め方</a>
 
-  <div class="pill" id="statusPill">状態: 初期化中…</div>
-  <div class="pill" id="updatedPill">更新: --</div>
-  <button class="btn" id="refreshBtn" onclick="refreshData()">更新</button>
-</div>
+    <div class="appHeader-right">
+      <a class="btn-cta" href="start.html" data-ga="cta_start_header">始め方</a>
+      <div class="pill" id="statusPill">状態: 初期化中…</div>
+      <div class="pill" id="updatedPill">更新: --</div>
+      <button class="btn" id="refreshBtn" onclick="refreshData()">更新</button>
+    </div>
+  </div>
 
-<div class="nav">
-  <button class="btn" onclick="scrollToId('sec-trend')">トレンド</button>
-  <button class="btn" onclick="scrollToId('sec-gainers')">上昇率</button>
-  <button class="btn" onclick="scrollToId('sec-volume')">出来高</button>
-  <button class="btn" onclick="scrollToId('sec-mcap')">時価総額</button>
-  <button class="btn" onclick="scrollToId('sec-overview')">概況</button>
-</div>
+  <div class="appSubline">
+    トレンド・上昇率・出来高急増・時価総額をまとめてチェック（自動更新）。
+  </div>
+</header>
 <section class="cta-block" aria-label="おすすめ取引所導線">
   <div class="cta-inner">
     <div class="cta-text">
