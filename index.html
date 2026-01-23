@@ -1438,6 +1438,7 @@ function getAltVolumeTop5(){
         const mcapArr = new Array(seriesLen).fill(0);
         const volArr = new Array(seriesLen).fill(0);
         const cntArr = new Array(seriesLen).fill(0);
+        const lastRets = []; // latest-point 7d returns for median
 
         for (let i=0;i<marketsTop.length;i++){
           const c = marketsTop[i];
@@ -1448,6 +1449,10 @@ function getAltVolumeTop5(){
           if (!(p0>0) || !(plast>0)) continue;
           const mcNow = (typeof c.market_cap === 'number' && isFinite(c.market_cap)) ? c.market_cap : 0;
           const volNow = (typeof c.total_volume === 'number' && isFinite(c.total_volume)) ? c.total_volume : 0;
+
+          // latest 7d return for median (from first available price to latest)
+          const retLast = (plast / p0 - 1) * 100;
+          if (isFinite(retLast)) lastRets.push(retLast);
           for (let t=0;t<seriesLen;t++){
             const pt = sp[t];
             if (!(pt>0)) continue;
@@ -1489,7 +1494,15 @@ function getAltVolumeTop5(){
           kpiB.textContent = `上昇 ${lastUp} / 下落 ${lastDown}（上昇率 ${upPct.toFixed(1)}%）`;
         }
         const kpiAvg = document.getElementById('kpiAvgChange');
-        if (kpiAvg) kpiAvg.textContent = fmtPct(lastAvg);
+        if (kpiAvg){
+          let med = null;
+          if (lastRets.length){
+            const s = lastRets.slice().sort((a,b)=>a-b);
+            const mid = Math.floor(s.length/2);
+            med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+          }
+          kpiAvg.textContent = `平均 ${fmtPct(lastAvg)} / 中央値 ${fmtPct(med)}`;
+        }
 
 
         // Market cap estimate (normalize to last for readability)
