@@ -379,7 +379,7 @@
   <div class="section-header">
     <div>
       <div class="section-title">上昇率 TOP5</div>
-      <div class="section-sub">ステーブル除外＋24h出来高8億円以上を優先した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+      <div class="section-sub">ステーブル除外＋24h出来高5億円以上を優先した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener" data-ga="ext_coingecko_gainers" data-placement="index_gainers_header" data-partner="coingecko" data-pr="0">もっと見る</a>
@@ -1045,7 +1045,7 @@ function getMarketCapTop20(){
 }
 
   // 上昇率ノイズ対策：24h出来高 下限（※marketsTopは vs_currency=jpy なので total_volume もJPY）
-  const MIN_GAINERS_24H_VOLUME_JPY = 800_000_000; // 例：8億円（必要に応じて調整）
+  const MIN_GAINERS_24H_VOLUME_JPY = 500_000_000; // 例：5億円（必要に応じて調整）
 
 
   // ===== Ranking rules (stable / major) =====
