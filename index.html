@@ -495,6 +495,7 @@ const LS_KEYS = {
   trendingSnapshot: "cg_trendingTop5_snapshot_v1",
   gainersSnapshot: "cg_gainersTop5_snapshot_v1",
   volumeSnapshot: "cg_volumeTop5_snapshot_v1",
+  mcapSnapshot: "cg_mcapTop20_snapshot_v1",
   lastFetch: "cg_last_fetch_at_v1"
 };
 
@@ -886,6 +887,36 @@ function buildMarketCapTop20(){
       .filter(c => !isExcludedForMarketCap(c))   // ← 追加
       .slice(0,20);
   }
+
+function getMarketCapTop20(){
+  if (marketsTop && marketsTop.length){
+    const coins = buildMarketCapTop20();
+    // mcapは20件なので、sparklineは保存せず（容量節約）。必要ならここで追加可。
+    try{
+      const snap = (coins || []).slice(0,20).map(c => {
+        if(!c) return null;
+        return {
+          id: c.id,
+          name: c.name,
+          symbol: c.symbol,
+          image: c.image,
+          market_cap_rank: c.market_cap_rank ?? null,
+          current_price: (typeof c.current_price === 'number' && Number.isFinite(c.current_price)) ? c.current_price : null,
+          market_cap: (typeof c.market_cap === 'number' && Number.isFinite(c.market_cap)) ? c.market_cap : null,
+          total_volume: (typeof c.total_volume === 'number' && Number.isFinite(c.total_volume)) ? c.total_volume : null,
+          price_change_percentage_24h: (typeof c.price_change_percentage_24h === 'number' && Number.isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null,
+        };
+      }).filter(Boolean);
+      writeCache(LS_KEYS.mcapSnapshot, snap);
+    }catch(e){}
+    return coins;
+  }
+  const cached = readCache(LS_KEYS.mcapSnapshot);
+  const snap = (cached && Array.isArray(cached.data)) ? cached.data : null;
+  return Array.isArray(snap) ? snap : [];
+}
+
+
 
   function buildGainersTop5(){
     return marketsTop
@@ -1460,7 +1491,12 @@ function fetchSparkline1d(coinId){
 
       grid.appendChild(card);
 
-      // Sparkline: be defensive. If anything goes wrong, fall back to a tiny synthetic line.
+      // Sparkline:
+      // mcapスナップショットではsparklineを保存しないため、無い場合はフェッチせずスキップ（API節約）
+      if (mode==='mcap' && !(coin && coin.sparkline_in_7d && Array.isArray(coin.sparkline_in_7d.price) && coin.sparkline_in_7d.price.length)){
+        return;
+      }
+      // be defensive. If anything goes wrong, fall back to a tiny synthetic line.
       const ensureSparklineLater = () => {
         // If no chart instance after layout/async, draw a 2-point synthetic line as last resort.
         setTimeout(() => {
@@ -1522,7 +1558,7 @@ function fetchSparkline1d(coinId){
     renderInto('grid-trend', trendingCoins, 'trend', 'trend');
     renderInto('grid-gainers', getGainersTop5(), 'gainers', 'gainers');
     renderInto('grid-volume', getVolumeTop5(), 'volume', 'volume');
-    renderInto('grid-mcap', buildMarketCapTop20(), 'mcap', 'mcap');
+    renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
   }
 
