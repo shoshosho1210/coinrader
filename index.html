@@ -498,6 +498,13 @@
           <canvas class="kpi-canvas" id="avgLine"></canvas>
         </div>
         <div class="kpi">
+          <div class="kpi-label">BTC RSI（14 / 7d推移）</div>
+          <div class="kpi-value" id="kpiRsi">-</div>
+          <div class="kpi-sub" id="kpiRsiSub">RSIは価格の上げ下げの強さを0〜100で表す指標です（一般に70以上=買われ過ぎ、30以下=売られ過ぎ）。BTCの1時間足相当の7日スパークラインから算出しています。</div>
+          <canvas class="kpi-canvas" id="rsiLine"></canvas>
+        </div>
+
+        <div class="kpi">
           <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
           <div class="kpi-value" id="kpiMcap24h">-</div>
           <div class="kpi-sub">推定: 各銘柄の現在時価総額を24h騰落率で逆算して前日を推定し、全体の増減（率/差額）を算出。</div>
@@ -1510,7 +1517,34 @@ function getAltVolumeTop5(){
         }
 
 
-        // Market cap estimate (normalize to last for readability)
+        
+        // BTC RSI (14) from BTC sparkline (7d)
+        try {
+          const btc = marketsTop.find(c => c && c.id === 'bitcoin');
+          const btcPrices = btc && btc.sparkline_in_7d && Array.isArray(btc.sparkline_in_7d.price) ? btc.sparkline_in_7d.price : null;
+          if (btcPrices && btcPrices.length >= 20) {
+            const rsiSeries = computeRSISeries(btcPrices, 14);
+            const last = rsiSeries[rsiSeries.length - 1];
+            const rsiEl = document.getElementById('kpiRsi');
+            if (rsiEl && last != null && isFinite(last)) {
+              let tag = '中立';
+              if (last >= 70) tag = '買われ過ぎ';
+              else if (last <= 30) tag = '売られ過ぎ';
+              rsiEl.textContent = `RSI ${last.toFixed(1)}（${tag}）`;
+            }
+            // use the same label length as other sparklines
+            const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
+            makeLineChart('rsiLine', rsiLabels, [{
+              label: 'RSI',
+              data: rsiSeries,
+              borderColor: '#a78bfa',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.35,
+              fill: false
+            }], { yMin: 0, yMax: 100 });
+          }
+        } catch(e) { console.warn('RSI failed', e); }// Market cap estimate (normalize to last for readability)
         makeNormalizedLine('mcapLine', labels, mcapArr);
 
         // Market cap last-24h spark (use tail of 7d sparkline)
@@ -1700,7 +1734,39 @@ function fetchSparkline1d(coinId){
 
   function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
 
-  function makeLineChart(canvasId, labels, series, opts){
+  function computeRSISeries(prices, period = 14){
+  // Wilder's RSI. Returns an array same length as prices (first values are null).
+  if(!Array.isArray(prices) || prices.length < period + 1) return Array(prices?.length || 0).fill(null);
+
+  const rsi = Array(prices.length).fill(null);
+
+  let gainSum = 0;
+  let lossSum = 0;
+  for(let i=1;i<=period;i++){
+    const diff = prices[i] - prices[i-1];
+    if(diff >= 0) gainSum += diff; else lossSum += -diff;
+  }
+  let avgGain = gainSum / period;
+  let avgLoss = lossSum / period;
+
+  let rs = avgLoss === 0 ? Infinity : (avgGain / avgLoss);
+  rsi[period] = 100 - (100 / (1 + rs));
+
+  for(let i=period+1;i<prices.length;i++){
+    const diff = prices[i] - prices[i-1];
+    const gain = diff > 0 ? diff : 0;
+    const loss = diff < 0 ? -diff : 0;
+
+    avgGain = ((avgGain * (period - 1)) + gain) / period;
+    avgLoss = ((avgLoss * (period - 1)) + loss) / period;
+
+    rs = avgLoss === 0 ? Infinity : (avgGain / avgLoss);
+    rsi[i] = 100 - (100 / (1 + rs));
+  }
+  return rsi;
+}
+
+function makeLineChart(canvasId, labels, series, opts){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -1719,7 +1785,7 @@ function fetchSparkline1d(coinId){
       options: {
         responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero) } }
+        scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero), suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined), suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined) } }
       }
     });
   }
