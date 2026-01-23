@@ -1457,14 +1457,6 @@ function getAltVolumeTop5(){
     } catch(e) { console.warn('overview series failed', e); }
 
     drawDonut('domChart', o.labels, o.values);
-
-    // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
-    setTimeout(() => {
-      ['breadthLine','avgLine','mcapLine','volLine'].forEach(id => {
-        try { if (charts[id] && typeof charts[id].resize === 'function') charts[id].resize(); } catch(_){}
-      });
-    }, 0);
-
   }
 
 // ============ Charts / Rendering ============
@@ -1672,21 +1664,9 @@ function fetchSparkline1d(coinId){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
-
-    // データに NaN / Infinity が混ざると描画が崩れることがあるので、ここでサニタイズ
-    const clean = (dataArr || []).map(v => (Number.isFinite(v) ? v : 0));
-    const last = clean.length ? clean[clean.length - 1] : 0;
-    const norm = (Number.isFinite(last) && last !== 0)
-      ? clean.map(v => (v / last) * 100)
-      : clean.map(_ => 0);
-
-    // 既存チャートがあれば破棄してから作り直す
-    if (charts[canvasId]) { try { charts[canvasId].destroy(); } catch(_){} }
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    charts[canvasId] = new Chart(ctx, {
+    const last = dataArr && dataArr.length ? dataArr[dataArr.length-1] : 0;
+    const norm = (last && isFinite(last) && last!=0) ? dataArr.map(v => (v/last)*100) : dataArr.map(_=>0);
+    charts[canvasId] = new Chart(canvas, {
       type:'line',
       data:{ labels: labels, datasets:[{
         data: norm,
@@ -1694,15 +1674,12 @@ function fetchSparkline1d(coinId){
         borderWidth:2,
         borderColor:'#e5e7eb',
         tension:0.25,
-        fill:false,
-        spanGaps:true
+        fill:false
       }]},
       options:{ responsive:true, maintainAspectRatio:false, animation:false,
         plugins:{ legend:{display:false}, tooltip:{enabled:false} },
         scales:{ x:{display:false}, y:{display:false} }
       }
-    });
-  }
     });
   }
 
