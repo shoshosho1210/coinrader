@@ -207,6 +207,50 @@
 
   .kpi-canvas{ width:100% !important; height:70px !important; margin-top:8px; }
   .kpi-canvas.tall{ height:90px !important; }
+  .kpi-canvas.tiny{ height:46px !important; opacity:.8; }
+
+  /* Sentiment gauge (Fear & Greed 代替) */
+  .sent-gauge-wrap{ display:flex; justify-content:flex-start; align-items:flex-end; gap:14px; margin-top:10px; }
+  .sent-gauge{
+    width:220px; height:110px; position:relative; overflow:hidden;
+    border-radius:220px 220px 0 0;
+    background: conic-gradient(from 180deg,
+      #ef4444 0deg 36deg,
+      #f97316 36deg 72deg,
+      #eab308 72deg 108deg,
+      #22c55e 108deg 144deg,
+      #16a34a 144deg 180deg
+    );
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+  }
+  .sent-gauge::before{
+    content:"";
+    position:absolute; left:12px; right:12px; bottom:-98px;
+    width:auto; height:196px;
+    background: rgba(15,23,42,.92);
+    border-radius:999px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+  }
+  .sent-needle{
+    position:absolute; left:50%; bottom:0;
+    width:2px; height:96px;
+    background: rgba(255,255,255,.92);
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(0deg);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+  }
+  .sent-needle::after{
+    content:"";
+    position:absolute; left:50%; bottom:-6px;
+    width:14px; height:14px;
+    background: rgba(255,255,255,.92);
+    border-radius:999px;
+    transform: translateX(-50%);
+    box-shadow: 0 6px 14px rgba(0,0,0,.35);
+  }
+  .sent-gauge-meta{ display:flex; flex-direction:column; gap:4px; }
+  .sent-gauge-score{ font-size:26px; font-weight:800; letter-spacing:.2px; }
+  .sent-gauge-label{ font-size:12px; color: rgba(229,231,235,.75); }
 
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
   .kpi-meta{ margin-top:6px; font-size:12px; color:#d1d5db; }
@@ -508,8 +552,21 @@
           <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
           <div class="kpi-value" id="kpiSentiment">-</div>
           <div class="kpi-meta" id="kpiSentimentMeta">-</div>
+          <div class="sent-gauge-wrap">
+            <div class="sent-gauge" aria-hidden="true">
+              <div class="sent-gauge-bg">
+                <div class="sent-gauge-inner"></div>
+                <div class="sent-gauge-needle" id="sentNeedle"></div>
+                <div class="sent-gauge-center"></div>
+              </div>
+            </div>
+            <div class="sent-gauge-side">
+              <div class="sent-label" id="sentLabel">-</div>
+              <div class="sent-desc" id="sentDesc">上位250ベースの独自ムード指数</div>
+            </div>
+          </div>
           <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
-          <canvas class="kpi-canvas" id="sentLine"></canvas>
+          <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
         </div>
 
         <div class="kpi">
@@ -1612,6 +1669,9 @@ function getAltVolumeTop5(){
           const elS = document.getElementById('kpiSentiment');
           if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
 
+          // gauge needle + small label
+          updateSentimentGauge(score, label);
+
           const elM = document.getElementById('kpiSentimentMeta');
           if (elM){
             const parts = [];
@@ -1881,6 +1941,18 @@ function makeLineChart(canvasId, labels, series, opts){
         scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero), suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined), suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined) } }
       }
     });
+  }
+
+  // Sentiment gauge needle update (0-100 -> -90..+90deg)
+  function updateSentimentGauge(score, labelText){
+    const needle = document.getElementById('sentNeedle');
+    if (needle){
+      const s = Math.max(0, Math.min(100, Number(score) || 0));
+      const deg = -90 + (180 * (s / 100));
+      needle.style.transform = `translateX(-50%) rotate(${deg}deg)`;
+    }
+    const lb = document.getElementById('sentGaugeLabel');
+    if (lb && labelText != null) lb.textContent = String(labelText);
   }
 
   function makeBaselineChart(canvasId, labels, dataArr){
