@@ -768,6 +768,7 @@ function coinGeckoUrlFor(coin){
   }
 
   function fireCtaClick({ cta_id, placement, partner, pr, link_url }){
+    console.log('fireCtaClick called', {cta_id, placement, partner, pr, link_url, gtag: typeof gtag});
     if (typeof gtag !== 'function') return;
     gtag('event', 'cta_click', {
       cta_id: cta_id || '',
