@@ -93,11 +93,11 @@
   <div class="container">
     <header class="pageHeader" role="banner">
       <a class="brandLink" href="/" aria-label="CoinRader ホーム">
-        <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
+        <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
       </a>
       <div class="pageHeader-right">
-        <a class="headerLink" href="/">ダッシュボード</a>
-        <a class="headerCta" href="/start" data-ga="cta_start_header">始め方</a>
+        <a class="headerLink" href="/" data-ga="nav_dashboard" data-placement="data_sources_header" data-partner="" data-pr="0">ダッシュボード</a>
+        <a class="headerCta" href="/start" data-ga="nav_start" data-placement="data_sources_header" data-partner="" data-pr="0">始め方</a>
       </div>
     </header>
     <div class="card">
@@ -107,7 +107,21 @@
       <div class="sec">
         <h2>データソース</h2>
         <ul class="list">
-          <li>CoinGecko API（価格、時価総額、出来高、ランキング等）</li>
+          <li>CoinGecko API（価格、時価総額、出来高、ランキング等）
+  <span style="opacity:.85;">—</span>
+  <a href="https://www.coingecko.com/" target="_blank" rel="noopener"
+     data-ga="ext_coingecko_site"
+     data-placement="data_sources_section_sources"
+     data-partner="coingecko"
+     data-pr="0">公式</a>
+  /
+  <a href="https://docs.coingecko.com/" target="_blank" rel="noopener"
+     data-ga="ext_coingecko_api_docs"
+     data-placement="data_sources_section_sources"
+     data-partner="coingecko"
+     data-pr="0">API Docs</a>
+</li>
+
         </ul>
         <div class="note">各データの権利は提供元に帰属します。</div>
       </div>
@@ -130,15 +144,16 @@
 
     <footer class="footer">
       <div class="links">
-        <a href="/about">運営者情報</a>
-        <a href="/disclaimer">免責事項</a>
-        <a href="/data-sources">データソース</a>
-        <a href="/ads-pr">広告・PR表記</a>
-        <a href="/privacy">プライバシーポリシー</a>
-        <a href="/contact">お問い合わせ</a>
+        <a href="/about" data-ga="nav_about" data-placement="data_sources_footer" data-partner="" data-pr="0">運営者情報</a>
+        <a href="/disclaimer" data-ga="nav_disclaimer" data-placement="data_sources_footer" data-partner="" data-pr="0">免責事項</a>
+        <a href="/data-sources" data-ga="nav_data_sources" data-placement="data_sources_footer" data-partner="" data-pr="0">データソース</a>
+        <a href="/ads-pr" data-ga="nav_ads_pr" data-placement="data_sources_footer" data-partner="" data-pr="0">広告・PR表記</a>
+        <a href="/privacy" data-ga="nav_privacy" data-placement="data_sources_footer" data-partner="" data-pr="0">プライバシーポリシー</a>
+        <a href="/contact" data-ga="nav_contact" data-placement="data_sources_footer" data-partner="" data-pr="0">お問い合わせ</a>
       </div>
       <div class="note">© CoinRader</div>
     </footer>
   </div>
+  <script src="/assets/click_tracker.js" defer></script>
 </body>
 </html>
