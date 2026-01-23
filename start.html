@@ -245,19 +245,29 @@
     </footer>
   </div>
 
-  <!-- クリック計測（data-ga 付きリンクのみ） -->
-  <script>
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[data-ga]');
-    if(!a) return;
-    if(window.gtag){
-      gtag('event', 'click', {
-        event_category: 'cta',
-        event_label: a.getAttribute('data-ga'),
-        link_url: a.href
-      });
-    }
-  });
-  </script>
+<!-- クリック計測（data-ga 付きリンクのみ） -->
+<script>
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[data-ga]');
+  if (!a) return;
+
+  const cta_id = a.dataset.ga || '';
+  const placement = a.dataset.placement || '';
+  const partner = a.dataset.partner || '';
+  const pr = Number(a.dataset.pr || 0);
+  const link_url = a.href || '';
+
+  if (typeof gtag === 'function') {
+    gtag('event', 'cta_click', {
+      cta_id,
+      placement,
+      partner,
+      pr,
+      link_url,
+      transport_type: 'beacon'
+    });
+  }
+}, true);
+</script>
 </body>
 </html>
