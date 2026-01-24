@@ -625,9 +625,9 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
   }
   .mini-rsi-zone{ position:absolute; top:0; bottom:0; }
-  .mini-rsi-zone.low{ left:0; width:30%; background:rgba(239,68,68,0.32); }
-  .mini-rsi-zone.mid{ left:30%; width:40%; background:rgba(56,189,248,0.18); }
-  .mini-rsi-zone.high{ left:70%; width:30%; background:rgba(34,197,94,0.28); }
+  .mini-rsi-zone.low{ left:0; width:30%; background:rgba(239,68,68,0.46); }
+  .mini-rsi-zone.mid{ left:30%; width:40%; background:rgba(56,189,248,0.28); }
+  .mini-rsi-zone.high{ left:70%; width:30%; background:rgba(34,197,94,0.42); }
   .mini-rsi-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.45); }
   .mini-rsi-th.t30{ left:30%; }
   .mini-rsi-th.t70{ left:70%; }
@@ -638,7 +638,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     border-radius:50%;
     transform:translate(-50%,-50%);
     background:rgba(226,232,240,0.98);
-    box-shadow:0 0 0 3px rgba(56,189,248,0.35), 0 0 14px rgba(56,189,248,0.55);
+    box-shadow:0 0 0 3px rgba(56,189,248,0.48), 0 0 18px rgba(56,189,248,0.70);
     animation: glowPulse 2.4s ease-in-out infinite;
     left:50%;
   }
@@ -653,10 +653,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
   }
   .mini-sent-zone{ position:absolute; top:0; bottom:0; }
-  .mini-sent-zone.fear{ left:0; width:25%; background:rgba(239,68,68,0.32); }
-  .mini-sent-zone.caution{ left:25%; width:25%; background:rgba(245,158,11,0.30); }
-  .mini-sent-zone.neutral{ left:50%; width:25%; background:rgba(56,189,248,0.18); }
-  .mini-sent-zone.greed{ left:75%; width:25%; background:rgba(34,197,94,0.28); }
+  .mini-sent-zone.fear{ left:0; width:25%; background:rgba(239,68,68,0.46); }
+  .mini-sent-zone.caution{ left:25%; width:25%; background:rgba(245,158,11,0.44); }
+  .mini-sent-zone.neutral{ left:50%; width:25%; background:rgba(56,189,248,0.28); }
+  .mini-sent-zone.greed{ left:75%; width:25%; background:rgba(34,197,94,0.42); }
   .mini-sent-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.40); }
   .mini-sent-th.t25{ left:25%; }
   .mini-sent-th.t50{ left:50%; }
@@ -668,7 +668,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     border-radius:50%;
     transform:translate(-50%,-50%);
     background:rgba(226,232,240,0.98);
-    box-shadow:0 0 0 3px rgba(56,189,248,0.32), 0 0 14px rgba(56,189,248,0.55);
+    box-shadow:0 0 0 3px rgba(56,189,248,0.46), 0 0 18px rgba(56,189,248,0.70);
     animation: glowPulse 2.4s ease-in-out infinite;
     left:50%;
   }
@@ -681,13 +681,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     justify-content:center;
     opacity:0.95;
   }
-  .mini-donut svg{ width:44px; height:44px; display:block; }
+  .mini-donut svg{ width:60px; height:60px; display:block; }
   .mini-donut .bg{ stroke:rgba(148,163,184,0.18); }
   .mini-donut .seg-btc{ stroke:rgba(250,204,21,0.90); }
   .mini-donut .seg-eth{ stroke:rgba(96,165,250,0.90); }
   .mini-donut .seg-stb{ stroke:rgba(52,211,153,0.85); }
   .mini-donut .seg-oth{ stroke:rgba(148,163,184,0.65); }
-  .mini-donut circle{ fill:none; stroke-width:6; stroke-linecap:butt; }
+  .mini-donut circle{ fill:none; stroke-width:7; stroke-linecap:butt; }
   .mini-donut .rot{ transform:rotate(-90deg); transform-origin:50% 50%; }
   .kpi-with-donut{
     display:flex;
@@ -832,7 +832,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
       <div class="kpi-tile-big" id="sumMcapMain">-</div>
       <div class="kpi-tile-sub" id="sumMcapSub">-</div>
-    </div>
+          <div class="mini-spark mini-vis" aria-hidden="true" title="セッション内推移（上位250 時価総額の合計）">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path id="sumMcapSparkFill" class="fill" d=""></path>
+          <polyline id="sumMcapSparkLine" class="line" points=""></polyline>
+        </svg>
+      </div>
+</div>
   </div>
 
   <div class="summary-lists">
@@ -1419,7 +1425,8 @@ function coinGeckoUrlFor(coin){
   let trendingCoins = [];
   let summaryAvgSeries = null; // for top sparkline (avg return 7d series)
 
-  const EXCLUDE_MCAP_IDS = new Set([
+    let summaryMcapSeries = []; // session sparkline (total market cap top250)
+const EXCLUDE_MCAP_IDS = new Set([
     "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
     "pax-dollar","frax"
   ]);
@@ -1934,6 +1941,43 @@ function getAltVolumeTop5(){
       zero.style.display = 'none';
     }
   }
+
+  function updateSummaryMcapSpark(arr){
+    const line = document.getElementById('sumMcapSparkLine');
+    const fill = document.getElementById('sumMcapSparkFill');
+    if(!line || !fill) return;
+
+    if(!Array.isArray(arr) || arr.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      return;
+    }
+    const raw = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    if(raw.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      return;
+    }
+    let min = Math.min(...raw);
+    let max = Math.max(...raw);
+    if(min === max){ min *= 0.999; max *= 1.001; }
+
+    const W = 100, H = 30, pad = 2;
+    const top = pad, bottom = H - pad;
+
+    const pts = raw.map((v,i)=>{
+      const x = (i/(raw.length-1)) * W;
+      const y = bottom - ((v - min)/(max - min)) * (bottom - top);
+      return [x,y];
+    });
+
+    const points = pts.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
+    line.setAttribute('points', points);
+
+    const path = `M ${pts[0][0].toFixed(2)} ${bottom.toFixed(2)} L ${pts.map(p=>`${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')} L ${pts[pts.length-1][0].toFixed(2)} ${bottom.toFixed(2)} Z`;
+    fill.setAttribute('d', path);
+  }
+
 
   function buildOverview(){
     const arr = marketsTop || [];
@@ -2460,7 +2504,14 @@ function getAltVolumeTop5(){
       updateSummaryRsiBar(lastRsiVal);
       const v3 = (o && o.values && o.values.length>3 && isFinite(o.values[3])) ? o.values[3] : null; // others cap
       updateSummaryDomDonut([v0, v1, v2, v3]);
+      // Session sparkline (total market cap)
+      if(totalMc!=null){
+        if(!Array.isArray(summaryMcapSeries)) summaryMcapSeries = [];
+        summaryMcapSeries.push(totalMc);
+        if(summaryMcapSeries.length > 240) summaryMcapSeries.shift();
+      }
       updateSummaryAvgSpark(summaryAvgSeries);
+      updateSummaryMcapSpark(summaryMcapSeries);
 
     })();
 
