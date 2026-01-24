@@ -580,6 +580,37 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .summary-lists{ grid-template-columns: 1fr; }
 }
 
+
+.summary-right-wrap{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  white-space:nowrap;
+}
+.summary-ext{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:22px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.02);
+  font-size: 12px;
+  opacity:.9;
+}
+.summary-ext:hover{ background: rgba(255,255,255,0.06); }
+.flash{
+  outline: 2px solid rgba(125,211,252,0.9);
+  outline-offset: 2px;
+  animation: flashPulse 1.2s ease-in-out 0s 1;
+}
+@keyframes flashPulse{
+  0%{ box-shadow: 0 0 0 rgba(125,211,252,0.0); }
+  40%{ box-shadow: 0 0 18px rgba(125,211,252,0.45); }
+  100%{ box-shadow: 0 0 0 rgba(125,211,252,0.0); }
+}
+
 </style>
 </head>
 <body>
@@ -2594,7 +2625,10 @@ function makeLineChart(canvasId, labels, series, opts){
       const card = document.createElement('div');
       card.className = `card ${trendClass}`;
 
-      const placementMap = {
+      
+      card.dataset.coinId = (coin && coin.id) ? coin.id : '';
+      card.dataset.sectionKey = sectionKey;
+const placementMap = {
         trend: 'index_card_trend',
         gainers: 'index_card_gainers',
         volume: 'index_card_volume',
@@ -2721,7 +2755,6 @@ function makeLineChart(canvasId, labels, series, opts){
     });
   }
 
-  
   function renderQuickSummary(){
     const rankIcon = (i)=> (i===0?'🥇':(i===1?'🥈':(i===2?'🥉':String(i+1))));
     const pctText = (n)=>{
@@ -2730,7 +2763,38 @@ function makeLineChart(canvasId, labels, series, opts){
     };
     const safeTxt = (s)=> (s==null || s==='') ? '—' : String(s);
 
-    function fillList(listId, coins){
+    const esc = (s)=>{
+      try{ return (window.CSS && CSS.escape) ? CSS.escape(s) : String(s).replace(/["\\]/g,''); }
+      catch(_){ return String(s); }
+    };
+
+    function openCoinGecko(coin){
+      const url = coinGeckoUrlFor(coin);
+      try{
+        fireCtaClick({
+          cta_id: 'summary_open',
+          placement: 'index_summary',
+          partner: 'coingecko',
+          pr: 0,
+          link_url: url
+        });
+      }catch(_){}
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function scrollToCoin(gridId, coin){
+      const grid = document.getElementById(gridId);
+      if (!grid) return;
+      const cid = (coin && coin.id) ? coin.id : '';
+      let card = cid ? grid.querySelector(`[data-coin-id="${esc(cid)}"]`) : null;
+      if (!card) card = grid.querySelector('.card');
+      if (!card) return;
+      card.scrollIntoView({ behavior:'smooth', block:'center' });
+      card.classList.add('flash');
+      setTimeout(()=>{ try{ card.classList.remove('flash'); }catch(_e){} }, 1300);
+    }
+
+    function fillList(listId, coins, gridId){
       const ol = document.getElementById(listId);
       if (!ol) return;
       ol.innerHTML = '';
@@ -2761,35 +2825,41 @@ function makeLineChart(canvasId, labels, series, opts){
         left.appendChild(r);
         left.appendChild(sym);
 
-        const right = document.createElement('span');
+        const wrap = document.createElement('span');
+        wrap.className = 'summary-right-wrap';
+
+        const pct = document.createElement('span');
         const chg = coin.price_change_percentage_24h;
-        right.className = 'summary-right ' + ((typeof chg === 'number') ? (chg>=0?'positive':'negative') : '');
-        right.textContent = pctText(chg);
+        pct.className = 'summary-right ' + ((typeof chg === 'number') ? (chg>=0?'positive':'negative') : '');
+        pct.textContent = pctText(chg);
+
+        const ext = document.createElement('span');
+        ext.className = 'summary-ext';
+        ext.title = 'CoinGeckoで開く';
+        ext.textContent = '↗';
+        ext.onclick = (ev)=>{
+          ev.stopPropagation();
+          openCoinGecko(coin);
+        };
+
+        wrap.appendChild(pct);
+        wrap.appendChild(ext);
 
         li.appendChild(left);
-        li.appendChild(right);
+        li.appendChild(wrap);
 
+        // main click: scroll to the detailed section/card (keep user on site)
         li.onclick = ()=>{
-          const url = coinGeckoUrlFor(coin);
-          try{
-            fireCtaClick({
-              cta_id: 'summary_open',
-              placement: 'index_summary',
-              partner: 'coingecko',
-              pr: 0,
-              link_url: url
-            });
-          }catch(_){}
-          window.open(url, '_blank', 'noopener');
+          scrollToCoin(gridId, coin);
         };
 
         ol.appendChild(li);
       });
     }
 
-    fillList('summaryTrendList', trendingCoins);
-    fillList('summaryUpList', getGainersTop5());
-    fillList('summaryVolAltList', getAltVolumeTop5());
+    fillList('summaryTrendList', trendingCoins, 'grid-trend');
+    fillList('summaryUpList', getGainersTop5(), 'grid-gainers');
+    fillList('summaryVolAltList', getAltVolumeTop5(), 'grid-alt-volume');
   }
 
 function renderAll(){
