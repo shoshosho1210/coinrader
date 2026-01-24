@@ -529,6 +529,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   gap: 12px;
   margin-top: 10px;
 }
+@media (max-width:560px){
+  .summary-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .summary-kpis .kpi-tile:last-child{grid-column:1/-1;}
+  .overview-note{display:none;}
+}
+
 .summary-lists{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -757,6 +763,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     background:rgba(148,163,184,0.16);
     box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
   }
+.mini-dom-track--overview{height:12px;max-width:240px;margin:10px auto 0;}
+
   .mini-dom-seg{ position:absolute; top:0; bottom:0; left:0; width:0%; }
   .mini-dom-seg.btc{ background:rgba(250,204,21,0.90); }
   .mini-dom-seg.eth{ background:rgba(96,165,250,0.90); }
@@ -820,7 +828,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
       <a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
       <a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
-      <a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
+      <a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
     </nav>
   <div class="sideMenuFooter">
     <a class="sideNavLink" href="/start">始め方</a>
@@ -835,74 +843,29 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   <div class="section-header">
     <div>
       <div class="section-title">今日の注目</div>
-      <div class="section-sub">市場の空気（KPI）と、いま見られている/動いている/資金が集まっている銘柄を最短で確認できます。</div>
+      <div class="section-sub">市場の空気（KPI）と注目銘柄を素早く確認できます。</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
+      <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
     </div>
   </div>
 
   <div class="summary-kpis" id="summaryKpis">
     <div class="kpi-tile">
-      <div class="kpi-tile-title">恐怖指数（0–100）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
-      <div class="mini-vis" aria-hidden="true">
-        <div class="mini-sent-track">
-          <div class="mini-sent-zone fear"></div>
-          <div class="mini-sent-zone caution"></div>
-          <div class="mini-sent-zone neutral"></div>
-          <div class="mini-sent-zone greed"></div>
-          <div class="mini-sent-th t25"></div>
-          <div class="mini-sent-th t50"></div>
-          <div class="mini-sent-th t75"></div>
-          <div class="mini-sent-marker" id="sumSentMarker"></div>
-        </div>
-      </div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">BTC RSI（14）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
-      <div class="mini-vis" aria-hidden="true">
-        <div class="mini-rsi-track">
-          <div class="mini-rsi-zone low"></div>
-          <div class="mini-rsi-zone mid"></div>
-          <div class="mini-rsi-zone high"></div>
-          <div class="mini-rsi-th t30"></div>
-          <div class="mini-rsi-th t70"></div>
-          <div class="mini-rsi-marker" id="sumRsiMarker"></div>
-        </div>
-      </div>
-    </div>
-    <div class="kpi-tile">
       <div class="kpi-tile-title">BTC ドミナンス</div>
       <div class="kpi-with-donut">
         <div class="kpi-text">
           <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
-        </div>
-        <div class="mini-dom-bar mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
-          <div class="mini-dom-track" role="img" aria-label="Dominance bar">
-            <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
-            <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
-            <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
-            <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
-            <div class="mini-dom-tick t50"><span>50</span></div>
-            <div class="mini-dom-tick t60"><span>60</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="kpi-tile">
+<div class="kpi-tile">
+      <div class="kpi-tile-title">恐怖指数（0–100）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+<div class="kpi-tile">
+      <div class="kpi-tile-title">BTC RSI（14）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+<div class="kpi-tile">
       <div class="kpi-tile-title">上位250 平均（24h）</div>
       <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
-      <div class="mini-spark mini-vis" aria-hidden="true" title="7d推移（平均リターン）のスパークライン">
-        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-          <path id="sumAvgSparkFill" class="fill" d=""></path>
-          <line id="sumAvgSparkZero" class="zero" x1="0" y1="15" x2="100" y2="15"></line>
-          <polyline id="sumAvgSparkLine" class="line" points=""></polyline>
-        </svg>
-      </div>
-    </div>
-    <div class="kpi-tile">
+<div class="kpi-tile">
       <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
       <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
       <div class="mini-vis" aria-hidden="true" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。">
@@ -1020,7 +983,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <section id="sec-overview">
   <div class="section-header">
     <div>
-      <div class="section-title">Market Overview</div>
+      <div class="section-title">市場概況</div>
       <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
     </div>
     <div class="section-actions">
@@ -1066,10 +1029,17 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
   <div class="overview is-collapsed" id="overviewWrap">
     <div class="overview-card">
-      <div class="donut-wrap"><canvas id="domChart"></canvas></div>
-      <div class="dom-metrics" id="domMetrics">-</div>
-      <div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
-    </div>
+  <div class="mini-dom-bar mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
+  <div class="mini-dom-track mini-dom-track--overview" role="img" aria-label="Dominance bar">
+    <div class="mini-dom-seg btc" id="ovDomSegBtc"></div>
+    <div class="mini-dom-seg eth" id="ovDomSegEth"></div>
+    <div class="mini-dom-seg stb" id="ovDomSegStb"></div>
+    <div class="mini-dom-seg oth" id="ovDomSegOth"></div>
+  </div>
+</div>
+  <div class="dom-metrics" id="domMetrics">-</div>
+  <div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
+</div>
 
     <div class="overview-card">
       <div class="kpi-grid">
@@ -2526,7 +2496,7 @@ function getAltVolumeTop5(){
       }
     } catch(e) { console.warn('overview series failed', e); }
 
-    drawDonut('domChart', o.labels, o.values);
+    setOverviewDomBarFromCaps(o.values);
     // Dominance text (BTC/ETH/ステーブル/Others)
     try{
       const domEl = document.getElementById('domMetrics');
