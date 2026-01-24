@@ -2088,9 +2088,10 @@ function makeLineChart(canvasId, labels, series, opts){
       { a0: 36,  a1: 0,   color: "#22c55e" }, // 80-100
     ];
 
+    // NOTE: SVGはY軸が下方向に増えるため、上向きの半円を描くには sin を反転する
     const polar = (deg) => {
       const rad = (deg * Math.PI) / 180;
-      return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+      return [cx + r * Math.cos(rad), cy - r * Math.sin(rad)];
     };
 
     // 「上側の半円」を描くため sweep=0（反時計回り側）で統一
@@ -2133,7 +2134,7 @@ function makeLineChart(canvasId, labels, series, opts){
     const rad = (ang * Math.PI) / 180;
     const nr = r - 18;
     const nx = cx + nr * Math.cos(rad);
-    const ny = cy + nr * Math.sin(rad);
+    const ny = cy - nr * Math.sin(rad);
 
     const needle = document.createElementNS(svgNS, "line");
     needle.setAttribute("x1", String(cx));
