@@ -505,6 +505,81 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   overflow: hidden !important;
 }
 
+
+
+/* ===== Quick Summary (A案) ===== */
+.summary-block{ margin-top: 18px; }
+.summary-kpis{
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.summary-lists{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.summary-card{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px 12px 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.summary-card-title{
+  font-weight: 700;
+  letter-spacing: .2px;
+  margin-bottom: 8px;
+  color: #e5e7eb;
+}
+.summary-ol{
+  margin: 0;
+  padding: 0 0 0 18px;
+}
+.summary-li{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.summary-li:last-child{ border-bottom: 0; }
+.summary-left{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.summary-rank{
+  width: 22px;
+  text-align: center;
+  opacity: .95;
+}
+.summary-symbol{
+  font-weight: 700;
+  white-space: nowrap;
+}
+.summary-right{
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.summary-right.positive{ color: #7dd3fc; } /* existing palette-esque */
+.summary-right.negative{ color: #fb7185; }
+.summary-li.muted{ opacity: .75; }
+.summary-li.clickable{ cursor: pointer; }
+.summary-li.clickable:hover{ background: rgba(255,255,255,0.03); border-radius: 10px; padding-left: 8px; padding-right: 8px; }
+
+/* summary is the new KPI row, so hide the old strip to avoid duplication */
+#overviewKpiStrip{ display:none; }
+
+@media (max-width: 1100px){
+  .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-lists{ grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -550,6 +625,63 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     <a class="sideNavLink" href="/contact">お問い合わせ</a>
   </div>
 </aside>
+
+<section id="sec-summary" class="summary-block" aria-label="今日の注目">
+  <div class="section-header">
+    <div>
+      <div class="section-title">今日の注目</div>
+      <div class="section-sub">市場の空気（KPI）と、いま見られている/動いている/資金が集まっている銘柄を最短で確認できます。</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
+    </div>
+  </div>
+
+  <div class="summary-kpis" id="summaryKpis">
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">恐怖指数（0–100）</div>
+      <div class="kpi-tile-big" id="sumSentMain">-</div>
+      <div class="kpi-tile-sub" id="sumSentSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">BTC RSI（14）</div>
+      <div class="kpi-tile-big" id="sumRsiMain">-</div>
+      <div class="kpi-tile-sub" id="sumRsiSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">BTC ドミナンス</div>
+      <div class="kpi-tile-big" id="sumDomMain">-</div>
+      <div class="kpi-tile-sub" id="sumDomSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">上位250 平均（24h）</div>
+      <div class="kpi-tile-big" id="sumAvg24Main">-</div>
+      <div class="kpi-tile-sub" id="sumAvg24Sub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
+      <div class="kpi-tile-big" id="sumMcapMain">-</div>
+      <div class="kpi-tile-sub" id="sumMcapSub">-</div>
+    </div>
+  </div>
+
+  <div class="summary-lists">
+    <div class="summary-card">
+      <div class="summary-card-title">🔥 Trend TOP5</div>
+      <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">🚀 Up TOP5（24h）</div>
+      <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-title">📊 Vol(Alt) TOP5（24h）</div>
+      <ol class="summary-ol" id="summaryVolAltList"><li class="summary-li muted">データ取得中…</li></ol>
+    </div>
+  </div>
+</section>
+
+
 <section class="cta-block" aria-label="おすすめ取引所導線">
   <div class="cta-inner">
     <div class="cta-text">
@@ -1001,7 +1133,8 @@ function readSnapshot(key){
         else {
           const ow = document.getElementById('overviewWrap');
           if (ow) ow.classList.remove('is-collapsed');
-          setTimeout(()=>{ try{ renderOverview(); }catch(_e){} }, 30);
+          setTimeout(()=>{ try{ renderOverview();
+    renderQuickSummary(); }catch(_e){} }, 30);
         }
       }catch(_e){}
     }
@@ -2520,7 +2653,78 @@ function makeLineChart(canvasId, labels, series, opts){
     });
   }
 
-  function renderAll(){
+  
+  function renderQuickSummary(){
+    const rankIcon = (i)=> (i===0?'🥇':(i===1?'🥈':(i===2?'🥉':String(i+1))));
+    const pctText = (n)=>{
+      if (typeof n !== 'number' || !isFinite(n)) return '—';
+      return (n>=0?'+':'') + n.toFixed(2) + '%';
+    };
+    const safeTxt = (s)=> (s==null || s==='') ? '—' : String(s);
+
+    function fillList(listId, coins){
+      const ol = document.getElementById(listId);
+      if (!ol) return;
+      ol.innerHTML = '';
+
+      if (!coins || !coins.length){
+        const li = document.createElement('li');
+        li.className = 'summary-li muted';
+        li.textContent = '—';
+        ol.appendChild(li);
+        return;
+      }
+
+      coins.slice(0,5).forEach((coin, idx)=>{
+        const li = document.createElement('li');
+        li.className = 'summary-li clickable';
+
+        const left = document.createElement('span');
+        left.className = 'summary-left';
+
+        const r = document.createElement('span');
+        r.className = 'summary-rank';
+        r.textContent = rankIcon(idx);
+
+        const sym = document.createElement('span');
+        sym.className = 'summary-symbol';
+        sym.textContent = safeTxt((coin.symbol || '').toUpperCase() || coin.name || coin.id);
+
+        left.appendChild(r);
+        left.appendChild(sym);
+
+        const right = document.createElement('span');
+        const chg = coin.price_change_percentage_24h;
+        right.className = 'summary-right ' + ((typeof chg === 'number') ? (chg>=0?'positive':'negative') : '');
+        right.textContent = pctText(chg);
+
+        li.appendChild(left);
+        li.appendChild(right);
+
+        li.onclick = ()=>{
+          const url = coinGeckoUrlFor(coin);
+          try{
+            fireCtaClick({
+              cta_id: 'summary_open',
+              placement: 'index_summary',
+              partner: 'coingecko',
+              pr: 0,
+              link_url: url
+            });
+          }catch(_){}
+          window.open(url, '_blank', 'noopener');
+        };
+
+        ol.appendChild(li);
+      });
+    }
+
+    fillList('summaryTrendList', trendingCoins);
+    fillList('summaryUpList', getGainersTop5());
+    fillList('summaryVolAltList', getAltVolumeTop5());
+  }
+
+function renderAll(){
     clearCharts();
     renderInto('grid-trend', trendingCoins, 'trend', 'trend');
     renderInto('grid-gainers', getGainersTop5(), 'gainers', 'gainers');
