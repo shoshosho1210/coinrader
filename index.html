@@ -386,6 +386,31 @@
   }
   /* セクション見出しが固定ヘッダーに隠れない対策 */
   section { scroll-margin-top: 110px; }
+
+
+/* --- Fix sentiment gauge rendering (avoid conic-gradient gaps) --- */
+.sent-gauge-bg, .sent-gauge-inner{ display:none !important; }
+.sent-gauge{ background: none !important; width: 220px; height: 120px; }
+.sent-gauge-svg{ position:absolute; left:0; top:0; width:220px; height:120px; }
+.sent-gauge-needle{ bottom: 10px; height: 62px; }
+.sent-gauge-center{ bottom: 6px; }
+
+/* --- Mobile header compaction --- */
+@media (max-width: 520px){
+  .appHeader{ top: 8px; margin: 0 6px 10px; }
+  .appHeader-inner{ padding: 8px 10px; border-radius: 14px; }
+  .brandLogo{ height: 20px; }
+  .appSubline{ display:none; }
+  .headerNav{ flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .headerNav::-webkit-scrollbar{ display:none; }
+  .btn.tab{ padding: 6px 10px; font-size: 11px; }
+  .appHeader-right{ gap: 6px; }
+  .pill{ padding: 6px 10px; font-size: 11px; }
+  #updatedPill{ display:none; }
+  .btn-cta{ padding: 8px 10px; font-size: 12px; }
+  /* fixed header anchor offset */
+  section{ scroll-margin-top: 92px; }
+}
 </style>
 </head>
 <body>
@@ -555,11 +580,9 @@
           <div class="kpi-meta" id="kpiSentimentMeta">-</div>
           <div class="sent-gauge-wrap">
             <div class="sent-gauge" aria-hidden="true">
-              <div class="sent-gauge-bg">
-                <div class="sent-gauge-inner"></div>
-                <div class="sent-gauge-needle" id="sentNeedle"></div>
-                <div class="sent-gauge-center"></div>
-              </div>
+              <svg class="sent-gauge-svg" viewBox="0 0 220 120" aria-hidden="true"></svg>
+              <div class="sent-gauge-needle" id="sentNeedle"></div>
+              <div class="sent-gauge-center"></div>
             </div>
             <div class="sent-gauge-side">
               <div class="sent-label" id="sentLabel">-</div>
@@ -1945,7 +1968,63 @@ function makeLineChart(canvasId, labels, series, opts){
   }
 
   // Sentiment gauge needle update (0-100 -> -90..+90deg)
-  function updateSentimentGauge(score, labelText){
+  function buildSentimentGaugeSvg(){
+  const svg = document.querySelector('.sent-gauge-svg');
+  if(!svg || svg.dataset.built) return;
+  const ns = 'http://www.w3.org/2000/svg';
+  const cx = 110, cy = 110, r = 86;
+  const stroke = 18;
+  const segs = [
+    {a0:180,a1:144,color:'#ff4d5a'}, // fear
+    {a0:144,a1:108,color:'#ff9d3a'}, // caution
+    {a0:108,a1:72,color:'#ffd84d'}, // neutral
+    {a0:72,a1:36,color:'#2bd76f'}, // greed
+    {a0:36,a1:0,color:'#33c7ff'}, // strong greed
+  ];
+  const polar = (ang)=>{
+    const rad = (ang - 90) * Math.PI / 180;
+    return {x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad)};
+  };
+  const arc = (a0,a1)=>{
+    const start = polar(a1);
+    const end = polar(a0);
+    const largeArc = Math.abs(a1 - a0) > 180 ? 1 : 0;
+    return `M ${start.x.toFixed(3)} ${start.y.toFixed(3)} A ${r} ${r} 0 ${largeArc} 0 ${end.x.toFixed(3)} ${end.y.toFixed(3)}`;
+  };
+  // subtle base outline under segments
+  const outline = document.createElementNS(ns, 'path');
+  outline.setAttribute('d', arc(180,0));
+  outline.setAttribute('fill','none');
+  outline.setAttribute('stroke','rgba(255,255,255,0.10)');
+  outline.setAttribute('stroke-width', String(stroke + 2));
+  outline.setAttribute('stroke-linecap','round');
+  svg.appendChild(outline);
+
+  segs.forEach(s=>{
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', arc(s.a0, s.a1));
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke', s.color);
+    path.setAttribute('stroke-width', String(stroke));
+    path.setAttribute('stroke-linecap','butt');
+    path.setAttribute('opacity','0.95');
+    svg.appendChild(path);
+  });
+
+  // inner cut-out ring to match card background
+  const inner = document.createElementNS(ns, 'path');
+  inner.setAttribute('d', arc(180,0));
+  inner.setAttribute('fill','none');
+  inner.setAttribute('stroke','rgba(12,16,32,0.85)');
+  inner.setAttribute('stroke-width', String(stroke - 6));
+  inner.setAttribute('stroke-linecap','round');
+  svg.appendChild(inner);
+
+  svg.dataset.built='1';
+}
+
+function updateSentimentGauge(score, labelText){
+  buildSentimentGaugeSvg();
     const needle = document.getElementById('sentNeedle');
     if (needle){
       const s = Math.max(0, Math.min(100, Number(score) || 0));
