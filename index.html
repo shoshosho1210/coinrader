@@ -191,6 +191,7 @@
 
   /* Market Overview */
   .overview{ display:grid; grid-template-columns: 1fr; gap:12px; }
+  .overview.is-collapsed{display:none;}
   @media (min-width: 900px){ .overview{ grid-template-columns: 360px 1fr; } }
  
   .overview-card{ background:#111827; border-radius:12px; padding:12px; box-shadow:0 6px 18px rgba(0,0,0,0.45); }
@@ -570,6 +571,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
+      <button class="pillbtn" id="toggleOverviewDetail" type="button" aria-expanded="false">チャートを表示</button>
       <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener" data-ga="ext_coingecko_trending" data-placement="index_trend_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
@@ -649,6 +651,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="kpi-tile-big" id="kpiStripMcapMain">-</div>
       <div class="kpi-tile-sub" id="kpiStripMcapSub">-</div>
     </div>
+
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">Dominance（上位250）</div>
+      <div class="kpi-tile-big" id="kpiStripDomMain">-</div>
+      <div class="kpi-tile-sub" id="kpiStripDomSub">-</div>
+    </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">市場の上昇下落（24h）</div>
       <div class="kpi-tile-big" id="kpiStripBreadthMain">-</div>
@@ -671,7 +679,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
   </div>
 
-  <div class="overview" id="overviewWrap">
+  <div class="overview is-collapsed" id="overviewWrap">
     <div class="overview-card">
       <div class="donut-wrap"><canvas id="domChart"></canvas></div>
       <div class="dom-metrics" id="domMetrics">-</div>
@@ -965,7 +973,8 @@ function readSnapshot(key){
       refreshBtn.textContent = '更新';
     }
     // header height can change slightly on narrow screens when the button label updates
-    try{ syncHeaderHeight(); }catch(_e){}
+    try{ syncHeaderHeight();
+  setupOverviewToggle(); }catch(_e){}
   }
 
   function markRefreshed(){
@@ -1664,6 +1673,25 @@ function getAltVolumeTop5(){
       mcapMain.textContent = yen(o.totalMcap);
       const cls = mcapPct >= 0 ? 'pos' : 'neg';
       mcapSub.innerHTML = `<span class="${cls}">${fmtPct(mcapPct)}</span> / 24h ${yenSigned(mcapAbs)}`;
+
+
+    // KPI strip: dominance
+    try{
+      const domMain = document.getElementById('kpiStripDomMain');
+      const domSub  = document.getElementById('kpiStripDomSub');
+      if(domMain && domSub && Array.isArray(o.values) && o.values.length>=2){
+        const total = o.values.reduce((a,b)=>a+(Number.isFinite(+b)?+b:0),0);
+        if(total>0){
+          const btc = (+o.values[0]/total*100);
+          const eth = (+o.values[1]/total*100);
+          const st  = (o.values.length>2? (+o.values[2]/total*100) : 0);
+          domMain.textContent = `BTC ${btc.toFixed(1)}%`;
+          domSub.textContent  = `ETH ${eth.toFixed(1)}% / ステーブル ${st.toFixed(1)}%`;
+        }else{
+          domMain.textContent='-'; domSub.textContent='-';
+        }
+      }
+    }catch(_){}
     }
 
     const brMain = document.getElementById('kpiStripBreadthMain');
@@ -2577,7 +2605,44 @@ function makeLineChart(canvasId, labels, series, opts){
   }
 
   // 初回ロード
-  (function boot(){
+  (function setupOverviewToggle(){
+  const btn = document.getElementById('toggleOverviewDetail');
+  const wrap = document.getElementById('overviewWrap');
+  if(!btn || !wrap) return;
+
+  const key = 'cr_overview_detail';
+  const saved = localStorage.getItem(key);
+  const show = saved === '1';
+
+  const apply = (shouldShow)=>{
+    wrap.classList.toggle('is-collapsed', !shouldShow);
+    btn.textContent = shouldShow ? 'チャートを隠す' : 'チャートを表示';
+    btn.setAttribute('aria-expanded', shouldShow ? 'true' : 'false');
+
+    // When showing, nudge Chart.js canvases to recalc layout
+    if(shouldShow){
+      setTimeout(()=>{
+        try{
+          // Chart.js resize hooks
+          [domChart, breadthChart, avgChart, rsiChart, mcapChart, volChart].forEach(ch=>{
+            if(ch && typeof ch.resize === 'function') ch.resize();
+          });
+        }catch(_){}
+      }, 60);
+    }
+  };
+
+  apply(show);
+
+  btn.addEventListener('click', ()=>{
+    const nowShow = wrap.classList.contains('is-collapsed');
+    // if collapsed -> show
+    apply(nowShow);
+    localStorage.setItem(key, nowShow ? '1' : '0');
+  });
+}
+
+function boot(){
     syncHeaderHeight();
 tickRefreshButton();
     startUpdatedTicker();
