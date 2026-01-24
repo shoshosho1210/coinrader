@@ -1972,8 +1972,8 @@ function getAltVolumeTop5(){
       set('kpiStripBreadthSub', upRate==null ? null : `上昇率 ${upRate.toFixed(1)}%`);
 
       // Avg/Median 7d
-      set('kpiStripAvg7Main', avg7==null ? null : `平均 ${avg7.toFixed(2)}%`);
-      set('kpiStripAvg7Sub',  med7==null ? null : `中央値 ${med7.toFixed(2)}%`);
+      set('kpiStripAvgMain', avg7==null ? null : `平均 ${avg7.toFixed(2)}%`);
+      set('kpiStripAvgSub',  med7==null ? null : `中央値 ${med7.toFixed(2)}%`);
 
       // RSI
       const rsiMain = (typeof lastRsiVal==='number' && isFinite(lastRsiVal)) ? lastRsiVal.toFixed(1) : null;
@@ -1982,7 +1982,7 @@ function getAltVolumeTop5(){
       set('kpiStripRsiSub', rsiMain==null ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立')));
 
       // Sentiment
-      set('kpiStripSentMain', (sentScore==null) ? null : String(sentScore));
+      set('kpiStripSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
       set('kpiStripSentSub', sentLabel);
     })();
 
