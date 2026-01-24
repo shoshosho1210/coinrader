@@ -254,6 +254,17 @@
   .sent-gauge-score{ font-size:26px; font-weight:800; letter-spacing:.2px; }
   .sent-gauge-label{ font-size:12px; color: rgba(229,231,235,.75); }
 
+
+  /* --- Market Overview KPI strip (CMC-like quick glance) --- */
+  .overview-kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0 14px;}
+  .kpi-tile{background:#0b1224;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px 12px;}
+  .kpi-tile-title{font-size:11px;color:#9ca3af;letter-spacing:.02em;}
+  .kpi-tile-big{margin-top:6px;font-size:18px;font-weight:800;color:#f9fafb;line-height:1.1;}
+  .kpi-tile-sub{margin-top:4px;font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kpi-tile-sub .pos{color:#4ade80;font-weight:700;}
+  .kpi-tile-sub .neg{color:#f87171;font-weight:700;}
+  @media (max-width: 520px){ .overview-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .kpi-tile-big{font-size:16px;} }
+
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
   .kpi-meta{ margin-top:6px; font-size:12px; color:#d1d5db; }
 
@@ -628,6 +639,35 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
     <div class="section-actions">
       <a class="linkbtn" href="https://www.coingecko.com" target="_blank" rel="noopener" data-ga="ext_coingecko_home" data-placement="index_overview_header" data-partner="coingecko" data-pr="0">もっと見る</a>
+    </div>
+  </div>
+
+
+  <div class="overview-kpi-strip" id="overviewKpiStrip">
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
+      <div class="kpi-tile-big" id="kpiStripMcapMain">-</div>
+      <div class="kpi-tile-sub" id="kpiStripMcapSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">市場の上昇下落（24h）</div>
+      <div class="kpi-tile-big" id="kpiStripBreadthMain">-</div>
+      <div class="kpi-tile-sub" id="kpiStripBreadthSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">平均 / 中央値（7d）</div>
+      <div class="kpi-tile-big" id="kpiStripAvgMain">-</div>
+      <div class="kpi-tile-sub" id="kpiStripAvgSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">BTC RSI（14 / 7d）</div>
+      <div class="kpi-tile-big" id="kpiStripRsiMain">-</div>
+      <div class="kpi-tile-sub" id="kpiStripRsiSub">-</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">CoinRader Sentiment（0–100）</div>
+      <div class="kpi-tile-big" id="kpiStripSentMain">-</div>
+      <div class="kpi-tile-sub" id="kpiStripSentSub">-</div>
     </div>
   </div>
 
@@ -1595,6 +1635,50 @@ function getAltVolumeTop5(){
     // Totals
     document.getElementById('kpiTotalMcap').textContent = yen(o.totalMcap);
     document.getElementById('kpiTotalVol').textContent = yen(o.totalVol);
+
+    // KPI strip (quick-glance)
+    const mcapPct = o.mcap24hPct;
+    const mcapAbs = o.mcap24hAbs;
+    const upPct2 = (breadthUp + breadthDown) > 0 ? (breadthUp/(breadthUp + breadthDown))*100 : 0;
+    const sentScore = sentimentScore;
+    const sentLabel = sentimentLabel;
+
+    const mcapMain = document.getElementById('kpiStripMcapMain');
+    const mcapSub  = document.getElementById('kpiStripMcapSub');
+    if(mcapMain && mcapSub){
+      mcapMain.textContent = yen(o.totalMcap);
+      const cls = mcapPct >= 0 ? 'pos' : 'neg';
+      mcapSub.innerHTML = `<span class="${cls}">${fmtPct(mcapPct)}</span> / 24h ${yenSigned(mcapAbs)}`;
+    }
+
+    const brMain = document.getElementById('kpiStripBreadthMain');
+    const brSub  = document.getElementById('kpiStripBreadthSub');
+    if(brMain && brSub){
+      brMain.textContent = `${upPct2.toFixed(1)}%`;
+      brSub.textContent = `上昇 ${breadthUp} / 下落 ${breadthDown}`;
+    }
+
+    const avgMain = document.getElementById('kpiStripAvgMain');
+    const avgSub  = document.getElementById('kpiStripAvgSub');
+    if(avgMain && avgSub){
+      avgMain.textContent = `${fmtPct(avg7d)} / ${fmtPct(med7d)}`;
+      avgSub.textContent  = '上位250の7日リターン';
+    }
+
+    const rsiMain = document.getElementById('kpiStripRsiMain');
+    const rsiSub  = document.getElementById('kpiStripRsiSub');
+    if(rsiMain && rsiSub){
+      rsiMain.textContent = `${btcRsi.toFixed(1)} (${rsiLabel})`;
+      rsiSub.textContent  = 'BTCのRSIを簡易算出';
+    }
+
+    const sMain = document.getElementById('kpiStripSentMain');
+    const sSub  = document.getElementById('kpiStripSentSub');
+    if(sMain && sSub){
+      sMain.textContent = `${Math.round(sentScore)} (${sentLabel})`;
+      sSub.textContent  = '上位250ベースの独自指数';
+    }
+
 
     // Market cap 24h change (estimate)
     const mcap24hEl = document.getElementById('kpiMcap24h');
