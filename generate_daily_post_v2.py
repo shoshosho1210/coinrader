@@ -195,7 +195,9 @@ def write_share_html(date_compact: str, date_dash: str) -> str:
     SHARE_DIR.mkdir(parents=True, exist_ok=True)
     share_path = SHARE_DIR / f"{date_compact}.html"
     share_url = f"{BASE_URL}/share/{date_compact}.html"
-    og_img = f"{BASE_URL}/assets/og/ogp.png?v={date_compact}"
+    # cache bust: XのOG画像キャッシュ対策（毎回URLを変える）
+    cache_bust = dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).strftime("%Y%m%d%H%M%S")
+    og_img = f"{BASE_URL}/assets/og/ogp.png?v={cache_bust}"
 
     html = f"""<!doctype html>
 <html lang="ja">
