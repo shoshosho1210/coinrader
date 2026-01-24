@@ -243,10 +243,21 @@ def main() -> None:
 
     lines = [
         f"【今日の注目 {date_dash}】",
-        f"🔥Trend: {fmt_ranked_slash(trend)}",
-        f"🚀Up(24h): {fmt_ranked_pipes(up)}",
-        f"📊Vol(アルト): {fmt_ranked_slash(vol_alt)}",
-        f"→ {link} #暗号資産 #ビットコイン",
+        "🔥Trend",
+        f"{RANK_EMOJI[0]} {trend[0]}",
+        f"{RANK_EMOJI[1]} {trend[1]}",
+        f"{RANK_EMOJI[2]} {trend[2]}",
+        "",
+        "🚀Up(24h)",
+        f"{RANK_EMOJI[0]} {up[0]}",
+        f"{RANK_EMOJI[1]} {up[1]}",
+        f"{RANK_EMOJI[2]} {up[2]}",
+        "",
+        "📊Vol(アルト)",
+        f"{RANK_EMOJI[0]} {vol_alt[0]}",
+        f"{RANK_EMOJI[1]} {vol_alt[1]}",
+        f"{RANK_EMOJI[2]} {vol_alt[2]}",
+        f"→ {link} #暗号資産",
     ]
 
     text = "\n".join(lines)
