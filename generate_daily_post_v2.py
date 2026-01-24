@@ -208,6 +208,13 @@ def build_post():
     )
 
     # X向け（見やすさ優先：改行＋絵文字。出来高はアルトを表示）
+
+    def format_rank_emojis(items: list[str], sep: str = " / ") -> str:
+        parts = []
+        for idx, it in enumerate(items, start=1):
+            parts.append(f"{rank_emoji(idx)} {it}")
+        return sep.join(parts)
+
     def build_short(n_trend=3, n_up=3, n_vol=3) -> str:
         up_parts = []
         for x in gain_top[:n_up]:
@@ -216,9 +223,11 @@ def build_post():
             up_parts.append(f"{sym} {pct:+.1f}%")
         short = (
             f"【今日の注目 {today}】\n"
-            f"🔥Trend: {' / '.join(trend_items[:n_trend])}\n"
+                        f"🔥Trend: {format_rank_emojis(trend_items[:n_trend], sep=' / ')}
+"
             f"🚀Up(24h,出来高≥5億円優先): {' | '.join(up_parts)}\n"
-            f"📊Vol(アルト): {' / '.join(vol_alt_syms[:n_vol])}\n"
+                        f"📊Vol(アルト): {format_rank_emojis(vol_alt_syms[:n_vol], sep=' / ')}
+"
             f"→ {post_url} #暗号資産"
         )
         return short
