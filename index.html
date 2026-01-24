@@ -254,17 +254,6 @@
   .sent-gauge-score{ font-size:26px; font-weight:800; letter-spacing:.2px; }
   .sent-gauge-label{ font-size:12px; color: rgba(229,231,235,.75); }
 
-
-  /* --- Market Overview KPI strip (CMC-like quick glance) --- */
-  .overview-kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0 14px;}
-  .kpi-tile{background:#0b1224;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px 12px;}
-  .kpi-tile-title{font-size:11px;color:#9ca3af;letter-spacing:.02em;}
-  .kpi-tile-big{margin-top:6px;font-size:18px;font-weight:800;color:#f9fafb;line-height:1.1;}
-  .kpi-tile-sub{margin-top:4px;font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .kpi-tile-sub .pos{color:#4ade80;font-weight:700;}
-  .kpi-tile-sub .neg{color:#f87171;font-weight:700;}
-  @media (max-width: 520px){ .overview-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .kpi-tile-big{font-size:16px;} }
-
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
   .kpi-meta{ margin-top:6px; font-size:12px; color:#d1d5db; }
 
@@ -642,35 +631,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
   </div>
 
-
-  <div class="overview-kpi-strip" id="overviewKpiStrip">
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
-      <div class="kpi-tile-big" id="kpiStripMcapMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripMcapSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">市場の上昇下落（24h）</div>
-      <div class="kpi-tile-big" id="kpiStripBreadthMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripBreadthSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">平均 / 中央値（7d）</div>
-      <div class="kpi-tile-big" id="kpiStripAvgMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripAvgSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">BTC RSI（14 / 7d）</div>
-      <div class="kpi-tile-big" id="kpiStripRsiMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripRsiSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">CoinRader Sentiment（0–100）</div>
-      <div class="kpi-tile-big" id="kpiStripSentMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripSentSub">-</div>
-    </div>
-  </div>
-
   <div class="overview" id="overviewWrap">
     <div class="overview-card">
       <div class="donut-wrap"><canvas id="domChart"></canvas></div>
@@ -867,8 +827,8 @@ const LS_KEYS = {
   markets: "cg_marketsTop250_jpy_v1",
   trendingIds: "cg_trendingTop5_ids_v1",
   trendingSnapshot: "cg_trendingTop5_snapshot_v1",
-  gainersSnapshot: "cg_gainersTop5_snapshot_v4",
-  volumeSnapshot: "cg_volumeTop5_snapshot_v3",
+  gainersSnapshot: "cg_gainersTop5_snapshot_v3",
+  volumeSnapshot: "cg_volumeTop5_snapshot_v2",
   altVolumeSnapshot: "cg_altVolumeTop5_snapshot_v1",
   mcapSnapshot: "cg_mcapTop20_snapshot_v2",
   lastFetch: "cg_last_fetch_at_v1",
@@ -933,26 +893,11 @@ function writeSnapshot(key, coins){
   }catch(e){}
 }
 
-function normalizeSnapshotCoin(c){
-  if (!c || typeof c !== 'object') return c;
-  // Backward compatibility: older cached snapshots stored sparkline as `sparkline_in_7d_price` (array)
-  // or `sparkline_in_7d` directly as an array.
-  if (!c.sparkline_in_7d) {
-    if (Array.isArray(c.sparkline_in_7d_price)) c.sparkline_in_7d = { price: c.sparkline_in_7d_price };
-    else if (Array.isArray(c.sparkline)) c.sparkline_in_7d = { price: c.sparkline };
-    else if (Array.isArray(c.sparkline_in_7d)) c.sparkline_in_7d = { price: c.sparkline_in_7d };
-  } else if (Array.isArray(c.sparkline_in_7d)) {
-    c.sparkline_in_7d = { price: c.sparkline_in_7d };
-  }
-  return c;
-}
-
 function readSnapshot(key){
   const cached = readCache(key);
   const snap = (cached && Array.isArray(cached.data)) ? cached.data : null;
-  return Array.isArray(snap) ? snap.map(normalizeSnapshotCoin) : [];
+  return Array.isArray(snap) ? snap : [];
 }
-
 
   function tickRefreshButton(){
     const now = Date.now();
@@ -1650,50 +1595,6 @@ function getAltVolumeTop5(){
     // Totals
     document.getElementById('kpiTotalMcap').textContent = yen(o.totalMcap);
     document.getElementById('kpiTotalVol').textContent = yen(o.totalVol);
-
-    // KPI strip (quick-glance)
-    const mcapPct = o.mcap24hPct;
-    const mcapAbs = o.mcap24hAbs;
-    const upPct2 = (breadthUp + breadthDown) > 0 ? (breadthUp/(breadthUp + breadthDown))*100 : 0;
-    const sentScore = sentimentScore;
-    const sentLabel = sentimentLabel;
-
-    const mcapMain = document.getElementById('kpiStripMcapMain');
-    const mcapSub  = document.getElementById('kpiStripMcapSub');
-    if(mcapMain && mcapSub){
-      mcapMain.textContent = yen(o.totalMcap);
-      const cls = mcapPct >= 0 ? 'pos' : 'neg';
-      mcapSub.innerHTML = `<span class="${cls}">${fmtPct(mcapPct)}</span> / 24h ${yenSigned(mcapAbs)}`;
-    }
-
-    const brMain = document.getElementById('kpiStripBreadthMain');
-    const brSub  = document.getElementById('kpiStripBreadthSub');
-    if(brMain && brSub){
-      brMain.textContent = `${upPct2.toFixed(1)}%`;
-      brSub.textContent = `上昇 ${breadthUp} / 下落 ${breadthDown}`;
-    }
-
-    const avgMain = document.getElementById('kpiStripAvgMain');
-    const avgSub  = document.getElementById('kpiStripAvgSub');
-    if(avgMain && avgSub){
-      avgMain.textContent = `${fmtPct(avg7d)} / ${fmtPct(med7d)}`;
-      avgSub.textContent  = '上位250の7日リターン';
-    }
-
-    const rsiMain = document.getElementById('kpiStripRsiMain');
-    const rsiSub  = document.getElementById('kpiStripRsiSub');
-    if(rsiMain && rsiSub){
-      rsiMain.textContent = `${btcRsi.toFixed(1)} (${rsiLabel})`;
-      rsiSub.textContent  = 'BTCのRSIを簡易算出';
-    }
-
-    const sMain = document.getElementById('kpiStripSentMain');
-    const sSub  = document.getElementById('kpiStripSentSub');
-    if(sMain && sSub){
-      sMain.textContent = `${Math.round(sentScore)} (${sentLabel})`;
-      sSub.textContent  = '上位250ベースの独自指数';
-    }
-
 
     // Market cap 24h change (estimate)
     const mcap24hEl = document.getElementById('kpiMcap24h');
@@ -2440,17 +2341,14 @@ function makeLineChart(canvasId, labels, series, opts){
         if (hasAtLeast2Finite(sp24)) {
           drawSparkline(canvasId, sp24);
         } else {
-          // フォールバック（sparkline が欠ける場合）
-          // まずは必ず「サンプル」を描いておき、取得できたら上書き
-          const syn0 = buildSyntheticSparkline(coin);
-          if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
-
+          // フォールバック（まれに sparkline が欠ける場合）
           fetchSparkline1d(coin.id).then(arr => {
             if (hasAtLeast2Finite(arr)) {
               drawSparkline(canvasId, arr);
+            } else {
+              const syn = buildSyntheticSparkline(coin);
+              if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
             }
-          }).catch(() => {
-            // 失敗時はサンプルのまま
           });
         }
       } else {
@@ -2458,16 +2356,13 @@ function makeLineChart(canvasId, labels, series, opts){
         drawSparkline(canvasId, sp);
         // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
         if (!hasAtLeast2Finite(sp)) {
-          // まずは必ず「サンプル」を描いておき、取得できたら上書き
-          const syn0 = buildSyntheticSparkline(coin);
-          if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
-
           fetchSparkline7dFallback(coin.id).then(arr => {
             if (hasAtLeast2Finite(arr)) {
               drawSparkline(canvasId, arr);
+            } else {
+              const syn = buildSyntheticSparkline(coin);
+              if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
             }
-          }).catch(() => {
-            // 失敗時はサンプルのまま
           });
         }
       }
