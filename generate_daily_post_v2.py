@@ -244,7 +244,7 @@ def main() -> None:
         f"🔥Trend: {fmt_ranked_slash(trend)}",
         f"🚀Up(24h): {fmt_ranked_pipes(up)}",
         f"📊Vol(アルト): {fmt_ranked_slash(vol_alt)}",
-        f"→ {link} #暗号資産",
+        f"→ {link} #暗号資産 #ビットコイン",
     ]
 
     text = "\n".join(lines)
