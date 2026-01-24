@@ -44,7 +44,7 @@
 
 <style>
   .hero{padding:28px 0 16px;}
-  .hero-inner{max-width:1100px;margin:0 auto;padding:0 16px;}
+  .hero-inner{max-width:1600px;margin:0 auto;padding:0 18px;}
   .hero-copy{padding:18px 16px;border:1px solid rgba(255,255,255,.10);border-radius:16px;
     background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));}
   .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
@@ -339,9 +339,9 @@
   .cta-note{ margin-top:8px; font-size:11px; color:rgba(229,231,235,.70); }
 
   .brand{
-    max-width:1100px;
+    max-width:1600px;
     margin:0 auto 6px;
-    padding:0 16px;
+    padding:0 18px;
   }
 
   /* sparkline (Chart.js) */
@@ -416,10 +416,10 @@
 /* ===== Side menu + compact header ===== */
 :root{ --hdr-h: 64px; }
 .appHeader{ padding: 10px 0; }
-.hdr-inner{ max-width: 1100px; margin: 0 auto; padding: 0 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.hdr-inner{ width:100%; max-width: none; margin: 0; padding: 0 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .hdr-left{ display:flex; align-items:center; gap:10px; min-width:0; }
 .hdr-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-.topNote{ max-width:1100px; margin: 6px auto 0; padding: 0 16px; color: var(--muted); font-size: 12px; }
+.topNote{ max-width:1600px; margin: 6px auto 0; padding: 0 16px; color: var(--muted); font-size: 12px; }
 
 /* header should only show logo/status/update */
 .navTabs, .startBtn{ display:none !important; }
@@ -432,7 +432,7 @@
 .burger::after{ top:6px; }
 
 .sideMenuOverlay{ position:fixed; inset:0; background: rgba(0,0,0,.55); z-index: 90; }
-.sideMenu{ position:fixed; top: calc(var(--hdr-h) + 12px); left: max(12px, calc(50% - 550px - 240px)); width: 220px;
+.sideMenu{ position:fixed; top: calc(var(--hdr-h) + 12px); left: 12px; width: 220px;
   background: rgba(10,16,28,.92); border:1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 10px; z-index: 95;
   box-shadow: 0 14px 44px rgba(0,0,0,.45); backdrop-filter: blur(10px);
 }
@@ -451,10 +451,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .sideMenu.is-open{ transform: translateX(0); }
 }
 @media (min-width: 1201px){
+  :root{ --dock-w: 252px; }
+  body{ padding-left: var(--dock-w); }
   .sideMenuOverlay{ display:none !important; }
   .iconBtn.menuBtn{ display:none; }
   #menuCloseBtn{ display:none; }
-  .sideMenu{ transform:none !important; }
+  .sideMenu{ transform:none !important; opacity:1 !important; pointer-events:auto !important; }
 }
 
 @media (max-width: 640px){
@@ -2030,53 +2032,61 @@ function makeLineChart(canvasId, labels, series, opts){
 
   // Sentiment gauge needle update (0-100 -> -90..+90deg)
   function buildSentimentGaugeSvg(){
-  const svg = document.querySelector('.sent-gauge-svg');
-  if(!svg || svg.dataset.built) return;
+  const svg = document.getElementById('sentSvg');
+  if (!svg || svg.dataset.built === '1') return;
+
+  const W=240, H=150;
+  const cx=120, cy=132, r=92;
+
   const ns = 'http://www.w3.org/2000/svg';
-  const cx = 110, cy = 110, r = 86;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = '';
 
-  // Colored segments (Fear -> Neutral -> Greed)
-  const segs = [
-    {a0:180,a1:144,color:'#ff4d5a'}, // fear
-    {a0:144,a1:108,color:'#ff9a3c'}, // caution
-    {a0:108,a1:72 ,color:'#ffd54a'}, // neutral
-    {a0:72 ,a1:36 ,color:'#7dff7a'}, // positive
-    {a0:36 ,a1:0  ,color:'#36d7ff'}, // greed
-  ];
-
-  const strokeSeg = 16;
-  const strokeOutline = 18;
-
-  const rad = (a)=> (Math.PI/180)*(180-a);
+  const rad = (a)=> (Math.PI/180)*a; // 180=left, 0=right
   const polar = (a)=> [cx + r*Math.cos(rad(a)), cy - r*Math.sin(rad(a))];
 
-  function arc(a0,a1){
-    const [x0,y0]=polar(a0), [x1,y1]=polar(a1);
+  function arcPath(a0, a1){
+    const [x0,y0]=polar(a0);
+    const [x1,y1]=polar(a1);
     const large = Math.abs(a0-a1) > 180 ? 1 : 0;
-    return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${large} 0 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+    const sweep = 1; // clockwise in SVG coords (top semicircle when a0> a1)
+    return `M ${x0} ${y0} A ${r} ${r} 0 ${large} ${sweep} ${x1} ${y1}`;
   }
 
-  // Subtle base track (so segments look continuous even with anti-aliasing)
+  // Track
   const track = document.createElementNS(ns,'path');
-  track.setAttribute('d', arc(180,0));
+  track.setAttribute('d', arcPath(180,0));
+  track.setAttribute('stroke', 'rgba(255,255,255,.16)');
+  track.setAttribute('stroke-width', '16');
   track.setAttribute('fill','none');
-  track.setAttribute('stroke','rgba(255,255,255,0.10)');
-  track.setAttribute('stroke-width', String(strokeOutline));
-  track.setAttribute('stroke-linecap','round');
+  track.setAttribute('stroke-linecap','butt');
   svg.appendChild(track);
 
-  segs.forEach(s=>{
-    const p = document.createElementNS(ns,'path');
-    p.setAttribute('d', arc(s.a0,s.a1));
-    p.setAttribute('fill','none');
-    p.setAttribute('stroke', s.color);
-    p.setAttribute('stroke-width', String(strokeSeg));
-    p.setAttribute('stroke-linecap','round');
-    p.setAttribute('stroke-linejoin','round');
-    svg.appendChild(p);
-  });
+  // 5 segments (Fear -> Greed)
+  const colors = ['#ef4444','#f59e0b','#facc15','#22c55e','#38bdf8'];
+  const step = 180/5; // 36deg
+  for(let i=0;i<5;i++){
+    const a0 = 180 - step*i;
+    const a1 = 180 - step*(i+1);
+    const seg = document.createElementNS(ns,'path');
+    seg.setAttribute('d', arcPath(a0, a1));
+    seg.setAttribute('stroke', colors[i]);
+    seg.setAttribute('stroke-width', '16');
+    seg.setAttribute('fill','none');
+    seg.setAttribute('stroke-linecap','butt'); // no anti-aliased gaps
+    svg.appendChild(seg);
+  }
 
-  svg.dataset.built='1';
+  // Center mask (inner ring)
+  const mask = document.createElementNS(ns,'path');
+  mask.setAttribute('d', arcPath(180,0));
+  mask.setAttribute('stroke', 'rgba(8,12,24,.92)');
+  mask.setAttribute('stroke-width', '10');
+  mask.setAttribute('fill','none');
+  mask.setAttribute('stroke-linecap','butt');
+  svg.appendChild(mask);
+
+  svg.dataset.built = '1';
 }
 
 function updateSentimentGauge(score, labelText){
