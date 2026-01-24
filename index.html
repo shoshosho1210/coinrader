@@ -23,7 +23,7 @@
 <meta property="og:title" content="CoinRader - 暗号資産ダッシュボード">
 <meta property="og:description" content="時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新。">
 <meta property="og:url" content="https://coinrader.net/">
-<meta property="og:image" content="https://coinrader.net/assets/og/ogp.png">
+<meta property="og:image" content="https://coinrader.net/assets/og/ogp.png?v=20260124">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
@@ -31,7 +31,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="CoinRader - 暗号資産ダッシュボード">
 <meta name="twitter:description" content="時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新。">
-<meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png">
+<meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png?v=20260124">
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
@@ -2031,72 +2031,113 @@ function makeLineChart(canvasId, labels, series, opts){
     });
   }
 
-  // Sentiment gauge needle update (0-100 -> -90..+90deg)
+  // Sentiment gauge (0-100 => fear..greed). Render as a "filled" semi-gauge + needle.
   function buildSentimentGaugeSvg(score){
-  // Semi-circle gauge rendered by SVG arcs (top half). score: 0-100
-  const svgNS = "http://www.w3.org/2000/svg";
-  const W = 240, H = 140;
-  const cx = W/2, cy = 124, r = 92;
+    const svgNS = "http://www.w3.org/2000/svg";
+    const W = 260, H = 150;
+    const cx = W/2, cy = 132;
+    const r = 104;
+    const strokeW = 16;
 
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.setAttribute("width", "100%");
-  svg.setAttribute("height", "100%");
-  svg.classList.add("sent-gauge-svg");
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const s = clamp(Number(score ?? 0), 0, 100);
+    const valAngle = 180 - (s/100) * 180; // 180(left) .. 0(right)
 
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const s = clamp(Number(score ?? 0), 0, 100);
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+    svg.classList.add("sent-gauge-svg");
 
-  const polar = (angleDeg) => {
-    const a = (Math.PI/180) * angleDeg;
-    return { x: cx + r * Math.cos(a), y: cy - r * Math.sin(a) };
-  };
+    const polar = (angleDeg, rr=r) => {
+      const a = (Math.PI/180) * angleDeg;
+      return { x: cx + rr * Math.cos(a), y: cy - rr * Math.sin(a) };
+    };
 
-  // Draw top semicircle: from 180° (left) to 0° (right), counterclockwise (sweep=0).
-  const arcPath = (a0, a1) => {
-    const p0 = polar(a0), p1 = polar(a1);
-    const laf = (Math.abs(a1 - a0) > 180) ? 1 : 0;
-    const sweep = 0; // counterclockwise -> top arc in our coordinate system
-    return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${laf} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
-  };
+    const arcPath = (a0, a1, rr=r) => {
+      const p0 = polar(a0, rr), p1 = polar(a1, rr);
+      const laf = (Math.abs(a1 - a0) > 180) ? 1 : 0;
+      const sweep = 0;
+      return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${rr} ${rr} 0 ${laf} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
+    };
 
-  const createArc = (a0, a1, stroke, width, opacity=1) => {
-    const p = document.createElementNS(svgNS, "path");
-    p.setAttribute("d", arcPath(a0, a1));
-    p.setAttribute("fill", "none");
-    p.setAttribute("stroke", stroke);
-    p.setAttribute("stroke-width", String(width));
-    p.setAttribute("stroke-linecap", "butt");
-    p.setAttribute("opacity", String(opacity));
-    return p;
-  };
+    const createArc = (a0, a1, stroke, width, opacity=1, linecap="round") => {
+      const p = document.createElementNS(svgNS, "path");
+      p.setAttribute("d", arcPath(a0, a1));
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", stroke);
+      p.setAttribute("stroke-width", String(width));
+      p.setAttribute("stroke-linecap", linecap);
+      p.setAttribute("opacity", String(opacity));
+      return p;
+    };
 
-  // Track (background)
-  svg.appendChild(createArc(180, 0, "rgba(255,255,255,0.14)", 16, 1));
+    // Background track
+    svg.appendChild(createArc(180, 0, "rgba(255,255,255,0.14)", strokeW, 1, "round"));
 
-  // Colored segments
-  const segDefs = [
-    { a0: 180, a1: 144, c: "#ef4444" }, // 0-20
-    { a0: 144, a1: 108, c: "#f97316" }, // 20-40
-    { a0: 108, a1: 72,  c: "#f59e0b" }, // 40-60
-    { a0: 72,  a1: 36,  c: "#22c55e" }, // 60-80
-    { a0: 36,  a1: 0,   c: "#06b6d4" }, // 80-100
-  ];
+    // Colored segments (left=fear .. right=greed)
+    const segDefs = [
+      { a0: 180, a1: 144, c: "#ef4444" }, // 0-20 fear
+      { a0: 144, a1: 108, c: "#f97316" }, // 20-40
+      { a0: 108, a1: 72,  c: "#f59e0b" }, // 40-60 neutral
+      { a0: 72,  a1: 36,  c: "#22c55e" }, // 60-80
+      { a0: 36,  a1: 0,   c: "#16a34a" }, // 80-100 greed
+    ];
 
-  // Small overlap to avoid hairline gaps between segments
-  const overlap = 0.6;
-  segDefs.forEach(seg => {
-    const a0 = clamp(seg.a0 - overlap, 0, 180);
-    const a1 = clamp(seg.a1 + overlap, 0, 180);
-    svg.appendChild(createArc(a0, a1, seg.c, 16, 0.95));
-  });
+    // Fill only up to current value (rest stays as the dim track)
+    const overlap = 0.7;
+    segDefs.forEach((seg) => {
+      // gauge fills from 180 -> valAngle
+      if (valAngle >= seg.a0) return; // not reached this segment yet
+      const end = (valAngle <= seg.a1) ? seg.a1 : valAngle; // partial segment end
+      const a0 = clamp(seg.a0 - overlap, 0, 180);
+      const a1 = clamp(end + overlap, 0, 180);
+      const cap = (end === valAngle) ? "round" : "butt";
+      svg.appendChild(createArc(a0, a1, seg.c, strokeW, 0.95, cap));
+    });
 
-  // Value indicator (thin arc up to the score)
-  const valAngle = 180 - (s/100)*180;
-  svg.appendChild(createArc(180, valAngle, "rgba(255,255,255,0.55)", 3, 1));
+    // Ticks (0/25/50/75/100)
+    [180, 135, 90, 45, 0].forEach(a => {
+      const p0 = polar(a, r - strokeW - 6);
+      const p1 = polar(a, r - strokeW - 1);
+      const l = document.createElementNS(svgNS, "line");
+      l.setAttribute("x1", p0.x.toFixed(2));
+      l.setAttribute("y1", p0.y.toFixed(2));
+      l.setAttribute("x2", p1.x.toFixed(2));
+      l.setAttribute("y2", p1.y.toFixed(2));
+      l.setAttribute("stroke", "rgba(255,255,255,0.35)");
+      l.setAttribute("stroke-width", "2");
+      svg.appendChild(l);
+    });
 
-  return svg;
-}
+    // Needle
+    const tip = polar(valAngle, r - strokeW/2);
+    const needle = document.createElementNS(svgNS, "line");
+    needle.setAttribute("x1", cx);
+    needle.setAttribute("y1", cy);
+    needle.setAttribute("x2", tip.x.toFixed(2));
+    needle.setAttribute("y2", tip.y.toFixed(2));
+    needle.setAttribute("stroke", "rgba(255,255,255,0.85)");
+    needle.setAttribute("stroke-width", "2.5");
+    needle.setAttribute("stroke-linecap", "round");
+    svg.appendChild(needle);
+
+    const hub = document.createElementNS(svgNS, "circle");
+    hub.setAttribute("cx", cx);
+    hub.setAttribute("cy", cy);
+    hub.setAttribute("r", "5");
+    hub.setAttribute("fill", "rgba(255,255,255,0.85)");
+    svg.appendChild(hub);
+
+    const hubInner = document.createElementNS(svgNS, "circle");
+    hubInner.setAttribute("cx", cx);
+    hubInner.setAttribute("cy", cy);
+    hubInner.setAttribute("r", "2.4");
+    hubInner.setAttribute("fill", "rgba(10,14,35,0.9)");
+    svg.appendChild(hubInner);
+
+    return svg;
+  }
 function updateSentimentGauge(score, labelText){
   // Render SVG gauge into the existing <svg>
   const host = document.querySelector('.sent-gauge svg.sent-gauge-svg, svg.sent-gauge-svg');
@@ -2105,15 +2146,14 @@ function updateSentimentGauge(score, labelText){
     host.setAttribute('viewBox', tmp.getAttribute('viewBox'));
     host.innerHTML = tmp.innerHTML;
   }
-const needle = document.getElementById('sentNeedle');
-    if (needle){
-      const s = Math.max(0, Math.min(100, Number(score) || 0));
-      const deg = -90 + (180 * (s / 100));
-      needle.style.transform = `translateX(-50%) rotate(${deg}deg)`;
-    }
-    const lb = document.getElementById('sentGaugeLabel');
-    if (lb && labelText != null) lb.textContent = String(labelText);
-  }
+
+  // Needle is drawn inside the SVG now (to avoid mobile rendering gaps).
+  const cssNeedle = document.getElementById('sentNeedle');
+  if (cssNeedle) cssNeedle.style.display = 'none';
+
+  const lb = document.getElementById('sentGaugeLabel');
+  if (lb && labelText != null) lb.textContent = String(labelText);
+}
 
   function makeBaselineChart(canvasId, labels, dataArr){
     if (!ensureChartjs()) return;
