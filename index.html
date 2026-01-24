@@ -2083,8 +2083,8 @@ function getAltVolumeTop5(){
       const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
       // 時価総額
       set('kpiStripMcapMain', formatJPY(o.totalMcap));
-      const mcapPct = (o.mcapChgPct==null) ? null : ((o.mcapChgPct>=0?'+':'') + o.mcapChgPct.toFixed(2) + '%');
-      const mcapAbs = (o.mcapChgAbs==null) ? null : formatJPY(o.mcapChgAbs);
+      const mcapPct = (o.mcap24hPct==null) ? null : ((o.mcap24hPct>=0?'+':'') + o.mcap24hPct.toFixed(2) + '%');
+      const mcapAbs = (o.mcap24hDelta==null) ? null : formatJPY(o.mcap24hDelta);
       set('kpiStripMcapSub', (mcapPct && mcapAbs) ? `24h ${mcapPct} (${mcapAbs})` : (mcapPct||mcapAbs));
 
       // Dominance
@@ -2117,6 +2117,44 @@ function getAltVolumeTop5(){
       // Sentiment
       set('kpiStripSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
       set('kpiStripSentSub', sentLabel);
+
+      // --- Summary (top) KPI tiles ---
+      const setSum = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
+
+      // Sentiment
+      setSum('sumSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
+      setSum('sumSentSub', sentLabel);
+
+      // RSI
+      const rsiTag = (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立'));
+      setSum('sumRsiMain', (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : lastRsiVal.toFixed(1));
+      setSum('sumRsiSub', rsiTag);
+
+      // Dominance (BTC)
+      const totalMc = (o && typeof o.totalMcap==='number' && isFinite(o.totalMcap) && o.totalMcap>0) ? o.totalMcap : null;
+      const v0 = (o && o.values && o.values.length>0 && isFinite(o.values[0])) ? o.values[0] : null; // BTC cap
+      const v1 = (o && o.values && o.values.length>1 && isFinite(o.values[1])) ? o.values[1] : null; // ETH cap
+      const v2 = (o && o.values && o.values.length>2 && isFinite(o.values[2])) ? o.values[2] : null; // stable cap
+      const domB = (totalMc && v0!=null) ? (v0/totalMc*100) : null;
+      const domE = (totalMc && v1!=null) ? (v1/totalMc*100) : null;
+      const domS = (totalMc && v2!=null) ? (v2/totalMc*100) : null;
+      setSum('sumDomMain', (domB==null) ? null : ('BTC ' + domB.toFixed(1) + '%'));
+      const domSub = (domE==null && domS==null) ? null : ((domE==null?'':('ETH ' + domE.toFixed(1) + '%')) + (domE!=null && domS!=null ? ' / ' : '') + (domS==null?'':('Stbl ' + domS.toFixed(1) + '%')));
+      setSum('sumDomSub', domSub);
+
+      // Avg 24h (Top250)
+      const avg24 = (o && typeof o.avgChg==='number' && isFinite(o.avgChg)) ? o.avgChg : null;
+      const med24 = (o && typeof o.medianChg==='number' && isFinite(o.medianChg)) ? o.medianChg : null;
+      const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
+      setSum('sumAvg24Main', fmt2(avg24));
+      setSum('sumAvg24Sub', (med24==null) ? null : ('中央値 ' + fmt2(med24)));
+
+      // Market cap total (Top250)
+      setSum('sumMcapMain', (totalMc==null) ? null : formatJPY(totalMc));
+      const mcapPct2 = (o && typeof o.mcap24hPct==='number' && isFinite(o.mcap24hPct)) ? ((o.mcap24hPct>=0?'+':'') + o.mcap24hPct.toFixed(2) + '%') : null;
+      const mcapAbs2 = (o && typeof o.mcap24hDelta==='number' && isFinite(o.mcap24hDelta)) ? formatJPY(o.mcap24hDelta) : null;
+      setSum('sumMcapSub', (mcapPct2 && mcapAbs2) ? ('24h ' + mcapPct2 + ' (' + mcapAbs2 + ')') : (mcapPct2||mcapAbs2));
+
     })();
 
     // 折りたたみ時はKPI stripだけ更新して終了（チャートの幅0問題を避ける）
@@ -2762,6 +2800,8 @@ function renderAll(){
     renderInto('grid-alt-volume', getAltVolumeTop5(), 'alt_volume', 'alt_volume');
     renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
+    try{ renderQuickSummary(); }catch(e){ console.warn("quick summary failed", e); }
+
   }
 
   function setLoadingAll(){
