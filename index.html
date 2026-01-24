@@ -611,6 +611,69 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   100%{ box-shadow: 0 0 0 rgba(125,211,252,0.0); }
 }
 
+
+  /* ===== Mini visuals for Summary KPI (v68) ===== */
+  .kpi-tile{ position:relative; }
+  .mini-vis{ margin-top:10px; }
+  /* RSI mini bar */
+  .mini-rsi-track{
+    position:relative;
+    height:10px;
+    border-radius:999px;
+    background:rgba(148,163,184,0.18);
+    overflow:hidden;
+    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.12);
+  }
+  .mini-rsi-zone{ position:absolute; top:0; bottom:0; }
+  .mini-rsi-zone.low{ left:0; width:30%; background:rgba(239,68,68,0.22); }
+  .mini-rsi-zone.mid{ left:30%; width:40%; background:rgba(148,163,184,0.10); }
+  .mini-rsi-zone.high{ left:70%; width:30%; background:rgba(34,197,94,0.18); }
+  .mini-rsi-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.35); }
+  .mini-rsi-th.t30{ left:30%; }
+  .mini-rsi-th.t70{ left:70%; }
+  .mini-rsi-marker{
+    position:absolute;
+    top:50%;
+    width:12px; height:12px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(226,232,240,0.95);
+    box-shadow:0 0 0 3px rgba(59,130,246,0.25);
+    left:50%;
+  }
+  /* Dominance mini donut (SVG) */
+  .mini-donut{
+    width:44px; height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0.95;
+  }
+  .mini-donut svg{ width:44px; height:44px; display:block; }
+  .mini-donut .bg{ stroke:rgba(148,163,184,0.18); }
+  .mini-donut .seg-btc{ stroke:rgba(250,204,21,0.90); }
+  .mini-donut .seg-eth{ stroke:rgba(96,165,250,0.90); }
+  .mini-donut .seg-stb{ stroke:rgba(52,211,153,0.85); }
+  .mini-donut .seg-oth{ stroke:rgba(148,163,184,0.65); }
+  .mini-donut circle{ fill:none; stroke-width:6; stroke-linecap:butt; }
+  .mini-donut .rot{ transform:rotate(-90deg); transform-origin:50% 50%; }
+  .kpi-with-donut{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .kpi-with-donut .kpi-text{ flex:1 1 auto; min-width:0; }
+  /* Avg 24h sparkline */
+  .mini-spark{ height:34px; margin-top:8px; }
+  .mini-spark svg{ width:100%; height:34px; display:block; }
+  .mini-spark .zero{ stroke:rgba(148,163,184,0.28); stroke-width:1; }
+  .mini-spark .line{ stroke:rgba(226,232,240,0.90); stroke-width:2; fill:none; }
+  .mini-spark .fill{
+    fill:rgba(59,130,246,0.12);
+    stroke:none;
+  }
+
 </style>
 </head>
 <body>
@@ -678,16 +741,48 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="kpi-tile-title">BTC RSI（14）</div>
       <div class="kpi-tile-big" id="sumRsiMain">-</div>
       <div class="kpi-tile-sub" id="sumRsiSub">-</div>
+      <div class="mini-vis" aria-hidden="true">
+        <div class="mini-rsi-track">
+          <div class="mini-rsi-zone low"></div>
+          <div class="mini-rsi-zone mid"></div>
+          <div class="mini-rsi-zone high"></div>
+          <div class="mini-rsi-th t30"></div>
+          <div class="mini-rsi-th t70"></div>
+          <div class="mini-rsi-marker" id="sumRsiMarker"></div>
+        </div>
+      </div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">BTC ドミナンス</div>
-      <div class="kpi-tile-big" id="sumDomMain">-</div>
-      <div class="kpi-tile-sub" id="sumDomSub">-</div>
+      <div class="kpi-with-donut">
+        <div class="kpi-text">
+          <div class="kpi-tile-big" id="sumDomMain">-</div>
+          <div class="kpi-tile-sub" id="sumDomSub">-</div>
+        </div>
+        <div class="mini-donut mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
+          <svg viewBox="0 0 44 44" role="img" aria-label="Dominance mini donut">
+            <circle class="bg" cx="22" cy="22" r="16"></circle>
+            <g class="rot">
+              <circle id="sumDomArcBtc" class="seg-btc" cx="22" cy="22" r="16"></circle>
+              <circle id="sumDomArcEth" class="seg-eth" cx="22" cy="22" r="16"></circle>
+              <circle id="sumDomArcStb" class="seg-stb" cx="22" cy="22" r="16"></circle>
+              <circle id="sumDomArcOth" class="seg-oth" cx="22" cy="22" r="16"></circle>
+            </g>
+          </svg>
+        </div>
+      </div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">上位250 平均（24h）</div>
       <div class="kpi-tile-big" id="sumAvg24Main">-</div>
       <div class="kpi-tile-sub" id="sumAvg24Sub">-</div>
+      <div class="mini-spark mini-vis" aria-hidden="true" title="7d推移（平均リターン）のスパークライン">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path id="sumAvgSparkFill" class="fill" d=""></path>
+          <line id="sumAvgSparkZero" class="zero" x1="0" y1="15" x2="100" y2="15"></line>
+          <polyline id="sumAvgSparkLine" class="line" points=""></polyline>
+        </svg>
+      </div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
@@ -1278,6 +1373,8 @@ function coinGeckoUrlFor(coin){
   // ============ Data ============
   let marketsTop = [];          // top250
   let trendingCoins = [];
+  let summaryAvgSeries = null; // for top sparkline (avg return 7d series)
+
   const EXCLUDE_MCAP_IDS = new Set([
     "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
     "pax-dollar","frax"
@@ -1671,6 +1768,110 @@ function getAltVolumeTop5(){
     return s + n.toFixed(2) + '%';
   }
 
+
+  // ===== Summary mini visuals (v68) =====
+  function updateSummaryRsiBar(val){
+    const marker = document.getElementById('sumRsiMarker');
+    if(!marker) return;
+    if(typeof val !== 'number' || !isFinite(val)){
+      marker.style.left = '50%';
+      marker.style.opacity = '0.25';
+      marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
+      return;
+    }
+    const v = Math.max(0, Math.min(100, val));
+    marker.style.left = v.toFixed(1) + '%';
+    marker.style.opacity = '1';
+    if (v >= 70) marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.25)';
+    else if (v <= 30) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.25)';
+    else marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.25)';
+  }
+
+  function updateSummaryDomDonut(pcts){
+    const elB = document.getElementById('sumDomArcBtc');
+    const elE = document.getElementById('sumDomArcEth');
+    const elS = document.getElementById('sumDomArcStb');
+    const elO = document.getElementById('sumDomArcOth');
+    if(!elB || !elE || !elS || !elO) return;
+
+    const r = 16;
+    const C = 2 * Math.PI * r;
+
+    const safe = (x)=> (typeof x==='number' && isFinite(x) && x>0) ? x : 0;
+    const parts = [safe(pcts && pcts[0]), safe(pcts && pcts[1]), safe(pcts && pcts[2]), safe(pcts && pcts[3])];
+    const sum = parts.reduce((a,b)=>a+b,0);
+    if(sum <= 0){
+      [elB,elE,elS,elO].forEach(el=>{
+        el.style.strokeDasharray = `0 ${C}`;
+        el.style.strokeDashoffset = '0';
+      });
+      return;
+    }
+    // normalize to 100%
+    const pct = parts.map(v => (v/sum)*100);
+
+    let offset = 0;
+    const setArc = (el, p)=>{
+      const seg = C * (p/100);
+      el.style.strokeDasharray = `${seg} ${Math.max(0, C - seg)}`;
+      el.style.strokeDashoffset = `${-offset}`;
+      offset += seg;
+    };
+    setArc(elB, pct[0]);
+    setArc(elE, pct[1]);
+    setArc(elS, pct[2]);
+    setArc(elO, pct[3]);
+  }
+
+  function updateSummaryAvgSpark(arr){
+    const line = document.getElementById('sumAvgSparkLine');
+    const fill = document.getElementById('sumAvgSparkFill');
+    const zero = document.getElementById('sumAvgSparkZero');
+    if(!line || !fill || !zero) return;
+
+    if(!Array.isArray(arr) || arr.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      zero.style.display = 'none';
+      return;
+    }
+    // use latest 60 points for speed
+    const raw = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    if(raw.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      zero.style.display = 'none';
+      return;
+    }
+    let min = Math.min(...raw);
+    let max = Math.max(...raw);
+    if(min === max){ min -= 1; max += 1; }
+
+    const W = 100, H = 30, pad = 2;
+    const top = pad, bottom = H - pad;
+
+    const pts = raw.map((v,i)=>{
+      const x = (i/(raw.length-1)) * W;
+      const y = bottom - ((v - min)/(max - min)) * (bottom - top);
+      return [x,y];
+    });
+
+    const points = pts.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
+    line.setAttribute('points', points);
+
+    const path = `M ${pts[0][0].toFixed(2)} ${bottom.toFixed(2)} L ${pts.map(p=>`${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')} L ${pts[pts.length-1][0].toFixed(2)} ${bottom.toFixed(2)} Z`;
+    fill.setAttribute('d', path);
+
+    const zy = bottom - ((0 - min)/(max - min)) * (bottom - top);
+    if(zy >= top && zy <= bottom){
+      zero.setAttribute('y1', zy.toFixed(2));
+      zero.setAttribute('y2', zy.toFixed(2));
+      zero.style.display = 'block';
+    }else{
+      zero.style.display = 'none';
+    }
+  }
+
   function buildOverview(){
     const arr = marketsTop || [];
     const n = arr.length;
@@ -1780,6 +1981,9 @@ function getAltVolumeTop5(){
   function renderOverview(){
     const msg = document.getElementById('overviewMsg');
     msg.style.display = 'none';
+
+    // reset mini series cache each run
+    summaryAvgSeries = null;
 
     if (!marketsTop || !marketsTop.length){
       msg.className = 'msg err';
@@ -1922,7 +2126,9 @@ function getAltVolumeTop5(){
           if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t];
         }
 
-        // Labels: just indexes (Chart.js will hide axis anyway)
+        
+        summaryAvgSeries = avgArr.slice();
+// Labels: just indexes (Chart.js will hide axis anyway)
         const labels = Array.from({length: seriesLen}, (_,i)=>i);
 
         // Breadth chart (3 lines)
@@ -2185,6 +2391,12 @@ function getAltVolumeTop5(){
       const mcapPct2 = (o && typeof o.mcap24hPct==='number' && isFinite(o.mcap24hPct)) ? ((o.mcap24hPct>=0?'+':'') + o.mcap24hPct.toFixed(2) + '%') : null;
       const mcapAbs2 = (o && typeof o.mcap24hDelta==='number' && isFinite(o.mcap24hDelta)) ? formatJPY(o.mcap24hDelta) : null;
       setSum('sumMcapSub', (mcapPct2 && mcapAbs2) ? ('24h ' + mcapPct2 + ' (' + mcapAbs2 + ')') : (mcapPct2||mcapAbs2));
+
+      // Mini visuals (Summary)
+      updateSummaryRsiBar(lastRsiVal);
+      const v3 = (o && o.values && o.values.length>3 && isFinite(o.values[3])) ? o.values[3] : null; // others cap
+      updateSummaryDomDonut([v0, v1, v2, v3]);
+      updateSummaryAvgSpark(summaryAvgSeries);
 
     })();
 
