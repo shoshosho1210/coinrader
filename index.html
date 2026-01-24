@@ -1540,31 +1540,41 @@ const EXCLUDE_MCAP_IDS = new Set([
   window.__btcMaCross = null;
 
   async function loadBtcMaCross(){
-    const url = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart'
-      + '?vs_currency=jpy'
-      + '&days=400'; // 200日MA計算の余裕を確保
+    // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
+    // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
+    // ※価格通貨はUSDTだが、MA距離(%)は通貨に依存しないため問題なし。
+    const url = 'https://api.binance.com/api/v3/klines'
+      + '?symbol=BTCUSDT'
+      + '&interval=1d'
+      + '&limit=260'; // 200MA + 50MA + 少し余裕
 
-    const data = await fetchJsonRetry(url, {retries:2});
-    const prices = (data && Array.isArray(data.prices)) ? data.prices.map(p => Number(p[1])).filter(v => Number.isFinite(v)) : [];
-    if (prices.length < 210) { window.__btcMaCross = null; return; }
+    const rows = await fetchJsonRetry(url, {retries:2});
+    if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
+
+    // close価格（index 4）
+    const closes = rows.map(r => +r[4]).filter(v => isFinite(v) && v > 0);
+    if (closes.length < 210) throw new Error('binance closes invalid');
 
     const sma = (arr, n) => {
-      let sum = 0;
-      for (let i = arr.length - n; i < arr.length; i++) sum += arr[i];
-      return sum / n;
+      const a = arr.slice(-n);
+      const s = a.reduce((x,y)=>x+y,0);
+      return s / n;
     };
 
-    const sma50 = sma(prices, 50);
-    const sma200 = sma(prices, 200);
-    const distPct = sma200 ? (sma50 - sma200) / sma200 * 100 : 0;
+    const sma50 = sma(closes, 50);
+    const sma200 = sma(closes, 200);
+    const distPct = (sma50 - sma200) / sma200 * 100;
 
-    let label = '中立';
-    if (Math.abs(distPct) <= 0.30) label = 'クロス近い';
-    else if (distPct > 0) label = 'GC側';
-    else if (distPct < 0) label = 'DC側';
+    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
+    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
 
-    window.__btcMaCross = { sma50, sma200, distPct, label };
+    window.__btcMaCross = {
+      sma50, sma200, distPct,
+      label,
+      updatedAt: Date.now(),
+    };
   }
+
 
 async function loadTrendingTop5(forceNetwork=false){
   const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
@@ -2195,6 +2205,7 @@ function getAltVolumeTop5(){
     let avg7 = null, med7 = null;
     let sentScore = null, sentLabel = null;
     let lastRsiVal = null;
+    let summaryAvgSeries = null;
 
     // Breadth
     const denom = (o.up + o.down + o.flat) || 1;
@@ -2319,10 +2330,8 @@ function getAltVolumeTop5(){
         for (let t=0;t<seriesLen;t++){
           if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t];
         }
-
-        
         summaryAvgSeries = avgArr.slice();
-// Labels: just indexes (Chart.js will hide axis anyway)
+        // Labels: just indexes (Chart.js will hide axis anyway)
         const labels = Array.from({length: seriesLen}, (_,i)=>i);
 
         // Breadth chart (3 lines)
@@ -2595,8 +2604,8 @@ function getAltVolumeTop5(){
     }
 
     // Mini visuals
-    updateSummarySentBar(sent);
-    updateSummaryRsiBar(rsi);
+    updateSummarySentBar(sentScore);
+    updateSummaryRsiBar(lastRsiVal);
     updateSummaryDomBar([domBTC, domETH, domSTB, domOTH]);
     updateSummaryAvgSpark(summaryAvgSeries);
 
