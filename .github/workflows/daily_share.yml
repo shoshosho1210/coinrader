@@ -43,6 +43,35 @@ jobs:
           test -f daily_post_short.txt
           test -f daily_share_url.txt
 
+      - name: Prune old share pages (keep last 30 days)
+        env:
+          KEEP_DAYS: "30"
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import datetime as dt, os, re
+
+          keep = int(os.getenv("KEEP_DAYS", "30"))
+          cutoff = (dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=keep))
+
+          share = Path("share")
+          if not share.exists():
+            print("share/ not found, skip")
+            raise SystemExit(0)
+
+          removed = 0
+          for p in share.glob("*.html"):
+            m = re.match(r"(\d{8})\.html$", p.name)
+            if not m:
+              continue
+            d = dt.datetime.strptime(m.group(1), "%Y%m%d").date()
+            if d < cutoff:
+              p.unlink()
+              removed += 1
+
+          print(f"Pruned {removed} file(s) older than {keep} days. cutoff={cutoff}")
+          PY
+
       # 生成物がpushできなくても、まずここで “作れてるか” を確実に確認できる
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
