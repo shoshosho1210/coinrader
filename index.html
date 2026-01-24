@@ -411,47 +411,108 @@
   /* fixed header anchor offset */
   section{ scroll-margin-top: 92px; }
 }
+
+
+/* ===== Side menu + compact header ===== */
+:root{ --hdr-h: 64px; }
+.appHeader{ padding: 10px 0; }
+.hdr-inner{ max-width: 1100px; margin: 0 auto; padding: 0 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.hdr-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+.hdr-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+.topNote{ max-width:1100px; margin: 6px auto 0; padding: 0 16px; color: var(--muted); font-size: 12px; }
+
+/* header should only show logo/status/update */
+.navTabs, .startBtn{ display:none !important; }
+
+.iconBtn.menuBtn{ width:36px; height:36px; border-radius:10px; border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); }
+.iconBtn.menuBtn:hover{ background: rgba(255,255,255,.07); }
+.burger{ position:relative; display:block; width:16px; height:2px; background:#e5e7eb; border-radius:2px; }
+.burger::before,.burger::after{ content:""; position:absolute; left:0; width:16px; height:2px; background:#e5e7eb; border-radius:2px; }
+.burger::before{ top:-6px; }
+.burger::after{ top:6px; }
+
+.sideMenuOverlay{ position:fixed; inset:0; background: rgba(0,0,0,.55); z-index: 90; }
+.sideMenu{ position:fixed; top: calc(var(--hdr-h) + 12px); left: max(12px, calc(50% - 550px - 240px)); width: 220px;
+  background: rgba(10,16,28,.92); border:1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 10px; z-index: 95;
+  box-shadow: 0 14px 44px rgba(0,0,0,.45); backdrop-filter: blur(10px);
+}
+.sideMenuHeader{ display:flex; align-items:center; justify-content:space-between; padding: 4px 4px 8px; }
+.sideMenuTitle{ font-weight: 700; font-size: 13px; color:#e5e7eb; letter-spacing:.02em; }
+.sideMenuNav, .sideMenuFooter{ display:flex; flex-direction:column; gap:6px; }
+.sideMenuFooter{ margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
+.sideNavLink{ display:flex; align-items:center; gap:8px; padding: 9px 10px; border-radius: 12px; color:#e5e7eb; text-decoration:none; font-size: 13px; }
+.sideNavLink:hover{ background: rgba(255,255,255,.06); }
+
+/* Make sure fixed header doesn't hide anchor targets */
+section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
+
+@media (max-width: 1200px){
+  .sideMenu{ left: 12px; transform: translateX(-110%); transition: transform .22s ease; }
+  .sideMenu.is-open{ transform: translateX(0); }
+}
+@media (min-width: 1201px){
+  .sideMenuOverlay{ display:none !important; }
+  .iconBtn.menuBtn{ display:none; }
+  #menuCloseBtn{ display:none; }
+  .sideMenu{ transform:none !important; }
+}
+
+@media (max-width: 640px){
+  :root{ --hdr-h: 56px; }
+  .brand img{ width: 34px; height: 34px; }
+  .brand .title{ font-size: 14px; }
+  .hdr-right{ gap:8px; }
+  .statusPill, .updatedPill{ font-size: 11px; padding: 6px 8px; }
+  #refreshBtn{ padding: 7px 10px; font-size: 12px; }
+}
+
+/* sentiment gauge: we now use SVG only */
+.sent-gauge::before{ display:none !important; }
 </style>
 </head>
 <body>
 <header class="appHeader" role="banner">
-  <div class="appHeader-inner">
-    <div class="appHeader-left">
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <button class="iconBtn menuBtn" id="menuBtn" type="button" aria-label="メニュー" aria-controls="sideMenu" aria-expanded="false">
+        <span class="burger" aria-hidden="true"></span>
+      </button>
       <a href="/" class="brandLink" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
       </a>
-
-      <nav class="headerNav" aria-label="セクション">
-        <a class="btn tab" href="#sec-trend"
-           data-ga="tab_trend" data-placement="index_header_tabs" data-partner="" data-pr="0"
-           onclick="scrollToId('sec-trend'); return false;">トレンド</a>
-        <a class="btn tab" href="#sec-gainers"
-           data-ga="tab_gainers" data-placement="index_header_tabs" data-partner="" data-pr="0"
-           onclick="scrollToId('sec-gainers'); return false;">上昇率</a>
-        <a class="btn tab" href="#sec-volume"
-           data-ga="tab_volume" data-placement="index_header_tabs" data-partner="" data-pr="0"
-           onclick="scrollToId('sec-volume'); return false;">出来高</a>
-        <a class="btn tab" href="#sec-mcap"
-           data-ga="tab_mcap" data-placement="index_header_tabs" data-partner="" data-pr="0"
-           onclick="scrollToId('sec-mcap'); return false;">時価総額</a>
-        <a class="btn tab" href="#sec-overview"
-           data-ga="tab_overview" data-placement="index_header_tabs" data-partner="" data-pr="0"
-           onclick="scrollToId('sec-overview'); return false;">概況</a>
-</nav>
     </div>
-
-    <div class="appHeader-right">
-      <a class="btn-cta" href="/start" data-ga="cta_start_header" data-placement="index_header" data-partner="" data-pr="0">始め方</a>
-      <div class="pill" id="statusPill">状態: 初期化中…</div>
-      <div class="pill" id="updatedPill">更新: --</div>
-      <button class="btn" id="refreshBtn" onclick="refreshData()">更新</button>
+    <div class="hdr-right">
+      <div class="statusPill" id="statusPill"><span class="dot"></span><span>接続中</span></div>
+      <div class="updatedPill" id="updatedPill">更新: --</div>
+      <button class="btn small" id="refreshBtn" type="button">更新</button>
     </div>
-  </div>
-
-  <div class="appSubline">
-    トレンド・上昇率・出来高急増・時価総額をまとめてチェック（自動更新）。
   </div>
 </header>
+
+<div class="topNote">データは3分ごとに自動更新されます（通信環境により前後します）</div>
+
+<div class="sideMenuOverlay" id="sideMenuOverlay" hidden></div>
+<aside class="sideMenu" id="sideMenu" aria-hidden="true">
+  <div class="sideMenuHeader">
+    <div class="sideMenuTitle">メニュー</div>
+    <button class="iconBtn" id="menuCloseBtn" type="button" aria-label="閉じる">×</button>
+  </div>
+  <nav class="sideMenuNav" aria-label="ページ内メニュー">
+      <a class="sideNavLink" href="#sec-trend" onclick="scrollToId('sec-trend'); return false;">トレンドTOP5</a>
+      <a class="sideNavLink" href="#sec-gainers" onclick="scrollToId('sec-gainers'); return false;">上昇率TOP5</a>
+      <a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
+      <a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
+      <a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
+      <a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
+    </nav>
+  <div class="sideMenuFooter">
+    <a class="sideNavLink" href="/start">始め方</a>
+    <a class="sideNavLink" href="/data-sources">データソース</a>
+    <a class="sideNavLink" href="/ads-pr">広告・PR表記</a>
+    <a class="sideNavLink" href="/privacy">プライバシーポリシー</a>
+    <a class="sideNavLink" href="/contact">お問い合わせ</a>
+  </div>
+</aside>
 <section class="cta-block" aria-label="おすすめ取引所導線">
   <div class="cta-inner">
     <div class="cta-text">
@@ -1983,7 +2044,7 @@ function makeLineChart(canvasId, labels, series, opts){
   ];
   const polar = (ang)=>{
     const rad = (ang - 90) * Math.PI / 180;
-    return {x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad)};
+    return {x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad)};
   };
   const arc = (a0,a1)=>{
     const start = polar(a1);
@@ -2431,5 +2492,53 @@ function updateSentimentGauge(score, labelText){
     <div class="footer-copy">© CoinRader / Operator: CoinRader</div>
   </div>
 </footer>
+
+<script>
+// Side menu toggle (mobile)
+(() => {
+  const menu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('sideMenuOverlay');
+  const btn = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('menuCloseBtn');
+  if (!menu || !btn || !overlay) return;
+
+  const close = () => {
+    menu.classList.remove('is-open');
+    overlay.hidden = true;
+    menu.setAttribute('aria-hidden', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+  const open = () => {
+    menu.classList.add('is-open');
+    overlay.hidden = false;
+    menu.setAttribute('aria-hidden', 'false');
+    btn.setAttribute('aria-expanded', 'true');
+  };
+  btn.addEventListener('click', () => {
+    const isOpen = menu.classList.contains('is-open');
+    isOpen ? close() : open();
+  });
+  overlay.addEventListener('click', close);
+  closeBtn && closeBtn.addEventListener('click', close);
+  menu.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    // close on mobile after navigation
+    if (window.matchMedia('(max-width: 1200px)').matches) close();
+  });
+  // close if resized to desktop
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 1201px)').matches){
+      overlay.hidden = true;
+      menu.classList.remove('is-open');
+      menu.setAttribute('aria-hidden', 'false');
+      btn.setAttribute('aria-expanded', 'false');
+    } else {
+      close();
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
