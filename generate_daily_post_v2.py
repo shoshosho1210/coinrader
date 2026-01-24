@@ -257,7 +257,7 @@ def main() -> None:
         f"{RANK_EMOJI[0]} {vol_alt[0]}",
         f"{RANK_EMOJI[1]} {vol_alt[1]}",
         f"{RANK_EMOJI[2]} {vol_alt[2]}",
-        f"→ {link} #暗号資産",
+        f"→ {link} #暗号資産 #Crypto #ビットコイン #Bitcoin",
     ]
 
     text = "\n".join(lines)
