@@ -85,7 +85,7 @@
   .nav{ display:flex; gap:8px; flex-wrap:wrap; margin:0 4px 14px; }
   .nav .btn{ padding:6px 12px; font-size:12px; }
 
-  section{ margin:0 4px 18px; }
+  section{ margin:0 auto 18px; max-width:1120px; padding:0 4px; }
   .section-header{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin:0 0 10px; }
   .section-title{ font-size:15px; font-weight:700; color:#f9fafb; }
   .section-sub{ font-size:12px; color:#9ca3af; margin-top:3px; }
@@ -2034,52 +2034,47 @@ function makeLineChart(canvasId, labels, series, opts){
   if(!svg || svg.dataset.built) return;
   const ns = 'http://www.w3.org/2000/svg';
   const cx = 110, cy = 110, r = 86;
-  const stroke = 18;
+
+  // Colored segments (Fear -> Neutral -> Greed)
   const segs = [
     {a0:180,a1:144,color:'#ff4d5a'}, // fear
-    {a0:144,a1:108,color:'#ff9d3a'}, // caution
-    {a0:108,a1:72,color:'#ffd84d'}, // neutral
-    {a0:72,a1:36,color:'#2bd76f'}, // greed
-    {a0:36,a1:0,color:'#33c7ff'}, // strong greed
+    {a0:144,a1:108,color:'#ff9a3c'}, // caution
+    {a0:108,a1:72 ,color:'#ffd54a'}, // neutral
+    {a0:72 ,a1:36 ,color:'#7dff7a'}, // positive
+    {a0:36 ,a1:0  ,color:'#36d7ff'}, // greed
   ];
-  const polar = (ang)=>{
-    const rad = (ang - 90) * Math.PI / 180;
-    return {x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad)};
-  };
-  const arc = (a0,a1)=>{
-    const start = polar(a1);
-    const end = polar(a0);
-    const largeArc = Math.abs(a1 - a0) > 180 ? 1 : 0;
-    return `M ${start.x.toFixed(3)} ${start.y.toFixed(3)} A ${r} ${r} 0 ${largeArc} 0 ${end.x.toFixed(3)} ${end.y.toFixed(3)}`;
-  };
-  // subtle base outline under segments
-  const outline = document.createElementNS(ns, 'path');
-  outline.setAttribute('d', arc(180,0));
-  outline.setAttribute('fill','none');
-  outline.setAttribute('stroke','rgba(255,255,255,0.10)');
-  outline.setAttribute('stroke-width', String(stroke + 2));
-  outline.setAttribute('stroke-linecap','round');
-  svg.appendChild(outline);
+
+  const strokeSeg = 16;
+  const strokeOutline = 18;
+
+  const rad = (a)=> (Math.PI/180)*(180-a);
+  const polar = (a)=> [cx + r*Math.cos(rad(a)), cy - r*Math.sin(rad(a))];
+
+  function arc(a0,a1){
+    const [x0,y0]=polar(a0), [x1,y1]=polar(a1);
+    const large = Math.abs(a0-a1) > 180 ? 1 : 0;
+    return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${large} 0 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+  }
+
+  // Subtle base track (so segments look continuous even with anti-aliasing)
+  const track = document.createElementNS(ns,'path');
+  track.setAttribute('d', arc(180,0));
+  track.setAttribute('fill','none');
+  track.setAttribute('stroke','rgba(255,255,255,0.10)');
+  track.setAttribute('stroke-width', String(strokeOutline));
+  track.setAttribute('stroke-linecap','round');
+  svg.appendChild(track);
 
   segs.forEach(s=>{
-    const path = document.createElementNS(ns, 'path');
-    path.setAttribute('d', arc(s.a0, s.a1));
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke', s.color);
-    path.setAttribute('stroke-width', String(stroke));
-    path.setAttribute('stroke-linecap','butt');
-    path.setAttribute('opacity','0.95');
-    svg.appendChild(path);
+    const p = document.createElementNS(ns,'path');
+    p.setAttribute('d', arc(s.a0,s.a1));
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke', s.color);
+    p.setAttribute('stroke-width', String(strokeSeg));
+    p.setAttribute('stroke-linecap','round');
+    p.setAttribute('stroke-linejoin','round');
+    svg.appendChild(p);
   });
-
-  // inner cut-out ring to match card background
-  const inner = document.createElementNS(ns, 'path');
-  inner.setAttribute('d', arc(180,0));
-  inner.setAttribute('fill','none');
-  inner.setAttribute('stroke','rgba(12,16,32,0.85)');
-  inner.setAttribute('stroke-width', String(stroke - 6));
-  inner.setAttribute('stroke-linecap','round');
-  svg.appendChild(inner);
 
   svg.dataset.built='1';
 }
