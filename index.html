@@ -2094,12 +2094,12 @@ function makeLineChart(canvasId, labels, series, opts){
       return [cx + r * Math.cos(rad), cy - r * Math.sin(rad)];
     };
 
-    // 「上側の半円」を描くため sweep=0（反時計回り側）で統一
+    // 「上側の半円」を描くため sweep=1（順方向側）で統一（Y反転座標のため）
     const arcPath = (a0, a1) => {
       const [x0, y0] = polar(a0);
       const [x1, y1] = polar(a1);
       const largeArc = 0;
-      const sweep = 0;
+      const sweep = 1;
       return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${largeArc} ${sweep} ${x1.toFixed(2)} ${y1.toFixed(2)}`;
     };
 
