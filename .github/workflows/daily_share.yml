@@ -11,8 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -29,24 +32,36 @@ jobs:
           CG_DEMO_KEY: ${{ secrets.CG_DEMO_KEY }}
           SITE_URL: "https://coinrader.net/"
         run: |
-          python generate_daily_post_v2.py
-          echo "---- ls ----"
+          set -eux
+          pwd
           ls -la
-          echo "---- share ----"
+          python generate_daily_post_v2.py
+          echo "---- after generate ----"
+          ls -la
           ls -la share || true
+          test -f daily_post_full.txt
+          test -f daily_post_short.txt
+          test -f daily_share_url.txt
 
-      - name: Git status (debug)
-        run: |
-          echo "---- git status ----"
-          git status --porcelain || true
+      # 生成物がpushできなくても、まずここで “作れてるか” を確実に確認できる
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-output
+          path: |
+            daily_post_full.txt
+            daily_post_short.txt
+            daily_share_url.txt
+            share/**/*.html
 
       - name: Commit & push if changed
         run: |
+          set -eux
           git config user.name "coinrader-bot"
           git config user.email "coinrader-bot@users.noreply.github.com"
 
-          # .gitignore で除外されていても強制追加
-          git add -f share daily_post_full.txt daily_post_short.txt daily_share_url.txt || true
+          git add -f share daily_post_full.txt daily_post_short.txt daily_share_url.txt
+          git status --porcelain
 
           git diff --cached --quiet || git commit -m "Daily share page"
-          git push
+          git push origin HEAD:${GITHUB_REF_NAME}
