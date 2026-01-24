@@ -471,6 +471,28 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 /* sentiment gauge: we now use SVG only */
 .sent-gauge::before{ display:none !important; }
+
+/* ===== Mobile UX fixes (v40) ===== */
+@media (max-width: 640px){
+  /* Prevent header height jump when refresh button shows countdown */
+  .hdr-right{ flex-wrap: nowrap !important; }
+  #refreshBtn{ white-space: nowrap; min-width: 84px; }
+  .statusPill{ white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Section header: avoid "もっと見る" vertical wrap on narrow screens */
+@media (max-width: 520px){
+  .section-header{ flex-direction: column; align-items: flex-start; }
+  .section-actions{ width: 100%; justify-content: flex-end; }
+  .linkbtn{ white-space: nowrap; }
+}
+
+/* Sentiment gauge (SVG) must keep a positioned container */
+.sent-gauge{
+  position: relative !important;
+  overflow: hidden !important;
+}
+
 </style>
 </head>
 <body>
@@ -701,6 +723,17 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   let refreshTimer = null;
   const refreshBtn = document.getElementById('refreshBtn');
 
+  // Keep CSS var --hdr-h in sync with the actual header height (mobile: prevents top note being covered)
+  function syncHeaderHeight(){
+    try{
+      const hdr = document.querySelector('.appHeader');
+      if(!hdr) return;
+      const h = Math.max(48, Math.ceil(hdr.getBoundingClientRect().height));
+      document.documentElement.style.setProperty('--hdr-h', h + 'px');
+    }catch(_e){}
+  }
+
+
   function setStatus(text){ document.getElementById('statusPill').textContent = '状態: ' + text; }
 
   // --- Updated time pill (stay on page -> time keeps moving) ---
@@ -866,7 +899,6 @@ function readSnapshot(key){
   return Array.isArray(snap) ? snap : [];
 }
 
-
   function tickRefreshButton(){
     const now = Date.now();
     const remain = Math.max(0, (lastRefreshAt + REFRESH_COOLDOWN_MS) - now);
@@ -877,6 +909,8 @@ function readSnapshot(key){
       refreshBtn.disabled = false;
       refreshBtn.textContent = '更新';
     }
+    // header height can change slightly on narrow screens when the button label updates
+    try{ syncHeaderHeight(); }catch(_e){}
   }
 
   function markRefreshed(){
@@ -2032,12 +2066,15 @@ function makeLineChart(canvasId, labels, series, opts){
   }
 
   // Sentiment gauge (0-100 => fear..greed). Render as a "filled" semi-gauge + needle.
+  // Sentiment gauge (0-100) — SVG semi-gauge (mobile-safe)
   function buildSentimentGaugeSvg(score){
     const svgNS = "http://www.w3.org/2000/svg";
-    const W = 260, H = 150;
-    const cx = W/2, cy = 132;
-    const r = 104;
-    const strokeW = 16;
+    const W = 220, H = 120;
+
+    const cx = 110;
+    const cy = 110;      // bottom center (inside viewBox)
+    const r  = 86;       // radius
+    const strokeW = 14;
 
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const s = clamp(Number(score ?? 0), 0, 100);
@@ -2057,7 +2094,7 @@ function makeLineChart(canvasId, labels, series, opts){
     const arcPath = (a0, a1, rr=r) => {
       const p0 = polar(a0, rr), p1 = polar(a1, rr);
       const laf = (Math.abs(a1 - a0) > 180) ? 1 : 0;
-      const sweep = 0;
+      const sweep = 0; // draw the upper arc
       return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${rr} ${rr} 0 ${laf} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
     };
 
@@ -2075,20 +2112,19 @@ function makeLineChart(canvasId, labels, series, opts){
     // Background track
     svg.appendChild(createArc(180, 0, "rgba(255,255,255,0.14)", strokeW, 1, "round"));
 
-    // Colored segments (left=fear .. right=greed)
+    // Colored segments (fear -> greed)
     const segDefs = [
-      { a0: 180, a1: 144, c: "#ef4444" }, // 0-20 fear
+      { a0: 180, a1: 144, c: "#ef4444" }, // 0-20
       { a0: 144, a1: 108, c: "#f97316" }, // 20-40
-      { a0: 108, a1: 72,  c: "#f59e0b" }, // 40-60 neutral
+      { a0: 108, a1: 72,  c: "#f59e0b" }, // 40-60
       { a0: 72,  a1: 36,  c: "#22c55e" }, // 60-80
-      { a0: 36,  a1: 0,   c: "#16a34a" }, // 80-100 greed
+      { a0: 36,  a1: 0,   c: "#16a34a" }, // 80-100
     ];
 
-    // Fill only up to current value (rest stays as the dim track)
-    const overlap = 0.7;
+    // Fill only up to current value (180 -> valAngle)
+    const overlap = 0.6;
     segDefs.forEach((seg) => {
-      // gauge fills from 180 -> valAngle
-      if (valAngle >= seg.a0) return; // not reached this segment yet
+      if (valAngle >= seg.a0) return; // not reached yet
       const end = (valAngle <= seg.a1) ? seg.a1 : valAngle; // partial segment end
       const a0 = clamp(seg.a0 - overlap, 0, 180);
       const a1 = clamp(end + overlap, 0, 180);
@@ -2098,14 +2134,14 @@ function makeLineChart(canvasId, labels, series, opts){
 
     // Ticks (0/25/50/75/100)
     [180, 135, 90, 45, 0].forEach(a => {
-      const p0 = polar(a, r - strokeW - 6);
-      const p1 = polar(a, r - strokeW - 1);
+      const p0 = polar(a, r - strokeW - 7);
+      const p1 = polar(a, r - strokeW - 2);
       const l = document.createElementNS(svgNS, "line");
       l.setAttribute("x1", p0.x.toFixed(2));
       l.setAttribute("y1", p0.y.toFixed(2));
       l.setAttribute("x2", p1.x.toFixed(2));
       l.setAttribute("y2", p1.y.toFixed(2));
-      l.setAttribute("stroke", "rgba(255,255,255,0.35)");
+      l.setAttribute("stroke", "rgba(255,255,255,0.32)");
       l.setAttribute("stroke-width", "2");
       svg.appendChild(l);
     });
@@ -2117,23 +2153,23 @@ function makeLineChart(canvasId, labels, series, opts){
     needle.setAttribute("y1", cy);
     needle.setAttribute("x2", tip.x.toFixed(2));
     needle.setAttribute("y2", tip.y.toFixed(2));
-    needle.setAttribute("stroke", "rgba(255,255,255,0.85)");
-    needle.setAttribute("stroke-width", "2.5");
+    needle.setAttribute("stroke", "rgba(255,255,255,0.88)");
+    needle.setAttribute("stroke-width", "2.6");
     needle.setAttribute("stroke-linecap", "round");
     svg.appendChild(needle);
 
     const hub = document.createElementNS(svgNS, "circle");
     hub.setAttribute("cx", cx);
     hub.setAttribute("cy", cy);
-    hub.setAttribute("r", "5");
-    hub.setAttribute("fill", "rgba(255,255,255,0.85)");
+    hub.setAttribute("r", "5.2");
+    hub.setAttribute("fill", "rgba(255,255,255,0.88)");
     svg.appendChild(hub);
 
     const hubInner = document.createElementNS(svgNS, "circle");
     hubInner.setAttribute("cx", cx);
     hubInner.setAttribute("cy", cy);
-    hubInner.setAttribute("r", "2.4");
-    hubInner.setAttribute("fill", "rgba(10,14,35,0.9)");
+    hubInner.setAttribute("r", "2.5");
+    hubInner.setAttribute("fill", "rgba(10,14,35,0.92)");
     svg.appendChild(hubInner);
 
     return svg;
@@ -2442,11 +2478,14 @@ function updateSentimentGauge(score, labelText){
 
   // 初回ロード
   (function boot(){
-    tickRefreshButton();
+    syncHeaderHeight();
+tickRefreshButton();
     startUpdatedTicker();
     startAutoRefresh();
     setLastAttemptAt();
     init(false);
+    window.addEventListener('resize', syncHeaderHeight);
+
   })();
 </script>
 
