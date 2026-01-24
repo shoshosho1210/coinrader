@@ -2032,58 +2032,80 @@ function makeLineChart(canvasId, labels, series, opts){
   }
 
   // Sentiment gauge needle update (0-100 -> -90..+90deg)
-  function buildSentimentGaugeSvg(){
-  const svg = document.getElementById('sentSvg');
-  if (!svg || svg.dataset.built === '1') return;
+  function buildSentimentGaugeSvg(score){
+  // Semi-circle gauge rendered by SVG arcs (top half). score: 0-100
+  const svgNS = "http://www.w3.org/2000/svg";
+  const W = 240, H = 140;
+  const cx = W/2, cy = 124, r = 92;
 
-  const W=240, H=150;
-  const cx=120, cy=132, r=92;
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "100%");
+  svg.classList.add("sent-gauge-svg");
 
-  const ns = 'http://www.w3.org/2000/svg';
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  svg.innerHTML = '';
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const s = clamp(Number(score ?? 0), 0, 100);
 
-  const rad = (a)=> (Math.PI/180)*a; // 180=left, 0=right
-  const polar = (a)=> [cx + r*Math.cos(rad(a)), cy - r*Math.sin(rad(a))];
+  const polar = (angleDeg) => {
+    const a = (Math.PI/180) * angleDeg;
+    return { x: cx + r * Math.cos(a), y: cy - r * Math.sin(a) };
+  };
 
-  function arcPath(a0, a1){
-    const [x0,y0]=polar(a0);
-    const [x1,y1]=polar(a1);
-    const large = Math.abs(a0-a1) > 180 ? 1 : 0;
-    const sweep = 1; // clockwise in SVG coords (top semicircle when a0> a1)
-    return `M ${x0} ${y0} A ${r} ${r} 0 ${large} ${sweep} ${x1} ${y1}`;
-  }
+  // Draw top semicircle: from 180° (left) to 0° (right), counterclockwise (sweep=0).
+  const arcPath = (a0, a1) => {
+    const p0 = polar(a0), p1 = polar(a1);
+    const laf = (Math.abs(a1 - a0) > 180) ? 1 : 0;
+    const sweep = 0; // counterclockwise -> top arc in our coordinate system
+    return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${laf} ${sweep} ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
+  };
 
-  // Track
-  const track = document.createElementNS(ns,'path');
-  track.setAttribute('d', arcPath(180,0));
-  track.setAttribute('stroke', 'rgba(255,255,255,.16)');
-  track.setAttribute('stroke-width', '16');
-  track.setAttribute('fill','none');
-  track.setAttribute('stroke-linecap','butt');
-  svg.appendChild(track);
+  const createArc = (a0, a1, stroke, width, opacity=1) => {
+    const p = document.createElementNS(svgNS, "path");
+    p.setAttribute("d", arcPath(a0, a1));
+    p.setAttribute("fill", "none");
+    p.setAttribute("stroke", stroke);
+    p.setAttribute("stroke-width", String(width));
+    p.setAttribute("stroke-linecap", "butt");
+    p.setAttribute("opacity", String(opacity));
+    return p;
+  };
 
-  // 5 segments (Fear -> Greed)
-  const colors = ['#ef4444','#f59e0b','#facc15','#22c55e','#38bdf8'];
-  const step = 180/5; // 36deg
-  for(let i=0;i<5;i++){
-    const a0 = 180 - step*i;
-    const a1 = 180 - step*(i+1);
-    const seg = document.createElementNS(ns,'path');
-    seg.setAttribute('d', arcPath(a0, a1));
-    seg.setAttribute('stroke', colors[i]);
-    seg.setAttribute('stroke-width', '16');
-    seg.setAttribute('fill','none');
-    seg.setAttribute('stroke-linecap','butt'); // no anti-aliased gaps
-    svg.appendChild(seg);
-  }
+  // Track (background)
+  svg.appendChild(createArc(180, 0, "rgba(255,255,255,0.14)", 16, 1));
 
-  svg.dataset.built = '1';
+  // Colored segments
+  const segDefs = [
+    { a0: 180, a1: 144, c: "#ef4444" }, // 0-20
+    { a0: 144, a1: 108, c: "#f97316" }, // 20-40
+    { a0: 108, a1: 72,  c: "#f59e0b" }, // 40-60
+    { a0: 72,  a1: 36,  c: "#22c55e" }, // 60-80
+    { a0: 36,  a1: 0,   c: "#06b6d4" }, // 80-100
+  ];
+
+  // Small overlap to avoid hairline gaps between segments
+  const overlap = 0.6;
+  segDefs.forEach(seg => {
+    const a0 = clamp(seg.a0 - overlap, 0, 180);
+    const a1 = clamp(seg.a1 + overlap, 0, 180);
+    svg.appendChild(createArc(a0, a1, seg.c, 16, 0.95));
+  });
+
+  // Value indicator (thin arc up to the score)
+  const valAngle = 180 - (s/100)*180;
+  svg.appendChild(createArc(180, valAngle, "rgba(255,255,255,0.55)", 3, 1));
+
+  return svg;
 }
-
 function updateSentimentGauge(score, labelText){
-  buildSentimentGaugeSvg();
-    const needle = document.getElementById('sentNeedle');
+  // Render SVG gauge into the existing <svg>
+  const host = document.querySelector('.sent-gauge svg.sent-gauge-svg, svg.sent-gauge-svg');
+  if (host){
+    const tmp = buildSentimentGaugeSvg(score);
+    host.setAttribute('viewBox', tmp.getAttribute('viewBox'));
+    host.innerHTML = tmp.innerHTML;
+  }
+const needle = document.getElementById('sentNeedle');
     if (needle){
       const s = Math.max(0, Math.min(100, Number(score) || 0));
       const deg = -90 + (180 * (s / 100));
