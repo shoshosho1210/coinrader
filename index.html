@@ -264,7 +264,14 @@
   .kpi-tile-sub{margin-top:4px;font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .kpi-tile-sub .pos{color:#4ade80;font-weight:700;}
   .kpi-tile-sub .neg{color:#f87171;font-weight:700;}
-  @media (max-width: 520px){ .overview-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .kpi-tile-big{font-size:16px;} }
+  
+  /* Summary KPI compact rows */
+  .summary-kpis .kpi-tile{ padding:9px 12px; }
+  .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }
+  .summary-kpis .kpi-tile-big{ margin-top:0; }
+  .summary-kpis .kpi-tile-sub.inline{ margin-top:0; font-size:12px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .summary-kpis .mini-vis{ margin-top:6px; }
+@media (max-width: 520px){ .overview-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .kpi-tile-big{font-size:16px;} }
 
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
   .kpi-meta{ margin-top:6px; font-size:12px; color:#d1d5db; }
@@ -766,8 +773,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   <div class="summary-kpis" id="summaryKpis">
     <div class="kpi-tile">
       <div class="kpi-tile-title">恐怖指数（0–100）</div>
-      <div class="kpi-tile-big" id="sumSentMain">-</div>
-      <div class="kpi-tile-sub" id="sumSentSub">-</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
       <div class="mini-vis" aria-hidden="true">
         <div class="mini-sent-track">
           <div class="mini-sent-zone fear"></div>
@@ -783,8 +789,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">BTC RSI（14）</div>
-      <div class="kpi-tile-big" id="sumRsiMain">-</div>
-      <div class="kpi-tile-sub" id="sumRsiSub">-</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
       <div class="mini-vis" aria-hidden="true">
         <div class="mini-rsi-track">
           <div class="mini-rsi-zone low"></div>
@@ -800,8 +805,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="kpi-tile-title">BTC ドミナンス</div>
       <div class="kpi-with-donut">
         <div class="kpi-text">
-          <div class="kpi-tile-big" id="sumDomMain">-</div>
-          <div class="kpi-tile-sub" id="sumDomSub">-</div>
+          <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
         </div>
         <div class="mini-donut mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
           <svg viewBox="0 0 44 44" role="img" aria-label="Dominance mini donut">
@@ -818,8 +822,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">上位250 平均（24h）</div>
-      <div class="kpi-tile-big" id="sumAvg24Main">-</div>
-      <div class="kpi-tile-sub" id="sumAvg24Sub">-</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
       <div class="mini-spark mini-vis" aria-hidden="true" title="7d推移（平均リターン）のスパークライン">
         <svg viewBox="0 0 100 30" preserveAspectRatio="none">
           <path id="sumAvgSparkFill" class="fill" d=""></path>
@@ -830,8 +833,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
-      <div class="kpi-tile-big" id="sumMcapMain">-</div>
-      <div class="kpi-tile-sub" id="sumMcapSub">-</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMcapMain">-</div><div class="kpi-tile-sub inline" id="sumMcapSub">-</div></div>
           <div class="mini-spark mini-vis" aria-hidden="true" title="セッション内推移（上位250 時価総額の合計）">
         <svg viewBox="0 0 100 30" preserveAspectRatio="none">
           <path id="sumMcapSparkFill" class="fill" d=""></path>
@@ -1952,7 +1954,9 @@ function getAltVolumeTop5(){
       fill.setAttribute('d','');
       return;
     }
-    const raw = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    const rawAbs = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    const base = (rawAbs.length && isFinite(rawAbs[0]) && rawAbs[0]!==0) ? rawAbs[0] : null;
+    const raw = base ? rawAbs.map(v => (v/base - 1) * 100) : rawAbs;
     if(raw.length < 2){
       line.setAttribute('points','');
       fill.setAttribute('d','');
@@ -1960,7 +1964,7 @@ function getAltVolumeTop5(){
     }
     let min = Math.min(...raw);
     let max = Math.max(...raw);
-    if(min === max){ min *= 0.999; max *= 1.001; }
+    if(min === max){ min -= 0.01; max += 0.01; }
 
     const W = 100, H = 30, pad = 2;
     const top = pad, bottom = H - pad;
@@ -2471,7 +2475,7 @@ function getAltVolumeTop5(){
 
       // RSI
       const rsiTag = (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立'));
-      setSum('sumRsiMain', (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : lastRsiVal.toFixed(1));
+      setSum('sumRsiMain', (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : String(Math.round(lastRsiVal)));
       setSum('sumRsiSub', rsiTag);
 
       // Dominance (BTC)
