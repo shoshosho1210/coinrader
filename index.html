@@ -571,8 +571,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
     </div>
     <div class="section-actions">
-      <button class="pillbtn" id="toggleOverviewDetail" type="button" aria-expanded="false">チャートを表示</button>
-      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener" data-ga="ext_coingecko_trending" data-placement="index_trend_header" data-partner="coingecko" data-pr="0">もっと見る</a>
+<a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener" data-ga="ext_coingecko_trending" data-placement="index_trend_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
   <div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
@@ -973,9 +972,7 @@ function readSnapshot(key){
       refreshBtn.textContent = '更新';
     }
     // header height can change slightly on narrow screens when the button label updates
-    try{ syncHeaderHeight();
-  setupOverviewToggle(); }catch(_e){}
-  }
+    try{ syncHeaderHeight(); }catch(_e){}}
 
   function markRefreshed(){
     lastRefreshAt = Date.now();
@@ -2605,202 +2602,49 @@ function makeLineChart(canvasId, labels, series, opts){
   }
 
   // 初回ロード
-  (function setupOverviewToggle(){
-  const btn = document.getElementById('toggleOverviewDetail');
-  const wrap = document.getElementById('overviewWrap');
-  if(!btn || !wrap) return;
+  
 
-  const key = 'cr_overview_detail';
-  const saved = localStorage.getItem(key);
-  const show = saved === '1';
+  // --- Market Overview: detail toggle (charts on/off) ---
+  function setupOverviewToggle(){
+    const btn = document.getElementById('toggleOverviewDetail');
+    const wrap = document.getElementById('overviewWrap');
+    if (!btn || !wrap) return;
 
-  const apply = (shouldShow)=>{
-    wrap.classList.toggle('is-collapsed', !shouldShow);
-    btn.textContent = shouldShow ? 'チャートを隠す' : 'チャートを表示';
-    btn.setAttribute('aria-expanded', shouldShow ? 'true' : 'false');
+    const KEY = 'cr_overview_detail_open_v1';
 
-    // When showing, nudge Chart.js canvases to recalc layout
-    if(shouldShow){
-      setTimeout(()=>{
-        try{
-          // Chart.js resize hooks
-          [domChart, breadthChart, avgChart, rsiChart, mcapChart, volChart].forEach(ch=>{
-            if(ch && typeof ch.resize === 'function') ch.resize();
-          });
-        }catch(_){}
-      }, 60);
-    }
-  };
-
-  apply(show);
-
-  btn.addEventListener('click', ()=>{
-    const nowShow = wrap.classList.contains('is-collapsed');
-    // if collapsed -> show
-    apply(nowShow);
-    localStorage.setItem(key, nowShow ? '1' : '0');
-  });
-}
-
-function boot(){
-    syncHeaderHeight();
-tickRefreshButton();
-    startUpdatedTicker();
-    startAutoRefresh();
-    setLastAttemptAt();
-    init(false);
-    window.addEventListener('resize', syncHeaderHeight);
-
-  })();
-</script>
-
-<script>
-/* CTA click enrichment (index only): adds placement/partner/pr/link_url while avoiding double count */
-(function(){
-  function hasGtag(){ return typeof window.gtag === 'function'; }
-
-  function isNewTabClick(a, e){
-    return (
-      a.target === '_blank' ||
-      e.metaKey || e.ctrlKey || e.shiftKey ||
-      e.button === 1
-    );
-  }
-
-  function fireCta(params, cb){
-    if (!hasGtag()){
-      if (cb) cb();
-      return;
-    }
-    const p = Object.assign({ transport_type: 'beacon' }, params || {});
-    if (cb){
-      p.event_callback = cb;
-      p.event_timeout = 800;
-    }
-    window.gtag('event', 'cta_click', p);
-    if (cb) setTimeout(cb, 850);
-  }
-
-  function smoothScrollToId(id){
-    const el = document.getElementById(id);
-    if (!el) return false;
-    try{
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }catch(_){
-      el.scrollIntoView(true);
-    }
-    return true;
-  }
-
-  document.addEventListener('click', function(e){
-    const a = e.target.closest('a');
-    if (!a || !a.href) return;
-
-    const ctaId = a.dataset.ga || a.dataset.cta;
-    if (!ctaId) return;
-
-    const rawHref = (a.getAttribute('href') || '').trim();
-    const placement = a.dataset.placement || a.dataset.place || '';
-    const partner = a.dataset.partner || '';
-    const pr = Number(a.dataset.pr) || 0;
-    const linkUrl = a.href;
-
-    const newTab = isNewTabClick(a, e);
-
-    // Stop assets/click_tracker.js from also firing cta_click
-    e.stopImmediatePropagation();
-
-    // In-page tabs: keep smooth scroll
-    if (rawHref.startsWith('#')){
-      e.preventDefault();
-      fireCta({ cta_id: ctaId, placement, partner, pr, link_url: linkUrl });
-      const id = rawHref.slice(1);
-      if (!smoothScrollToId(id)){
-        location.hash = rawHref;
+    function apply(open){
+      if (open){
+        wrap.classList.remove('is-collapsed');
+        btn.textContent = 'チャートを隠す';
+        btn.setAttribute('aria-expanded','true');
+      } else {
+        wrap.classList.add('is-collapsed');
+        btn.textContent = 'チャートを表示';
+        btn.setAttribute('aria-expanded','false');
       }
-      return;
+      // header height can change slightly when layout changes
+      try{ syncHeaderHeight(); }catch(_e){}
     }
 
-    // Normal navigation
-    if (!newTab){
-      e.preventDefault();
-      fireCta({ cta_id: ctaId, placement, partner, pr, link_url: linkUrl }, function(){
-        location.href = linkUrl;
-      });
-    }else{
-      fireCta({ cta_id: ctaId, placement, partner, pr, link_url: linkUrl });
-    }
-  }, true);
-})();
-</script>
+    let open = localStorage.getItem(KEY);
+    open = (open === '1');
+    apply(open);
 
-<script src="/assets/click_tracker.js" defer></script>
+    btn.addEventListener('click', () => {
+      open = !open;
+      localStorage.setItem(KEY, open ? '1' : '0');
+      apply(open);
+    });
+  }
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-note">
-      免責：CoinRaderは情報提供目的であり投資助言ではありません。投資判断は自己責任でお願いします。<br>
-      Data: CoinGecko（API制限・通信障害等により表示が遅延/欠損する場合があります）/ 広告・PRを含む場合があります。
-    </div>
-
-    <nav class="footer-links" aria-label="Footer links">
-      <a href="/about">運営者情報</a>
-      <a href="/disclaimer">免責事項</a>
-      <a href="/data-sources">データソース</a>
-      <a href="/ads-pr">広告・PR表記</a>
-      <a href="/privacy">プライバシーポリシー</a>
-      <a href="/contact">お問い合わせ</a>
-    </nav>
-
-    <div class="footer-copy">© CoinRader / Operator: CoinRader</div>
-  </div>
-</footer>
-
-<script>
-// Side menu toggle (mobile)
-(() => {
-  const menu = document.getElementById('sideMenu');
-  const overlay = document.getElementById('sideMenuOverlay');
-  const btn = document.getElementById('menuBtn');
-  const closeBtn = document.getElementById('menuCloseBtn');
-  if (!menu || !btn || !overlay) return;
-
-  const close = () => {
-    menu.classList.remove('is-open');
-    overlay.hidden = true;
-    menu.setAttribute('aria-hidden', 'true');
-    btn.setAttribute('aria-expanded', 'false');
-  };
-  const open = () => {
-    menu.classList.add('is-open');
-    overlay.hidden = false;
-    menu.setAttribute('aria-hidden', 'false');
-    btn.setAttribute('aria-expanded', 'true');
-  };
-  btn.addEventListener('click', () => {
-    const isOpen = menu.classList.contains('is-open');
-    isOpen ? close() : open();
-  });
-  overlay.addEventListener('click', close);
-  closeBtn && closeBtn.addEventListener('click', close);
-  menu.addEventListener('click', (e) => {
-    const a = e.target.closest('a');
-    if (!a) return;
-    // close on mobile after navigation
-    if (window.matchMedia('(max-width: 1200px)').matches) close();
-  });
-  // close if resized to desktop
-  window.addEventListener('resize', () => {
-    if (window.matchMedia('(min-width: 1201px)').matches){
-      overlay.hidden = true;
-      menu.classList.remove('is-open');
-      menu.setAttribute('aria-hidden', 'false');
-      btn.setAttribute('aria-expanded', 'false');
-    } else {
-      close();
-    }
-  });
-})();
+  // 初回ロード
+  (function boot(){
+    try{ syncHeaderHeight(); setupOverviewToggle(); }catch(_e){}
+    tickRefreshButton();
+    init(false);
+    setInterval(() => init(false), AUTO_REFRESH_MS);
+  })();
+;
 </script>
 
 </body>
