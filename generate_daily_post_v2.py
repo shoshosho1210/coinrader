@@ -29,19 +29,17 @@ UP_N = 3
 VOL_ALT_N = 3
 
 
-# ====== Rank emoji (avoid literal emoji in source) ======
-RANK_EMOJI = [
-    "\u0031\ufe0f\u20e3",  # 1️⃣
-    "\u0032\ufe0f\u20e3",  # 2️⃣
-    "\u0033\ufe0f\u20e3",  # 3️⃣
-    "\u0034\ufe0f\u20e3",  # 4️⃣
-    "\u0035\ufe0f\u20e3",  # 5️⃣
-]
-RANK_EMOJI = [s.encode("utf-8").decode("unicode_escape") for s in RANK_EMOJI]
+# ====== Rank emoji (generated from codepoints; no mojibake) ======
+def keycap(n: int) -> str:
+    # e.g. "1️⃣" = "1" + VS16 + keycap
+    return f"{n}\N{VARIATION SELECTOR-16}\N{COMBINING ENCLOSING KEYCAP}"
+
+RANK_EMOJI = [keycap(i) for i in range(1, 6)]
 
 STABLE_KEYWORDS = {
     "usdt", "usdc", "dai", "tusd", "busd", "fdusd", "usde", "susde",
     "usdp", "pyusd", "gusd", "eurc", "usdd", "lusd", "frax",
+    "stable",  # avoid tokens literally named STABLE
 }
 
 # Alt volume excludes these big ones to avoid always showing USDT/BTC/ETH
@@ -251,9 +249,10 @@ def main() -> None:
 
     text = "\n".join(lines)
 
-    Path("daily_post_full.txt").write_text(text, encoding="utf-8")
-    Path("daily_post_short.txt").write_text(text, encoding="utf-8")
-    Path("daily_share_url.txt").write_text(share_url, encoding="utf-8")
+    # Use UTF-8 with BOM so Windows Notepad won't mojibake
+    Path("daily_post_full.txt").write_text(text, encoding="utf-8-sig")
+    Path("daily_post_short.txt").write_text(text, encoding="utf-8-sig")
+    Path("daily_share_url.txt").write_text(share_url, encoding="utf-8-sig")
 
     print(share_url)
 
