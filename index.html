@@ -620,15 +620,15 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     position:relative;
     height:10px;
     border-radius:999px;
-    background:rgba(148,163,184,0.32);
+    background:rgba(148,163,184,0.26);
     overflow:hidden;
-    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.22);
+    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
   }
   .mini-rsi-zone{ position:absolute; top:0; bottom:0; }
-  .mini-rsi-zone.low{ left:0; width:30%; background:rgba(255,77,90,0.46); }
-  .mini-rsi-zone.mid{ left:30%; width:40%; background:rgba(65,217,255,0.32); }
-  .mini-rsi-zone.high{ left:70%; width:30%; background:rgba(77,255,136,0.38); }
-  .mini-rsi-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.55); }
+  .mini-rsi-zone.low{ left:0; width:30%; background:rgba(239,68,68,0.32); }
+  .mini-rsi-zone.mid{ left:30%; width:40%; background:rgba(56,189,248,0.18); }
+  .mini-rsi-zone.high{ left:70%; width:30%; background:rgba(34,197,94,0.28); }
+  .mini-rsi-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.45); }
   .mini-rsi-th.t30{ left:30%; }
   .mini-rsi-th.t70{ left:70%; }
   .mini-rsi-marker{
@@ -638,7 +638,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     border-radius:50%;
     transform:translate(-50%,-50%);
     background:rgba(226,232,240,0.98);
-    box-shadow:0 0 0 3px rgba(56,189,248,0.35), 0 0 16px rgba(65,217,255,0.65);
+    box-shadow:0 0 0 3px rgba(56,189,248,0.35), 0 0 14px rgba(56,189,248,0.55);
     animation: glowPulse 2.4s ease-in-out infinite;
     left:50%;
   }
@@ -648,16 +648,16 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     position:relative;
     height:10px;
     border-radius:999px;
-    background:rgba(148,163,184,0.32);
+    background:rgba(148,163,184,0.26);
     overflow:hidden;
-    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.22);
+    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
   }
   .mini-sent-zone{ position:absolute; top:0; bottom:0; }
-  .mini-sent-zone.fear{ left:0; width:25%; background:rgba(255,77,90,0.46); }
-  .mini-sent-zone.caution{ left:25%; width:25%; background:rgba(255,204,51,0.44); }
-  .mini-sent-zone.neutral{ left:50%; width:25%; background:rgba(65,217,255,0.32); }
-  .mini-sent-zone.greed{ left:75%; width:25%; background:rgba(77,255,136,0.38); }
-  .mini-sent-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.50); }
+  .mini-sent-zone.fear{ left:0; width:25%; background:rgba(239,68,68,0.32); }
+  .mini-sent-zone.caution{ left:25%; width:25%; background:rgba(245,158,11,0.30); }
+  .mini-sent-zone.neutral{ left:50%; width:25%; background:rgba(56,189,248,0.18); }
+  .mini-sent-zone.greed{ left:75%; width:25%; background:rgba(34,197,94,0.28); }
+  .mini-sent-th{ position:absolute; top:0; bottom:0; width:1px; background:rgba(226,232,240,0.40); }
   .mini-sent-th.t25{ left:25%; }
   .mini-sent-th.t50{ left:50%; }
   .mini-sent-th.t75{ left:75%; }
@@ -668,46 +668,21 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     border-radius:50%;
     transform:translate(-50%,-50%);
     background:rgba(226,232,240,0.98);
-    box-shadow:0 0 0 3px rgba(56,189,248,0.32), 0 0 16px rgba(65,217,255,0.65);
-    animation: glowPulse 2.4s ease-in-out infinite;
-    left:50%;
-  }
-
-  /* Zero-centered mini bar (e.g., Avg24h / MCap 24h%) */
-  .mini-zc-track{
-    position:relative;
-    height:10px;
-    border-radius:999px;
-    background:rgba(148,163,184,0.32);
-    overflow:hidden;
-    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.22);
-  }
-  .mini-zc-zone{ position:absolute; top:0; bottom:0; width:50%; }
-  .mini-zc-zone.neg{ left:0; background:rgba(255,77,90,0.40); }
-  .mini-zc-zone.pos{ right:0; background:rgba(77,255,136,0.34); }
-  .mini-zc-zero{ position:absolute; top:0; bottom:0; left:50%; width:1px; background:rgba(226,232,240,0.55); }
-  .mini-zc-marker{
-    position:absolute;
-    top:50%;
-    width:12px; height:12px;
-    border-radius:50%;
-    transform:translate(-50%,-50%);
-    background:rgba(226,232,240,0.98);
-    box-shadow:0 0 0 3px rgba(65,217,255,0.38), 0 0 18px rgba(65,217,255,0.70);
+    box-shadow:0 0 0 3px rgba(56,189,248,0.32), 0 0 14px rgba(56,189,248,0.55);
     animation: glowPulse 2.4s ease-in-out infinite;
     left:50%;
   }
 
   /* Dominance mini donut (SVG) */
   .mini-donut{
-    width:60px; height:60px;
+    width:44px; height:44px;
     display:flex;
     align-items:center;
     justify-content:center;
     opacity:0.95;
   }
-  .mini-donut svg{ width:60px; height:60px; display:block; }
-  .mini-donut .bg{ stroke:rgba(148,163,184,0.22); }
+  .mini-donut svg{ width:44px; height:44px; display:block; }
+  .mini-donut .bg{ stroke:rgba(148,163,184,0.18); }
   .mini-donut .seg-btc{ stroke:rgba(250,204,21,0.90); }
   .mini-donut .seg-eth{ stroke:rgba(96,165,250,0.90); }
   .mini-donut .seg-stb{ stroke:rgba(52,211,153,0.85); }
@@ -852,26 +827,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
           <polyline id="sumAvgSparkLine" class="line" points=""></polyline>
         </svg>
       </div>
-    
-      <div class="mini-zc-track mini-vis" title="平均24h（%）の位置（0%中心）">
-        <div class="mini-zc-zone neg"></div>
-        <div class="mini-zc-zone pos"></div>
-        <div class="mini-zc-zero"></div>
-        <div class="mini-zc-marker" id="sumAvg24Marker"></div>
-      </div>
-</div>
+    </div>
     <div class="kpi-tile">
       <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
       <div class="kpi-tile-big" id="sumMcapMain">-</div>
       <div class="kpi-tile-sub" id="sumMcapSub">-</div>
-    
-      <div class="mini-zc-track mini-vis" title="時価総額 24h（%）の位置（0%中心）">
-        <div class="mini-zc-zone neg"></div>
-        <div class="mini-zc-zone pos"></div>
-        <div class="mini-zc-zero"></div>
-        <div class="mini-zc-marker" id="sumMcap24Marker"></div>
-      </div>
-</div>
+    </div>
   </div>
 
   <div class="summary-lists">
@@ -1881,26 +1842,6 @@ function getAltVolumeTop5(){
       marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
-
-  function updateSummaryZcBar(markerId, val, range=5){
-    const marker = document.getElementById(markerId);
-    if(!marker) return;
-    if(typeof val !== 'number' || !isFinite(val)){
-      marker.style.left = '50%';
-      marker.style.opacity = '0.25';
-      marker.style.boxShadow = '0 0 0 3px rgba(65,217,255,0.22)';
-      return;
-    }
-    const r = (typeof range === 'number' && isFinite(range) && range>0) ? range : 5;
-    const v = Math.max(-r, Math.min(r, val));
-    const pct = 50 + (v / r) * 50;
-    marker.style.left = pct.toFixed(2) + '%';
-    marker.style.opacity = '1';
-    if (v > 0.001) marker.style.boxShadow = '0 0 0 3px rgba(77,255,136,0.30), 0 0 18px rgba(77,255,136,0.40)';
-    else if (v < -0.001) marker.style.boxShadow = '0 0 0 3px rgba(255,77,90,0.30), 0 0 18px rgba(255,77,90,0.40)';
-    else marker.style.boxShadow = '0 0 0 3px rgba(65,217,255,0.38), 0 0 18px rgba(65,217,255,0.70)';
-  }
-
     const v = Math.max(0, Math.min(100, val));
     marker.style.left = v.toFixed(1) + '%';
     marker.style.opacity = '1';
@@ -2507,17 +2448,12 @@ function getAltVolumeTop5(){
       const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
       setSum('sumAvg24Main', fmt2(avg24));
       setSum('sumAvg24Sub', (med24==null) ? null : ('中央値 ' + fmt2(med24)));
-      // Avg24 zero-centered bar
-      updateSummaryZcBar('sumAvg24Marker', avg24, 5);
 
       // Market cap total (Top250)
       setSum('sumMcapMain', (totalMc==null) ? null : formatJPY(totalMc));
       const mcapPct2 = (o && typeof o.mcap24hPct==='number' && isFinite(o.mcap24hPct)) ? ((o.mcap24hPct>=0?'+':'') + o.mcap24hPct.toFixed(2) + '%') : null;
       const mcapAbs2 = (o && typeof o.mcap24hDelta==='number' && isFinite(o.mcap24hDelta)) ? formatJPY(o.mcap24hDelta) : null;
       setSum('sumMcapSub', (mcapPct2 && mcapAbs2) ? ('24h ' + mcapPct2 + ' (' + mcapAbs2 + ')') : (mcapPct2||mcapAbs2));
-      // Market cap 24h% zero-centered bar
-      const mcapPctNum = (o && typeof o.mcap24hPct==='number' && isFinite(o.mcap24hPct)) ? o.mcap24hPct : null;
-      updateSummaryZcBar('sumMcap24Marker', mcapPctNum, 5);
 
       // Mini visuals (Summary)
       updateSummarySentBar(sentScore);
