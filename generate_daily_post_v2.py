@@ -216,18 +216,16 @@ def build_post():
         return sep.join(parts)
 
     def build_short(n_trend=3, n_up=3, n_vol=3) -> str:
-        up_parts = []
+        up_parts: list[str] = []
         for x in gain_top[:n_up]:
-            sym = safe_sym(x.get("name",""), x.get("symbol",""))
-            pct = x.get("price_change_percentage_24h", 0)
+            sym = safe_sym(x.get('name',''), x.get('symbol',''))
+            pct = x.get('price_change_percentage_24h', 0) or 0
             up_parts.append(f"{sym} {pct:+.1f}%")
         short = (
             f"【今日の注目 {today}】\n"
-                        f"🔥Trend: {format_rank_emojis(trend_items[:n_trend], sep=' / ')}
-"
-            f"🚀Up(24h,出来高≥5億円優先): {' | '.join(up_parts)}\n"
-                        f"📊Vol(アルト): {format_rank_emojis(vol_alt_syms[:n_vol], sep=' / ')}
-"
+            f"🔥Trend: {format_rank_emojis(trend_items[:n_trend], sep=' / ')}\n"
+            f"🚀Up(24h): {format_rank_emojis(up_parts, sep=' | ')}\n"
+            f"📊Vol(アルト): {format_rank_emojis(vol_alt_syms[:n_vol], sep=' / ')}\n"
             f"→ {post_url} #暗号資産"
         )
         return short
