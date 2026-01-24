@@ -2067,82 +2067,100 @@ function makeLineChart(canvasId, labels, series, opts){
 
   // Sentiment gauge (0-100 => fear..greed). Render as a "filled" semi-gauge + needle.
   // Sentiment gauge (0-100) — SVG semi-gauge (mobile-safe)
-  function buildSentimentGaugeSvg(score){
-    // Score: 0〜100（恐怖 → 強欲）
-    const W=220, H=120, cx=110, cy=110;
-    const r=78, strokeW=13;
+  function buildSentimentGaugeSvg(score) {
+    const svgNS = "http://www.w3.org/2000/svg";
 
-    // この関数内の角度(deg)は「0=上、90=右、180=下、270=左」
-    // 上半円を左→右に描くため、270→450（=90+360）の範囲を使う
-    const outerStart=270, outerEnd=450;
-    const span=outerEnd-outerStart;
+    // clamp
+    const s = Math.max(0, Math.min(100, Number(score) || 0));
 
-    const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
-    const sc = clamp(score,0,100);
+    // --- geometry ---
+    const cx = 120;
+    const cy = 120;
+    const r  = 90;
+    const strokeW = 14;
 
-    const polar = (deg,rad)=>{
-      const a=(deg-90)*Math.PI/180;
-      return {x: cx+rad*Math.cos(a), y: cy+rad*Math.sin(a)};
-    };
-
-    const arcPath = (startDeg,endDeg,rad)=>{
-      const s=polar(startDeg,rad), e=polar(endDeg,rad);
-      const diff=Math.abs(endDeg-startDeg);
-      const large = diff>180 ? 1 : 0;
-      const sweep = endDeg>startDeg ? 1 : 0;
-      return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${rad} ${rad} 0 ${large} ${sweep} ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
-    };
-
-    const segs=[
-      {c:'#ef4444'}, // 恐怖
-      {c:'#f97316'},
-      {c:'#facc15'}, // 中立
-      {c:'#22c55e'},
-      {c:'#16a34a'}  // 強欲
+    // 半円（左=180°, 右=0°）を 5分割で常時表示（赤→緑）
+    const segments = [
+      { a0: 180, a1: 144, color: "#ff4d4f" }, // 0-20
+      { a0: 144, a1: 108, color: "#ff8f1f" }, // 20-40
+      { a0: 108, a1: 72,  color: "#ffd43b" }, // 40-60
+      { a0: 72,  a1: 36,  color: "#6ee7b7" }, // 60-80
+      { a0: 36,  a1: 0,   color: "#22c55e" }, // 80-100
     ];
 
-    const segSpan=span/segs.length;
+    const polar = (deg) => {
+      const rad = (deg * Math.PI) / 180;
+      return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+    };
 
-    // 背景（薄いベースアーク）
-    let segPaths='';
-    segPaths += `<path d="${arcPath(outerStart,outerEnd,r)}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="${strokeW}" stroke-linecap="round"/>`;
+    // 「上側の半円」を描くため sweep=0（反時計回り側）で統一
+    const arcPath = (a0, a1) => {
+      const [x0, y0] = polar(a0);
+      const [x1, y1] = polar(a1);
+      const largeArc = 0;
+      const sweep = 0;
+      return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${largeArc} ${sweep} ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+    };
 
-    // カラーセグメント（左→右）
-    for(let i=0;i<segs.length;i++){
-      const a0=outerStart + i*segSpan;
-      const a1=outerStart + (i+1)*segSpan;
-      segPaths += `<path d="${arcPath(a0,a1,r)}" fill="none" stroke="${segs[i].c}" stroke-width="${strokeW}" stroke-linecap="round"/>`;
+    // svg root
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "sent-gauge-svg");
+    svg.setAttribute("viewBox", "0 0 240 140");
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    // faint track（薄いベース）
+    const track = document.createElementNS(svgNS, "path");
+    track.setAttribute("d", arcPath(180, 0));
+    track.setAttribute("fill", "none");
+    track.setAttribute("stroke", "rgba(255,255,255,0.10)");
+    track.setAttribute("stroke-width", String(strokeW));
+    track.setAttribute("stroke-linecap", "round");
+    svg.appendChild(track);
+
+    // colored segments（常時表示）
+    for (const seg of segments) {
+      const p = document.createElementNS(svgNS, "path");
+      p.setAttribute("d", arcPath(seg.a0, seg.a1));
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", seg.color);
+      p.setAttribute("stroke-width", String(strokeW));
+      p.setAttribute("stroke-linecap", "round");
+      svg.appendChild(p);
     }
 
-    // 針
-    const valAngle = outerStart + (sc/100)*span;
-    const tip = polar(valAngle, r-6);
-    const hubR=4.5;
-    const needle=`<line x1="${cx}" y1="${cy}" x2="${tip.x.toFixed(2)}" y2="${tip.y.toFixed(2)}" stroke="rgba(255,255,255,0.92)" stroke-width="2" />
-                 <circle cx="${cx}" cy="${cy}" r="${hubR}" fill="rgba(255,255,255,0.85)" />`;
+    // needle（0=左, 100=右）
+    const ang = 180 - (s / 100) * 180; // deg
+    const rad = (ang * Math.PI) / 180;
+    const nr = r - 18;
+    const nx = cx + nr * Math.cos(rad);
+    const ny = cy + nr * Math.sin(rad);
 
-    // 目盛り（- 恐怖 / 中立 / 強欲 -）
-    const ticks=[270,315,360,405,450];
-    let tickHtml='';
-    for(const t of ticks){
-      const p1=polar(t, r+3);
-      const p2=polar(t, r-6);
-      tickHtml += `<line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>`;
-    }
+    const needle = document.createElementNS(svgNS, "line");
+    needle.setAttribute("x1", String(cx));
+    needle.setAttribute("y1", String(cy));
+    needle.setAttribute("x2", String(nx.toFixed(2)));
+    needle.setAttribute("y2", String(ny.toFixed(2)));
+    needle.setAttribute("stroke", "rgba(229,231,235,0.95)");
+    needle.setAttribute("stroke-width", "2.5");
+    needle.setAttribute("stroke-linecap", "round");
+    svg.appendChild(needle);
 
-    return `<svg id="sentimentGauge" class="sent-gauge-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true" style="position:absolute;inset:0;">
-      ${segPaths}
-      ${tickHtml}
-      ${needle}
-    </svg>`;
+    const hub = document.createElementNS(svgNS, "circle");
+    hub.setAttribute("cx", String(cx));
+    hub.setAttribute("cy", String(cy));
+    hub.setAttribute("r", "4");
+    hub.setAttribute("fill", "rgba(229,231,235,0.95)");
+    svg.appendChild(hub);
+
+    return svg;
   }
-function updateSentimentGauge(score, labelText){
-  // Render SVG gauge into the existing <svg>
-  const host = document.querySelector('.sent-gauge svg.sent-gauge-svg, svg.sent-gauge-svg');
-  if (host){
-    const tmp = buildSentimentGaugeSvg(score);
-    host.setAttribute('viewBox', tmp.getAttribute('viewBox'));
-    host.innerHTML = tmp.innerHTML;
+
+  function updateSentimentGauge(score) {
+    const oldSvg = document.querySelector(".sent-gauge svg.sent-gauge-svg");
+    if (!oldSvg) return;
+
+    const newSvg = buildSentimentGaugeSvg(score);
+    oldSvg.parentNode.replaceChild(newSvg, oldSvg);
   }
 
   // Needle is drawn inside the SVG now (to avoid mobile rendering gaps).
