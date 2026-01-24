@@ -639,7 +639,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
     </div>
     <div class="section-actions">
-      <button class="linkbtn" id="btnOverviewToggle" type="button">詳細</button>
       <a class="linkbtn" href="https://www.coingecko.com" target="_blank" rel="noopener" data-ga="ext_coingecko_home" data-placement="index_overview_header" data-partner="coingecko" data-pr="0">もっと見る</a>
     </div>
   </div>
@@ -994,18 +993,6 @@ function readSnapshot(key){
   }
 
   function scrollToId(id){
-    // if user navigates to Market Overview, auto-expand the detail charts
-    if (id === 'sec-overview'){
-      try{
-        if (window.__setOverviewOpen) window.__setOverviewOpen(true);
-        else {
-          const ow = document.getElementById('overviewWrap');
-          if (ow) ow.classList.remove('is-collapsed');
-          setTimeout(()=>{ try{ renderOverview(); }catch(_e){} }, 30);
-        }
-      }catch(_e){}
-    }
-
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
@@ -2613,47 +2600,26 @@ function makeLineChart(canvasId, labels, series, opts){
   }
 
   // 初回ロード
+  
 
   // --- Market Overview: detail toggle (charts on/off) ---
   function setupOverviewToggle(){
-    const btn = document.getElementById('btnOverviewToggle');
+    const btn = document.getElementById('toggleOverviewDetail');
     const wrap = document.getElementById('overviewWrap');
     if (!btn || !wrap) return;
 
     const KEY = 'cr_overview_detail_open_v1';
 
-    const apply = (open, rerender=false) => {
+    function apply(open){
       if (open){
         wrap.classList.remove('is-collapsed');
-        btn.textContent = '閉じる';
+        btn.textContent = 'チャートを隠す';
         btn.setAttribute('aria-expanded','true');
       } else {
         wrap.classList.add('is-collapsed');
-        btn.textContent = '詳細';
+        btn.textContent = 'チャートを表示';
         btn.setAttribute('aria-expanded','false');
       }
-      try{ syncHeaderHeight(); }catch(_e){}
-      if (open && rerender){
-        setTimeout(() => { try{ renderOverview(); }catch(_e){} }, 30);
-      }
-    };
-
-    const stored = localStorage.getItem(KEY);
-    let open = (stored === null) ? (window.innerWidth >= 980) : (stored === '1');
-    apply(open, true);
-
-    btn.addEventListener('click', () => {
-      open = !open;
-      localStorage.setItem(KEY, open ? '1' : '0');
-      apply(open, true);
-    });
-
-    window.__setOverviewOpen = (v) => {
-      open = !!v;
-      localStorage.setItem(KEY, open ? '1' : '0');
-      apply(open, true);
-    };
-  }
       // header height can change slightly when layout changes
       try{ syncHeaderHeight(); }catch(_e){}
     }
