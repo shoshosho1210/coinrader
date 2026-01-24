@@ -1607,6 +1607,13 @@ function getAltVolumeTop5(){
 
     const o = buildOverview();
 
+    const wrap = document.getElementById('overviewWrap');
+    const isCollapsed = wrap && wrap.classList.contains('is-collapsed');
+
+    let lastUp = null, lastDown = null;
+    let avg7 = null, med7 = null;
+    let sentScore = null, sentLabel = null;
+
     // Breadth
     const denom = (o.up + o.down + o.flat) || 1;
     const upPct = (o.up / denom) * 100;
@@ -1744,8 +1751,8 @@ function getAltVolumeTop5(){
         // Avg return chart (0 baseline fill)
         makeBaselineChart('avgLine', labels, avgArr);
         // KPI表示を「7d推移」ベース（最新点）に合わせる
-        const lastUp = upArr[upArr.length - 1];
-        const lastDown = downArr[downArr.length - 1];
+        lastUp = upArr[upArr.length - 1];
+        lastDown = downArr[downArr.length - 1];
         const lastAvg = avgArr[avgArr.length - 1];
         const kpiB = document.getElementById('kpiBreadth');
         if (kpiB){
@@ -1762,6 +1769,8 @@ function getAltVolumeTop5(){
             med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
           }
           kpiAvg.textContent = `平均 ${fmtPct(lastAvg)} / 中央値 ${fmtPct(med)}`;
+        avg7 = lastAvg;
+        med7 = med;
         }
 
 
@@ -1848,6 +1857,8 @@ function getAltVolumeTop5(){
           const score = clamp(50 + 50*raw, 0, 100);
 
           const label = (score>=81) ? '極度の強欲' : (score>=61) ? '強欲' : (score>=41) ? '中立' : (score>=21) ? '恐怖' : '極度の恐怖';
+          sentScore = score;
+          sentLabel = label;
 
           const elS = document.getElementById('kpiSentiment');
           if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
@@ -1914,6 +1925,50 @@ function getAltVolumeTop5(){
     }catch(_){}
 
     // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
+
+    // --- KPI strip (collapsed view) ---
+    (function updateOverviewStrip(){
+      const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
+      // 時価総額
+      set('kpiStripMcapMain', formatJPY(o.totalMcap));
+      const mcapPct = (o.mcapChgPct==null) ? null : ((o.mcapChgPct>=0?'+':'') + o.mcapChgPct.toFixed(2) + '%');
+      const mcapAbs = (o.mcapChgAbs==null) ? null : formatJPY(o.mcapChgAbs);
+      set('kpiStripMcapSub', (mcapPct && mcapAbs) ? `24h ${mcapPct} (${mcapAbs})` : (mcapPct||mcapAbs));
+
+      // Dominance
+      const domBTC = (o.values && o.values.length) ? (o.values[0]/o.totalMcap*100) : null;
+      const domETH = (o.values && o.values.length>1) ? (o.values[1]/o.totalMcap*100) : null;
+      const domSTB = (o.values && o.values.length>2) ? (o.values[2]/o.totalMcap*100) : null;
+      const domOTH = (o.values && o.values.length>3) ? (o.values[3]/o.totalMcap*100) : null;
+      set('kpiStripDomMain', domBTC==null ? null : `BTC ${domBTC.toFixed(1)}%`);
+      const domSubParts = [];
+      if(domETH!=null) domSubParts.push(`ETH ${domETH.toFixed(1)}%`);
+      if(domSTB!=null) domSubParts.push(`ステーブル ${domSTB.toFixed(1)}%`);
+      if(domOTH!=null) domSubParts.push(`Others ${domOTH.toFixed(1)}%`);
+      set('kpiStripDomSub', domSubParts.length? domSubParts.join(' / ') : null);
+
+      // Breadth
+      set('kpiStripBreadthMain', (lastUp!=null && lastDown!=null) ? `上昇 ${lastUp} / 下落 ${lastDown}` : null);
+      const upRate = (lastUp!=null && lastDown!=null && (lastUp+lastDown)>0) ? (lastUp/(lastUp+lastDown)*100) : null;
+      set('kpiStripBreadthSub', upRate==null ? null : `上昇率 ${upRate.toFixed(1)}%`);
+
+      // Avg/Median 7d
+      set('kpiStripAvg7Main', avg7==null ? null : `平均 ${avg7.toFixed(2)}%`);
+      set('kpiStripAvg7Sub',  med7==null ? null : `中央値 ${med7.toFixed(2)}%`);
+
+      // RSI
+      const rsiMain = (typeof lastRsiVal==='number' && isFinite(lastRsiVal)) ? lastRsiVal.toFixed(1) : null;
+      set('kpiStripRsiMain', rsiMain);
+      // rsi label is already rendered in the full view; keep strip short
+      set('kpiStripRsiSub', rsiMain==null ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立')));
+
+      // Sentiment
+      set('kpiStripSentMain', (sentScore==null) ? null : String(sentScore));
+      set('kpiStripSentSub', sentLabel);
+    })();
+
+    // 折りたたみ時はKPI stripだけ更新して終了（チャートの幅0問題を避ける）
+    if (isCollapsed) return;
     setTimeout(() => {
       ['breadthLine','avgLine','rsiLine','sentLine','mcapLine','mcap24hLine','volLine'].forEach(id => {
         try { if (charts[id] && typeof charts[id].resize === 'function') charts[id].resize(); } catch(_){}
