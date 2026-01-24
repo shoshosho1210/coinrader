@@ -1765,6 +1765,7 @@ function getAltVolumeTop5(){
     let lastUp = null, lastDown = null;
     let avg7 = null, med7 = null;
     let sentScore = null, sentLabel = null;
+    let lastRsiVal = null;
 
     // Breadth
     const denom = (o.up + o.down + o.flat) || 1;
@@ -1927,7 +1928,6 @@ function getAltVolumeTop5(){
 
 
         
-        let lastRsiVal = null;
         // BTC RSI (14) from BTC sparkline (7d)
         try {
           const btc = marketsTop.find(c => c && c.id === 'bitcoin');
