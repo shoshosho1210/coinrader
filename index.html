@@ -2313,16 +2313,6 @@ function makeLineChart(canvasId, labels, series, opts){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
-
-    // Prevent "Canvas is already in use" on refresh/re-render
-    try { if (charts[canvasId]) charts[canvasId].destroy(); } catch(_){}
-    try {
-      if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
-        const existing = Chart.getChart(canvas);
-        if (existing) existing.destroy();
-      }
-    } catch(_){}
-
     const datasets = series.map(s => ({
       label: s.label,
       data: s.data,
@@ -2332,7 +2322,6 @@ function makeLineChart(canvasId, labels, series, opts){
       tension: 0.25,
       fill: false,
     }));
-
     charts[canvasId] = new Chart(canvas, {
       type: 'line',
       data: { labels: labels, datasets: datasets },
@@ -2341,9 +2330,6 @@ function makeLineChart(canvasId, labels, series, opts){
         plugins: { legend: { display: false }, tooltip: { enabled: false } },
         scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero), suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined), suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined) } }
       }
-    });
-  }
-
     });
   }
 
