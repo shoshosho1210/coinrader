@@ -485,6 +485,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .brand .title{ font-size: 14px; }
   .hdr-right{ gap:8px; }
   .statusPill, .updatedPill{ font-size: 11px; padding: 6px 8px; }
+  .miniNote{ font-size:11px; padding:6px 8px; border-radius:999px; background:rgba(148,163,184,0.10); border:1px solid rgba(148,163,184,0.18); color:#cbd5e1; white-space:nowrap; }
   #refreshBtn{ padding: 7px 10px; font-size: 12px; }
 }
 
@@ -680,6 +681,30 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     left:50%;
   }
 
+
+  /* MA cross mini bar (v74) */
+  .mini-ma-track{
+    position:relative;
+    height:10px;
+    border-radius:999px;
+    background:rgba(148,163,184,0.26);
+    overflow:hidden;
+    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
+  }
+  .mini-ma-zone{ position:absolute; top:0; bottom:0; }
+  .mini-ma-zone.neg{ left:0; width:40%; background:rgba(248,113,113,0.35); }
+  .mini-ma-zone.mid{ left:40%; width:20%; background:rgba(148,163,184,0.25); }
+  .mini-ma-zone.pos{ left:60%; width:40%; background:rgba(34,197,94,0.30); }
+  .mini-ma-center{ position:absolute; left:50%; top:-4px; bottom:-4px; width:1px; background:rgba(226,232,240,0.26); }
+  .mini-ma-marker{
+    position:absolute;
+    top:50%;
+    width:10px; height:10px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(226,232,240,0.98);
+    box-shadow:0 0 0 3px rgba(56,189,248,0.22);
+  }
   /* Dominance mini donut (SVG) */
   .mini-donut{
     width:44px; height:44px;
@@ -703,6 +728,26 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     gap:10px;
   }
   .kpi-with-donut .kpi-text{ flex:1 1 auto; min-width:0; }
+  /* Dominance mini bar (v74) */
+  .mini-dom-track{
+    position:relative;
+    height:12px;
+    border-radius:999px;
+    overflow:hidden;
+    background:rgba(148,163,184,0.16);
+    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
+  }
+  .mini-dom-seg{ position:absolute; top:0; bottom:0; left:0; width:0%; }
+  .mini-dom-seg.btc{ background:rgba(250,204,21,0.90); }
+  .mini-dom-seg.eth{ background:rgba(96,165,250,0.90); }
+  .mini-dom-seg.stb{ background:rgba(52,211,153,0.90); }
+  .mini-dom-seg.oth{ background:rgba(148,163,184,0.62); }
+
+  .mini-dom-tick{ position:absolute; top:-8px; bottom:-8px; width:1px; background:rgba(226,232,240,0.22); }
+  .mini-dom-tick span{ position:absolute; top:-16px; left:50%; transform:translateX(-50%); font-size:10px; color:rgba(203,213,225,0.72); }
+  .mini-dom-tick.t50{ left:50%; }
+  .mini-dom-tick.t60{ left:60%; }
+
   /* Avg 24h sparkline */
   .mini-spark{ height:34px; margin-top:8px; }
   .mini-spark svg{ width:100%; height:34px; display:block; }
@@ -728,13 +773,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
     <div class="hdr-right">
       <div class="statusPill" id="statusPill"><span class="dot"></span><span>接続中</span></div>
+      <div class="miniNote" id="miniNote" title="自動更新（約3分ごと）">自動3分</div>
       <div class="updatedPill" id="updatedPill">更新: --</div>
       <button class="btn small" id="refreshBtn" type="button">更新</button>
     </div>
   </div>
 </header>
-
-<div class="topNote">データは3分ごとに自動更新されます（通信環境により前後します）</div>
 
 <div class="sideMenuOverlay" id="sideMenuOverlay" hidden></div>
 <aside class="sideMenu" id="sideMenu" aria-hidden="true">
@@ -807,16 +851,15 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
         <div class="kpi-text">
           <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
         </div>
-        <div class="mini-donut mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
-          <svg viewBox="0 0 44 44" role="img" aria-label="Dominance mini donut">
-            <circle class="bg" cx="22" cy="22" r="16"></circle>
-            <g class="rot">
-              <circle id="sumDomArcBtc" class="seg-btc" cx="22" cy="22" r="16"></circle>
-              <circle id="sumDomArcEth" class="seg-eth" cx="22" cy="22" r="16"></circle>
-              <circle id="sumDomArcStb" class="seg-stb" cx="22" cy="22" r="16"></circle>
-              <circle id="sumDomArcOth" class="seg-oth" cx="22" cy="22" r="16"></circle>
-            </g>
-          </svg>
+        <div class="mini-dom-bar mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
+          <div class="mini-dom-track" role="img" aria-label="Dominance bar">
+            <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
+            <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
+            <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
+            <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
+            <div class="mini-dom-tick t50"><span>50</span></div>
+            <div class="mini-dom-tick t60"><span>60</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -832,20 +875,24 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       </div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMcapMain">-</div><div class="kpi-tile-sub inline" id="sumMcapSub">-</div></div>
-          <div class="mini-spark mini-vis" aria-hidden="true" title="セッション内推移（上位250 時価総額の合計）">
-        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-          <path id="sumMcapSparkFill" class="fill" d=""></path>
-          <polyline id="sumMcapSparkLine" class="line" points=""></polyline>
-        </svg>
+      <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。">
+        <div class="mini-ma-track">
+          <div class="mini-ma-zone neg"></div>
+          <div class="mini-ma-zone mid"></div>
+          <div class="mini-ma-zone pos"></div>
+          <div class="mini-ma-center"></div>
+          <div class="mini-ma-marker" id="sumMaMarker"></div>
+        </div>
       </div>
+    </div>
 </div>
   </div>
 
   <div class="summary-lists">
     <div class="summary-card">
-      <div class="summary-card-title">🔥 Trend TOP5</div>
+      <div class="summary-card-title">🔥 トレンド TOP5</div>
       <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
     <div class="summary-card">
@@ -1488,7 +1535,38 @@ const EXCLUDE_MCAP_IDS = new Set([
 }
 
 
-  async function loadTrendingTop5(forceNetwork=false){
+  
+  // BTC MA cross (SMA50/SMA200) 用データ
+  window.__btcMaCross = null;
+
+  async function loadBtcMaCross(){
+    const url = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart'
+      + '?vs_currency=jpy'
+      + '&days=400'; // 200日MA計算の余裕を確保
+
+    const data = await fetchJsonRetry(url, {retries:2});
+    const prices = (data && Array.isArray(data.prices)) ? data.prices.map(p => Number(p[1])).filter(v => Number.isFinite(v)) : [];
+    if (prices.length < 210) { window.__btcMaCross = null; return; }
+
+    const sma = (arr, n) => {
+      let sum = 0;
+      for (let i = arr.length - n; i < arr.length; i++) sum += arr[i];
+      return sum / n;
+    };
+
+    const sma50 = sma(prices, 50);
+    const sma200 = sma(prices, 200);
+    const distPct = sma200 ? (sma50 - sma200) / sma200 * 100 : 0;
+
+    let label = '中立';
+    if (Math.abs(distPct) <= 0.30) label = 'クロス近い';
+    else if (distPct > 0) label = 'GC側';
+    else if (distPct < 0) label = 'DC側';
+
+    window.__btcMaCross = { sma50, sma200, distPct, label };
+  }
+
+async function loadTrendingTop5(forceNetwork=false){
   const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
 
   // キャッシュ（ids + 最小スナップショット）から先に組み立て
@@ -1841,6 +1919,22 @@ function getAltVolumeTop5(){
   }
 
 
+  function updateSummaryMaBar(distPct){
+    const marker = document.getElementById('sumMaMarker');
+    if (!marker) return;
+
+    if (!Number.isFinite(distPct)) {
+      marker.style.left = '50%';
+      marker.style.opacity = '0.35';
+      return;
+    }
+    const range = 5; // ±5% を表示レンジに
+    const d = Math.max(-range, Math.min(range, distPct));
+    const left = (d + range) / (2 * range) * 100;
+    marker.style.left = `${left}%`;
+    marker.style.opacity = '1';
+  }
+
 
   function updateSummarySentBar(val){
     const marker = document.getElementById('sumSentMarker');
@@ -1859,40 +1953,29 @@ function getAltVolumeTop5(){
     else if (v >= 50) marker.style.boxShadow = '0 0 0 3px rgba(148,163,184,0.22)';
     else marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';
   }
-  function updateSummaryDomDonut(pcts){
-    const elB = document.getElementById('sumDomArcBtc');
-    const elE = document.getElementById('sumDomArcEth');
-    const elS = document.getElementById('sumDomArcStb');
-    const elO = document.getElementById('sumDomArcOth');
-    if(!elB || !elE || !elS || !elO) return;
+  function updateSummaryDomBar(pcts){
+    const elB = document.getElementById('sumDomSegBtc');
+    const elE = document.getElementById('sumDomSegEth');
+    const elS = document.getElementById('sumDomSegStb');
+    const elO = document.getElementById('sumDomSegOth');
+    if (!elB || !elE || !elS || !elO) return;
 
-    const r = 16;
-    const C = 2 * Math.PI * r;
+    const pct = Array.isArray(pcts) ? pcts : [0,0,0,0];
+    const clamp = (v)=> Math.max(0, Math.min(100, Number(v)||0));
+    const b = clamp(pct[0]), e = clamp(pct[1]), s = clamp(pct[2]), o = clamp(pct[3]);
+    const total = b + e + s + o || 1;
+    const nb = b/total*100, ne = e/total*100, ns = s/total*100, no = o/total*100;
 
-    const safe = (x)=> (typeof x==='number' && isFinite(x) && x>0) ? x : 0;
-    const parts = [safe(pcts && pcts[0]), safe(pcts && pcts[1]), safe(pcts && pcts[2]), safe(pcts && pcts[3])];
-    const sum = parts.reduce((a,b)=>a+b,0);
-    if(sum <= 0){
-      [elB,elE,elS,elO].forEach(el=>{
-        el.style.strokeDasharray = `0 ${C}`;
-        el.style.strokeDashoffset = '0';
-      });
-      return;
-    }
-    // normalize to 100%
-    const pct = parts.map(v => (v/sum)*100);
-
-    let offset = 0;
-    const setArc = (el, p)=>{
-      const seg = C * (p/100);
-      el.style.strokeDasharray = `${seg} ${Math.max(0, C - seg)}`;
-      el.style.strokeDashoffset = `${-offset}`;
-      offset += seg;
+    let left = 0;
+    const setSeg = (el, w)=>{
+      el.style.left = `${left}%`;
+      el.style.width = `${Math.max(0, w)}%`;
+      left += w;
     };
-    setArc(elB, pct[0]);
-    setArc(elE, pct[1]);
-    setArc(elS, pct[2]);
-    setArc(elO, pct[3]);
+    setSeg(elB, nb);
+    setSeg(elE, ne);
+    setSeg(elS, ns);
+    setSeg(elO, Math.max(0, 100 - (nb+ne+ns))); // 誤差吸収
   }
 
   function updateSummaryAvgSpark(arr){
@@ -2497,25 +2580,25 @@ function getAltVolumeTop5(){
       setSum('sumAvg24Main', fmt2(avg24));
       setSum('sumAvg24Sub', (med24==null) ? null : ('中央値 ' + fmt2(med24)));
 
-      // Market cap total (Top250)
-      setSum('sumMcapMain', (totalMc==null) ? null : formatJPY(totalMc));
-      const mcapPct2 = (o && typeof o.mcap24hPct==='number' && isFinite(o.mcap24hPct)) ? ((o.mcap24hPct>=0?'+':'') + o.mcap24hPct.toFixed(2) + '%') : null;
-      const mcapAbs2 = (o && typeof o.mcap24hDelta==='number' && isFinite(o.mcap24hDelta)) ? formatJPY(o.mcap24hDelta) : null;
-      setSum('sumMcapSub', (mcapPct2 && mcapAbs2) ? ('24h ' + mcapPct2 + ' (' + mcapAbs2 + ')') : (mcapPct2||mcapAbs2));
+      // BTC MA cross distance (SMA50 / SMA200)
+    const ma = window.__btcMaCross || null;
+    if (ma && Number.isFinite(ma.distPct)) {
+      const d = ma.distPct;
+      const label = ma.label || (d > 0 ? 'GC側' : d < 0 ? 'DC側' : '中立');
+      setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
+      setSum('sumMaSub', label);
+      updateSummaryMaBar(d);
+    } else {
+      setSum('sumMaMain', '—');
+      setSum('sumMaSub', '—');
+      updateSummaryMaBar(null);
+    }
 
-      // Mini visuals (Summary)
-      updateSummarySentBar(sentScore);
-      updateSummaryRsiBar(lastRsiVal);
-      const v3 = (o && o.values && o.values.length>3 && isFinite(o.values[3])) ? o.values[3] : null; // others cap
-      updateSummaryDomDonut([v0, v1, v2, v3]);
-      // Session sparkline (total market cap)
-      if(totalMc!=null){
-        if(!Array.isArray(summaryMcapSeries)) summaryMcapSeries = [];
-        summaryMcapSeries.push(totalMc);
-        if(summaryMcapSeries.length > 240) summaryMcapSeries.shift();
-      }
-      updateSummaryAvgSpark(summaryAvgSeries);
-      updateSummaryMcapSpark(summaryMcapSeries);
+    // Mini visuals
+    updateSummarySentBar(sent);
+    updateSummaryRsiBar(rsi);
+    updateSummaryDomBar([domBTC, domETH, domSTB, domOTH]);
+    updateSummaryAvgSpark(summaryAvgSeries);
 
     })();
 
@@ -3245,6 +3328,9 @@ function renderAll(){
     try{
       setStatus('markets取得中…');
       await loadMarketsTop250(fromManualRefresh);
+
+      // 追加KPI: BTC MAクロス距離
+      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
