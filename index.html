@@ -2455,7 +2455,26 @@ function makeLineChart(canvasId, labels, series, opts){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
-    charts[canvasId] = new Chart(canvas, {
+
+    // 既存チャートがあると Chart.js が "Canvas is already in use" を投げるため、必ず破棄してから再生成する
+    try {
+      if (charts && charts[canvasId]) {
+        charts[canvasId].destroy();
+        delete charts[canvasId];
+      }
+    } catch(_e){}
+
+    try {
+      if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+      }
+    } catch(_e){}
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    charts[canvasId] = new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
