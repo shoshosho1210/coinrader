@@ -287,6 +287,15 @@
   /* Summary KPI compact rows */
   .summary-kpis .kpi-tile{ padding:9px 12px; }
   .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; flex-wrap:wrap; }
+
+/* 今日の注目：ドミナンスはスマホでも同一行に収める */
+.summary-kpis .kpi-tile.kpi-dom .kpi-value-row{ flex-wrap:nowrap; gap:8px; }
+.summary-kpis .kpi-tile.kpi-dom .kpi-tile-sub.inline{ white-space:nowrap; }
+@media (max-width:560px){
+  .summary-kpis .kpi-tile.kpi-dom .kpi-tile-big{ font-size: clamp(18px, 5.2vw, 22px); }
+  .summary-kpis .kpi-tile.kpi-dom .kpi-tile-sub.inline{ font-size: clamp(11px, 3.0vw, 13px); letter-spacing:-0.2px; }
+}
+
   /* Keep Avg250 value + breadth on a single line to avoid card height jump */
   .summary-kpis .kpi-tile.kpi-avg250 .kpi-value-row{ flex-wrap:nowrap; }
   .summary-kpis .kpi-tile.kpi-avg250 #sumBreadthInline{ white-space:nowrap; font-size:12px; opacity:0.95; }
@@ -2769,7 +2778,7 @@ if (breadthSub){
         const inlineEl = document.getElementById('sumBreadthInline');
         if (inlineEl){
           if (up==null || down==null) inlineEl.textContent = '—';
-          else inlineEl.textContent = `銘柄数：↑${up} ↓${down}` + ((flat!=null) ? ` (=${flat})` : '');
+          else inlineEl.textContent = `銘柄数：↑${up} ↓${down}`;
         }
 
 
