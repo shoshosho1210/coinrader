@@ -263,6 +263,9 @@
   /* Summary KPI compact rows */
   .summary-kpis .kpi-tile{ padding:9px 12px; }
   .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; flex-wrap:wrap; }
+  /* Keep Avg250 value + breadth on a single line to avoid card height jump */
+  .summary-kpis .kpi-tile.kpi-avg250 .kpi-value-row{ flex-wrap:nowrap; }
+  .summary-kpis .kpi-tile.kpi-avg250 #sumBreadthInline{ white-space:nowrap; font-size:12px; opacity:0.95; }
   .summary-kpis .kpi-tile-big{ margin-top:0; }
   .summary-kpis .kpi-tile-sub.inline{ margin-top:0; font-size:12px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   
@@ -2637,7 +2640,7 @@ function getAltVolumeTop5(){
         const inlineEl = document.getElementById('sumBreadthInline');
         if (inlineEl){
           if (up==null || down==null) inlineEl.textContent = '—';
-          else inlineEl.textContent = `銘柄数：上昇${up}/下落${down}` + ((flat!=null) ? `/横ばい${flat}` : '');
+          else inlineEl.textContent = `銘柄数：↑${up} ↓${down}` + ((flat!=null) ? ` (=${flat})` : '');
         }
 
 
