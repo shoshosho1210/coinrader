@@ -741,26 +741,20 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .mini-donut .rot{ transform:rotate(-90deg); transform-origin:50% 50%; }
   .kpi-with-donut{
     display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:10px;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:8px;
   }
   .kpi-with-donut .kpi-text{ flex:1 1 auto; min-width:0; }
     /* Dominance mini bar (v74) */
   .mini-dom-bar{
-    width:140px;
-    min-width:140px;
-    max-width:160px;
+    width:100%;
+    min-width:0;
+    max-width:none;
     margin-top:0;
-    align-self:center;
+    align-self:stretch;
   }
-  @media (max-width: 980px){
-    .mini-dom-bar{ width:120px; min-width:120px; max-width:140px; }
-  }
-  @media (max-width: 560px){
-    .mini-dom-bar{ width:100px; min-width:100px; max-width:120px; }
-  }
-
   .mini-dom-track{
     position:relative;
     height:12px;
@@ -1103,7 +1097,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi">
 <div class="kpi-label">BTC RSI（14 / 7d推移）</div>
 <div class="kpi-value" id="kpiRsi">-</div>
-<div class="kpi-sub" id="kpiRsiSub">RSIは価格の上げ下げの強さを0〜100で表す指標です（一般に70以上=買われ過ぎ、30以下=売られ過ぎ）。BTCの1時間足相当の7日スパークラインから算出しています。</div>
+<div class="kpi-sub" id="kpiRsiSub">RSIは価格の上げ下げの強さを0〜100で表す指標です（一般に70以上=買われすぎ、30以下=売られすぎ）。BTCの1時間足相当の7日スパークラインから算出しています。</div>
 <canvas class="kpi-canvas" id="rsiLine"></canvas>
 </div>
 <div class="kpi">
@@ -2424,8 +2418,8 @@ function getAltVolumeTop5(){
             const rsiEl = document.getElementById('kpiRsi');
             if (rsiEl && last != null && isFinite(last)) {
               let tag = '中立';
-              if (last >= 70) tag = '買われ過ぎ';
-              else if (last <= 30) tag = '売られ過ぎ';
+              if (last >= 70) tag = '買われすぎ';
+              else if (last <= 30) tag = '売られすぎ';
               rsiEl.textContent = `RSI ${last.toFixed(1)}（${tag}）`;
             }
             // use the same label length as other sparklines
@@ -2577,7 +2571,7 @@ function getAltVolumeTop5(){
       const domETH = (o.values && o.values.length>1) ? (o.values[1]/o.totalMcap*100) : null;
       const domSTB = (o.values && o.values.length>2) ? (o.values[2]/o.totalMcap*100) : null;
       const domOTH = (o.values && o.values.length>3) ? (o.values[3]/o.totalMcap*100) : null;
-      set('kpiStripDomMain', domBTC==null ? null : `BTC ${domBTC.toFixed(1)}%`);
+      set('kpiStripDomMain', domBTC==null ? null : `${domBTC.toFixed(1)}%`);
       const domSubParts = [];
       if(domETH!=null) domSubParts.push(`ETH ${domETH.toFixed(1)}%`);
       if(domSTB!=null) domSubParts.push(`ステーブル ${domSTB.toFixed(1)}%`);
@@ -2623,7 +2617,7 @@ function getAltVolumeTop5(){
       const domB = (totalMc && v0!=null) ? (v0/totalMc*100) : null;
       const domE = (totalMc && v1!=null) ? (v1/totalMc*100) : null;
       const domS = (totalMc && v2!=null) ? (v2/totalMc*100) : null;
-      setSum('sumDomMain', (domB==null) ? null : ('BTC ' + domB.toFixed(1) + '%'));
+      setSum('sumDomMain', (domB==null) ? null : (domB.toFixed(1) + '%'));
       const domSub = (domE==null && domS==null) ? null : ((domE==null?'':('ETH ' + domE.toFixed(1) + '%')) + (domE!=null && domS!=null ? ' / ' : '') + (domS==null?'':('Stbl ' + domS.toFixed(1) + '%')));
       setSum('sumDomSub', domSub);
 
