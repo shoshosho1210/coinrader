@@ -264,12 +264,6 @@
   .kpi-tile-sub{margin-top:4px;font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .kpi-tile-sub .pos{color:#4ade80;font-weight:700;}
   .kpi-tile-sub .neg{color:#f87171;font-weight:700;}
-
-  /* Mobile: keep 5 KPI tiles without an empty slot (make the last tile span full width) */
-  @media (max-width: 720px){
-    .overview-kpi-strip .kpi-tile:nth-child(5){ grid-column: 1 / -1; }
-  }
-
   
   /* Summary KPI compact rows */
   .summary-kpis .kpi-tile{ padding:9px 12px; }
@@ -525,12 +519,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .summary-block{ margin-top: 18px; }
 .summary-kpis{
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin-top: 10px;
 }
-
-.kpi-span2{ grid-column: span 2; }
 .summary-lists{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -593,8 +585,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 @media (max-width: 1100px){
   .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kpi-span2{ grid-column: 1 / -1; }
-.summary-lists{ grid-template-columns: 1fr; }
+  .summary-lists{ grid-template-columns: 1fr; }
 }
 
 
@@ -691,44 +682,47 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   }
 
 
-  /* MA cross mini bar (v74) */
-  
-/* Breadth (Up/Down) mini bar */
-.mini-breadth-track{position:relative;height:10px;border-radius:999px;background:rgba(148,163,184,0.26);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(148,163,184,0.18);}
-.mini-breadth-up{position:absolute;left:0;top:0;bottom:0;width:0%;background:rgba(72,235,142,0.60);}
-.mini-breadth-down{position:absolute;right:0;top:0;bottom:0;width:0%;background:rgba(255,82,82,0.70);}
-.mini-breadth-marker{position:absolute;top:-3px;width:8px;height:16px;border-radius:999px;background:#e5e7eb;box-shadow:0 2px 10px rgba(0,0,0,0.35);transform:translateX(-50%);opacity:0.95;}
-
+  /* MA cross mini bar (v79: align colors with Sentiment/RSI style) */
 .mini-ma-track{
-    position:relative;
-    height:10px;
-    border-radius:999px;
-    background:rgba(148,163,184,0.26);
-    overflow:hidden;
-    box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
-  }
-  .mini-ma-zone{ position:absolute; top:0; bottom:0; }
-  .mini-ma-zone.neg{ left:0; width:35%; background:rgba(255,82,82,0.70); }
-  .mini-ma-zone.mid{ left:35%; width:30%; background:rgba(120,186,255,0.45); }
-  .mini-ma-zone.pos{ left:65%; width:35%; background:rgba(72,235,142,0.62); }
+  position:relative;
+  height:10px;
+  border-radius:999px;
+  background:rgba(148,163,184,0.26);
+  overflow:hidden;
+  box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
+}
+.mini-ma-zone{ position:absolute; top:0; bottom:0; }
+/* 左→右: 危険(DC) → 安全(GC) : 赤→黄→青→緑 */
+.mini-ma-zone.dc-strong{ left:0;  width:25%; background:rgba(255,82,82,0.60); }
+.mini-ma-zone.dc-weak{   left:25%; width:25%; background:rgba(245,158,11,0.44); }
+.mini-ma-zone.gc-weak{   left:50%; width:25%; background:rgba(120,186,255,0.45); }
+.mini-ma-zone.gc-strong{ left:75%; width:25%; background:rgba(72,235,142,0.62); }
 
-  .mini-ma-zone.down{left:0;width:35%;background:rgba(255,82,82,0.75);} .mini-ma-zone.neutral{left:35%;width:30%;background:rgba(148,163,184,0.35);} .mini-ma-zone.up{left:65%;width:35%;background:rgba(72,235,142,0.58);} 
-/* Guard: prevent stray mini-zone overlays if injected outside track */
-  .mini-rsi-zone, .mini-sent-zone, .mini-ma-zone{ display:none; }
-  .mini-rsi-track .mini-rsi-zone{ display:block; }
-  .mini-sent-track .mini-sent-zone{ display:block; }
-  .mini-ma-track .mini-ma-zone{ display:block; }
-  .mini-ma-center{ position:absolute; left:50%; top:-4px; bottom:-4px; width:1px; background:rgba(226,232,240,0.26); }
-  .mini-ma-marker{
-    position:absolute;
-    top:50%;
-    width:10px; height:10px;
-    border-radius:50%;
-    transform:translate(-50%,-50%);
-    background:rgba(226,232,240,0.98);
-    box-shadow:0 0 0 3px rgba(56,189,248,0.22);
-  }
-  /* Dominance mini donut (SVG) */
+/* 0(クロス)の基準線 */
+.mini-ma-center{ position:absolute; left:50%; top:-4px; bottom:-4px; width:1px; background:rgba(226,232,240,0.26); }
+
+.mini-ma-marker{
+  position:absolute;
+  top:50%;
+  width:10px; height:10px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(226,232,240,0.98);
+  box-shadow:0 0 0 3px rgba(56,189,248,0.22);
+}
+
+.mini-ma-label{
+  margin-top:6px;
+  font-size:10px;
+  line-height:1.2;
+  text-align:center;
+  color:rgba(229,231,235,0.60);
+  letter-spacing:.2px;
+  user-select:none;
+}
+
+/* Dominance mini donut (SVG) */
+
   .mini-donut{
     width:44px; height:44px;
     display:flex;
@@ -803,18 +797,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .updatedPill{ max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .statusPill{ white-space: nowrap; }
 }
-
-  /* summary (mobile) */
-  @media (max-width: 640px){
-    #summarySub{ display:none; }
-    .kpi-span2-mobile{ grid-column: 1 / -1; }
-  }
-
-
-  @media (max-width:700px){
-    .summary-sub{display:none;}
-  }
-
 </style>
 </head>
 <body>
@@ -849,7 +831,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
       <a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
       <a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
-      <a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
+      <a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
     </nav>
   <div class="sideMenuFooter">
     <a class="sideNavLink" href="/start">始め方</a>
@@ -864,122 +846,102 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   <div class="section-header">
     <div>
       <div class="section-title">今日の注目</div>
-      <div class="section-sub" id="summarySub">市場の空気（KPI）と注目銘柄をサッと確認できます。</div>
+      <div class="section-sub">市場の空気（KPI）と、いま見られている/動いている/資金が集まっている銘柄を最短で確認できます。</div>
     </div>
     <div class="section-actions">
-      <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
+      <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
     </div>
   </div>
 
   <div class="summary-kpis" id="summaryKpis">
-  <!-- ① 上位250 平均（24h）: 2列ぶち抜き -->
-  <div class="kpi-tile kpi-span2" id="sumAvgTile">
-    <div class="kpi-top">
-      <div class="kpi-label">上位250 平均（24h）</div>
-      <div class="kpi-badge">上昇/下落</div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">恐怖指数（0–100）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true">
+        <div class="mini-sent-track">
+          <div class="mini-sent-zone fear"></div>
+          <div class="mini-sent-zone caution"></div>
+          <div class="mini-sent-zone neutral"></div>
+          <div class="mini-sent-zone greed"></div>
+          <div class="mini-sent-th t25"></div>
+          <div class="mini-sent-th t50"></div>
+          <div class="mini-sent-th t75"></div>
+          <div class="mini-sent-marker" id="sumSentMarker"></div>
+        </div>
+      </div>
     </div>
-    <div class="kpi-main">
-      <div class="kpi-value" id="sumAvg24Main">—</div>
-      <div class="kpi-sub" id="sumAvg24Sub">—</div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">BTC RSI（14）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true">
+        <div class="mini-rsi-track">
+          <div class="mini-rsi-zone low"></div>
+          <div class="mini-rsi-zone mid"></div>
+          <div class="mini-rsi-zone high"></div>
+          <div class="mini-rsi-th t30"></div>
+          <div class="mini-rsi-th t70"></div>
+          <div class="mini-rsi-marker" id="sumRsiMarker"></div>
+        </div>
+      </div>
     </div>
-    <div class="barline" aria-label="上昇/下落バー">
-  <span class="seg down" id="sumAdvBarDown" style="width:0%"></span>
-  <span class="seg flat" id="sumAdvBarFlat" style="width:0%"></span>
-  <span class="seg up" id="sumAdvBarUp" style="width:0%"></span>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">BTC ドミナンス</div>
+      <div class="kpi-with-donut">
+        <div class="kpi-text">
+          <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
+        </div>
+        <div class="mini-dom-bar mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
+          <div class="mini-dom-track" role="img" aria-label="Dominance bar">
+            <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
+            <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
+            <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
+            <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
+            <div class="mini-dom-tick t50"><span>50</span></div>
+            <div class="mini-dom-tick t60"><span>60</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">上位250 平均（24h）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+      <div class="mini-spark mini-vis" aria-hidden="true" title="7d推移（平均リターン）のスパークライン">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path id="sumAvgSparkFill" class="fill" d=""></path>
+          <line id="sumAvgSparkZero" class="zero" x1="0" y1="15" x2="100" y2="15"></line>
+          <polyline id="sumAvgSparkLine" class="line" points=""></polyline>
+        </svg>
+      </div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
+        <div class="mini-ma-track">
+  <div class="mini-ma-zone dc-strong"></div>
+  <div class="mini-ma-zone dc-weak"></div>
+  <div class="mini-ma-zone gc-weak"></div>
+  <div class="mini-ma-zone gc-strong"></div>
+  <div class="mini-ma-center"></div>
+  <div class="mini-ma-marker" id="sumMaMarker"></div>
 </div>
-<canvas class="kpi-spark" id="sumAvgSpark" height="34"></canvas>
-  </div>
-
-  <!-- ② 恐怖指数 -->
-  <div class="kpi-tile" id="sumSentTile">
-    <div class="kpi-top">
-      <div class="kpi-label">恐怖指数（0–100）</div>
-      <div class="kpi-badge">市場ムード</div>
+<div class="mini-ma-label">DC側 ← 0 → GC側</div>
+      </div>
     </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumSentMain">—</span> <span class="kpi-unit" id="sumSentSub">—</span></div>
-    </div>
-    <div class="mini-vis mini-sent-track" id="sumSentTrack" aria-hidden="true">
-      <div class="mini-sent-zone fear"></div>
-      <div class="mini-sent-zone greed"></div>
-      <div class="mini-sent-zone neutral"></div>
-      <div class="mini-sent-zone greed2"></div>
-      <div class="mini-sent-zone greed3"></div>
-      <div class="mini-sent-th" style="left:20%"></div>
-      <div class="mini-sent-th" style="left:40%"></div>
-      <div class="mini-sent-th" style="left:60%"></div>
-      <div class="mini-sent-th" style="left:80%"></div>
-      <div class="mini-sent-marker" id="sumSentMarker" style="left:50%"></div>
-    </div>
-  </div>
-
-  <!-- ③ 買われすぎ / 売られすぎ（RSI14） -->
-  <div class="kpi-tile" id="sumRsiTile">
-    <div class="kpi-top">
-      <div class="kpi-label">買われすぎ / 売られすぎ（RSI14）</div>
-      <div class="kpi-badge">BTC</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumRsiMain">—</span> <span class="kpi-unit" id="sumRsiSub">—</span></div>
-    </div>
-    <div class="mini-vis mini-rsi-track" id="sumRsiTrack" aria-hidden="true">
-      <div class="mini-rsi-zone low"></div>
-      <div class="mini-rsi-zone mid"></div>
-      <div class="mini-rsi-zone high"></div>
-      <div class="mini-rsi-th" style="left:30%"></div>
-      <div class="mini-rsi-th" style="left:70%"></div>
-      <div class="mini-rsi-marker" id="sumRsiMarker" style="left:50%"></div>
-    </div>
-  </div>
-
-  <!-- ④ ドミナンス -->
-  <div class="kpi-tile" id="sumDomTile">
-    <div class="kpi-top">
-      <div class="kpi-label">BTC ドミナンス</div>
-      <div class="kpi-badge">Top250</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumDomMain">—</span></div>
-      <div class="kpi-sub" id="sumDomSub">—</div>
-    </div>
-    <div class="mini-vis mini-dom-track" id="sumDomTrack" aria-hidden="true">
-      <div class="mini-dom-seg btc"></div>
-      <div class="mini-dom-seg eth"></div>
-      <div class="mini-dom-seg stb"></div>
-      <div class="mini-dom-seg oth"></div>
-      <div class="mini-dom-marker" id="sumDomMarker" style="left:50%"></div>
-    </div>
-  </div>
-
-  <!-- ⑤ BTC MAクロス距離（50/200） -->
-  <div class="kpi-tile" id="sumMaTile">
-    <div class="kpi-top">
-      <div class="kpi-label">BTC MAクロス距離（50/200）</div>
-      <div class="kpi-badge">日足</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumMaMain">—</span> <span class="kpi-unit" id="sumMaSub">—</span></div>
-    </div>
-    <div class="mini-vis mini-ma-track" id="sumMaTrack" aria-hidden="true">
-      <div class="mini-ma-zone down"></div>
-      <div class="mini-ma-zone neutral"></div>
-      <div class="mini-ma-zone up"></div>
-      <div class="mini-ma-th" style="left:50%"></div>
-      <div class="mini-ma-marker" id="sumMaMarker" style="left:50%"></div>
-    </div>
-  </div>
 </div>
-<div class="summary-lists">
+  </div>
+
+  <div class="summary-lists">
     <div class="summary-card">
       <div class="summary-card-title">🔥 トレンド TOP5</div>
       <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
     <div class="summary-card">
-      <div class="summary-card-title">🚀 上昇率 TOP5（24h）</div>
+      <div class="summary-card-title">🚀 Up TOP5（24h）</div>
       <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
     <div class="summary-card">
-      <div class="summary-card-title">📊 出来高（アルト）TOP5（24h）</div>
+      <div class="summary-card-title">📊 Vol(Alt) TOP5（24h）</div>
       <ol class="summary-ol" id="summaryVolAltList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
   </div>
@@ -1071,7 +1033,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <section id="sec-overview">
   <div class="section-header">
     <div>
-      <div class="section-title">市場概況</div>
+      <div class="section-title">Market Overview</div>
       <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
     </div>
     <div class="section-actions">
@@ -1145,30 +1107,23 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
         </div>
 
         <div class="kpi">
-          <div class="kpi-label">BTC 移動平均（50/200 / 日足）</div>
-          <div class="kpi-value" id="kpiBtcMa">-</div>
-          <div class="kpi-meta muted" id="kpiBtcMaSub">MA50とMA200の推移（直近210日）</div>
-          <canvas class="kpi-canvas" id="btcMaLine"></canvas>
-        </div>
-
-        
-        <div class="kpi">
-          <div class="kpi-label">恐怖指数（0-100 / 上位250）</div>
+          <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
           <div class="kpi-value" id="kpiSentiment">-</div>
           <div class="kpi-meta" id="kpiSentimentMeta">-</div>
-
-          <div class="mini-sent-zone fear" style="margin-top:10px;">
-            <div class="mini-sent-bar" id="kpiSentBar">
-              <span class="z z1"></span><span class="z z2"></span><span class="z z3"></span><span class="z z4"></span>
-              <span class="marker" id="kpiSentDot"></span>
+          <div class="sent-gauge-wrap">
+            <div class="sent-gauge" aria-hidden="true">
+              <svg class="sent-gauge-svg" viewBox="0 0 220 120" aria-hidden="true"></svg>
+              <div class="sent-gauge-needle" id="sentNeedle"></div>
+              <div class="sent-gauge-center"></div>
+            </div>
+            <div class="sent-gauge-side">
+              <div class="sent-label" id="sentLabel">-</div>
+              <div class="sent-desc" id="sentDesc">上位250ベースの独自ムード指数</div>
             </div>
           </div>
-
-          <div class="kpi-sub" style="font-size:12px; opacity:.8;">
-            上位250の「広がり（上昇率）」や「出来高変化」などを合成した独自ムード指数です。
-          </div>
+          <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
+          <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
         </div>
-
 
         <div class="kpi">
           <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
@@ -1445,7 +1400,7 @@ function readSnapshot(key){
           const ow = document.getElementById('overviewWrap');
           if (ow) ow.classList.remove('is-collapsed');
           setTimeout(()=>{ try{ renderOverview();
-    try{ renderQuickSummary(); }catch(e){ console.warn('quick summary failed', e); } }catch(_e){} }, 30);
+    renderQuickSummary(); }catch(_e){} }, 30);
         }
       }catch(_e){}
     }
@@ -1626,37 +1581,40 @@ const EXCLUDE_MCAP_IDS = new Set([
   window.__btcMaCross = null;
 
   async function loadBtcMaCross(){
-  // Binance daily klines (CORS-friendly). Use BTCUSDT; MA cross is currency-agnostic.
-  try{
-    const url = 'https://data-api.binance.vision/api/v3/klines'
-      + '?symbol=BTCUSDT&interval=1d&limit=260';
-    const rows = await fetchJsonRetry(url, {retries:2, timeoutMs:12000});
-    if (!Array.isArray(rows) || rows.length < 210) return null;
+    // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
+    // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
+    // ※価格通貨はUSDTだが、MA距離(%)は通貨に依存しないため問題なし。
+    const url = 'https://api.binance.com/api/v3/klines'
+      + '?symbol=BTCUSDT'
+      + '&interval=1d'
+      + '&limit=260'; // 200MA + 50MA + 少し余裕
 
-    const closes = rows.map(r => Number(r[4]));
-    const times  = rows.map(r => Number(r[0]));
-    const ma = (arr, n) => arr.map((_, i) => {
-      if (i+1 < n) return null;
-      let s=0;
-      for (let k=i-n+1; k<=i; k++) s += arr[k];
-      return s/n;
-    });
+    const rows = await fetchJsonRetry(url, {retries:2});
+    if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
 
-    const ma50  = ma(closes, 50);
-    const ma200 = ma(closes, 200);
+    // close価格（index 4）
+    const closes = rows.map(r => +r[4]).filter(v => isFinite(v) && v > 0);
+    if (closes.length < 210) throw new Error('binance closes invalid');
 
-    const lastMa50  = ma50[ma50.length-1];
-    const lastMa200 = ma200[ma200.length-1];
-    if (!isFinite(lastMa50) || !isFinite(lastMa200)) return null;
+    const sma = (arr, n) => {
+      const a = arr.slice(-n);
+      const s = a.reduce((x,y)=>x+y,0);
+      return s / n;
+    };
 
-    const distPct = ((lastMa50 - lastMa200) / lastMa200) * 100;
-    const side = distPct >= 0 ? 'GC側' : 'DC側';
+    const sma50 = sma(closes, 50);
+    const sma200 = sma(closes, 200);
+    const distPct = (sma50 - sma200) / sma200 * 100;
 
-    return { distPct, side, closes, ma50, ma200, times };
-  }catch(e){
-    return null;
+    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
+    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
+
+    window.__btcMaCross = {
+      sma50, sma200, distPct,
+      label,
+      updatedAt: Date.now(),
+    };
   }
-}
 
 
 async function loadTrendingTop5(forceNetwork=false){
@@ -1964,171 +1922,6 @@ function getGainersTop5(){
   return readSnapshot(LS_KEYS.gainersSnapshot);
 }
 
-function buildTop250Stats(markets){
-  const arr = Array.isArray(markets) ? markets : [];
-  const chgs = arr.map(x => Number(x.price_change_percentage_24h_in_currency ?? x.price_change_percentage_24h)).filter(v => isFinite(v));
-  const avgChg = chgs.length ? (chgs.reduce((a,b)=>a+b,0)/chgs.length) : null;
-
-  const sorted = chgs.slice().sort((a,b)=>a-b);
-  const medianChg = sorted.length ? (sorted.length%2 ? sorted[(sorted.length-1)/2] : (sorted[sorted.length/2-1]+sorted[sorted.length/2])/2) : null;
-
-  let upCount = 0, downCount = 0, flatCount = 0;
-  for (const v of chgs){
-    if (v > 0) upCount++;
-    else if (v < 0) downCount++;
-    else flatCount++;
-  }
-
-  // Dominance within top250 by market cap
-  let btc=0, eth=0, stbl=0, others=0;
-  for (const m of arr){
-    const cap = Number(m.market_cap);
-    if (!isFinite(cap) || cap<=0) continue;
-    const id = String(m.id||'').toLowerCase();
-    const sym = String(m.symbol||'').toUpperCase();
-    if (id === 'bitcoin' || sym === 'BTC') btc += cap;
-    else if (id === 'ethereum' || sym === 'ETH') eth += cap;
-    else if (isStableCoin(id, sym)) stbl += cap;
-    else others += cap;
-  }
-  const total = btc+eth+stbl+others;
-  const dom = total>0 ? {
-    btc: btc/total*100,
-    eth: eth/total*100,
-    stbl: stbl/total*100,
-    others: others/total*100
-  } : null;
-
-  // Avg sparkline (7d) from coins/markets?sparkline=true
-  let avgSpark = null;
-  const sparks = arr.map(m => (m?.sparkline_in_7d?.price || null)).filter(a => Array.isArray(a) && a.length>=10);
-  if (sparks.length){
-    const L = Math.min(...sparks.map(a=>a.length));
-    const out = [];
-    for (let i=0;i<L;i++){
-      let s=0, c=0;
-      for (const a of sparks){
-        const v = Number(a[a.length-L+i]);
-        if (isFinite(v)){ s+=v; c++; }
-      }
-      out.push(c? s/c : null);
-    }
-    avgSpark = out;
-  }
-
-  return { avgChg, medianChg, upCount, downCount, flatCount, dom, avgSpark };
-}
-
-function setText(id, txt){
-  const el = document.getElementById(id);
-  if (el) el.textContent = txt;
-}
-
-function setBar01(barId, value01){
-  const bar = document.getElementById(barId);
-  if (!bar) return;
-  const v = Math.max(0, Math.min(1, Number(value01)));
-  const thumb = bar.querySelector('.bar-thumb');
-  if (thumb) thumb.style.left = (v*100).toFixed(1) + '%';
-}
-
-function renderSummaryKpis(){
-  const s = window.__top250Stats || null;
-
-  // ① Top250 average + up/down bars + spark
-  if (s && isFinite(s.avgChg)){
-    setText('sumAvg24Main', `${fmtPct(s.avgChg)}`);
-    setText('sumAvg24Sub', `上昇 ${s.upCount} / 下落 ${s.downCount}`);
-    const total = (s.upCount||0)+(s.downCount||0)+(s.flatCount||0) || 1;
-    const upW = (s.upCount/total)*100;
-    const downW = (s.downCount/total)*100;
-    const flatW = (s.flatCount/total)*100;
-    const elUp = document.getElementById('sumAdvBarUp');
-    const elDown = document.getElementById('sumAdvBarDown');
-    const elFlat = document.getElementById('sumAdvBarFlat');
-    if (elUp) elUp.style.width = upW.toFixed(1)+'%';
-    if (elDown) elDown.style.width = downW.toFixed(1)+'%';
-    if (elFlat) elFlat.style.width = flatW.toFixed(1)+'%';
-
-    // KPI内のスパークラインは市場概況側に統一（KPIは数値のみ）
-    const kpiSpark = document.getElementById('sumAvgSpark');
-    if (kpiSpark) kpiSpark.style.display = 'none';
-  }else{
-    setText('sumAvg24Main', '—');
-    setText('sumAvg24Sub', '—');
-  }
-
-  // ② Sentiment (fear/greed proxy)
-  const senti = window.__sentimentData || null;
-  if (senti && isFinite(senti.score)){
-    setText('sumSentMain', `${Math.round(senti.score)}`);
-    setText('sumSentSub', senti.label||'');
-    const mk = document.getElementById('sumSentMarker');
-    if (mk) mk.style.left = Math.max(0, Math.min(100, senti.score)) + '%';
-  }else{
-    setText('sumSentMain', '—');
-    setText('sumSentSub', '—');
-  }
-
-  // ③ RSI
-  const rsi = window.__rsiData || null;
-  if (rsi && isFinite(rsi.rsi)){
-    setText('sumRsiMain', `${Math.round(rsi.rsi)}`);
-    setText('sumRsiSub', rsi.label||'');
-    const mk = document.getElementById('sumRsiMarker');
-    if (mk) mk.style.left = Math.max(0, Math.min(100, rsi.rsi)) + '%';
-  }else{
-    setText('sumRsiMain', '—');
-    setText('sumRsiSub', '—');
-  }
-
-  // ④ Dominance segments + marker
-  const dom = (s && s.dom) ? s.dom : null;
-  if (dom && isFinite(dom.btc)){
-    setText('sumDomMain', `${dom.btc.toFixed(1)}%`);
-    setText('sumDomSub', `ETH ${dom.eth.toFixed(1)}% / Stbl ${dom.stbl.toFixed(1)}% / Others ${(100 - dom.btc - dom.eth - dom.stbl).toFixed(1)}%`);
-const track = document.getElementById('sumDomTrack');
-    if (track){
-      const segs = track.querySelectorAll('.mini-dom-seg');
-      if (segs && segs.length>=4){
-        segs[0].style.width = dom.btc.toFixed(2)+'%';
-        segs[1].style.width = dom.eth.toFixed(2)+'%';
-        segs[2].style.width = dom.stbl.toFixed(2)+'%';
-        segs[3].style.width = Math.max(0, 100-dom.btc-dom.eth-dom.stbl).toFixed(2)+'%';
-      }
-    }
-    const mk = document.getElementById('sumDomMarker');
-    if (mk) mk.style.left = Math.max(0, Math.min(100, dom.btc)) + '%';
-  }else{
-    setText('sumDomMain', '—');
-    setText('sumDomSub', '—');
-  }
-
-  // ⑤ MA cross distance + marker (map -20..+20% to 0..100)
-  const mac = window.__btcMaCross || null;
-  if (mac && isFinite(mac.distPct)){
-    setText('sumMaMain', `${fmtPct(mac.distPct)}`);
-    setText('sumMaSub', mac.side||'');
-    const v = (mac.distPct + 20) / 40 * 100;
-    const mk = document.getElementById('sumMaMarker');
-    if (mk) mk.style.left = Math.max(0, Math.min(100, v)) + '%';
-  }else{
-    setText('sumMaMain', '—');
-    setText('sumMaSub', '—');
-  }
-}
-
-function renderBtcMaChart(mac, canvasId){
-  if (!mac || !mac.times || !mac.closes) return;
-  const labels = mac.times.map(t=> new Date(t).toISOString().slice(0,10));
-  makeMultiLineChart(canvasId, labels, [
-    {label:'Close', values: mac.closes},
-    {label:'MA50', values: mac.ma50},
-    {label:'MA200', values: mac.ma200}
-  ]);
-}
-
-
 function getVolumeTop5(){
   if (marketsTop && marketsTop.length){
     const coins = buildVolumeTop5();
@@ -2157,21 +1950,6 @@ function getAltVolumeTop5(){
     return s + n.toFixed(2) + '%';
   }
 
-function fmtJPY(n){
-    if (typeof n !== 'number' || !isFinite(n)) return '-';
-    try{
-      return new Intl.NumberFormat('ja-JP',{style:'currency',currency:'JPY',maximumFractionDigits:0}).format(n);
-    }catch(e){
-      return '¥' + Math.round(n).toLocaleString('ja-JP');
-    }
-  }
-
-function fmtPctSigned(v){
-  if (typeof v !== 'number' || !isFinite(v)) return '—';
-  const s = (v>0?'+':'') + v.toFixed(2) + '%';
-  return s;
-}
-
 
   // ===== Summary mini visuals (v68) =====
   function updateSummaryRsiBar(val){
@@ -2199,13 +1977,21 @@ function fmtPctSigned(v){
     if (!Number.isFinite(distPct)) {
       marker.style.left = '50%';
       marker.style.opacity = '0.35';
+      marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
-    const range = 5; // ±5% を表示レンジに
+
+    const range = 5; // ±5% を表示レンジに（超過はクランプ）
     const d = Math.max(-range, Math.min(range, distPct));
     const left = (d + range) / (2 * range) * 100;
     marker.style.left = `${left}%`;
     marker.style.opacity = '1';
+
+    // 色味は「危険→安全（赤→黄→青→緑）」に合わせる（意味はDC/GC）
+    if (d <= -range * 0.5) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.22)';        // DC強
+    else if (d < 0)        marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';        // DC弱
+    else if (d <  range*0.5) marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.22)';      // GC弱
+    else                   marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.22)';         // GC強
   }
 
 
@@ -2218,7 +2004,6 @@ function fmtPctSigned(v){
       marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
-
     const v = Math.max(0, Math.min(100, val));
     marker.style.left = v.toFixed(1) + '%';
     marker.style.opacity = '1';
@@ -2227,363 +2012,120 @@ function fmtPctSigned(v){
     else if (v >= 50) marker.style.boxShadow = '0 0 0 3px rgba(148,163,184,0.22)';
     else marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';
   }
-
-  // Mini sentiment bar helper (0-100)
-  function updateMiniSentBar(val, markerId='sumSentMarker'){
-    const el = document.getElementById(markerId);
-    if(!el) return;
-    const v = (typeof val==='number' && isFinite(val)) ? Math.max(0, Math.min(100, val)) : 50;
-    el.style.left = v.toFixed(1) + '%';
-    el.style.opacity = (typeof val==='number' && isFinite(val)) ? '1' : '0.25';
-  }
-
   function updateSummaryDomBar(pcts){
-  const sum = pcts.reduce((a,b)=>a+b,0) || 1;
-  const norm = pcts.map(v=>Math.max(0, Number(v)||0)/sum*100);
-  const segs = Array.from(document.querySelectorAll('#sumDomTrack .mini-dom-seg'));
-  if (segs.length >= 4){
-    segs[0].style.flexBasis = `${norm[0]}%`; segs[0].style.width = `${norm[0]}%`;
-    segs[1].style.flexBasis = `${norm[1]}%`; segs[1].style.width = `${norm[1]}%`;
-    segs[2].style.flexBasis = `${norm[2]}%`; segs[2].style.width = `${norm[2]}%`;
-    segs[3].style.flexBasis = `${norm[3]}%`; segs[3].style.width = `${norm[3]}%`;
-  } else {
-    const ids = ['sumDomSegBtc','sumDomSegEth','sumDomSegStbl','sumDomSegOth'];
-    ids.forEach((id, i)=>{
-      const el = document.getElementById(id);
-      if (el) el.style.width = `${norm[i]||0}%`;
-    });
+    const elB = document.getElementById('sumDomSegBtc');
+    const elE = document.getElementById('sumDomSegEth');
+    const elS = document.getElementById('sumDomSegStb');
+    const elO = document.getElementById('sumDomSegOth');
+    if (!elB || !elE || !elS || !elO) return;
+
+    const pct = Array.isArray(pcts) ? pcts : [0,0,0,0];
+    const clamp = (v)=> Math.max(0, Math.min(100, Number(v)||0));
+    const b = clamp(pct[0]), e = clamp(pct[1]), s = clamp(pct[2]), o = clamp(pct[3]);
+    const total = b + e + s + o || 1;
+    const nb = b/total*100, ne = e/total*100, ns = s/total*100, no = o/total*100;
+
+    let left = 0;
+    const setSeg = (el, w)=>{
+      el.style.left = `${left}%`;
+      el.style.width = `${Math.max(0, w)}%`;
+      left += w;
+    };
+    setSeg(elB, nb);
+    setSeg(elE, ne);
+    setSeg(elS, ns);
+    setSeg(elO, Math.max(0, 100 - (nb+ne+ns))); // 誤差吸収
   }
-}
 
+  function updateSummaryAvgSpark(arr){
+    const line = document.getElementById('sumAvgSparkLine');
+    const fill = document.getElementById('sumAvgSparkFill');
+    const zero = document.getElementById('sumAvgSparkZero');
+    if(!line || !fill || !zero) return;
 
-function buildSyntheticSparkline(coin){
-  // Last-resort mini sparkline from 24h change (2 points) so the canvas is never blank.
-  const p1 = (coin && typeof coin.current_price === 'number' && Number.isFinite(coin.current_price)) ? coin.current_price : null;
-  const ch = (coin && typeof coin.price_change_percentage_24h === 'number' && Number.isFinite(coin.price_change_percentage_24h)) ? coin.price_change_percentage_24h : null;
-  if(p1 === null || ch === null) return [];
-  const denom = 1 + (ch / 100);
-  if(!Number.isFinite(denom) || denom === 0) return [];
-  const p0 = p1 / denom;
-  if(!Number.isFinite(p0)) return [];
-  return [p0, p1];
-}
+    if(!Array.isArray(arr) || arr.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      zero.style.display = 'none';
+      return;
+    }
+    // use latest 60 points for speed
+    const raw = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    if(raw.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      zero.style.display = 'none';
+      return;
+    }
+    let min = Math.min(...raw);
+    let max = Math.max(...raw);
+    if(min === max){ min -= 1; max += 1; }
 
-function hasAtLeast2Finite(arr){
-  if(!Array.isArray(arr)) return false;
-  let n = 0;
-  for(const v of arr){
-    if(typeof v === "number" && Number.isFinite(v)){
-      n++;
-      if(n >= 2) return true;
+    const W = 100, H = 30, pad = 2;
+    const top = pad, bottom = H - pad;
+
+    const pts = raw.map((v,i)=>{
+      const x = (i/(raw.length-1)) * W;
+      const y = bottom - ((v - min)/(max - min)) * (bottom - top);
+      return [x,y];
+    });
+
+    const points = pts.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
+    line.setAttribute('points', points);
+
+    const path = `M ${pts[0][0].toFixed(2)} ${bottom.toFixed(2)} L ${pts.map(p=>`${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')} L ${pts[pts.length-1][0].toFixed(2)} ${bottom.toFixed(2)} Z`;
+    fill.setAttribute('d', path);
+
+    const zy = bottom - ((0 - min)/(max - min)) * (bottom - top);
+    if(zy >= top && zy <= bottom){
+      zero.setAttribute('y1', zy.toFixed(2));
+      zero.setAttribute('y2', zy.toFixed(2));
+      zero.style.display = 'block';
+    }else{
+      zero.style.display = 'none';
     }
   }
-  return false;
-}
 
-// --- Sparkline fallback (when sparkline_in_7d is missing) ---
-const __sparklineFallbackCache = new Map(); // coinId -> Promise<number[]>
+  function updateSummaryMcapSpark(arr){
+    const line = document.getElementById('sumMcapSparkLine');
+    const fill = document.getElementById('sumMcapSparkFill');
+    if(!line || !fill) return;
 
-function fetchSparkline7dFallback(coinId){
-  if(!coinId) return Promise.resolve([]);
-  if(__sparklineFallbackCache.has(coinId)) return __sparklineFallbackCache.get(coinId);
-  const url = `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=jpy&days=7`;
-  const p = fetchJsonRetry(url, { retries: 1 }).then(j => {
-    const arr = (j && Array.isArray(j.prices)) ? j.prices.map(x => x && x[1]).filter(v => typeof v === "number") : [];
-    return arr;
-  }).catch(() => []);
-  __sparklineFallbackCache.set(coinId, p);
-  return p;
-}
-
-// --- Sparkline 24h (1d) for gainers/volume (keeps % change label consistent) ---
-const __sparkline1dCache = new Map(); // coinId -> Promise<number[]>
-function fetchSparkline1d(coinId){
-  if(!coinId) return Promise.resolve([]);
-  if(__sparkline1dCache.has(coinId)) return __sparkline1dCache.get(coinId);
-  const url = `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=jpy&days=1`;
-  const p = fetchJsonRetry(url, { retries: 1 }).then(j => {
-    const arr = (j && Array.isArray(j.prices)) ? j.prices.map(x => x && x[1]).filter(v => typeof v === "number") : [];
-    return arr;
-  }).catch(() => []);
-  __sparkline1dCache.set(coinId, p);
-  return p;
-}
-
-
-  // 7日スパークラインから「直近24h相当」を切り出す（追加APIを減らして欠損を防ぐ）
-  function derive24hFrom7d(spark7d) {
-    if (!Array.isArray(spark7d)) return [];
-    const len = spark7d.length;
-    if (len <= 2) return spark7d;
-    // 7日→24h は 1/7。Coingecko の sparkline はだいたい時間間隔が一定なので割合で切り出す
-    const n = Math.max(12, Math.round(len / 7));
-    return spark7d.slice(-Math.min(n, len));
-  }
-
-
-  function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
-
-  function computeRSISeries(prices, period = 14){
-  // Wilder's RSI. Returns an array same length as prices (first values are null).
-  if(!Array.isArray(prices) || prices.length < period + 1) return Array(prices?.length || 0).fill(null);
-
-  const rsi = Array(prices.length).fill(null);
-
-  let gainSum = 0;
-  let lossSum = 0;
-  for(let i=1;i<=period;i++){
-    const diff = prices[i] - prices[i-1];
-    if(diff >= 0) gainSum += diff; else lossSum += -diff;
-  }
-  let avgGain = gainSum / period;
-  let avgLoss = lossSum / period;
-
-  let rs = avgLoss === 0 ? Infinity : (avgGain / avgLoss);
-  rsi[period] = 100 - (100 / (1 + rs));
-
-  for(let i=period+1;i<prices.length;i++){
-    const diff = prices[i] - prices[i-1];
-    const gain = diff > 0 ? diff : 0;
-    const loss = diff < 0 ? -diff : 0;
-
-    avgGain = ((avgGain * (period - 1)) + gain) / period;
-    avgLoss = ((avgLoss * (period - 1)) + loss) / period;
-
-    rs = avgLoss === 0 ? Infinity : (avgGain / avgLoss);
-    rsi[i] = 100 - (100 / (1 + rs));
-  }
-  return rsi;
-}
-
-function clearCharts(){
-  document.querySelectorAll('canvas').forEach(c=>{
-    if (c && c._chart){
-      try{ c._chart.destroy(); }catch(e){}
-      c._chart = null;
+    if(!Array.isArray(arr) || arr.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      return;
     }
-  });
-}
-
-function makeLineChart(canvasId, labels, values, opts={}){
-  if (!ensureChartjs()) return;
-  const c = document.getElementById(canvasId);
-  if (!c) return;
-  if (c._chart){ try{ c._chart.destroy(); }catch(e){} c._chart=null; }
-  const ctx = c.getContext('2d');
-  c._chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        borderWidth: 2,
-        tension: 0.25,
-        pointRadius: 0,
-        fill: opts.fill ?? false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: { x: { display:false }, y: { display:false } }
+    const rawAbs = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    const base = (rawAbs.length && isFinite(rawAbs[0]) && rawAbs[0]!==0) ? rawAbs[0] : null;
+    const raw = base ? rawAbs.map(v => (v/base - 1) * 100) : rawAbs;
+    if(raw.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      return;
     }
-  });
-}
-// Update small KPI sparklines safely (used by Market Overview strip)
-function updateSummaryAvgSpark(series){
-  try{
-    if (!Array.isArray(series) || series.length < 2) return;
-    if (!document.getElementById('sumAvgSpark')) return;
-    const labels = series.map((_, i) => i);
-    makeLineChart('sumAvgSpark', labels, series, {tension:0.25});
-  }catch(_e){}
-}
-function updateSummaryMcapSpark(series){
-  try{
-    if (!Array.isArray(series) || series.length < 2) return;
-    if (!document.getElementById('sumMcapSpark')) return;
-    const labels = series.map((_, i) => i);
-    makeLineChart('sumMcapSpark', labels, series, {tension:0.25});
-  }catch(_e){}
-}
+    let min = Math.min(...raw);
+    let max = Math.max(...raw);
+    if(min === max){ min -= 0.01; max += 0.01; }
 
+    const W = 100, H = 30, pad = 2;
+    const top = pad, bottom = H - pad;
 
-function makeMultiLineChart(canvasId, labels, seriesList){
-  if (!ensureChartjs()) return;
-  const c = document.getElementById(canvasId);
-  if (!c) return;
-  if (c._chart){ try{ c._chart.destroy(); }catch(e){} c._chart=null; }
-  const ctx = c.getContext('2d');
-  c._chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: seriesList.map(s=>({
-        label: s.label||'',
-        data: s.values||[],
-        borderColor: s.color,
-        borderWidth: s.borderWidth ?? 2,
-        tension: 0.25,
-        pointRadius: 0,
-        fill: s.fill ?? false
-      }))
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: { x: { display:false }, y: { display:false } }
-    }
-  });
-}
-
-// --- added back missing chart helpers (v99) ---
-const charts = window.__charts || (window.__charts = {});
-
-  function drawDonut(canvasId, labels, values){
-    if (!ensureChartjs()) return;
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    // Destroy any previous chart on this canvas to avoid Chart.js reuse errors
-    if (charts[canvas.id]) { try { charts[canvas.id].destroy(); } catch(e){} charts[canvas.id] = null; }
-
-    const total = values.reduce((a,b)=>a+(typeof b==='number'?b:0), 0) || 1;
-    const dataVals = values.map(v => (typeof v==='number' && isFinite(v)) ? v : 0);
-
-    // 見やすい落ち着いた色（サイトの雰囲気に合わせる）
-    const colors = ['rgba(250, 204, 21, 0.85)','rgba(96, 165, 250, 0.85)','rgba(52, 211, 153, 0.85)','rgba(156, 163, 175, 0.55)'];
-
-    charts[canvasId] = new Chart(canvas, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{ data: dataVals, backgroundColor: colors, borderWidth: 0 }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { color: '#e5e7eb', boxWidth: 10, padding: 12 }
-          },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const v = ctx.parsed || 0;
-                const p = (v/total)*100;
-                return ` ${ctx.label}: ${p.toFixed(2)}%`;
-              }
-            }
-          }
-        }
-      }
+    const pts = raw.map((v,i)=>{
+      const x = (i/(raw.length-1)) * W;
+      const y = bottom - ((v - min)/(max - min)) * (bottom - top);
+      return [x,y];
     });
+
+    const points = pts.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
+    line.setAttribute('points', points);
+
+    const path = `M ${pts[0][0].toFixed(2)} ${bottom.toFixed(2)} L ${pts.map(p=>`${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')} L ${pts[pts.length-1][0].toFixed(2)} ${bottom.toFixed(2)} Z`;
+    fill.setAttribute('d', path);
   }
 
 
-  
-  // Normalized line (0-100) sparkline
-  function makeNormalizedLine(canvas, labels, values, opts = {}) {
-    // Accept canvas element or element id
-    if (typeof canvas === 'string') canvas = document.getElementById(canvas);
-    if (!canvas || typeof canvas.getContext !== 'function') return null;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    if (!Array.isArray(values) || values.length < 2) return null;
-
-    // Destroy previous chart on same canvas
-    if (charts[canvas.id]) { try { charts[canvas.id].destroy(); } catch(e){} charts[canvas.id] = null; }
-
-    const vmin = Math.min(...values);
-    const vmax = Math.max(...values);
-    const denom = (vmax - vmin) || 1;
-    const norm = values.map(v => ((v - vmin) / denom) * 100);
-
-    const lineColor = opts.lineColor || '#e5e7eb';
-    const fill = (opts.fill === false) ? false : true;
-
-    charts[canvas.id] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          data: norm,
-          borderColor: lineColor,
-          borderWidth: 2,
-          pointRadius: 0,
-          tension: 0.35,
-          fill: fill ? { target: 'origin', above: 'rgba(229,231,235,0.14)', below: 'rgba(255,82,82,0.16)' } : false
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: {
-          x: { display: false },
-          y: { display: false, min: 0, max: 100 }
-        }
-      }
-    });
-    return charts[canvas.id];
-  }
-
-function makeBaselineChart(canvasId, labels, dataArr){
-    if (!ensureChartjs()) return;
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-
-    // 既存チャートがあると Chart.js が "Canvas is already in use" を投げるため、必ず破棄してから再生成する
-    try {
-      if (charts && charts[canvasId]) {
-        charts[canvasId].destroy();
-        delete charts[canvasId];
-      }
-    } catch(_e){}
-
-    try {
-      if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
-        const existing = Chart.getChart(canvas);
-        if (existing) existing.destroy();
-      }
-    } catch(_e){}
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    charts[canvasId] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: dataArr,
-          pointRadius: 0,
-          borderWidth: 2,
-          borderColor: '#e5e7eb',
-          tension: 0.25,
-          fill: {
-            target: { value: 0 },
-            above: 'rgba(30, 136, 229, 0.22)',
-            below: 'rgba(211, 47, 47, 0.22)'
-          }
-        }]
-      },
-      options: {
-        responsive:true, maintainAspectRatio:false, animation:false,
-        plugins:{ legend:{display:false}, tooltip:{enabled:false} },
-        scales:{ x:{display:false}, y:{display:false} }
-      }
-    });
-  }
-
-// --- end added helpers ---
-
-
-function buildOverview(){
+  function buildOverview(){
     const arr = marketsTop || [];
     const n = arr.length;
     let totalMcap = 0;
@@ -2650,7 +2192,46 @@ function buildOverview(){
     return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, medianChg, chgN, n, mcap24hPct, mcap24hDelta };
   }
 
-function renderOverview(){
+  function drawDonut(canvasId, labels, values){
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const total = values.reduce((a,b)=>a+(typeof b==='number'?b:0), 0) || 1;
+    const dataVals = values.map(v => (typeof v==='number' && isFinite(v)) ? v : 0);
+
+    // 見やすい落ち着いた色（サイトの雰囲気に合わせる）
+    const colors = ['rgba(250, 204, 21, 0.85)','rgba(96, 165, 250, 0.85)','rgba(52, 211, 153, 0.85)','rgba(156, 163, 175, 0.55)'];
+
+    charts[canvasId] = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data: dataVals, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#e5e7eb', boxWidth: 10, padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed || 0;
+                const p = (v/total)*100;
+                return ` ${ctx.label}: ${p.toFixed(2)}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function renderOverview(){
     const msg = document.getElementById('overviewMsg');
     msg.style.display = 'none';
 
@@ -2922,8 +2503,8 @@ function renderOverview(){
           const elS = document.getElementById('kpiSentiment');
           if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
 
-          // bar marker
-          updateSummarySentBar('kpiSentDot', score);
+          // gauge needle + small label
+          updateSentimentGauge(score, label);
 
           const elM = document.getElementById('kpiSentimentMeta');
           if (elM){
@@ -3045,7 +2626,7 @@ function renderOverview(){
       const domB = (totalMc && v0!=null) ? (v0/totalMc*100) : null;
       const domE = (totalMc && v1!=null) ? (v1/totalMc*100) : null;
       const domS = (totalMc && v2!=null) ? (v2/totalMc*100) : null;
-      setSum('sumDomMain', (domB==null) ? null : (domB.toFixed(1) + '%'));
+      setSum('sumDomMain', (domB==null) ? null : ('BTC ' + domB.toFixed(1) + '%'));
       const domSub = (domE==null && domS==null) ? null : ((domE==null?'':('ETH ' + domE.toFixed(1) + '%')) + (domE!=null && domS!=null ? ' / ' : '') + (domS==null?'':('Stbl ' + domS.toFixed(1) + '%')));
       setSum('sumDomSub', domSub);
 
@@ -3054,14 +2635,9 @@ function renderOverview(){
       const med24 = (o && typeof o.medianChg==='number' && isFinite(o.medianChg)) ? o.medianChg : null;
       const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
       setSum('sumAvg24Main', fmt2(avg24));
-      const chgArr24 = (Array.isArray(marketsTop)?marketsTop:[])
-        .map(c=>Number(c.price_change_percentage_24h))
-        .filter(v=>Number.isFinite(v));
-      const upCnt = chgArr24.filter(v=>v>0).length;
-      const downCnt = chgArr24.filter(v=>v<0).length;
-      setSum('sumAvg24Sub', chgArr24.length ? (`上昇 ${upCnt} / 下落 ${downCnt}`) : null);
+      setSum('sumAvg24Sub', (med24==null) ? null : ('中央値 ' + fmt2(med24)));
 
-    // BTC MA cross distance (SMA50 / SMA200)
+      // BTC MA cross distance (SMA50 / SMA200)
     const ma = window.__btcMaCross || null;
     if (ma && Number.isFinite(ma.distPct)) {
       const d = ma.distPct;
@@ -3075,54 +2651,11 @@ function renderOverview(){
       updateSummaryMaBar(null);
     }
 
-    // BTC MA lines (MA50 / MA200) chart
-    try {
-      if (ma && Array.isArray(ma.series) && ma.series.length) {
-        const labels = ma.series.map(p=>{
-          try {
-            const d = new Date(p.t);
-            return `${d.getMonth()+1}/${d.getDate()}`;
-          } catch(_){ return ''; }
-        });
-        const s50 = ma.series.map(p=> (Number.isFinite(p.ma50) ? p.ma50 : null));
-        const s200 = ma.series.map(p=> (Number.isFinite(p.ma200) ? p.ma200 : null));
-        makeMultiLineChart('btcMaLine', labels, [
-          { label: 'MA50', values: s50, color: 'rgba(96,165,250,0.95)', borderWidth: 2 },
-          { label: 'MA200', values: s200, color: 'rgba(229,231,235,0.65)', borderWidth: 2 }
-        ], { showAxes: false }, 'btcMaLine');
-      } else {
-        if (charts['btcMaLine']) { charts['btcMaLine'].destroy(); delete charts['btcMaLine']; }
-      }
-    } catch(e) {
-      console.warn('BTC MA chart failed:', e);
-    }
-
     // Mini visuals
     updateSummarySentBar(sentScore);
     updateSummaryRsiBar(lastRsiVal);
     updateSummaryDomBar([domBTC, domETH, domSTB, domOTH]);
     updateSummaryAvgSpark(summaryAvgSeries);
-    // Summary Market Cap (Top250 estimate)
-    if (typeof summaryMcapSeries !== 'undefined' && Array.isArray(summaryMcapSeries) && summaryMcapSeries.length){
-      updateSummaryMcapSpark(summaryMcapSeries);
-    }
-    const mcapEl = document.getElementById('sumMcapTotal');
-    const mcapChgEl = document.getElementById('sumMcapChg');
-    if (mcapEl){
-      if (o && typeof o.totalMcap === 'number'){
-        mcapEl.textContent = formatJPY(o.totalMcap);
-      }else{
-        mcapEl.textContent = '—';
-      }
-    }
-    if (mcapChgEl){
-      if (o && typeof o.mcap24hPct === 'number'){
-        mcapChgEl.textContent = '24h ' + fmtPctSigned(o.mcap24hPct);
-      }else{
-        mcapChgEl.textContent = '—';
-      }
-    }
-
 
     })();
 
@@ -3136,346 +2669,670 @@ function renderOverview(){
 
   }
 
+// ============ Charts / Rendering ============
+  const charts = {};
+  const __sparklineAttempts = new Map(); // canvasId -> attempts
 
-
-
-
-  function safeEl(id){
-    try{ return document.getElementById(id); }catch(e){ return null; }
+  function clearCharts(){
+    Object.values(charts).forEach(c => { try{ c.destroy(); }catch(e){} });
+    Object.keys(charts).forEach(k => delete charts[k]);
   }
 
-  function extCoinUrl(coin){
-    const id = coin?.id || '';
-    if (!id) return null;
-    return `https://www.coingecko.com/en/coins/${encodeURIComponent(id)}`;
+function drawSparkline(canvasId, data){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+
+  // If the canvas isn't laid out yet (size 0), retry a few times.
+  const w = canvas.clientWidth || canvas.width;
+  const h = canvas.clientHeight || canvas.height;
+  if(!w || !h){
+    const n = (__sparklineAttempts.get(canvasId) || 0) + 1;
+    if(n <= 8){
+      __sparklineAttempts.set(canvasId, n);
+      requestAnimationFrame(() => drawSparkline(canvasId, data));
+    }
+    return;
+  }
+  __sparklineAttempts.delete(canvasId);
+
+  const raw = Array.isArray(data) ? data : [];
+  const cleaned = raw.map(v => (typeof v === "number" && Number.isFinite(v)) ? v : null);
+  const finite = cleaned.filter(v => v !== null);
+
+  const ctx = canvas.getContext("2d");
+  if(finite.length < 2){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
   }
 
-  function renderMiniList(listId, items, opts={}){
-    const el = safeEl(listId);
-    if(!el) return;
-    el.innerHTML = '';
-    if(!Array.isArray(items) || items.length===0){
-      const li=document.createElement('li');
-      li.className='miniRow muted';
-      li.textContent='データなし';
-      el.appendChild(li);
-      return;
-    }
-    const topN = Math.min(opts.max || 5, items.length);
-    for(let i=0;i<topN;i++){
-      const c=items[i];
-      const chg = (c?.price_change_percentage_24h_in_currency ?? c?.price_change_percentage_24h) ?? null;
-      const li=document.createElement('li');
-      li.className='miniRow';
+  const base = finite[0];                 // ← ベースライン（最初の値）
+  const enableFill = finite.length >= 10; // 少なすぎる時は塗らない
 
-      const rank=document.createElement('div');
-      rank.className='miniRank';
-      rank.textContent = (i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1));
+  try{
+    if(charts[canvasId]) charts[canvasId].destroy();
 
-      const sym=document.createElement('div');
-      sym.className='miniSym';
-      sym.textContent=(c?.symbol||'').toUpperCase() || (c?.name||'');
+    charts[canvasId] = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: cleaned.map((_, i) => i),
+        datasets: [{
+          data: cleaned,
+          borderColor: "rgba(255,255,255,0.85)",
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.25,
 
-      const right=document.createElement('div');
-      right.className='miniRight';
+          // ★ここがポイント：ベースライン(base)より上/下で塗り分け
+          fill: enableFill ? {
+            target: { value: base },
+            above: "rgba(30,136,229,0.22)", // 青
+            below: "rgba(211,47,47,0.22)"   // 赤
+          } : false,
 
-      const pct=document.createElement('div');
-      pct.className='miniPct ' + (chg==null?'':(chg>=0?'pos':'neg'));
-      pct.textContent = chg==null ? '—' : `${chg>=0?'+':''}${Number(chg).toFixed(2)}%`;
-
-      const open=document.createElement('a');
-      open.className='miniOpen';
-      const url=extCoinUrl(c);
-      open.href = url || '#';
-      open.target='_blank';
-      open.rel='noopener';
-      open.textContent='↗';
-      if(!url){ open.style.opacity='0.3'; open.style.pointerEvents='none'; }
-
-      right.appendChild(pct);
-      right.appendChild(open);
-
-      li.appendChild(rank);
-      li.appendChild(sym);
-      li.appendChild(right);
-      el.appendChild(li);
-    }
-  }
-
-  function renderInto(containerId, items, opts={}){
-    const el = safeEl(containerId);
-    if(!el) return;
-    el.innerHTML='';
-
-    if(!Array.isArray(items) || items.length===0){
-      const d=document.createElement('div');
-      d.className='card muted';
-      d.style.padding='14px';
-      d.textContent='データ取得中…';
-      el.appendChild(d);
-      return;
-    }
-
-    const max = Math.min(opts.max || 5, items.length);
-    for(let i=0;i<max;i++){
-      const c = items[i];
-      const card=document.createElement('div');
-      card.className='card';
-
-      const rb=document.createElement('div');
-      rb.className='rank-badge';
-      rb.textContent = `#${i+1}`;
-      card.appendChild(rb);
-
-      const header=document.createElement('div');
-      header.className='coin-header';
-
-      const img=document.createElement('img');
-      img.className='coin-icon';
-      img.alt=c?.symbol||c?.name||'';
-      img.src=c?.image || '';
-      img.loading='lazy';
-      header.appendChild(img);
-
-      const left=document.createElement('div');
-      const name=document.createElement('div');
-      name.className='coin-name';
-      name.textContent=c?.name || (c?.symbol||'').toUpperCase() || '—';
-      const sub=document.createElement('div');
-      sub.className='muted';
-      sub.style.fontSize='12px';
-      sub.textContent=(c?.symbol||'').toUpperCase();
-      left.appendChild(name);
-      left.appendChild(sub);
-
-      header.appendChild(left);
-
-      const right=document.createElement('div');
-      right.style.marginLeft='auto';
-      right.style.textAlign='right';
-
-      const price=document.createElement('div');
-      price.className='coin-price';
-      const p = c?.current_price;
-      price.textContent = (p==null? '—' : fmtJPY(p));
-
-      const chg = (c?.price_change_percentage_24h_in_currency ?? c?.price_change_percentage_24h) ?? null;
-      const change=document.createElement('div');
-      change.className='coin-change ' + (chg==null?'':(chg>=0?'pos':'neg'));
-      change.textContent = chg==null ? '24h: —' : `24h: ${chg>=0?'+':''}${Number(chg).toFixed(2)}%`;
-
-      right.appendChild(price);
-      right.appendChild(change);
-      header.appendChild(right);
-
-      card.appendChild(header);
-
-      const sparkWrap=document.createElement('div');
-      sparkWrap.className='sparkWrap';
-      const canvas=document.createElement('canvas');
-      canvas.className='sparkline';
-      canvas.height=40;
-      sparkWrap.appendChild(canvas);
-      card.appendChild(sparkWrap);
-
-      const meta=document.createElement('div');
-      meta.className='meta';
-      const vol=c?.total_volume;
-      const mcr=c?.market_cap_rank;
-      meta.textContent = `出来高(24h): ${vol==null?'—':fmtJPY(vol)} / 時価総額順位: ${mcr==null?'—':'#'+mcr}`;
-      card.appendChild(meta);
-
-      // open link
-      const url=extCoinUrl(c);
-      if(url){
-        card.style.cursor='pointer';
-        card.addEventListener('click', (e)=>{
-          if(e.target && (e.target.tagName==='A' || e.target.closest('a'))) return;
-          window.open(url,'_blank','noopener');
-        });
+          // fill の above/below を使うので、dataset の backgroundColor は透明でOK
+          backgroundColor: "rgba(0,0,0,0)",
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: { legend: { display:false }, tooltip: { enabled:false } },
+        scales: { x: { display:false }, y: { display:false } }
       }
+    });
+  }catch(err){
+    console.warn("sparkline render failed:", canvasId, err);
+    try{ if(charts[canvasId]) charts[canvasId].destroy(); }catch{}
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
 
-      el.appendChild(card);
 
-      // sparkline
-      const series=c?.sparkline_in_7d?.price;
-      if(Array.isArray(series) && series.length>3){
-        try{
-          ensureChartjs().then(()=>{
-            makeLineChart(canvas, series.slice(-96), {fill:false, tension:0.25, lineWidth:2, showAxes:false});
-          });
-        }catch(_){/* ignore */}
-      }else{
-        // fallback: tiny line via svg
-        canvas.replaceWith(createFallbackSparkline(series||[]));
-      }
+function buildSyntheticSparkline(coin){
+  // Last-resort mini sparkline from 24h change (2 points) so the canvas is never blank.
+  const p1 = (coin && typeof coin.current_price === 'number' && Number.isFinite(coin.current_price)) ? coin.current_price : null;
+  const ch = (coin && typeof coin.price_change_percentage_24h === 'number' && Number.isFinite(coin.price_change_percentage_24h)) ? coin.price_change_percentage_24h : null;
+  if(p1 === null || ch === null) return [];
+  const denom = 1 + (ch / 100);
+  if(!Number.isFinite(denom) || denom === 0) return [];
+  const p0 = p1 / denom;
+  if(!Number.isFinite(p0)) return [];
+  return [p0, p1];
+}
+
+function hasAtLeast2Finite(arr){
+  if(!Array.isArray(arr)) return false;
+  let n = 0;
+  for(const v of arr){
+    if(typeof v === "number" && Number.isFinite(v)){
+      n++;
+      if(n >= 2) return true;
     }
   }
+  return false;
+}
+
+// --- Sparkline fallback (when sparkline_in_7d is missing) ---
+const __sparklineFallbackCache = new Map(); // coinId -> Promise<number[]>
+
+function fetchSparkline7dFallback(coinId){
+  if(!coinId) return Promise.resolve([]);
+  if(__sparklineFallbackCache.has(coinId)) return __sparklineFallbackCache.get(coinId);
+  const url = `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=jpy&days=7`;
+  const p = fetchJsonRetry(url, { retries: 1 }).then(j => {
+    const arr = (j && Array.isArray(j.prices)) ? j.prices.map(x => x && x[1]).filter(v => typeof v === "number") : [];
+    return arr;
+  }).catch(() => []);
+  __sparklineFallbackCache.set(coinId, p);
+  return p;
+}
+
+// --- Sparkline 24h (1d) for gainers/volume (keeps % change label consistent) ---
+const __sparkline1dCache = new Map(); // coinId -> Promise<number[]>
+function fetchSparkline1d(coinId){
+  if(!coinId) return Promise.resolve([]);
+  if(__sparkline1dCache.has(coinId)) return __sparkline1dCache.get(coinId);
+  const url = `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(coinId)}/market_chart?vs_currency=jpy&days=1`;
+  const p = fetchJsonRetry(url, { retries: 1 }).then(j => {
+    const arr = (j && Array.isArray(j.prices)) ? j.prices.map(x => x && x[1]).filter(v => typeof v === "number") : [];
+    return arr;
+  }).catch(() => []);
+  __sparkline1dCache.set(coinId, p);
+  return p;
+}
 
 
-
-  function medalForRank(i){
-    return i===0 ? '🥇' : (i===1 ? '🥈' : (i===2 ? '🥉' : String(i+1)));
+  // 7日スパークラインから「直近24h相当」を切り出す（追加APIを減らして欠損を防ぐ）
+  function derive24hFrom7d(spark7d) {
+    if (!Array.isArray(spark7d)) return [];
+    const len = spark7d.length;
+    if (len <= 2) return spark7d;
+    // 7日→24h は 1/7。Coingecko の sparkline はだいたい時間間隔が一定なので割合で切り出す
+    const n = Math.max(12, Math.round(len / 7));
+    return spark7d.slice(-Math.min(n, len));
   }
 
-  function renderSummaryLists(){
-    const trend = (trendingCoins||[]).slice(0,5);
-    const up = (getGainersTop5()||[]).slice(0,5);
-    const vol = (getAltVolumeTop5()||[]).slice(0,5);
 
-    const renderOL = (id, items) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.innerHTML = '';
-      if (!items || !items.length){
-        const li = document.createElement('li');
-        li.className = 'summary-li muted';
-        li.textContent = 'データ取得中…';
-        el.appendChild(li);
-        return;
+  function ensureChartjs(){ return (typeof Chart !== 'undefined'); }
+
+  function computeRSISeries(prices, period = 14){
+  // Wilder's RSI. Returns an array same length as prices (first values are null).
+  if(!Array.isArray(prices) || prices.length < period + 1) return Array(prices?.length || 0).fill(null);
+
+  const rsi = Array(prices.length).fill(null);
+
+  let gainSum = 0;
+  let lossSum = 0;
+  for(let i=1;i<=period;i++){
+    const diff = prices[i] - prices[i-1];
+    if(diff >= 0) gainSum += diff; else lossSum += -diff;
+  }
+  let avgGain = gainSum / period;
+  let avgLoss = lossSum / period;
+
+  let rs = avgLoss === 0 ? Infinity : (avgGain / avgLoss);
+  rsi[period] = 100 - (100 / (1 + rs));
+
+  for(let i=period+1;i<prices.length;i++){
+    const diff = prices[i] - prices[i-1];
+    const gain = diff > 0 ? diff : 0;
+    const loss = diff < 0 ? -diff : 0;
+
+    avgGain = ((avgGain * (period - 1)) + gain) / period;
+    avgLoss = ((avgLoss * (period - 1)) + loss) / period;
+
+    rs = avgLoss === 0 ? Infinity : (avgGain / avgLoss);
+    rsi[i] = 100 - (100 / (1 + rs));
+  }
+  return rsi;
+}
+
+function makeLineChart(canvasId, labels, series, opts){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    // Prevent "Canvas is already in use" on refresh/re-render
+    try { if (charts[canvasId]) charts[canvasId].destroy(); } catch(_){}
+    try {
+      if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
       }
-      items.forEach((c, idx) => {
-        const li = document.createElement('li');
-        li.className = 'summary-li';
+    } catch(_){}
 
-        const rank = document.createElement('div');
-        rank.className = 'summary-rank';
-        rank.textContent = medalForRank(idx);
+    const datasets = series.map(s => ({
+      label: s.label,
+      data: s.data,
+      pointRadius: 0,
+      borderWidth: 2,
+      borderColor: s.border,
+      tension: 0.25,
+      fill: false,
+    }));
 
-        const name = document.createElement('div');
-        name.className = 'summary-name';
-        name.textContent = (c.symbol||'').toUpperCase() || c.name || '-';
-
-        const pct = document.createElement('div');
-        pct.className = 'summary-pct';
-        const v = (typeof c.price_change_percentage_24h === 'number') ? c.price_change_percentage_24h : null;
-        pct.textContent = (v==null) ? '—' : ((v>=0?'+':'') + v.toFixed(2) + '%');
-        pct.style.color = (v==null) ? 'var(--muted)' : (v>=0 ? 'var(--pos)' : 'var(--neg)');
-
-        const a = document.createElement('a');
-        a.className = 'summary-open';
-        a.href = c.id ? `https://www.coingecko.com/en/coins/${c.id}` : 'https://www.coingecko.com/';
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.textContent = '↗';
-
-        li.append(rank, name, pct, a);
-        el.appendChild(li);
-      });
-    };
-
-    renderOL('summaryTrendList', trend);
-    renderOL('summaryUpList', up);
-    renderOL('summaryVolAltList', vol);
-  }
-
-  // v102: quick summary renderer (renderAll calls this)
-  function renderQuickSummary(){
-    renderSummaryLists();
-  }
-
-  function renderInto(containerId, coins, mode){
-    const root = document.getElementById(containerId);
-    if (!root) return;
-
-    root.innerHTML = '';
-
-    const items = (coins||[]).slice(0, 5);
-    if (!items.length){
-      const div = document.createElement('div');
-      div.className = 'muted';
-      div.textContent = 'データ取得中…';
-      root.appendChild(div);
-      return;
-    }
-
-    items.forEach((c, i) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-
-      const rank = document.createElement('div');
-      rank.className = 'rank-badge';
-      rank.textContent = '#' + (i+1);
-
-      const header = document.createElement('div');
-      header.className = 'coin-header';
-
-      const icon = document.createElement('img');
-      icon.className = 'coin-icon';
-      icon.alt = c.symbol || 'coin';
-      icon.loading = 'lazy';
-      icon.src = c.image || '';
-
-      const titleWrap = document.createElement('div');
-      const title = document.createElement('div');
-      title.className = 'coin-name';
-      title.textContent = c.name || '-';
-      const sym = document.createElement('div');
-      sym.className = 'muted';
-      sym.style.fontSize = '12px';
-      sym.textContent = (c.symbol||'').toUpperCase();
-      titleWrap.append(title, sym);
-
-      const right = document.createElement('div');
-      right.style.marginLeft = 'auto';
-      right.style.textAlign = 'right';
-
-      const price = document.createElement('div');
-      price.className = 'coin-price';
-      price.textContent = (typeof c.current_price === 'number') ? fmtJPY(c.current_price) : '—';
-
-      const chg = document.createElement('div');
-      chg.style.fontSize = '12px';
-      const v = (typeof c.price_change_percentage_24h === 'number') ? c.price_change_percentage_24h : null;
-      chg.textContent = (v==null) ? '24h: —' : ('24h: ' + (v>=0?'+':'') + v.toFixed(2) + '%');
-      chg.style.color = (v==null) ? 'var(--muted)' : (v>=0 ? 'var(--pos)' : 'var(--neg)');
-
-      right.append(price, chg);
-
-      header.append(icon, titleWrap, right);
-
-      const sparkWrap = document.createElement('div');
-      sparkWrap.className = 'sparkWrap';
-
-      const canvas = document.createElement('canvas');
-      canvas.className = 'sparkline';
-      canvas.width = 300;
-      canvas.height = 80;
-      sparkWrap.appendChild(canvas);
-
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      const vol = (typeof c.total_volume === 'number') ? fmtJPY(c.total_volume) : '—';
-      const mcr = (typeof c.market_cap_rank === 'number') ? ('#' + c.market_cap_rank) : '—';
-      meta.textContent = `出来高(24h): ${vol} / 時価総額順位: ${mcr}`;
-
-      const open = document.createElement('a');
-      open.className = 'summary-open';
-      open.style.position = 'absolute';
-      open.style.top = '10px';
-      open.style.right = '10px';
-      open.href = c.id ? `https://www.coingecko.com/en/coins/${c.id}` : 'https://www.coingecko.com/';
-      open.target = '_blank';
-      open.rel = 'noopener';
-      open.textContent = '↗';
-
-      card.style.position = 'relative';
-      card.append(rank, header, sparkWrap, meta, open);
-      root.appendChild(card);
-
-      // sparkline
-      try{
-        const series = (c.sparkline_in_7d && Array.isArray(c.sparkline_in_7d.price)) ? c.sparkline_in_7d.price : null;
-        if (series && series.length >= 2){
-          makeLineChart(canvas, series, {hideAxes:true, fill:false});
-        } else {
-          renderFallbackSparkline(canvas, series);
-        }
-      }catch(e){
-        try{ renderFallbackSparkline(canvas, null); }catch(_){/* ignore */}
+    charts[canvasId] = new Chart(canvas, {
+      type: 'line',
+      data: { labels: labels, datasets: datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero), suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined), suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined) } }
       }
     });
   }
+
+  // Sentiment gauge (0-100 => fear..greed). Render as a "filled" semi-gauge + needle.
+  // Sentiment gauge (0-100) — SVG semi-gauge (mobile-safe)
+  function buildSentimentGaugeSvg(score) {
+    const svgNS = "http://www.w3.org/2000/svg";
+
+    // clamp
+    const s = Math.max(0, Math.min(100, Number(score) || 0));
+
+    // --- geometry ---
+    const cx = 120;
+    const cy = 120;
+    const r  = 90;
+    const strokeW = 14;
+
+    // 半円（左=180°, 右=0°）を 5分割で常時表示（赤→緑）
+    const segments = [
+      { a0: 180, a1: 144, color: "#ff4d4f" }, // 0-20
+      { a0: 144, a1: 108, color: "#ff8f1f" }, // 20-40
+      { a0: 108, a1: 72,  color: "#ffd43b" }, // 40-60
+      { a0: 72,  a1: 36,  color: "#6ee7b7" }, // 60-80
+      { a0: 36,  a1: 0,   color: "#22c55e" }, // 80-100
+    ];
+
+    // NOTE: SVGはY軸が下方向に増えるため、上向きの半円を描くには sin を反転する
+    const polar = (deg) => {
+      const rad = (deg * Math.PI) / 180;
+      return [cx + r * Math.cos(rad), cy - r * Math.sin(rad)];
+    };
+
+    // 「上側の半円」を描くため sweep=1（順方向側）で統一（Y反転座標のため）
+    const arcPath = (a0, a1) => {
+      const [x0, y0] = polar(a0);
+      const [x1, y1] = polar(a1);
+      const largeArc = 0;
+      const sweep = 1;
+      return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${largeArc} ${sweep} ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+    };
+
+    // svg root
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "sent-gauge-svg");
+    svg.setAttribute("viewBox", "0 0 240 140");
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    // faint track（薄いベース）
+    const track = document.createElementNS(svgNS, "path");
+    track.setAttribute("d", arcPath(180, 0));
+    track.setAttribute("fill", "none");
+    track.setAttribute("stroke", "rgba(255,255,255,0.10)");
+    track.setAttribute("stroke-width", String(strokeW));
+    track.setAttribute("stroke-linecap", "round");
+    svg.appendChild(track);
+
+    // colored segments（常時表示）
+    for (const seg of segments) {
+      const p = document.createElementNS(svgNS, "path");
+      p.setAttribute("d", arcPath(seg.a0, seg.a1));
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", seg.color);
+      p.setAttribute("stroke-width", String(strokeW));
+      p.setAttribute("stroke-linecap", "round");
+      svg.appendChild(p);
+    }
+
+    // needle（0=左, 100=右）
+    const ang = 180 - (s / 100) * 180; // deg
+    const rad = (ang * Math.PI) / 180;
+    const nr = r - 18;
+    const nx = cx + nr * Math.cos(rad);
+    const ny = cy - nr * Math.sin(rad);
+
+    const needle = document.createElementNS(svgNS, "line");
+    needle.setAttribute("x1", String(cx));
+    needle.setAttribute("y1", String(cy));
+    needle.setAttribute("x2", String(nx.toFixed(2)));
+    needle.setAttribute("y2", String(ny.toFixed(2)));
+    needle.setAttribute("stroke", "rgba(229,231,235,0.95)");
+    needle.setAttribute("stroke-width", "2.5");
+    needle.setAttribute("stroke-linecap", "round");
+    svg.appendChild(needle);
+
+    const hub = document.createElementNS(svgNS, "circle");
+    hub.setAttribute("cx", String(cx));
+    hub.setAttribute("cy", String(cy));
+    hub.setAttribute("r", "4");
+    hub.setAttribute("fill", "rgba(229,231,235,0.95)");
+    svg.appendChild(hub);
+
+    return svg;
+  }
+
+  function updateSentimentGauge(score, labelText) {
+    const oldSvg = document.querySelector(".sent-gauge svg.sent-gauge-svg");
+    if (oldSvg) {
+      const newSvg = buildSentimentGaugeSvg(score);
+      oldSvg.parentNode.replaceChild(newSvg, oldSvg);
+    }
+
+    // CSS needle is deprecated (SVG needle is used).
+    const cssNeedle = document.getElementById('sentNeedle');
+    if (cssNeedle) cssNeedle.style.display = 'none';
+
+    // Update label text on the card
+    const lb = document.getElementById('sentLabel');
+    if (lb && labelText != null) lb.textContent = String(labelText);
+  }
+
+  function makeBaselineChart(canvasId, labels, dataArr){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    // 既存チャートがあると Chart.js が "Canvas is already in use" を投げるため、必ず破棄してから再生成する
+    try {
+      if (charts && charts[canvasId]) {
+        charts[canvasId].destroy();
+        delete charts[canvasId];
+      }
+    } catch(_e){}
+
+    try {
+      if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+      }
+    } catch(_e){}
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    charts[canvasId] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: dataArr,
+          pointRadius: 0,
+          borderWidth: 2,
+          borderColor: '#e5e7eb',
+          tension: 0.25,
+          fill: {
+            target: { value: 0 },
+            above: 'rgba(30, 136, 229, 0.22)',
+            below: 'rgba(211, 47, 47, 0.22)'
+          }
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, animation:false,
+        plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+        scales:{ x:{display:false}, y:{display:false} }
+      }
+    });
+  }
+
+  function makeNormalizedLine(canvasId, labels, dataArr){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    // データに NaN / Infinity が混ざると描画が崩れることがあるので、ここでサニタイズ
+    const clean = (dataArr || []).map(v => (Number.isFinite(v) ? v : 0));
+    const last = clean.length ? clean[clean.length - 1] : 0;
+    const norm = (Number.isFinite(last) && last !== 0)
+      ? clean.map(v => (v / last) * 100)
+      : clean.map(_ => 0);
+
+    // 既存チャートがあれば破棄してから作り直す
+    if (charts[canvasId]) { try { charts[canvasId].destroy(); } catch(_){} }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    charts[canvasId] = new Chart(ctx, {
+      type:'line',
+      data:{ labels: labels, datasets:[{
+        data: norm,
+        pointRadius:0,
+        borderWidth:2,
+        borderColor:'#e5e7eb',
+        tension:0.25,
+        fill:false,
+        spanGaps:true
+      }]},
+      options:{ responsive:true, maintainAspectRatio:false, animation:false,
+        plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+        scales:{ x:{display:false}, y:{display:false} }
+      }
+    });
+  }
+
+  function renderInto(gridId, coins, mode, sectionKey){
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+
+    if (!coins || !coins.length){
+      if (sectionKey === 'trend' && SECTION_ERRORS.trend){
+        grid.innerHTML = '<div class="msg">トレンドの取得に失敗しました（他のデータは表示しています）。時間をおいて再読み込みしてください。</div>';
+        return;
+      }
+      grid.innerHTML = '<div class="msg">最新データの取得が遅れています。時間をおいて再読み込みしてください。</div>';
+      return;
+    }
+
+    coins.forEach((coin, idx) => {
+      const change = coin.price_change_percentage_24h;
+      const trendClass = (typeof change === 'number') ? (change >= 0 ? 'up' : 'down') : '';
+      const changeClass = (typeof change === 'number') ? (change >= 0 ? 'positive' : 'negative') : '';
+
+      const card = document.createElement('div');
+      card.className = `card ${trendClass}`;
+
+      
+      card.dataset.coinId = (coin && coin.id) ? coin.id : '';
+      card.dataset.sectionKey = sectionKey;
+const placementMap = {
+        trend: 'index_card_trend',
+        gainers: 'index_card_gainers',
+        volume: 'index_card_volume',
+        mcap: 'index_card_mcap'
+      };
+      const placement = placementMap[sectionKey] || `index_card_${sectionKey}`;
+
+      card.onclick = () => {
+        const url = coinGeckoUrlFor(coin);
+        fireCtaClick({
+          cta_id: 'card_open',
+          placement,
+          partner: 'coingecko',
+          pr: 0,
+          link_url: url
+        });
+        window.open(url, '_blank', 'noopener');
+      };
+
+      const rankCls = idx===0 ? 'rank-1' : idx===1 ? 'rank-2' : idx===2 ? 'rank-3' : '';
+
+      const pctText = (typeof change === 'number')
+        ? ((change>=0?'+':'') + change.toFixed(2) + '%')
+        : '-';
+
+      const rankText = coin.market_cap_rank ? ('#' + coin.market_cap_rank) : '-';
+      const volMeta = (typeof coin.total_volume === 'number')
+        ? `出来高(24h): ${yen(coin.total_volume)}`
+        : '出来高(24h): -';
+
+      const extraMeta = (mode==='mcap')
+        ? `時価総額: ${yen(coin.market_cap)} / 順位: ${rankText}`
+        : `時価総額順位: ${rankText}`;
+
+      const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
+
+      card.innerHTML = `
+        <div class="rank-badge ${rankCls}">#${idx+1}</div>
+        <div class="card-header">
+          <div class="coin-header">
+            <img class="coin-icon" src="${coin.image}" alt="${coin.name}">
+            <div>
+              <div class="coin-name">${coin.name}</div>
+              <div class="coin-symbol">${(coin.symbol||'').toUpperCase()}</div>
+            </div>
+          </div>
+          <div>
+            <div class="price">${yen(coin.current_price)}</div>
+            <div class="change ${changeClass}">24h: ${pctText}</div>
+            <div class="meta">${volMeta}</div>
+            <div class="meta">${extraMeta}</div>
+          </div>
+        </div>
+        <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
+      `;
+
+      grid.appendChild(card);
+
+      // Sparkline:
+      // mcapスナップショットではsparklineを保存しないため、無い場合はフェッチせずスキップ（API節約）
+      if (mode==='mcap' && !(coin && coin.sparkline_in_7d && Array.isArray(coin.sparkline_in_7d.price) && coin.sparkline_in_7d.price.length)){
+        return;
+      }
+      // be defensive. If anything goes wrong, fall back to a tiny synthetic line.
+      const ensureSparklineLater = () => {
+        // If no chart instance after layout/async, draw a 2-point synthetic line as last resort.
+        setTimeout(() => {
+          try{
+            if (!charts[canvasId]){
+              const syn = buildSyntheticSparkline(coin);
+              if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
+            }
+          }catch(_e){}
+        }, 600);
+      };
+
+      try{
+
+      const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
+      if (use24h){
+        // まずは markets(sparkline_in_7d) から 24h 相当を切り出して描画（追加APIを減らす）
+        const sp7 = coin?.sparkline_in_7d?.price;
+        const sp24 = derive24hFrom7d(sp7);
+        if (hasAtLeast2Finite(sp24)) {
+          drawSparkline(canvasId, sp24);
+        } else {
+          // フォールバック（sparkline が欠ける場合）
+          // まずは必ず「サンプル」を描いておき、取得できたら上書き
+          const syn0 = buildSyntheticSparkline(coin);
+          if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
+
+          fetchSparkline1d(coin.id).then(arr => {
+            if (hasAtLeast2Finite(arr)) {
+              drawSparkline(canvasId, arr);
+            }
+          }).catch(() => {
+            // 失敗時はサンプルのまま
+          });
+        }
+      } else {
+        const sp = coin?.sparkline_in_7d?.price;
+        drawSparkline(canvasId, sp);
+        // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
+        if (!hasAtLeast2Finite(sp)) {
+          // まずは必ず「サンプル」を描いておき、取得できたら上書き
+          const syn0 = buildSyntheticSparkline(coin);
+          if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
+
+          fetchSparkline7dFallback(coin.id).then(arr => {
+            if (hasAtLeast2Finite(arr)) {
+              drawSparkline(canvasId, arr);
+            }
+          }).catch(() => {
+            // 失敗時はサンプルのまま
+          });
+        }
+      }
+      } catch(e){
+        console.warn('sparkline failed:', coin?.id || coin?.symbol || idx, e);
+        const syn = buildSyntheticSparkline(coin);
+        if (hasAtLeast2Finite(syn)) drawSparkline(canvasId, syn);
+      }
+      ensureSparklineLater();
+    });
+  }
+
+  function renderQuickSummary(){
+    const rankIcon = (i)=> (i===0?'🥇':(i===1?'🥈':(i===2?'🥉':String(i+1))));
+    const pctText = (n)=>{
+      if (typeof n !== 'number' || !isFinite(n)) return '—';
+      return (n>=0?'+':'') + n.toFixed(2) + '%';
+    };
+    const safeTxt = (s)=> (s==null || s==='') ? '—' : String(s);
+
+    const esc = (s)=>{
+      try{ return (window.CSS && CSS.escape) ? CSS.escape(s) : String(s).replace(/["\\]/g,''); }
+      catch(_){ return String(s); }
+    };
+
+    function openCoinGecko(coin){
+      const url = coinGeckoUrlFor(coin);
+      try{
+        fireCtaClick({
+          cta_id: 'summary_open',
+          placement: 'index_summary',
+          partner: 'coingecko',
+          pr: 0,
+          link_url: url
+        });
+      }catch(_){}
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function scrollToCoin(gridId, coin){
+      const grid = document.getElementById(gridId);
+      if (!grid) return;
+      const cid = (coin && coin.id) ? coin.id : '';
+      let card = cid ? grid.querySelector(`[data-coin-id="${esc(cid)}"]`) : null;
+      if (!card) card = grid.querySelector('.card');
+      if (!card) return;
+      card.scrollIntoView({ behavior:'smooth', block:'center' });
+      card.classList.add('flash');
+      setTimeout(()=>{ try{ card.classList.remove('flash'); }catch(_e){} }, 1300);
+    }
+
+    function fillList(listId, coins, gridId){
+      const ol = document.getElementById(listId);
+      if (!ol) return;
+      ol.innerHTML = '';
+
+      if (!coins || !coins.length){
+        const li = document.createElement('li');
+        li.className = 'summary-li muted';
+        li.textContent = '—';
+        ol.appendChild(li);
+        return;
+      }
+
+      coins.slice(0,5).forEach((coin, idx)=>{
+        const li = document.createElement('li');
+        li.className = 'summary-li clickable';
+
+        const left = document.createElement('span');
+        left.className = 'summary-left';
+
+        const r = document.createElement('span');
+        r.className = 'summary-rank';
+        r.textContent = rankIcon(idx);
+
+        const sym = document.createElement('span');
+        sym.className = 'summary-symbol';
+        sym.textContent = safeTxt((coin.symbol || '').toUpperCase() || coin.name || coin.id);
+
+        left.appendChild(r);
+        left.appendChild(sym);
+
+        const wrap = document.createElement('span');
+        wrap.className = 'summary-right-wrap';
+
+        const pct = document.createElement('span');
+        const chg = coin.price_change_percentage_24h;
+        pct.className = 'summary-right ' + ((typeof chg === 'number') ? (chg>=0?'positive':'negative') : '');
+        pct.textContent = pctText(chg);
+
+        const ext = document.createElement('span');
+        ext.className = 'summary-ext';
+        ext.title = 'CoinGeckoで開く';
+        ext.textContent = '↗';
+        ext.onclick = (ev)=>{
+          ev.stopPropagation();
+          openCoinGecko(coin);
+        };
+
+        wrap.appendChild(pct);
+        wrap.appendChild(ext);
+
+        li.appendChild(left);
+        li.appendChild(wrap);
+
+        // main click: scroll to the detailed section/card (keep user on site)
+        li.onclick = ()=>{
+          scrollToCoin(gridId, coin);
+        };
+
+        ol.appendChild(li);
+      });
+    }
+
+    fillList('summaryTrendList', trendingCoins, 'grid-trend');
+    fillList('summaryUpList', getGainersTop5(), 'grid-gainers');
+    fillList('summaryVolAltList', getAltVolumeTop5(), 'grid-alt-volume');
+  }
+
 function renderAll(){
     clearCharts();
     renderInto('grid-trend', trendingCoins, 'trend', 'trend');
@@ -3484,7 +3341,7 @@ function renderAll(){
     renderInto('grid-alt-volume', getAltVolumeTop5(), 'alt_volume', 'alt_volume');
     renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
-    try{ try{ renderQuickSummary(); }catch(e){ console.warn('quick summary failed', e); } }catch(e){ console.warn("quick summary failed", e); }
+    try{ renderQuickSummary(); }catch(e){ console.warn("quick summary failed", e); }
 
   }
 
@@ -3529,13 +3386,8 @@ function renderAll(){
       setStatus('markets取得中…');
       await loadMarketsTop250(fromManualRefresh);
 
-      window.__top250Stats = buildTop250Stats(marketsTop);
       // 追加KPI: BTC MAクロス距離
-      try{
-    await loadBtcMaCross();
-  }catch(e){
-    window.__btcMaCross = null;
-  }
+      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
