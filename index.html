@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
@@ -865,7 +866,57 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
 </div>
 </div>
-<div class="summary-kpis" id="summaryKpis"><div class="kpi-tile">
+<div class="summary-kpis" id="summaryKpis">
+
+
+
+
+<div class="kpi-tile kpi-avg250">
+<div class="kpi-tile-title">上位250 平均（24h）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+<div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
+<div aria-hidden="true" class="breadth-track">
+<div class="breadth-seg up" id="sumBreadthSegUp"></div>
+<div class="breadth-seg down" id="sumBreadthSegDown"></div>
+</div>
+<div class="breadth-caption" id="sumBreadthCaption">—</div>
+</div>
+<div aria-hidden="true" class="mini-spark mini-vis" title="7d推移（平均リターン）のスパークライン">
+<svg preserveaspectratio="none" viewbox="0 0 100 30">
+<path class="fill" d="" id="sumAvgSparkFill"></path>
+<line class="zero" id="sumAvgSparkZero" x1="0" x2="100" y1="15" y2="15"></line>
+<polyline class="line" id="sumAvgSparkLine" points=""></polyline>
+</svg>
+</div>
+</div><div class="kpi-tile">
+<div class="kpi-tile-title">恐怖指数（0–100）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+<div aria-hidden="true" class="mini-vis">
+<div class="mini-sent-track">
+<div class="mini-sent-zone fear"></div>
+<div class="mini-sent-zone caution"></div>
+<div class="mini-sent-zone neutral"></div>
+<div class="mini-sent-zone greed"></div>
+<div class="mini-sent-th t25"></div>
+<div class="mini-sent-th t50"></div>
+<div class="mini-sent-th t75"></div>
+<div class="mini-sent-marker" id="sumSentMarker"></div>
+</div>
+</div>
+</div><div class="kpi-tile">
+<div class="kpi-tile-title">BTC RSI（14）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+<div aria-hidden="true" class="mini-vis">
+<div class="mini-rsi-track">
+<div class="mini-rsi-zone low"></div>
+<div class="mini-rsi-zone mid"></div>
+<div class="mini-rsi-zone high"></div>
+<div class="mini-rsi-th t30"></div>
+<div class="mini-rsi-th t70"></div>
+<div class="mini-rsi-marker" id="sumRsiMarker"></div>
+</div>
+</div>
+</div><div class="kpi-tile">
 <div class="kpi-tile-title">BTC ドミナンス</div>
 <div class="kpi-with-donut">
 <div class="kpi-text">
@@ -882,57 +933,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 </div>
-</div>
-<div class="kpi-tile">
-<div class="kpi-tile-title">恐怖指数（0–100）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
-<div aria-hidden="true" class="mini-vis">
-<div class="mini-sent-track">
-<div class="mini-sent-zone fear"></div>
-<div class="mini-sent-zone caution"></div>
-<div class="mini-sent-zone neutral"></div>
-<div class="mini-sent-zone greed"></div>
-<div class="mini-sent-th t25"></div>
-<div class="mini-sent-th t50"></div>
-<div class="mini-sent-th t75"></div>
-<div class="mini-sent-marker" id="sumSentMarker"></div>
-</div>
-</div>
-</div>
-<div class="kpi-tile">
-<div class="kpi-tile-title">BTC RSI（14）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
-<div aria-hidden="true" class="mini-vis">
-<div class="mini-rsi-track">
-<div class="mini-rsi-zone low"></div>
-<div class="mini-rsi-zone mid"></div>
-<div class="mini-rsi-zone high"></div>
-<div class="mini-rsi-th t30"></div>
-<div class="mini-rsi-th t70"></div>
-<div class="mini-rsi-marker" id="sumRsiMarker"></div>
-</div>
-</div>
-</div>
-
-<div class="kpi-tile kpi-avg250">
-<div class="kpi-tile-title">上位250 平均（24h）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
-<div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
-  <div class="breadth-track" aria-hidden="true">
-    <div class="breadth-seg up" id="sumBreadthSegUp"></div>
-    <div class="breadth-seg down" id="sumBreadthSegDown"></div>
-  </div>
-  <div class="breadth-caption" id="sumBreadthCaption">—</div>
-</div>
-<div aria-hidden="true" class="mini-spark mini-vis" title="7d推移（平均リターン）のスパークライン">
-<svg preserveaspectratio="none" viewbox="0 0 100 30">
-<path class="fill" d="" id="sumAvgSparkFill"></path>
-<line class="zero" id="sumAvgSparkZero" x1="0" x2="100" y1="15" y2="15"></line>
-<polyline class="line" id="sumAvgSparkLine" points=""></polyline>
-</svg>
-</div>
-</div>
-<div class="kpi-tile kpi-ma">
+</div><div class="kpi-tile kpi-ma">
 <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
 <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
 <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
@@ -946,8 +947,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 <div class="mini-ma-label">DC側 ← 0 → GC側</div>
 </div>
-</div>
-</div>
+</div></div>
 <div class="summary-lists">
 <div class="summary-card">
 <div class="summary-card-title">🔥 トレンド TOP5</div>
