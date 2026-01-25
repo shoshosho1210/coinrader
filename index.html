@@ -2976,8 +2976,8 @@ function makeLineChart(canvasId, labels, series, opts){
           y: {
             display:false,
             beginAtZero: !!(opts && opts.yBeginAtZero),
-            suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined),
-            suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined)
+            min: (opts && opts.yMin != null ? opts.yMin : undefined),
+            max: (opts && opts.yMax != null ? opts.yMax : undefined)
           }
         }
       }
