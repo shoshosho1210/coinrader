@@ -567,7 +567,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 @media (max-width: 560px){
   .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .summary-lists{ grid-template-columns: 1fr; }
-  #sec-summary .section-sub{ display:none; }
+  #sec-summary .section-sub{ display:block; }
 }
 .summary-lists{
   display: grid;
@@ -992,7 +992,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 
 <div class="kpi-tile kpi-ma">
-  <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
+  <div class="kpi-tile-title">BTC MA距離（価格/SMA200）</div>
   <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
   <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
     <div class="mini-ma-track">
@@ -1196,6 +1196,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 <div class="kpi">
+          <div class="kpi-label">BTC SMA50/SMA200（中期）</div>
+          <div class="kpi-value" id="kpiMa50200">-</div>
+          <div class="kpi-meta" id="kpiMa50200Meta">-</div>
+          <div class="kpi-sub">BTCUSDT日足からSMA50とSMA200を算出し、SMA50が上(=SMA200より大)なら上向き、下なら下向き。乖離は(SMA50−SMA200)/SMA200。</div>
+        </div>
+
+        <div class="kpi">
 <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
 <div class="kpi-value" id="kpiSentiment">-</div>
 <div class="kpi-meta" id="kpiSentimentMeta">-</div>
@@ -1656,201 +1663,37 @@ const EXCLUDE_MCAP_IDS = new Set([
   window.__btcMaCross = null;
 
   async function loadBtcMaCross(){
-    // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
-    // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
-    // ※価格通貨はUSDTだが、MA距離(%)は通貨に依存しないため問題なし。
-    const url = 'https://api.binance.com/api/v3/klines'
-      + '?symbol=BTCUSDT'
-      + '&interval=1d'
-      + '&limit=260'; // 200MA + 50MA + 少し余裕
+  // BinanceのBTCUSDT日足からSMA50/SMA200を算出（CORSに強い＆軽量）
+  try{
+    const url = 'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=370';
+    const klines = await fetchJsonRetry(url, {retries:2, timeoutMs:12000});
+    if (!Array.isArray(klines) || klines.length < 210) throw new Error('klines too short');
 
-    const rows = await fetchJsonRetry(url, {retries:2});
-    if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
-
-    // close価格（index 4）
-    const closes = rows.map(r => +r[4]).filter(v => isFinite(v) && v > 0);
-    if (closes.length < 210) throw new Error('binance closes invalid');
+    const closes = klines.map(k => Number(k[4])).filter(x => isFinite(x));
+    const last = closes[closes.length - 1];
 
     const sma = (arr, n) => {
-      const a = arr.slice(-n);
-      const s = a.reduce((x,y)=>x+y,0);
+      if (arr.length < n) return NaN;
+      let s = 0;
+      for (let i = arr.length - n; i < arr.length; i++) s += arr[i];
       return s / n;
     };
 
     const sma50 = sma(closes, 50);
     const sma200 = sma(closes, 200);
-    const distPct = (sma50 - sma200) / sma200 * 100;
 
-    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
-    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
+    // KPI: 価格 vs SMA200（%）
+    const priceDistPct = isFinite(last) && isFinite(sma200) ? ((last - sma200) / sma200) * 100 : NaN;
+    const priceSide = isFinite(priceDistPct) ? (priceDistPct >= 0 ? 'SMA200上' : 'SMA200下') : '-';
 
-    window.__btcMaCross = {
-      sma50, sma200, distPct,
-      label,
-      updatedAt: Date.now(),
-    };
-  }
+    // 市場概況: SMA50 vs SMA200（クロス状態 + 乖離%）
+    const crossDistPct = isFinite(sma50) && isFinite(sma200) ? ((sma50 - sma200) / sma200) * 100 : NaN;
+    const crossState = isFinite(crossDistPct) ? (crossDistPct >= 0 ? '上（GC）' : '下（DC）') : '-';
 
-
-async function loadTrendingTop5(forceNetwork=false){
-  const trendUrl = 'https://api.coingecko.com/api/v3/search/trending';
-
-  // キャッシュ（ids + 最小スナップショット）から先に組み立て
-  function setFromCache(ids, snap){
-    const idsArr = Array.isArray(ids) ? ids : (Array.isArray(snap) ? snap.map(x => x && x.id).filter(Boolean) : []);
-    if (!idsArr.length){ trendingCoins = []; return; }
-
-    const byIdTop = new Map(marketsTop.map(x => [x.id, x]));
-    const byIdSnap = new Map((Array.isArray(snap) ? snap : []).filter(Boolean).map(x => [x.id, x]));
-
-    trendingCoins = idsArr
-      .map(id => byIdTop.get(id) || byIdSnap.get(id))
-      .filter(Boolean);
-  }
-
-  const cachedIdsObj = readCache(LS_KEYS.trendingIds);
-  const cachedSnapObj = readCache(LS_KEYS.trendingSnapshot);
-  const cachedIds = (cachedIdsObj && Array.isArray(cachedIdsObj.data)) ? cachedIdsObj.data : null;
-  const cachedSnap = (cachedSnapObj && Array.isArray(cachedSnapObj.data)) ? cachedSnapObj.data : null;
-
-  const cachedIdsCount = cachedIds ? cachedIds.length : 0;
-  const cachedSnapCount = cachedSnap ? cachedSnap.length : 0;
-
-  if (cachedIdsCount || cachedSnapCount){
-    setFromCache(cachedIds, cachedSnap);
-  }
-
-  // markets が取れていない場合は無理に進めない
-  if (!marketsTop.length){
-    trendingCoins = [];
-    return;
-  }
-
-  // F5連打など短時間の再読み込みはネット取得をスキップ（API制限対策）
-  const now = Date.now();
-  const lastFetchAt = getLastFetchAt();
-  const canSkipNetwork = !forceNetwork && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
-
-  // キャッシュIDsから組み立てた結果が5件未満（＝top250に無い銘柄が混ざっている等）の場合は、
-  // クールダウン中でもネット取得を行って欠けを埋める
-  const wantCount = Math.min(5, cachedIdsCount || cachedSnapCount || 5);
-  const hasAllCached = trendingCoins.length >= wantCount;
-
-  if (canSkipNetwork && hasAllCached){
-    return;
-  }
-
-  try{
-    const trendJson = await fetchJsonRetry(trendUrl, {retries:2});
-    // NOTE: /search/trending の先頭5件に欠損(item/idなし)が混ざることがあるため、
-    // idがあるものだけを拾ってから上位5件に絞る（#5が欠ける問題の対策）
-    const trendItems = (trendJson.coins || [])
-      .map(c => c.item)
-      .filter(it => it && it.id)
-      .slice(0,5);
-
-    const ids = trendItems.map(it => it.id);
-
-    if (!ids.length){ trendingCoins = []; return; }
-
-    // top250 から拾う
-    const byIdTop = new Map(marketsTop.map(x => [x.id, x]));
-
-    // 不足があれば、そのidsだけ markets で1回取得（最小）
-    const missing = ids.filter(id => !byIdTop.has(id));
-    if (missing.length){
-      const mUrl = 'https://api.coingecko.com/api/v3/coins/markets'
-        + '?vs_currency=jpy'
-        + '&ids=' + encodeURIComponent(missing.join(','))
-        + '&sparkline=true'
-        + '&price_change_percentage=24h';
-      const extra = await fetchJsonRetry(mUrl, {retries:2});
-      const extraArr = Array.isArray(extra) ? extra : [];
-      for (const x of extraArr) byIdTop.set(x.id, x);
-    }
-
-    // それでも markets が取れないIDは、trendingレスポンスの item/data から最小オブジェクトを作って表示する
-    const fallbackById = new Map(trendItems.map(it => [it.id, it]));
-    trendingCoins = ids.map(id => {
-      const m = byIdTop.get(id);
-      if (m) return m;
-
-      const it = fallbackById.get(id);
-      if (!it) return null;
-
-      // trending の data は形式が変わることがあるので、防御的に拾う
-      const data = it.data || {};
-      const spark = Array.isArray(data.sparkline) ? data.sparkline
-        : (data.sparkline_in_7d && Array.isArray(data.sparkline_in_7d.price) ? data.sparkline_in_7d.price : null);
-
-      // price_change_percentage_24h がオブジェクトの場合は jpy を優先、なければ最初の数値を拾う
-      let pch = null;
-      const pchAny = data.price_change_percentage_24h;
-      if (typeof pchAny === 'number') pch = pchAny;
-      else if (pchAny && typeof pchAny === 'object'){
-        if (typeof pchAny.jpy === 'number') pch = pchAny.jpy;
-        else {
-          for (const v of Object.values(pchAny)){
-            if (typeof v === 'number'){ pch = v; break; }
-          }
-        }
-      }
-
-      // price / volume は通貨別オブジェクトのことがある（jpy優先）
-      const pickNum = (x) => {
-        if (typeof x === 'number') return x;
-        if (x && typeof x === 'object'){
-          if (typeof x.jpy === 'number') return x.jpy;
-          for (const v of Object.values(x)){
-            if (typeof v === 'number') return v;
-          }
-        }
-        return null;
-      };
-
-      const price = pickNum(data.price);
-      const vol = pickNum(data.total_volume);
-
-      return {
-        id,
-        name: it.name || id,
-        symbol: it.symbol || '',
-        image: it.small || it.thumb || '',
-        market_cap_rank: it.market_cap_rank || null,
-        current_price: price,
-        total_volume: vol,
-        price_change_percentage_24h: pch,
-        // Chart.js の描画系が期待する形に合わせる
-        sparkline_in_7d: spark ? { price: spark } : undefined,
-      };
-    }).filter(Boolean);
-
-    writeCache(LS_KEYS.trendingIds, ids);
-
-    // 最小スナップショットも保存（TOP250外の銘柄でも次回F5で5件を維持するため）
-    const snap = (trendingCoins || []).slice(0,5).map(c => {
-      const sp = c && c.sparkline_in_7d && Array.isArray(c.sparkline_in_7d.price) ? c.sparkline_in_7d.price : null;
-      // localStorage肥大化を防ぐため、スパークラインは末尾最大240点だけ保持
-      const spTrim = sp ? sp.filter(v => typeof v === 'number' && Number.isFinite(v)).slice(-240) : null;
-      return {
-        id: c.id,
-        name: c.name,
-        symbol: c.symbol,
-        image: c.image,
-        market_cap_rank: c.market_cap_rank ?? null,
-        current_price: (typeof c.current_price === 'number' && Number.isFinite(c.current_price)) ? c.current_price : null,
-        total_volume: (typeof c.total_volume === 'number' && Number.isFinite(c.total_volume)) ? c.total_volume : null,
-        price_change_percentage_24h: (typeof c.price_change_percentage_24h === 'number' && Number.isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null,
-        sparkline_in_7d: spTrim ? { price: spTrim } : undefined,
-      };
-    });
-    writeCache(LS_KEYS.trendingSnapshot, snap);
-  } catch (e){
-    if (trendingCoins && trendingCoins.length){
-      console.warn('trending fetch failed, using cache/top:', e);
-      return;
-    }
-    throw e;
+    window.__btcMaCross = { price:last, sma50, sma200, priceDistPct, priceSide, crossDistPct, crossState, closes };
+  }catch(e){
+    console.warn('[btc ma] binance failed', e);
+    window.__btcMaCross = null;
   }
 }
 
@@ -2601,6 +2444,21 @@ if (breadthSub){
 }
         } catch(e) { console.warn('RSI failed', e); }
 
+        // SMA50/SMA200 cross state + divergence
+        try{
+          const ma = window.__btcMaCross;
+          const vEl = document.getElementById('kpiMa50200');
+          const mEl = document.getElementById('kpiMa50200Meta');
+          if (ma && Number.isFinite(ma.crossDistPct)) {
+            if (vEl) vEl.textContent = `${ma.crossState} ${fmtPct(ma.crossDistPct, 2)}`;
+            if (mEl) mEl.textContent = `SMA50 ${fmtUsd0(ma.sma50)} / SMA200 ${fmtUsd0(ma.sma200)}`;
+          } else {
+            if (vEl) vEl.textContent = '-';
+            if (mEl) mEl.textContent = '-';
+          }
+        }catch(e){ console.warn('MA50/200 KPI failed', e); }
+
+
         // CoinRader Sentiment (0-100) — top250ベース
         try{
           const denomS = (Number(lastUp)||0) + (Number(lastDown)||0);
@@ -2866,11 +2724,11 @@ if (breadthSub){
       })();
 
 
-      // BTC MA cross distance (SMA50 / SMA200)
+      // BTC MA distance (価格 vs SMA200)
     const ma = window.__btcMaCross || null;
-    if (ma && Number.isFinite(ma.distPct)) {
-      const d = ma.distPct;
-      const label = ma.label || (d > 0 ? 'GC側' : d < 0 ? 'DC側' : '中立');
+    if (ma && Number.isFinite(ma.priceDistPct)) {
+      const d = ma.priceDistPct;
+      const label = ma.priceSide || (d > 0 ? 'SMA200上' : d < 0 ? 'SMA200下' : '一致');
       setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
       setSum('sumMaSub', label);
       updateSummaryMaBar(d);
