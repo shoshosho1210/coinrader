@@ -1440,9 +1440,19 @@ function readSnapshot(key){
 
   // ============ Fetch helpers ============
   async function cgFetch(url, options = {}){
+    // CoinGecko CORS 対策:
+    // - ブラウザ直叩きがブロックされる環境では、同一オリジンのプロキシ(/cg)経由に自動切替します。
+    // - /cg は Cloudflare Workers / Netlify Functions / 自前サーバで実装してください（手順は別途）。
     const headers = { ...(options.headers || {}) };
     if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
-    return fetch(url, { ...options, headers });
+
+    let finalUrl = url;
+    const CG_HOST = 'https://api.coingecko.com';
+    const proxyPrefix = (window.CG_PROXY_PREFIX ?? (location.hostname.includes('coinrader') ? '/cg' : ''));
+    if (proxyPrefix && typeof url === 'string' && url.startsWith(CG_HOST)) {
+      finalUrl = proxyPrefix + url.substring(CG_HOST.length);
+    }
+    return fetch(finalUrl, { ...options, headers });
   }
 
   async function fetchWithTimeout(url, timeoutMs = 15000, options = {}){
@@ -1600,7 +1610,7 @@ const EXCLUDE_MCAP_IDS = new Set([
       setStatus('最新データの取得が遅れています（保存済みデータを表示中）');
       return;
     }
-    throw e;
+    marketsTop = [];
   }
 }
 
@@ -1610,19 +1620,124 @@ const EXCLUDE_MCAP_IDS = new Set([
   window.__btcMaCross = null;
 
   async function loadBtcMaCross(){
-    // 「追加APIなし」でブラウザから取得できるデータで 50/200MA を推定します。
-    // まず CoinGecko の market_chart(日足) を試し、失敗した場合のみ Binance の日足OHLCへフォールバックします。
-    // ※価格通貨はUSD/USDTでも、MA距離(%)は通貨に依存しないため問題なし。
+    const priceEl = document.getElementById('btcMaPrice');
+    const sma50El = document.getElementById('btcMaSma50');
+    const sma200El = document.getElementById('btcMaSma200');
+    const distEl = document.getElementById('btcMaDist');
+    const noteEl = document.getElementById('btcMaNote');
+    const canvas = document.getElementById('btcMaLine');
 
-    function compute(ts, closeAll){
-      if (!Array.isArray(ts) || !Array.isArray(closeAll) || closeAll.length < 210) throw new Error('ma source too short');
-      if (closeAll.some(v => !isFinite(v) || v <= 0)) throw new Error('ma source invalid');
+    // Binance を一次ソースにして CORS 影響を回避（BTCUSDT 日足）
+    // ※市場概況では説明用なので USD 建て表示（内部はUSDT）
+    try{
+      const url = 'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=370';
+      const klines = await fetchJsonRetry(url, {retries:2, timeoutMs:15000});
+      if (!Array.isArray(klines) || klines.length < 210) throw new Error('binance klines not enough');
 
-      const smaLast = (arr, n) => {
-        const a = arr.slice(-n);
-        const s = a.reduce((x,y)=>x+y,0);
-        return s / n;
+      const closes = klines.map(k => Number(k[4])).filter(v => Number.isFinite(v));
+      const lastClose = closes[closes.length-1];
+
+      const sma = (arr, period) => {
+        const out = new Array(arr.length).fill(null);
+        let sum = 0;
+        for (let i=0; i<arr.length; i++){
+          sum += arr[i];
+          if (i >= period) sum -= arr[i-period];
+          if (i >= period-1) out[i] = sum / period;
+        }
+        return out;
       };
+
+      const sma50 = sma(closes, 50);
+      const sma200 = sma(closes, 200);
+      const lastSma50 = sma50[sma50.length-1];
+      const lastSma200 = sma200[sma200.length-1];
+
+      // 表示用（丸め）
+      const fmt0 = (x) => (Number.isFinite(x) ? x.toLocaleString(undefined,{maximumFractionDigits:0}) : '—');
+      priceEl.textContent = fmt0(lastClose);
+      sma50El.textContent = fmt0(lastSma50);
+      sma200El.textContent = fmt0(lastSma200);
+
+      if (Number.isFinite(lastSma50) && Number.isFinite(lastSma200)){
+        const distPct = ((lastSma50 - lastSma200) / lastSma200) * 100;
+        distEl.textContent = `${distPct>=0?'+':''}${distPct.toFixed(2)}%`;
+      } else {
+        distEl.textContent = '—';
+      }
+
+      // ミニチャート（価格 / SMA50 / SMA200 の3本）
+      const drawMultiLines = (cv, seriesList) => {
+        if (!cv) return;
+        const rect = cv.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.max(10, Math.floor(rect.width));
+        const h = Math.max(10, Math.floor(rect.height));
+        cv.width = Math.floor(w*dpr);
+        cv.height = Math.floor(h*dpr);
+        const ctx = cv.getContext('2d');
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        ctx.clearRect(0,0,w,h);
+
+        // すべての series の有効値から min/max
+        let minV = Infinity, maxV = -Infinity;
+        for (const s of seriesList){
+          for (const v of s.data){
+            if (v==null || !Number.isFinite(v)) continue;
+            if (v < minV) minV = v;
+            if (v > maxV) maxV = v;
+          }
+        }
+        if (!Number.isFinite(minV) || !Number.isFinite(maxV) || minV===maxV){
+          return;
+        }
+        const pad = 4;
+        const xStep = (w - pad*2) / (closes.length - 1);
+        const yFor = (v) => {
+          const t = (v - minV) / (maxV - minV);
+          return (h - pad) - t * (h - pad*2);
+        };
+
+        for (const s of seriesList){
+          ctx.beginPath();
+          let started = false;
+          for (let i=0; i<s.data.length; i++){
+            const v = s.data[i];
+            if (v==null || !Number.isFinite(v)) continue;
+            const x = pad + xStep * i;
+            const y = yFor(v);
+            if (!started){ ctx.moveTo(x,y); started = true; }
+            else ctx.lineTo(x,y);
+          }
+          if (!started) continue;
+          ctx.lineWidth = s.width || 1.5;
+          ctx.strokeStyle = s.color;
+          ctx.globalAlpha = s.alpha ?? 1;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      };
+
+      drawMultiLines(canvas, [
+        { data: closes,  color: '#e5e7eb', width: 1.6, alpha: 1 },
+        { data: sma50,   color: '#60a5fa', width: 1.2, alpha: 0.95 },
+        { data: sma200,  color: '#f87171', width: 1.2, alpha: 0.95 },
+      ]);
+
+      if (noteEl) noteEl.textContent = 'BTCUSDT(日足)からSMA50/SMA200を算出（Binance）';
+    } catch(e){
+      console.warn('[btc ma] failed', e);
+      if (priceEl) priceEl.textContent = '—';
+      if (sma50El) sma50El.textContent = '—';
+      if (sma200El) sma200El.textContent = '—';
+      if (distEl) distEl.textContent = '—';
+      if (noteEl) noteEl.textContent = 'データ取得に失敗しました（CORS/ネットワーク）。';
+      if (canvas){
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
+  };
 
       const sma50 = smaLast(closeAll, 50);
       const sma200 = smaLast(closeAll, 200);
@@ -1742,8 +1857,8 @@ async function loadTrendingTop5(forceNetwork=false){
 
   // markets が取れていない場合は無理に進めない
   if (!marketsTop.length){
+    // CoinGecko がCORS等で取れない場合でも、表示できるセクション（例: BTC MA）は描画する
     trendingCoins = [];
-    return;
   }
 
   // F5連打など短時間の再読み込みはネット取得をスキップ（API制限対策）
@@ -1870,7 +1985,7 @@ async function loadTrendingTop5(forceNetwork=false){
       console.warn('trending fetch failed, using cache/top:', e);
       return;
     }
-    throw e;
+    trendingCoins = [];
   }
 }
 
