@@ -1143,6 +1143,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 <div class="kpi">
+<div class="kpi-label">BTC 価格と移動平均（50/200日）</div>
+<div class="kpi-value" id="kpiBtcMaNow">-</div>
+<div class="kpi-meta" id="kpiBtcMaMeta">-</div>
+<div class="kpi-sub" id="kpiBtcMaSub">BTCUSDTの日足からSMA50とSMA200を算出して表示します。</div>
+<canvas class="kpi-canvas" id="btcMaLine"></canvas>
+</div>
+<div class="kpi">
 <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
 <div class="kpi-value" id="kpiSentiment">-</div>
 <div class="kpi-meta" id="kpiSentimentMeta">-</div>
@@ -1614,26 +1621,61 @@ const EXCLUDE_MCAP_IDS = new Set([
     const rows = await fetchJsonRetry(url, {retries:2});
     if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
 
-    // close価格（index 4）
-    const closes = rows.map(r => +r[4]).filter(v => isFinite(v) && v > 0);
-    if (closes.length < 210) throw new Error('binance closes invalid');
+    const ts = rows.map(r => +r[0]);
+    const closeAll = rows.map(r => +r[4]);
+    if (closeAll.some(v => !isFinite(v) || v <= 0)) throw new Error('binance closes invalid');
 
-    const sma = (arr, n) => {
+    // 直近のMA距離（%）
+    const smaLast = (arr, n) => {
       const a = arr.slice(-n);
       const s = a.reduce((x,y)=>x+y,0);
       return s / n;
     };
-
-    const sma50 = sma(closes, 50);
-    const sma200 = sma(closes, 200);
+    const sma50 = smaLast(closeAll, 50);
+    const sma200 = smaLast(closeAll, 200);
     const distPct = (sma50 - sma200) / sma200 * 100;
 
     const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
     const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
 
+    // チャート用にSMA系列も保持（市場概況で表示）
+    const smaSeries = (arr, n) => {
+      const out = new Array(arr.length).fill(null);
+      let sum = 0;
+      for (let i=0;i<arr.length;i++){
+        sum += arr[i];
+        if (i >= n) sum -= arr[i-n];
+        if (i >= n-1) out[i] = sum / n;
+      }
+      return out;
+    };
+    const ma50Series = smaSeries(closeAll, 50);
+    const ma200Series = smaSeries(closeAll, 200);
+
+    // 200MAが出ている範囲で、直近だけ表示（重くならない程度）
+    const minIdx = 199; // 0-basedで200本目
+    const keepN = 220;
+    const start = Math.max(minIdx, closeAll.length - keepN);
+
+    const labels = ts.slice(start).map(t => {
+      const d = new Date(t);
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${mm}/${dd}`;
+    });
+
     window.__btcMaCross = {
       sma50, sma200, distPct,
       label,
+      lastClose: closeAll[closeAll.length-1],
+      updatedAt: Date.now(),
+    };
+
+    window.__btcMaCrossSeries = {
+      labels,
+      close: closeAll.slice(start),
+      ma50: ma50Series.slice(start),
+      ma200: ma200Series.slice(start),
       updatedAt: Date.now(),
     };
   }
@@ -2546,6 +2588,30 @@ if (breadthSub){
             });
 }
         } catch(e) { console.warn('RSI failed', e); }
+
+
+    // BTC 価格 + SMA50/200（日足）
+    try{
+      const s = window.__btcMaCrossSeries;
+      const m = window.__btcMaCross;
+      if (s && Array.isArray(s.labels) && s.labels.length > 20){
+        const lastIdx = s.close.length - 1;
+        const lastClose = s.close[lastIdx];
+        const last50 = s.ma50[lastIdx];
+        const last200 = s.ma200[lastIdx];
+
+        const fmtUsdt0 = (v)=> (typeof v==='number' && isFinite(v)) ? (Math.round(v).toLocaleString('en-US') + ' USDT') : '-';
+        setText('kpiBtcMaNow', fmtUsdt0(lastClose));
+        const meta = `MA50 ${fmtUsdt0(last50)} / MA200 ${fmtUsdt0(last200)}` + (m ? `  (${m.label}, ${fmtPct(m.distPct, 2)})` : '');
+        setText('kpiBtcMaMeta', meta);
+
+        makeLineChart('btcMaLine', s.labels, [
+          {label:'BTC', data:s.close, borderColor:'rgba(255,255,255,0.95)', tension:0.35},
+          {label:'MA50', data:s.ma50, borderColor:'rgba(80,170,255,0.95)', tension:0.35},
+          {label:'MA200', data:s.ma200, borderColor:'rgba(255,90,90,0.95)', tension:0.35},
+        ], { yMin: null, yMax: null });
+      }
+    }catch(e){}
 
         // CoinRader Sentiment (0-100) — top250ベース
         try{
