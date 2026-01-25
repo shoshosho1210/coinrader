@@ -205,6 +205,8 @@ def write_share_html(date_compact: str, date_dash: str) -> str:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CoinRader - 今日の注目 {date_dash}</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
+     crossorigin="anonymous"></script>
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoinRader">
