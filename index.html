@@ -2150,6 +2150,15 @@ function getAltVolumeTop5(){
     return s + n.toFixed(2) + '%';
   }
 
+function fmtJPY(n){
+    if (typeof n !== 'number' || !isFinite(n)) return '-';
+    try{
+      return new Intl.NumberFormat('ja-JP',{style:'currency',currency:'JPY',maximumFractionDigits:0}).format(n);
+    }catch(e){
+      return '¥' + Math.round(n).toLocaleString('ja-JP');
+    }
+  }
+
 function fmtPctSigned(v){
   if (typeof v !== 'number' || !isFinite(v)) return '—';
   const s = (v>0?'+':'') + v.toFixed(2) + '%';
