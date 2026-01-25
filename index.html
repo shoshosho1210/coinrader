@@ -2802,26 +2802,42 @@ if (breadthSub){
     }
     if (!yScale || typeof yScale.getPixelForValue !== 'function') return;
 
-    // Pixel in canvas coordinate space (0 at top of canvas)
-    const y70 = yScale.getPixelForValue(70);
-    const y30 = yScale.getPixelForValue(30);
+    // Chart.js returns pixels in *canvas internal* coordinates.
+    // Convert to CSS pixels so it stays aligned on high-DPI (mobile) screens.
+    const wrapRect = wrap.getBoundingClientRect();
+    const internalH = canvas.height || 0;
+    const cssH = wrapRect.height || wrap.clientHeight || 0;
+    const k = (internalH && cssH) ? (cssH / internalH) : 1;
 
-    // Apply (clamp just in case)
-    const h = wrap.clientHeight || 0;
-    const clamp = (v) => (h ? Math.max(0, Math.min(h, v)) : v);
+    const y70 = yScale.getPixelForValue(70) * k;
+    const y30 = yScale.getPixelForValue(30) * k;
+
+    const clamp = (v) => (cssH ? Math.max(0, Math.min(cssH, v)) : v);
 
     line70.style.top = clamp(y70) + 'px';
     line30.style.top = clamp(y30) + 'px';
 
-    // Bind resize once
+    // Bind observers once (layout can change after charts render / responsive breakpoints)
     if (!__rsiOverlayResizeBound){
       __rsiOverlayResizeBound = true;
-      window.addEventListener('resize', () => {
-        requestAnimationFrame(syncRsiThresholdOverlay);
-      }, { passive:true });
+
+      const syncSoon = () => requestAnimationFrame(() => { try{ syncRsiThresholdOverlay(); }catch(_){} });
+
+      window.addEventListener('resize', syncSoon, { passive:true });
+      window.addEventListener('orientationchange', syncSoon, { passive:true });
+
+      // ResizeObserver for mobile/desktop reflow
+      try{
+        const ro = new ResizeObserver(() => syncSoon());
+        ro.observe(wrap);
+        ro.observe(canvas);
+        // store on window to avoid GC
+        window.__rsiThreshRO = ro;
+      }catch(_){}
     }
   }
 }
+
 
 function drawSparkline(canvasId, data){
   const canvas = document.getElementById(canvasId);
