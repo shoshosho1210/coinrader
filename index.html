@@ -567,7 +567,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 @media (max-width: 560px){
   .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .summary-lists{ grid-template-columns: 1fr; }
-  #sec-summary .section-sub{ display:none; }
+  #sec-summary .section-sub{ display:block; }
 }
 .summary-lists{
   display: grid;
@@ -994,7 +994,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-tile kpi-ma">
   <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
   <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
-  <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
+  <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=下(マイナス) / 右=上(プラス)。">
     <div class="mini-ma-track">
       <div class="mini-ma-zone dc-strong"></div>
       <div class="mini-ma-zone dc-weak"></div>
@@ -1003,7 +1003,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <div class="mini-ma-center"></div>
       <div class="mini-ma-marker" id="sumMaMarker"></div>
     </div>
-    <div class="mini-ma-label kpi-bar-caption">DC側 ← 0 → GC側</div>
+    <div class="mini-ma-label kpi-bar-caption">下 ← 0 → 上</div>
   </div>
 </div>
 
@@ -1679,13 +1679,16 @@ const EXCLUDE_MCAP_IDS = new Set([
 
     const sma50 = sma(closes, 50);
     const sma200 = sma(closes, 200);
-    const distPct = (sma50 - sma200) / sma200 * 100;
+    const price = closes[closes.length-1];
+
+    // KPI: 価格 vs SMA200（%）
+    const distPct = ((price - sma200) / sma200) * 100;
 
     const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
-    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
+    const label = near ? 'SMA200付近' : (distPct > 0 ? '上' : '下');
 
     window.__btcMaCross = {
-      sma50, sma200, distPct,
+      price, sma50, sma200, distPct,
       label,
       updatedAt: Date.now(),
     };
@@ -2056,17 +2059,17 @@ function getAltVolumeTop5(){
       return;
     }
 
-    const range = 5; // ±5% を表示レンジに（超過はクランプ）
+    const range = 20; // ±20% を表示レンジに（超過はクランプ）
     const d = Math.max(-range, Math.min(range, distPct));
     const left = (d + range) / (2 * range) * 100;
     marker.style.left = `${left}%`;
     marker.style.opacity = '1';
 
-    // 色味は「危険→安全（赤→黄→青→緑）」に合わせる（意味はDC/GC）
-    if (d <= -range * 0.5) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.22)';        // DC強
-    else if (d < 0)        marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';        // DC弱
-    else if (d <  range*0.5) marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.22)';      // GC弱
-    else                   marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.22)';         // GC強
+    // 色味は「危険→安全（赤→黄→青→緑）」に合わせる（下→上）
+    if (d <= -range * 0.5) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.22)';        // 下(大)
+    else if (d < 0)        marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';        // 下(小)
+    else if (d <  range*0.5) marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.22)';      // 上(小)
+    else                   marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.22)';         // 上(大)
   }
 
 
@@ -2870,7 +2873,7 @@ if (breadthSub){
     const ma = window.__btcMaCross || null;
     if (ma && Number.isFinite(ma.distPct)) {
       const d = ma.distPct;
-      const label = ma.label || (d > 0 ? 'GC側' : d < 0 ? 'DC側' : '中立');
+      const label = ma.label || (d > 0 ? '上' : d < 0 ? '下' : '中立');
       setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
       setSum('sumMaSub', label);
       updateSummaryMaBar(d);
