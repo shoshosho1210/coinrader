@@ -2423,6 +2423,7 @@ function makeMultiLineChart(canvasId, labels, seriesList){
       datasets: seriesList.map(s=>({
         label: s.label||'',
         data: s.values||[],
+        borderColor: s.color,
         borderWidth: s.borderWidth ?? 2,
         tension: 0.25,
         pointRadius: 0,
@@ -3061,7 +3062,7 @@ function renderOverview(){
       const downCnt = chgArr24.filter(v=>v<0).length;
       setSum('sumAvg24Sub', chgArr24.length ? (`上昇 ${upCnt} / 下落 ${downCnt}`) : null);
 
-      // BTC MA cross distance (SMA50 / SMA200)
+    // BTC MA cross distance (SMA50 / SMA200)
     const ma = window.__btcMaCross || null;
     if (ma && Number.isFinite(ma.distPct)) {
       const d = ma.distPct;
@@ -3073,6 +3074,28 @@ function renderOverview(){
       setSum('sumMaMain', '—');
       setSum('sumMaSub', '—');
       updateSummaryMaBar(null);
+    }
+
+    // BTC MA lines (MA50 / MA200) chart
+    try {
+      if (ma && Array.isArray(ma.series) && ma.series.length) {
+        const labels = ma.series.map(p=>{
+          try {
+            const d = new Date(p.t);
+            return `${d.getMonth()+1}/${d.getDate()}`;
+          } catch(_){ return ''; }
+        });
+        const s50 = ma.series.map(p=> (Number.isFinite(p.ma50) ? p.ma50 : null));
+        const s200 = ma.series.map(p=> (Number.isFinite(p.ma200) ? p.ma200 : null));
+        makeMultiLineChart('btcMaLine', labels, [
+          { label: 'MA50', values: s50, color: 'rgba(96,165,250,0.95)', borderWidth: 2 },
+          { label: 'MA200', values: s200, color: 'rgba(229,231,235,0.65)', borderWidth: 2 }
+        ], { showAxes: false }, 'btcMaLine');
+      } else {
+        if (charts['btcMaLine']) { charts['btcMaLine'].destroy(); delete charts['btcMaLine']; }
+      }
+    } catch(e) {
+      console.warn('BTC MA chart failed:', e);
     }
 
     // Mini visuals
@@ -3087,15 +3110,15 @@ function renderOverview(){
     const mcapEl = document.getElementById('sumMcapTotal');
     const mcapChgEl = document.getElementById('sumMcapChg');
     if (mcapEl){
-      if (overview && typeof overview.totalMcap === 'number'){
-        mcapEl.textContent = formatJPY(overview.totalMcap);
+      if (o && typeof o.totalMcap === 'number'){
+        mcapEl.textContent = formatJPY(o.totalMcap);
       }else{
         mcapEl.textContent = '—';
       }
     }
     if (mcapChgEl){
-      if (overview && typeof overview.mcap24hPct === 'number'){
-        mcapChgEl.textContent = '24h ' + fmtPctSigned(overview.mcap24hPct);
+      if (o && typeof o.mcap24hPct === 'number'){
+        mcapChgEl.textContent = '24h ' + fmtPctSigned(o.mcap24hPct);
       }else{
         mcapChgEl.textContent = '—';
       }
@@ -3345,6 +3368,11 @@ function renderOverview(){
     renderOL('summaryTrendList', trend);
     renderOL('summaryUpList', up);
     renderOL('summaryVolAltList', vol);
+  }
+
+  // v102: quick summary renderer (renderAll calls this)
+  function renderQuickSummary(){
+    renderSummaryLists();
   }
 
   function renderInto(containerId, coins, mode){
