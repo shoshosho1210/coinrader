@@ -2462,15 +2462,42 @@ if (breadthSub){
             }
 // use the same label length as other sparklines
             const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
-            makeLineChart('rsiLine', rsiLabels, [{
+            makeLineChart('rsiLine', rsiLabels, [
+            // threshold lines (30 / 70)
+            {
+              label: '30',
+              data: rsiSeries.map(() => 30),
+              borderColor: 'rgba(255,255,255,0.22)',
+              borderWidth: 1,
+              pointRadius: 0,
+              tension: 0,
+              fill: false,
+              borderDash: [4,4],
+              order: -2
+            },
+            {
+              label: '70',
+              data: rsiSeries.map(() => 70),
+              borderColor: 'rgba(255,255,255,0.22)',
+              borderWidth: 1,
+              pointRadius: 0,
+              tension: 0,
+              fill: false,
+              borderDash: [4,4],
+              order: -2
+            },
+            // RSI line
+            {
               label: 'RSI',
               data: rsiSeries,
               borderColor: '#a78bfa',
               borderWidth: 2,
               pointRadius: 0,
               tension: 0.35,
-              fill: false
-            }], { yMin: 0, yMax: 100 });
+              fill: false,
+              order: 0
+            }
+          ], { yMin: 0, yMax: 100 });
           }
         } catch(e) { console.warn('RSI failed', e); }
 
@@ -2925,14 +2952,17 @@ function makeLineChart(canvasId, labels, series, opts){
       }
     } catch(_){}
 
-    const datasets = series.map(s => ({
-      label: s.label,
-      data: s.data,
-      pointRadius: 0,
-      borderWidth: 2,
-      borderColor: s.border,
-      tension: 0.25,
-      fill: false,
+    const datasets = (Array.isArray(series) ? series : []).map(s => ({
+      label: s.label || '',
+      data: Array.isArray(s.data) ? s.data : [],
+      pointRadius: (s.pointRadius != null ? s.pointRadius : 0),
+      borderWidth: (s.borderWidth != null ? s.borderWidth : 2),
+      borderColor: (s.border != null ? s.border : (s.borderColor != null ? s.borderColor : "rgba(255,255,255,0.85)")),
+      tension: (s.tension != null ? s.tension : 0.25),
+      fill: (s.fill != null ? s.fill : false),
+      spanGaps: (s.spanGaps != null ? s.spanGaps : true),
+      borderDash: (s.borderDash != null ? s.borderDash : undefined),
+      order: (s.order != null ? s.order : 0)
     }));
 
     charts[canvasId] = new Chart(canvas, {
@@ -2941,7 +2971,15 @@ function makeLineChart(canvasId, labels, series, opts){
       options: {
         responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: { x: { display:false }, y: { display:false, beginAtZero: !!(opts && opts.yBeginAtZero), suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined), suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined) } }
+        scales: {
+          x: { display:false },
+          y: {
+            display:false,
+            beginAtZero: !!(opts && opts.yBeginAtZero),
+            suggestedMin: (opts && opts.yMin != null ? opts.yMin : undefined),
+            suggestedMax: (opts && opts.yMax != null ? opts.yMax : undefined)
+          }
+        }
       }
     });
   }
