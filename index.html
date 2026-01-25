@@ -2802,20 +2802,20 @@ if (breadthSub){
     }
     if (!yScale || typeof yScale.getPixelForValue !== 'function') return;
 
-    // Chart.js returns pixels in *canvas internal* coordinates.
-    // Convert to CSS pixels so it stays aligned on high-DPI (mobile) screens.
-    const wrapRect = wrap.getBoundingClientRect();
-    const internalH = canvas.height || 0;
-    const cssH = wrapRect.height || wrap.clientHeight || 0;
-    const k = (internalH && cssH) ? (cssH / internalH) : 1;
+    // getPixelForValue() returns coordinates in the chart's internal pixel space.
+    // Convert to CSS pixels using (canvas CSS height) / (chart internal height).
+    const canvasRect = canvas.getBoundingClientRect();
+    const cssH = canvasRect.height || wrap.getBoundingClientRect().height || wrap.clientHeight || 0;
+    const internalH = (chart.height || (chart.chart && chart.chart.height) || canvas.height || 0);
+    const scale = (cssH && internalH) ? (cssH / internalH) : 1;
 
-    const y70 = yScale.getPixelForValue(70) * k;
-    const y30 = yScale.getPixelForValue(30) * k;
+    const clamp = (v) => cssH ? Math.max(0, Math.min(cssH, v)) : v;
 
-    const clamp = (v) => (cssH ? Math.max(0, Math.min(cssH, v)) : v);
+    const y70 = clamp(yScale.getPixelForValue(70) * scale);
+    const y30 = clamp(yScale.getPixelForValue(30) * scale);
 
-    line70.style.top = clamp(y70) + 'px';
-    line30.style.top = clamp(y30) + 'px';
+    line70.style.top = y70 + 'px';
+    line30.style.top = y30 + 'px';
 
     // Bind observers once (layout can change after charts render / responsive breakpoints)
     if (!__rsiOverlayResizeBound){
@@ -2826,17 +2826,16 @@ if (breadthSub){
       window.addEventListener('resize', syncSoon, { passive:true });
       window.addEventListener('orientationchange', syncSoon, { passive:true });
 
-      // ResizeObserver for mobile/desktop reflow
       try{
         const ro = new ResizeObserver(() => syncSoon());
         ro.observe(wrap);
         ro.observe(canvas);
-        // store on window to avoid GC
         window.__rsiThreshRO = ro;
       }catch(_){}
     }
   }
 }
+
 
 
 function drawSparkline(canvasId, data){
