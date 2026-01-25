@@ -1101,7 +1101,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi">
 <div class="kpi-label">BTC RSI（14 / 7d推移）</div>
 <div class="kpi-value" id="kpiRsi">-</div>
-<div class="kpi-sub" id="kpiRsiSub">RSIは価格の上げ下げの強さを0〜100で表す指標です（一般に70以上=買われすぎ、30以下=売られすぎ）。BTCの1時間足相当の7日スパークラインから算出しています。</div>
+<div class="kpi-meta" id="kpiRsiMeta">-</div>
+<div class="kpi-sub" id="kpiRsiSub">BTCの1時間足相当のRSI（14）を7日分で算出。30以下=売られすぎ、70以上=買われすぎ。</div>
 <canvas class="kpi-canvas" id="rsiLine"></canvas>
 </div>
 <div class="kpi">
@@ -2443,7 +2444,23 @@ if (breadthSub){
               else if (last <= 30) tag = '売られすぎ';
               rsiEl.textContent = `RSI ${last.toFixed(1)}（${tag}）`;
             }
-            // use the same label length as other sparklines
+            
+            const rsiMetaEl = document.getElementById('kpiRsiMeta');
+            if (rsiMetaEl && Array.isArray(rsiSeries) && rsiSeries.length) {
+              const finite = rsiSeries.filter(v => v != null && isFinite(v));
+              if (finite.length) {
+                const mn = Math.min(...finite);
+                const mx = Math.max(...finite);
+                const d30 = (last - 30);
+                const d70 = (70 - last);
+                const d30txt = isFinite(d30) ? Math.max(0, d30).toFixed(1) : '-';
+                const d70txt = isFinite(d70) ? Math.max(0, d70).toFixed(1) : '-';
+                rsiMetaEl.textContent = `7d範囲 ${mn.toFixed(1)}–${mx.toFixed(1)} / 30まで ${d30txt}pt / 70まで ${d70txt}pt`;
+              } else {
+                rsiMetaEl.textContent = '-';
+              }
+            }
+// use the same label length as other sparklines
             const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
             makeLineChart('rsiLine', rsiLabels, [{
               label: 'RSI',
