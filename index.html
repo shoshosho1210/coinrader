@@ -2955,7 +2955,12 @@ function makeLineChart(canvasId, labels, series, opts){
     const hLinePlugin = {
       id: 'hLines',
       afterDraw(chart, args, pluginOpts){
-        const o = pluginOpts || {};
+        // Chart.js v2 does not pass pluginOpts; fallback to chart options
+        const o = (pluginOpts && Object.keys(pluginOpts).length)
+          ? pluginOpts
+          : ((chart && chart.options && chart.options.plugins && chart.options.plugins.hLines)
+              || (chart && chart.config && chart.config.options && chart.config.options.plugins && chart.config.options.plugins.hLines)
+              || {});
         const values = Array.isArray(o.values) ? o.values : [];
         if (!values.length) return;
         const ctx = chart.ctx;
