@@ -525,12 +525,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .summary-block{ margin-top: 18px; }
 .summary-kpis{
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin-top: 10px;
 }
-
-.kpi-span2{ grid-column: span 2; }
 .summary-lists{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -593,8 +591,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 @media (max-width: 1100px){
   .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kpi-span2{ grid-column: 1 / -1; }
-.summary-lists{ grid-template-columns: 1fr; }
+  .summary-lists{ grid-template-columns: 1fr; }
 }
 
 
@@ -796,11 +793,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     .kpi-span2-mobile{ grid-column: 1 / -1; }
   }
 
-
-  @media (max-width:700px){
-    .summary-sub{display:none;}
-  }
-
 </style>
 </head>
 <body>
@@ -858,101 +850,79 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   </div>
 
   <div class="summary-kpis" id="summaryKpis">
-  <!-- ① 上位250 平均（24h）: 2列ぶち抜き -->
-  <div class="kpi-tile kpi-span2" id="sumAvgTile">
-    <div class="kpi-top">
-      <div class="kpi-label">上位250 平均（24h）</div>
-      <div class="kpi-badge">上昇/下落</div>
+<div class="kpi-tile">
+      <div class="kpi-tile-title">BTC ドミナンス</div>
+      <div class="kpi-with-donut">
+        <div class="kpi-text">
+          <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
+        </div>
+        <div class="mini-dom-bar mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
+          <div class="mini-dom-track" role="img" aria-label="Dominance bar">
+            <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
+            <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
+            <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
+            <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
+            <div class="mini-dom-tick t50"><span>50</span></div>
+            <div class="mini-dom-tick t60"><span>60</span></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="kpi-main">
-      <div class="kpi-value" id="sumAvg24Main">—</div>
-      <div class="kpi-sub" id="sumAvg24Sub">—</div>
+<div class="kpi-tile">
+      <div class="kpi-tile-title">恐怖指数（0–100）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true">
+        <div class="mini-sent-track">
+          <div class="mini-sent-zone fear"></div>
+          <div class="mini-sent-zone caution"></div>
+          <div class="mini-sent-zone neutral"></div>
+          <div class="mini-sent-zone greed"></div>
+          <div class="mini-sent-th t25"></div>
+          <div class="mini-sent-th t50"></div>
+          <div class="mini-sent-th t75"></div>
+          <div class="mini-sent-marker" id="sumSentMarker"></div>
+        </div>
+      </div>
     </div>
-    <div class="barline" aria-label="上昇/下落バー">
-  <span class="seg down" id="sumAdvBarDown" style="width:0%"></span>
-  <span class="seg flat" id="sumAdvBarFlat" style="width:0%"></span>
-  <span class="seg up" id="sumAdvBarUp" style="width:0%"></span>
+<div class="kpi-tile">
+      <div class="kpi-tile-title">BTC RSI（14）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true">
+        <div class="mini-rsi-track">
+          <div class="mini-rsi-zone low"></div>
+          <div class="mini-rsi-zone mid"></div>
+          <div class="mini-rsi-zone high"></div>
+          <div class="mini-rsi-th t30"></div>
+          <div class="mini-rsi-th t70"></div>
+          <div class="mini-rsi-marker" id="sumRsiMarker"></div>
+        </div>
+      </div>
+    </div>
+<div class="kpi-tile">
+      <div class="kpi-tile-title">上位250 平均（24h）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+      <div class="mini-spark mini-vis" aria-hidden="true" title="7d推移（平均リターン）のスパークライン">
+        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path id="sumAvgSparkFill" class="fill" d=""></path>
+          <line id="sumAvgSparkZero" class="zero" x1="0" y1="15" x2="100" y2="15"></line>
+          <polyline id="sumAvgSparkLine" class="line" points=""></polyline>
+        </svg>
+      </div>
+    </div>
+<div class="kpi-tile kpi-span2-mobile">
+      <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
+      <div class="mini-vis" aria-hidden="true" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。">
+        <div class="mini-ma-track">
+          <div class="mini-ma-zone neg"></div>
+          <div class="mini-ma-zone mid"></div>
+          <div class="mini-ma-zone pos"></div>
+          <div class="mini-ma-center"></div>
+          <div class="mini-ma-marker" id="sumMaMarker"></div>
+        </div>
+      </div>
+    </div>
 </div>
-<canvas class="kpi-spark" id="sumAvgSpark" height="34"></canvas>
-  </div>
-
-  <!-- ② 恐怖指数 -->
-  <div class="kpi-tile" id="sumSentTile">
-    <div class="kpi-top">
-      <div class="kpi-label">恐怖指数（0–100）</div>
-      <div class="kpi-badge">市場ムード</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumSentMain">—</span> <span class="kpi-unit" id="sumSentSub">—</span></div>
-    </div>
-    <div class="mini-vis mini-sent-track" id="sumSentTrack" aria-hidden="true">
-      <div class="mini-sent-zone fear"></div>
-      <div class="mini-sent-zone greed"></div>
-      <div class="mini-sent-zone neutral"></div>
-      <div class="mini-sent-zone greed2"></div>
-      <div class="mini-sent-zone greed3"></div>
-      <div class="mini-sent-th" style="left:20%"></div>
-      <div class="mini-sent-th" style="left:40%"></div>
-      <div class="mini-sent-th" style="left:60%"></div>
-      <div class="mini-sent-th" style="left:80%"></div>
-      <div class="mini-sent-marker" id="sumSentMarker" style="left:50%"></div>
-    </div>
-  </div>
-
-  <!-- ③ 買われすぎ / 売られすぎ（RSI14） -->
-  <div class="kpi-tile" id="sumRsiTile">
-    <div class="kpi-top">
-      <div class="kpi-label">買われすぎ / 売られすぎ（RSI14）</div>
-      <div class="kpi-badge">BTC</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumRsiMain">—</span> <span class="kpi-unit" id="sumRsiSub">—</span></div>
-    </div>
-    <div class="mini-vis mini-rsi-track" id="sumRsiTrack" aria-hidden="true">
-      <div class="mini-rsi-zone low"></div>
-      <div class="mini-rsi-zone mid"></div>
-      <div class="mini-rsi-zone high"></div>
-      <div class="mini-rsi-th" style="left:30%"></div>
-      <div class="mini-rsi-th" style="left:70%"></div>
-      <div class="mini-rsi-marker" id="sumRsiMarker" style="left:50%"></div>
-    </div>
-  </div>
-
-  <!-- ④ ドミナンス -->
-  <div class="kpi-tile" id="sumDomTile">
-    <div class="kpi-top">
-      <div class="kpi-label">BTC ドミナンス</div>
-      <div class="kpi-badge">Top250</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumDomMain">—</span></div>
-      <div class="kpi-sub" id="sumDomSub">—</div>
-    </div>
-    <div class="mini-vis mini-dom-track" id="sumDomTrack" aria-hidden="true">
-      <div class="mini-dom-seg btc"></div>
-      <div class="mini-dom-seg eth"></div>
-      <div class="mini-dom-seg stbl"></div>
-      <div class="mini-dom-seg oth"></div>
-      <div class="mini-dom-marker" id="sumDomMarker" style="left:50%"></div>
-    </div>
-  </div>
-
-  <!-- ⑤ BTC MAクロス距離（50/200） -->
-  <div class="kpi-tile" id="sumMaTile">
-    <div class="kpi-top">
-      <div class="kpi-label">BTC MAクロス距離（50/200）</div>
-      <div class="kpi-badge">日足</div>
-    </div>
-    <div class="kpi-main">
-      <div class="kpi-value"><span id="sumMaMain">—</span> <span class="kpi-unit" id="sumMaSub">—</span></div>
-    </div>
-    <div class="mini-vis mini-ma-track" id="sumMaTrack" aria-hidden="true">
-      <div class="mini-ma-zone down"></div>
-      <div class="mini-ma-zone neutral"></div>
-      <div class="mini-ma-zone up"></div>
-      <div class="mini-ma-th" style="left:50%"></div>
-      <div class="mini-ma-marker" id="sumMaMarker" style="left:50%"></div>
-    </div>
   </div>
 </div>
 <div class="summary-lists">
@@ -961,11 +931,11 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
       <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
     <div class="summary-card">
-      <div class="summary-card-title">🚀 上昇率 TOP5（24h）</div>
+      <div class="summary-card-title">🚀 Up TOP5（24h）</div>
       <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
     <div class="summary-card">
-      <div class="summary-card-title">📊 出来高（アルト）TOP5（24h）</div>
+      <div class="summary-card-title">📊 Vol(Alt) TOP5（24h）</div>
       <ol class="summary-ol" id="summaryVolAltList"><li class="summary-li muted">データ取得中…</li></ol>
     </div>
   </div>
@@ -1131,30 +1101,23 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
         </div>
 
         <div class="kpi">
-          <div class="kpi-label">BTC 移動平均（50/200 / 日足）</div>
-          <div class="kpi-value" id="kpiBtcMa">-</div>
-          <div class="kpi-meta muted" id="kpiBtcMaSub">MA50とMA200の推移（直近210日）</div>
-          <canvas class="kpi-canvas" id="btcMaLine"></canvas>
-        </div>
-
-        
-        <div class="kpi">
-          <div class="kpi-label">恐怖指数（0-100 / 上位250）</div>
+          <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
           <div class="kpi-value" id="kpiSentiment">-</div>
           <div class="kpi-meta" id="kpiSentimentMeta">-</div>
-
-          <div class="mini-sent-zone fear" style="margin-top:10px;">
-            <div class="mini-sent-bar" id="kpiSentBar">
-              <span class="z z1"></span><span class="z z2"></span><span class="z z3"></span><span class="z z4"></span>
-              <span class="marker" id="kpiSentDot"></span>
+          <div class="sent-gauge-wrap">
+            <div class="sent-gauge" aria-hidden="true">
+              <svg class="sent-gauge-svg" viewBox="0 0 220 120" aria-hidden="true"></svg>
+              <div class="sent-gauge-needle" id="sentNeedle"></div>
+              <div class="sent-gauge-center"></div>
+            </div>
+            <div class="sent-gauge-side">
+              <div class="sent-label" id="sentLabel">-</div>
+              <div class="sent-desc" id="sentDesc">上位250ベースの独自ムード指数</div>
             </div>
           </div>
-
-          <div class="kpi-sub" style="font-size:12px; opacity:.8;">
-            上位250の「広がり（上昇率）」や「出来高変化」などを合成した独自ムード指数です。
-          </div>
+          <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
+          <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
         </div>
-
 
         <div class="kpi">
           <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
@@ -1612,74 +1575,40 @@ const EXCLUDE_MCAP_IDS = new Set([
   window.__btcMaCross = null;
 
   async function loadBtcMaCross(){
-  // 目的: 50日/200日のSMAと距離(%)、および簡易チャート用の系列を生成
-  try{
-    const urlOhlc = `${COINGECKO_BASE}/coins/${BTC_ID}/ohlc?vs_currency=${VS}&days=${BTC_MA_OHLC_DAYS}`;
-    let ohlc = await fetchJsonRetry(urlOhlc, {retries:2});
-    let closes = [];
-    let t = [];
+    // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
+    // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
+    // ※価格通貨はUSDTだが、MA距離(%)は通貨に依存しないため問題なし。
+    const url = 'https://api.binance.com/api/v3/klines'
+      + '?symbol=BTCUSDT'
+      + '&interval=1d'
+      + '&limit=260'; // 200MA + 50MA + 少し余裕
 
-    // OHLCが取れない場合は market_chart をフォールバック（価格をcloseとして扱う）
-    if (!Array.isArray(ohlc) || ohlc.length < 220){
-      const urlMc = `${COINGECKO_BASE}/coins/${BTC_ID}/market_chart?vs_currency=${VS}&days=${BTC_MA_OHLC_DAYS}&interval=daily`;
-      const mc = await fetchJsonRetry(urlMc, {retries:2});
-      if (mc && Array.isArray(mc.prices) && mc.prices.length >= 220){
-        t = mc.prices.map(x=>x[0]);
-        closes = mc.prices.map(x=>x[1]);
-      } else {
-        window.__btcMaCross = null;
-        return;
-      }
-    } else {
-      // [ts, open, high, low, close]
-      t = ohlc.map(r=>r[0]);
-      closes = ohlc.map(r=>r[4]);
-    }
+    const rows = await fetchJsonRetry(url, {retries:2});
+    if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
 
-    // SMA計算（末尾は直近）
+    // close価格（index 4）
+    const closes = rows.map(r => +r[4]).filter(v => isFinite(v) && v > 0);
+    if (closes.length < 210) throw new Error('binance closes invalid');
+
     const sma = (arr, n) => {
-      const out = new Array(arr.length).fill(null);
-      let sum = 0;
-      for (let i=0;i<arr.length;i++){
-        const v = Number(arr[i]);
-        if (!Number.isFinite(v)) continue;
-        sum += v;
-        if (i>=n) sum -= Number(arr[i-n]) || 0;
-        if (i>=n-1) out[i] = sum / n;
-      }
-      return out;
+      const a = arr.slice(-n);
+      const s = a.reduce((x,y)=>x+y,0);
+      return s / n;
     };
 
-    const ma50 = sma(closes, 50);
-    const ma200 = sma(closes, 200);
-    const ma50Last = ma50[ma50.length-1];
-    const ma200Last = ma200[ma200.length-1];
+    const sma50 = sma(closes, 50);
+    const sma200 = sma(closes, 200);
+    const distPct = (sma50 - sma200) / sma200 * 100;
 
-    if (!Number.isFinite(ma50Last) || !Number.isFinite(ma200Last) || ma200Last===0){
-      window.__btcMaCross = null;
-      return;
-    }
-
-    const distPct = (ma50Last/ma200Last - 1) * 100;
-    const side = distPct >= 0 ? 'GC側' : 'DC側';
+    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
+    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
 
     window.__btcMaCross = {
-      distPct,
-      side,
-      ma50Last,
-      ma200Last,
-      series: { t, close: closes, ma50, ma200 }
+      sma50, sma200, distPct,
+      label,
+      updatedAt: Date.now(),
     };
-
-    // ここでの描画は「存在する場合のみ」。描画できなくてもデータは保持する。
-    const c = document.getElementById('btcMaLine');
-    if (c){
-      makeLineChart('btcMaLine', closes, '', {fill:true, xTick:false});
-    }
-  }catch(e){
-    window.__btcMaCross = null;
   }
-}
 
 
 async function loadTrendingTop5(forceNetwork=false){
@@ -2015,12 +1944,6 @@ function getAltVolumeTop5(){
     return s + n.toFixed(2) + '%';
   }
 
-function fmtPctSigned(v){
-  if (typeof v !== 'number' || !isFinite(v)) return '—';
-  const s = (v>0?'+':'') + v.toFixed(2) + '%';
-  return s;
-}
-
 
   // ===== Summary mini visuals (v68) =====
   function updateSummaryRsiBar(val){
@@ -2067,7 +1990,6 @@ function fmtPctSigned(v){
       marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
-
     const v = Math.max(0, Math.min(100, val));
     marker.style.left = v.toFixed(1) + '%';
     marker.style.opacity = '1';
@@ -2076,31 +1998,740 @@ function fmtPctSigned(v){
     else if (v >= 50) marker.style.boxShadow = '0 0 0 3px rgba(148,163,184,0.22)';
     else marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';
   }
+  function updateSummaryDomBar(pcts){
+    const elB = document.getElementById('sumDomSegBtc');
+    const elE = document.getElementById('sumDomSegEth');
+    const elS = document.getElementById('sumDomSegStb');
+    const elO = document.getElementById('sumDomSegOth');
+    if (!elB || !elE || !elS || !elO) return;
 
-  // Mini sentiment bar helper (0-100)
-  function updateMiniSentBar(val, markerId='sumSentMarker'){
-    const el = document.getElementById(markerId);
-    if(!el) return;
-    const v = (typeof val==='number' && isFinite(val)) ? Math.max(0, Math.min(100, val)) : 50;
-    el.style.left = v.toFixed(1) + '%';
-    el.style.opacity = (typeof val==='number' && isFinite(val)) ? '1' : '0.25';
+    const pct = Array.isArray(pcts) ? pcts : [0,0,0,0];
+    const clamp = (v)=> Math.max(0, Math.min(100, Number(v)||0));
+    const b = clamp(pct[0]), e = clamp(pct[1]), s = clamp(pct[2]), o = clamp(pct[3]);
+    const total = b + e + s + o || 1;
+    const nb = b/total*100, ne = e/total*100, ns = s/total*100, no = o/total*100;
+
+    let left = 0;
+    const setSeg = (el, w)=>{
+      el.style.left = `${left}%`;
+      el.style.width = `${Math.max(0, w)}%`;
+      left += w;
+    };
+    setSeg(elB, nb);
+    setSeg(elE, ne);
+    setSeg(elS, ns);
+    setSeg(elO, Math.max(0, 100 - (nb+ne+ns))); // 誤差吸収
   }
 
-  function updateSummaryDomBar(pcts){
-  const sum = pcts.reduce((a,b)=>a+b,0) || 1;
-  const norm = pcts.map(v=>Math.max(0, Number(v)||0)/sum*100);
-  const segs = Array.from(document.querySelectorAll('#sumDomTrack .mini-dom-seg'));
-  if (segs.length >= 4){
-    segs[0].style.flexBasis = `${norm[0]}%`; segs[0].style.width = `${norm[0]}%`;
-    segs[1].style.flexBasis = `${norm[1]}%`; segs[1].style.width = `${norm[1]}%`;
-    segs[2].style.flexBasis = `${norm[2]}%`; segs[2].style.width = `${norm[2]}%`;
-    segs[3].style.flexBasis = `${norm[3]}%`; segs[3].style.width = `${norm[3]}%`;
-  } else {
-    const ids = ['sumDomSegBtc','sumDomSegEth','sumDomSegStbl','sumDomSegOth'];
-    ids.forEach((id, i)=>{
-      const el = document.getElementById(id);
-      if (el) el.style.width = `${norm[i]||0}%`;
+  function updateSummaryAvgSpark(arr){
+    const line = document.getElementById('sumAvgSparkLine');
+    const fill = document.getElementById('sumAvgSparkFill');
+    const zero = document.getElementById('sumAvgSparkZero');
+    if(!line || !fill || !zero) return;
+
+    if(!Array.isArray(arr) || arr.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      zero.style.display = 'none';
+      return;
+    }
+    // use latest 60 points for speed
+    const raw = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    if(raw.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      zero.style.display = 'none';
+      return;
+    }
+    let min = Math.min(...raw);
+    let max = Math.max(...raw);
+    if(min === max){ min -= 1; max += 1; }
+
+    const W = 100, H = 30, pad = 2;
+    const top = pad, bottom = H - pad;
+
+    const pts = raw.map((v,i)=>{
+      const x = (i/(raw.length-1)) * W;
+      const y = bottom - ((v - min)/(max - min)) * (bottom - top);
+      return [x,y];
     });
+
+    const points = pts.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
+    line.setAttribute('points', points);
+
+    const path = `M ${pts[0][0].toFixed(2)} ${bottom.toFixed(2)} L ${pts.map(p=>`${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')} L ${pts[pts.length-1][0].toFixed(2)} ${bottom.toFixed(2)} Z`;
+    fill.setAttribute('d', path);
+
+    const zy = bottom - ((0 - min)/(max - min)) * (bottom - top);
+    if(zy >= top && zy <= bottom){
+      zero.setAttribute('y1', zy.toFixed(2));
+      zero.setAttribute('y2', zy.toFixed(2));
+      zero.style.display = 'block';
+    }else{
+      zero.style.display = 'none';
+    }
+  }
+
+  function updateSummaryMcapSpark(arr){
+    const line = document.getElementById('sumMcapSparkLine');
+    const fill = document.getElementById('sumMcapSparkFill');
+    if(!line || !fill) return;
+
+    if(!Array.isArray(arr) || arr.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      return;
+    }
+    const rawAbs = arr.slice(-60).map(v => +v).filter(v => isFinite(v));
+    const base = (rawAbs.length && isFinite(rawAbs[0]) && rawAbs[0]!==0) ? rawAbs[0] : null;
+    const raw = base ? rawAbs.map(v => (v/base - 1) * 100) : rawAbs;
+    if(raw.length < 2){
+      line.setAttribute('points','');
+      fill.setAttribute('d','');
+      return;
+    }
+    let min = Math.min(...raw);
+    let max = Math.max(...raw);
+    if(min === max){ min -= 0.01; max += 0.01; }
+
+    const W = 100, H = 30, pad = 2;
+    const top = pad, bottom = H - pad;
+
+    const pts = raw.map((v,i)=>{
+      const x = (i/(raw.length-1)) * W;
+      const y = bottom - ((v - min)/(max - min)) * (bottom - top);
+      return [x,y];
+    });
+
+    const points = pts.map(p => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
+    line.setAttribute('points', points);
+
+    const path = `M ${pts[0][0].toFixed(2)} ${bottom.toFixed(2)} L ${pts.map(p=>`${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' L ')} L ${pts[pts.length-1][0].toFixed(2)} ${bottom.toFixed(2)} Z`;
+    fill.setAttribute('d', path);
+  }
+
+
+  function buildOverview(){
+    const arr = marketsTop || [];
+    const n = arr.length;
+    let totalMcap = 0;
+    let totalVol = 0;
+
+    // 24h market cap change (estimate): reverse-calc yesterday's market cap from price change
+    // Assumption: circulating supply is roughly constant over 24h.
+    let prevMcapEst = 0;
+
+    let up = 0, down = 0, flat = 0;
+    let sumChg = 0, chgN = 0;
+    let chgArr = [];
+
+    // Composition (market cap)
+    let btc = 0, eth = 0, stable = 0, other = 0;
+    // Composition (volume)
+    let btcV = 0, ethV = 0, stableV = 0, otherV = 0;
+
+    for (const c of arr){
+      const mc = (typeof c.market_cap === 'number' && isFinite(c.market_cap)) ? c.market_cap : 0;
+      const vol = (typeof c.total_volume === 'number' && isFinite(c.total_volume)) ? c.total_volume : 0;
+      totalMcap += mc;
+      totalVol += vol;
+
+      const chg = c.price_change_percentage_24h;
+      if (typeof chg === 'number' && isFinite(chg)){
+        const denom = 1 + (chg / 100);
+        if (denom > 0 && isFinite(denom)) prevMcapEst += (mc / denom);
+        else prevMcapEst += mc;
+
+        if (chg > 0) up++;
+        else if (chg < 0) down++;
+        else flat++;
+        sumChg += chg;
+        chgN++;
+        chgArr.push(chg);
+      } else {
+        // fallback: if 24h change is missing, keep it neutral (no change)
+        prevMcapEst += mc;
+      }
+
+      if (c.id === 'bitcoin'){ btc += mc; btcV += vol; }
+      else if (c.id === 'ethereum'){ eth += mc; ethV += vol; }
+      else if (STABLE_IDS.has(c.id)){ stable += mc; stableV += vol; }
+      else { other += mc; otherV += vol; }
+    }
+
+    const avgChg = chgN ? (sumChg / chgN) : null;
+
+    let medianChg = null;
+    if (chgArr.length){
+      const s = chgArr.slice().sort((a,b)=>a-b);
+      const mid = Math.floor(s.length / 2);
+      medianChg = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+    }
+
+    const labels = ['BTC','ETH','ステーブル','Others'];
+    const values = [btc, eth, stable, Math.max(0, other)];
+    const volValues = [btcV, ethV, stableV, Math.max(0, otherV)];
+
+    const mcap24hPct = (prevMcapEst > 0) ? ((totalMcap / prevMcapEst) - 1) * 100 : null;
+    const mcap24hDelta = (prevMcapEst > 0) ? (totalMcap - prevMcapEst) : null;
+
+    return { labels, values, volValues, totalMcap, totalVol, up, down, flat, avgChg, medianChg, chgN, n, mcap24hPct, mcap24hDelta };
+  }
+
+  function drawDonut(canvasId, labels, values){
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const total = values.reduce((a,b)=>a+(typeof b==='number'?b:0), 0) || 1;
+    const dataVals = values.map(v => (typeof v==='number' && isFinite(v)) ? v : 0);
+
+    // 見やすい落ち着いた色（サイトの雰囲気に合わせる）
+    const colors = ['rgba(250, 204, 21, 0.85)','rgba(96, 165, 250, 0.85)','rgba(52, 211, 153, 0.85)','rgba(156, 163, 175, 0.55)'];
+
+    charts[canvasId] = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data: dataVals, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#e5e7eb', boxWidth: 10, padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed || 0;
+                const p = (v/total)*100;
+                return ` ${ctx.label}: ${p.toFixed(2)}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function renderOverview(){
+    const msg = document.getElementById('overviewMsg');
+    msg.style.display = 'none';
+
+    // reset mini series cache each run
+    summaryAvgSeries = null;
+
+    if (!marketsTop || !marketsTop.length){
+      msg.className = 'msg err';
+      msg.textContent = '概況データを準備中です。';
+      msg.style.display = 'block';
+      return;
+    }
+
+    const o = buildOverview();
+
+    const wrap = document.getElementById('overviewWrap');
+    const isCollapsed = wrap && wrap.classList.contains('is-collapsed');
+
+    let lastUp = null, lastDown = null;
+    let avg7 = null, med7 = null;
+    let sentScore = null, sentLabel = null;
+    let lastRsiVal = null;
+
+    // Breadth
+    const denom = (o.up + o.down + o.flat) || 1;
+    const upPct = (o.up / denom) * 100;
+    const flatPct = (o.flat / denom) * 100;
+    const downPct = (o.down / denom) * 100;
+
+    const breadthEl = document.getElementById('kpiBreadth');
+    if (breadthEl){
+      breadthEl.textContent = `上昇 ${o.up} / 下落 ${o.down}（上昇率 ${upPct.toFixed(1)}%）`;
+    }
+
+    const breadthSub = document.getElementById('kpiBreadthSub');
+    if (breadthSub){
+      const baseTxt = `対象: 上位250（取得 ${o.n}）のうち、24h騰落率が取得できた ${o.chgN} 銘柄を集計`;
+      const flatTxt = (o.flat > 0) ? `（中立 ${o.flat}）` : '';
+      breadthSub.textContent = `${baseTxt}${flatTxt}`;
+    }
+
+    const barUp = document.getElementById('barUp');
+    const barFlat = document.getElementById('barFlat');
+    const barDown = document.getElementById('barDown');
+    if (barUp) barUp.style.width = `${upPct}%`;
+    if (barFlat) barFlat.style.width = `${flatPct}%`;
+    if (barDown) barDown.style.width = `${downPct}%`;
+
+    // Average change
+    const avgEl = document.getElementById('kpiAvgChange');
+    if (avgEl){
+      avgEl.textContent = `平均 ${fmtPct(o.avgChg)} / 中央値 ${fmtPct(o.medianChg)}`;
+    }
+    const avgFill = document.getElementById('avgFill');
+    if (avgFill){
+      const maxRange = 5; // ±5% を目安に可視化（超過はクリップ）
+      const v = (typeof o.avgChg === 'number' && isFinite(o.avgChg)) ? o.avgChg : 0;
+      const w = Math.min(Math.abs(v), maxRange) / maxRange * 50; // 0..50
+      if (v >= 0){
+        avgFill.className = 'centerfill pos';
+        avgFill.style.left = '50%';
+        avgFill.style.width = `${w}%`;
+      } else {
+        avgFill.className = 'centerfill neg';
+        avgFill.style.left = `${50 - w}%`;
+        avgFill.style.width = `${w}%`;
+      }
+    }
+
+    // Totals
+    document.getElementById('kpiTotalMcap').textContent = yen(o.totalMcap);
+    document.getElementById('kpiTotalVol').textContent = yen(o.totalVol);
+
+    // Market cap 24h change (estimate)
+    const mcap24hEl = document.getElementById('kpiMcap24h');
+    if (mcap24hEl){
+      const pct = fmtPct(o.mcap24hPct);
+      const delta = yenSigned(o.mcap24hDelta);
+      mcap24hEl.textContent = `${pct}（${delta}）`;
+    }
+
+    // Composition bars (market cap)
+    const totalM = (o.values || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
+    const mPct = (o.values || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalM)*100);
+    const setW = (id, w) => { const el = document.getElementById(id); if (el) el.style.width = `${w}%`; };
+    setW('mcapSegBtc', mPct[0] || 0);
+    setW('mcapSegEth', mPct[1] || 0);
+    setW('mcapSegStable', mPct[2] || 0);
+    setW('mcapSegOther', mPct[3] || 0);
+
+    // Composition bars (volume)
+    const totalV = (o.volValues || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
+    const vPct = (o.volValues || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalV)*100);
+    const altRatio = ((((o.volValues || [])[3] || 0) * 1) / totalV) * 100;
+    const elAltRatio = document.getElementById('kpiAltVolRatio');
+    if (elAltRatio) elAltRatio.textContent = `出来高（アルト）比率: ${isFinite(altRatio) ? altRatio.toFixed(1) : '-'}%`;
+    setW('volSegBtc', vPct[0] || 0);
+    setW('volSegEth', vPct[1] || 0);
+    setW('volSegStable', vPct[2] || 0);
+    setW('volSegOther', vPct[3] || 0);
+
+
+
+    // ---- Overview line series (API追加なし: sparkline_in_7d から算出) ----
+    try {
+      const seriesLen = (marketsTop && marketsTop[0] && marketsTop[0].sparkline_in_7d && marketsTop[0].sparkline_in_7d.price) ? marketsTop[0].sparkline_in_7d.price.length : 0;
+      if (seriesLen > 2) {
+        const upArr = new Array(seriesLen).fill(0);
+        const downArr = new Array(seriesLen).fill(0);
+        const flatArr = new Array(seriesLen).fill(0);
+        const avgArr = new Array(seriesLen).fill(0);
+        const mcapArr = new Array(seriesLen).fill(0);
+        const volArr = new Array(seriesLen).fill(0);
+        const cntArr = new Array(seriesLen).fill(0);
+        const lastRets = []; // latest-point 7d returns for median
+
+        for (let i=0;i<marketsTop.length;i++){
+          const c = marketsTop[i];
+          const sp = c && c.sparkline_in_7d && c.sparkline_in_7d.price;
+          if (!sp || sp.length !== seriesLen) continue;
+          const p0 = sp[0];
+          const plast = sp[seriesLen-1];
+          if (!(p0>0) || !(plast>0)) continue;
+          const mcNow = (typeof c.market_cap === 'number' && isFinite(c.market_cap)) ? c.market_cap : 0;
+          const volNow = (typeof c.total_volume === 'number' && isFinite(c.total_volume)) ? c.total_volume : 0;
+
+          // latest 7d return for median (from first available price to latest)
+          const retLast = (plast / p0 - 1) * 100;
+          if (isFinite(retLast)) lastRets.push(retLast);
+          for (let t=0;t<seriesLen;t++){
+            const pt = sp[t];
+            if (!(pt>0)) continue;
+            const ret = (pt/p0 - 1) * 100;
+            if (ret > 0) upArr[t] += 1;
+            else if (ret < 0) downArr[t] += 1;
+            else flatArr[t] += 1;
+            avgArr[t] += ret;
+            cntArr[t] += 1;
+            // 推定: supply一定近似
+            if (mcNow>0) mcapArr[t] += mcNow * (pt/plast);
+            if (volNow>0) volArr[t] += volNow * (pt/plast);
+          }
+        }
+        for (let t=0;t<seriesLen;t++){
+          if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t];
+        }
+        summaryAvgSeries = avgArr.slice();
+        // Labels: just indexes (Chart.js will hide axis anyway)
+        const labels = Array.from({length: seriesLen}, (_,i)=>i);
+
+        // Breadth chart (3 lines)
+        makeLineChart('breadthLine', labels, [
+          {label:'上昇', data: upArr, border:'rgba(30,136,229,0.9)', fill:false},
+          {label:'下落', data: downArr, border:'rgba(211,47,47,0.9)', fill:false},
+          {label:'中立', data: flatArr, border:'rgba(156,163,175,0.7)', fill:false},
+        ], {yBeginAtZero:true});
+
+        // Avg return chart (0 baseline fill)
+        makeBaselineChart('avgLine', labels, avgArr);
+        // KPI表示を「7d推移」ベース（最新点）に合わせる
+        lastUp = upArr[upArr.length - 1];
+        lastDown = downArr[downArr.length - 1];
+        const lastAvg = avgArr[avgArr.length - 1];
+        const kpiB = document.getElementById('kpiBreadth');
+        if (kpiB){
+          const denom = (Number(lastUp)||0) + (Number(lastDown)||0);
+          const upPct = denom ? ((Number(lastUp)||0) / denom) * 100 : 0;
+          kpiB.textContent = `上昇 ${lastUp} / 下落 ${lastDown}（上昇率 ${upPct.toFixed(1)}%）`;
+        }
+        const kpiAvg = document.getElementById('kpiAvgChange');
+        if (kpiAvg){
+          let med = null;
+          if (lastRets.length){
+            const s = lastRets.slice().sort((a,b)=>a-b);
+            const mid = Math.floor(s.length/2);
+            med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+          }
+          kpiAvg.textContent = `平均 ${fmtPct(lastAvg)} / 中央値 ${fmtPct(med)}`;
+        avg7 = lastAvg;
+        med7 = med;
+        }
+
+
+        
+        // BTC RSI (14) from BTC sparkline (7d)
+        try {
+          const btc = marketsTop.find(c => c && c.id === 'bitcoin');
+          const btcPrices = btc && btc.sparkline_in_7d && Array.isArray(btc.sparkline_in_7d.price) ? btc.sparkline_in_7d.price : null;
+          if (btcPrices && btcPrices.length >= 20) {
+            const rsiSeries = computeRSISeries(btcPrices, 14);
+            const last = rsiSeries[rsiSeries.length - 1];
+            lastRsiVal = last;
+            const rsiEl = document.getElementById('kpiRsi');
+            if (rsiEl && last != null && isFinite(last)) {
+              let tag = '中立';
+              if (last >= 70) tag = '買われ過ぎ';
+              else if (last <= 30) tag = '売られ過ぎ';
+              rsiEl.textContent = `RSI ${last.toFixed(1)}（${tag}）`;
+            }
+            // use the same label length as other sparklines
+            const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
+            makeLineChart('rsiLine', rsiLabels, [{
+              label: 'RSI',
+              data: rsiSeries,
+              borderColor: '#a78bfa',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.35,
+              fill: false
+            }], { yMin: 0, yMax: 100 });
+          }
+        } catch(e) { console.warn('RSI failed', e); }
+
+        // CoinRader Sentiment (0-100) — top250ベース
+        try{
+          const denomS = (Number(lastUp)||0) + (Number(lastDown)||0);
+          const upPctS = denomS ? ((Number(lastUp)||0)/denomS)*100 : 0;
+
+          // 24h change median (top250)
+          const pct24 = marketsTop.map(c => (c && typeof c.price_change_percentage_24h === 'number' && isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null)
+                                .filter(v => v != null);
+          let med24 = null;
+          if (pct24.length){
+            const s = pct24.slice().sort((a,b)=>a-b);
+            const mid = Math.floor(s.length/2);
+            med24 = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+          }
+
+          // Total volume change vs previous refresh (localStorage)
+          const volNow = marketsTop.reduce((acc,c)=> acc + (Number.isFinite(c && c.total_volume)? c.total_volume : 0), 0);
+          const keyVol = 'cr_prev_total_vol';
+          const keyVolTs = 'cr_prev_total_vol_ts';
+          const prevVol = Number(localStorage.getItem(keyVol));
+          const prevVolTs = Number(localStorage.getItem(keyVolTs));
+          let volChgPct = null;
+          if (prevVol && isFinite(prevVol) && prevVol > 0 && prevVolTs && (Date.now() - prevVolTs) < (12*60*60*1000)){
+            volChgPct = (volNow/prevVol - 1) * 100;
+          }
+          localStorage.setItem(keyVol, String(volNow));
+          localStorage.setItem(keyVolTs, String(Date.now()));
+
+          // BTC dominance delta (percentage point) vs previous refresh
+          const totalM = (o.values||[]).reduce((a,b)=>a + (Number.isFinite(+b)? +b : 0), 0);
+          const btcM = (o.values && o.values.length) ? (Number.isFinite(+o.values[0]) ? +o.values[0] : 0) : 0;
+          const btcDom = totalM > 0 ? (btcM/totalM) * 100 : null;
+          const keyDom = 'cr_prev_btc_dom';
+          const prevDom = Number(localStorage.getItem(keyDom));
+          let domDelta = null;
+          if (btcDom != null && isFinite(btcDom) && prevDom && isFinite(prevDom)){
+            domDelta = btcDom - prevDom;
+          }
+          if (btcDom != null && isFinite(btcDom)) localStorage.setItem(keyDom, String(btcDom));
+
+          // Normalize helpers
+          const clamp = (x,min,max)=> Math.max(min, Math.min(max, x));
+          const normBreadth = clamp((upPctS - 50) / 50, -1, 1);             // breadth (0-100%)
+          const normMed24   = (med24 == null) ? 0 : clamp(med24 / 10, -1, 1); // median24h (+/-10%)
+          const normVol     = (volChgPct == null) ? 0 : clamp(volChgPct / 20, -1, 1); // volΔ (+/-20%)
+          const normDom     = (domDelta == null) ? 0 : clamp((-domDelta) / 2, -1, 1);  // dom↓ => risk-on
+          const normRsi     = (lastRsiVal == null || !isFinite(lastRsiVal)) ? 0 : clamp((lastRsiVal - 50) / 20, -1, 1);
+
+          const raw = 0.30*normBreadth + 0.25*normMed24 + 0.20*normVol + 0.10*normDom + 0.15*normRsi;
+          const score = clamp(50 + 50*raw, 0, 100);
+
+          const label = (score>=81) ? '極度の強欲' : (score>=61) ? '強欲' : (score>=41) ? '中立' : (score>=21) ? '恐怖' : '極度の恐怖';
+          sentScore = score;
+          sentLabel = label;
+
+          const elS = document.getElementById('kpiSentiment');
+          if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
+
+          // gauge needle + small label
+          updateSentimentGauge(score, label);
+
+          const elM = document.getElementById('kpiSentimentMeta');
+          if (elM){
+            const parts = [];
+            parts.push(`上昇率 ${upPctS.toFixed(1)}%`);
+            if (med24 != null && isFinite(med24)) parts.push(`24h中央値 ${med24.toFixed(2)}%`);
+            if (volChgPct != null && isFinite(volChgPct)) parts.push(`出来高Δ ${volChgPct.toFixed(1)}%`);
+            if (domDelta != null && isFinite(domDelta)) parts.push(`BTC Dom Δ ${domDelta.toFixed(2)}pt`);
+            if (lastRsiVal != null && isFinite(lastRsiVal)) parts.push(`RSI ${lastRsiVal.toFixed(1)}`);
+            elM.textContent = parts.join(' / ');
+          }
+
+          // history sparkline (store last 120 points)
+          const histKey = 'cr_sent_hist';
+          let hist = [];
+          try { hist = JSON.parse(localStorage.getItem(histKey) || '[]'); } catch(_){}
+          if (!Array.isArray(hist)) hist = [];
+          hist.push(Number(score));
+          if (hist.length > 120) hist = hist.slice(-120);
+          localStorage.setItem(histKey, JSON.stringify(hist));
+
+          const labS = hist.map((_,i)=>i);
+          if (charts['sentLine']) { try { charts['sentLine'].destroy(); } catch(_){} }
+          makeLineChart('sentLine', labS, [{label:'Sent', data: hist, border:'rgba(96,165,250,0.9)'}], {yMin:0, yMax:100});
+        }catch(e){ console.warn('sentiment failed', e); }
+
+        // Market cap estimate (normalize to last for readability)
+        makeNormalizedLine('mcapLine', labels, mcapArr);
+
+        // Market cap last-24h spark (use tail of 7d sparkline)
+        try {
+          const win = Math.min(24, mcapArr.length);
+          if (win >= 3) {
+            makeNormalizedLine('mcap24hLine', labels.slice(-win), mcapArr.slice(-win));
+          }
+        } catch(_){}
+
+        // Volume estimate (normalize)
+        makeNormalizedLine('volLine', labels, volArr);
+      }
+    } catch(e) { console.warn('overview series failed', e); }
+
+    drawDonut('domChart', o.labels, o.values);
+    // Dominance text (BTC/ETH/ステーブル/Others)
+    try{
+      const domEl = document.getElementById('domMetrics');
+      if(domEl){
+        const total = (o.values||[]).reduce((a,b)=>a + (Number.isFinite(+b)? +b : 0), 0);
+        if(total > 0){
+          domEl.textContent = (o.labels||[]).map((lab,i)=>{
+            const v = Number.isFinite(+o.values[i]) ? +o.values[i] : 0;
+            return `${lab} ${(v/total*100).toFixed(1)}%`;
+          }).join(' / ');
+        }else{
+          domEl.textContent = '-';
+        }
+      }
+    }catch(_){}
+
+    // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
+
+    // --- KPI strip (collapsed view) ---
+    (function updateOverviewStrip(){
+      const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
+      // 時価総額
+      set('kpiStripMcapMain', formatJPY(o.totalMcap));
+      const mcapPct = (o.mcap24hPct==null) ? null : ((o.mcap24hPct>=0?'+':'') + o.mcap24hPct.toFixed(2) + '%');
+      const mcapAbs = (o.mcap24hDelta==null) ? null : formatJPY(o.mcap24hDelta);
+      set('kpiStripMcapSub', (mcapPct && mcapAbs) ? `24h ${mcapPct} (${mcapAbs})` : (mcapPct||mcapAbs));
+
+      // Dominance
+      const domBTC = (o.values && o.values.length) ? (o.values[0]/o.totalMcap*100) : null;
+      const domETH = (o.values && o.values.length>1) ? (o.values[1]/o.totalMcap*100) : null;
+      const domSTB = (o.values && o.values.length>2) ? (o.values[2]/o.totalMcap*100) : null;
+      const domOTH = (o.values && o.values.length>3) ? (o.values[3]/o.totalMcap*100) : null;
+      set('kpiStripDomMain', domBTC==null ? null : `BTC ${domBTC.toFixed(1)}%`);
+      const domSubParts = [];
+      if(domETH!=null) domSubParts.push(`ETH ${domETH.toFixed(1)}%`);
+      if(domSTB!=null) domSubParts.push(`ステーブル ${domSTB.toFixed(1)}%`);
+      if(domOTH!=null) domSubParts.push(`Others ${domOTH.toFixed(1)}%`);
+      set('kpiStripDomSub', domSubParts.length? domSubParts.join(' / ') : null);
+
+      // Breadth
+      set('kpiStripBreadthMain', (lastUp!=null && lastDown!=null) ? `上昇 ${lastUp} / 下落 ${lastDown}` : null);
+      const upRate = (lastUp!=null && lastDown!=null && (lastUp+lastDown)>0) ? (lastUp/(lastUp+lastDown)*100) : null;
+      set('kpiStripBreadthSub', upRate==null ? null : `上昇率 ${upRate.toFixed(1)}%`);
+
+      // Avg/Median 7d
+      set('kpiStripAvgMain', avg7==null ? null : `平均 ${avg7.toFixed(2)}%`);
+      set('kpiStripAvgSub',  med7==null ? null : `中央値 ${med7.toFixed(2)}%`);
+
+      // RSI
+      const rsiMain = (typeof lastRsiVal==='number' && isFinite(lastRsiVal)) ? lastRsiVal.toFixed(1) : null;
+      set('kpiStripRsiMain', rsiMain);
+      // rsi label is already rendered in the full view; keep strip short
+      set('kpiStripRsiSub', rsiMain==null ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立')));
+
+      // Sentiment
+      set('kpiStripSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
+      set('kpiStripSentSub', sentLabel);
+
+      // --- Summary (top) KPI tiles ---
+      const setSum = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
+
+      // Sentiment
+      setSum('sumSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
+      setSum('sumSentSub', sentLabel);
+
+      // RSI
+      const rsiTag = (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立'));
+      setSum('sumRsiMain', (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : String(Math.round(lastRsiVal)));
+      setSum('sumRsiSub', rsiTag);
+
+      // Dominance (BTC)
+      const totalMc = (o && typeof o.totalMcap==='number' && isFinite(o.totalMcap) && o.totalMcap>0) ? o.totalMcap : null;
+      const v0 = (o && o.values && o.values.length>0 && isFinite(o.values[0])) ? o.values[0] : null; // BTC cap
+      const v1 = (o && o.values && o.values.length>1 && isFinite(o.values[1])) ? o.values[1] : null; // ETH cap
+      const v2 = (o && o.values && o.values.length>2 && isFinite(o.values[2])) ? o.values[2] : null; // stable cap
+      const domB = (totalMc && v0!=null) ? (v0/totalMc*100) : null;
+      const domE = (totalMc && v1!=null) ? (v1/totalMc*100) : null;
+      const domS = (totalMc && v2!=null) ? (v2/totalMc*100) : null;
+      setSum('sumDomMain', (domB==null) ? null : ('BTC ' + domB.toFixed(1) + '%'));
+      const domSub = (domE==null && domS==null) ? null : ((domE==null?'':('ETH ' + domE.toFixed(1) + '%')) + (domE!=null && domS!=null ? ' / ' : '') + (domS==null?'':('Stbl ' + domS.toFixed(1) + '%')));
+      setSum('sumDomSub', domSub);
+
+      // Avg 24h (Top250)
+      const avg24 = (o && typeof o.avgChg==='number' && isFinite(o.avgChg)) ? o.avgChg : null;
+      const med24 = (o && typeof o.medianChg==='number' && isFinite(o.medianChg)) ? o.medianChg : null;
+      const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
+      setSum('sumAvg24Main', fmt2(avg24));
+      setSum('sumAvg24Sub', (med24==null) ? null : ('中央値 ' + fmt2(med24)));
+
+      // BTC MA cross distance (SMA50 / SMA200)
+    const ma = window.__btcMaCross || null;
+    if (ma && Number.isFinite(ma.distPct)) {
+      const d = ma.distPct;
+      const label = ma.label || (d > 0 ? 'GC側' : d < 0 ? 'DC側' : '中立');
+      setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
+      setSum('sumMaSub', label);
+      updateSummaryMaBar(d);
+    } else {
+      setSum('sumMaMain', '—');
+      setSum('sumMaSub', '—');
+      updateSummaryMaBar(null);
+    }
+
+    // Mini visuals
+    updateSummarySentBar(sentScore);
+    updateSummaryRsiBar(lastRsiVal);
+    updateSummaryDomBar([domBTC, domETH, domSTB, domOTH]);
+    updateSummaryAvgSpark(summaryAvgSeries);
+
+    })();
+
+    // 折りたたみ時はKPI stripだけ更新して終了（チャートの幅0問題を避ける）
+    if (isCollapsed) return;
+    setTimeout(() => {
+      ['breadthLine','avgLine','rsiLine','sentLine','mcapLine','mcap24hLine','volLine'].forEach(id => {
+        try { if (charts[id] && typeof charts[id].resize === 'function') charts[id].resize(); } catch(_){}
+      });
+    }, 0);
+
+  }
+
+// ============ Charts / Rendering ============
+  const charts = {};
+  const __sparklineAttempts = new Map(); // canvasId -> attempts
+
+  function clearCharts(){
+    Object.values(charts).forEach(c => { try{ c.destroy(); }catch(e){} });
+    Object.keys(charts).forEach(k => delete charts[k]);
+  }
+
+function drawSparkline(canvasId, data){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+
+  // If the canvas isn't laid out yet (size 0), retry a few times.
+  const w = canvas.clientWidth || canvas.width;
+  const h = canvas.clientHeight || canvas.height;
+  if(!w || !h){
+    const n = (__sparklineAttempts.get(canvasId) || 0) + 1;
+    if(n <= 8){
+      __sparklineAttempts.set(canvasId, n);
+      requestAnimationFrame(() => drawSparkline(canvasId, data));
+    }
+    return;
+  }
+  __sparklineAttempts.delete(canvasId);
+
+  const raw = Array.isArray(data) ? data : [];
+  const cleaned = raw.map(v => (typeof v === "number" && Number.isFinite(v)) ? v : null);
+  const finite = cleaned.filter(v => v !== null);
+
+  const ctx = canvas.getContext("2d");
+  if(finite.length < 2){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  const base = finite[0];                 // ← ベースライン（最初の値）
+  const enableFill = finite.length >= 10; // 少なすぎる時は塗らない
+
+  try{
+    if(charts[canvasId]) charts[canvasId].destroy();
+
+    charts[canvasId] = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: cleaned.map((_, i) => i),
+        datasets: [{
+          data: cleaned,
+          borderColor: "rgba(255,255,255,0.85)",
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.25,
+
+          // ★ここがポイント：ベースライン(base)より上/下で塗り分け
+          fill: enableFill ? {
+            target: { value: base },
+            above: "rgba(30,136,229,0.22)", // 青
+            below: "rgba(211,47,47,0.22)"   // 赤
+          } : false,
+
+          // fill の above/below を使うので、dataset の backgroundColor は透明でOK
+          backgroundColor: "rgba(0,0,0,0)",
+          spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: { legend: { display:false }, tooltip: { enabled:false } },
+        scales: { x: { display:false }, y: { display:false } }
+      }
+    });
+  }catch(err){
+    console.warn("sparkline render failed:", canvasId, err);
+    try{ if(charts[canvasId]) charts[canvasId].destroy(); }catch{}
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 }
 
@@ -2211,34 +2842,6 @@ function makeLineChart(canvasId, labels, series, opts){
 
     // Prevent "Canvas is already in use" on refresh/re-render
     try { if (charts[canvasId]) charts[canvasId].destroy(); } catch(_){}
-
-function makeMultiLineChart(canvasId, seriesList){
-  const c = document.getElementById(canvasId);
-  if (!c) return;
-  const ctx = c.getContext('2d');
-  if (c._chart) { try{ c._chart.destroy(); }catch(e){} }
-  const n = Math.max(...seriesList.map(s => (s.data||[]).length), 0);
-  const labels = Array.from({length:n}, (_,i)=>i+1);
-  c._chart = new Chart(ctx, {
-    type:'line',
-    data:{
-      labels,
-      datasets: seriesList.map(s => ({
-        label: s.label || '',
-        data: s.data || [],
-        borderWidth: s.borderWidth ?? 1.5,
-        tension: 0.25,
-        pointRadius: 0
-      }))
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{legend:{display:false}, tooltip:{enabled:false}},
-      scales:{x:{display:false}, y:{display:false}}
-    }
-  });
-}
     try {
       if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
         const existing = Chart.getChart(canvas);
@@ -2770,19 +3373,7 @@ function renderAll(){
       await loadMarketsTop250(fromManualRefresh);
 
       // 追加KPI: BTC MAクロス距離
-      try{ await loadBtcMaCross();
-
-      // BTC移動平均（MA50/MA200）チャート描画（市場概要）
-      try {
-        const s = window.__btcMaCross && window.__btcMaCross.series;
-        if (s && Array.isArray(s.close) && s.close.length) {
-          makeMultiLineChart('btcMaLine', [
-            { label: 'BTC', data: s.close },
-            { label: 'MA50', data: s.ma50 },
-            { label: 'MA200', data: s.ma200 },
-          ]);
-        }
-      } catch (e) {} }catch(e){ window.__btcMaCross = null; }
+      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
