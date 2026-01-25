@@ -3,7 +3,7 @@ name: Daily Share Page
 on:
   schedule:
     # 09:00 JST = 00:00 UTC
-    - cron: "0 0 * * *"
+    - cron: "0,10,20 0 * * *"
   workflow_dispatch:
 
 jobs:
