@@ -1610,9 +1610,87 @@ const EXCLUDE_MCAP_IDS = new Set([
   window.__btcMaCross = null;
 
   async function loadBtcMaCross(){
-    // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
-    // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
-    // ※価格通貨はUSDTだが、MA距離(%)は通貨に依存しないため問題なし。
+    // 「追加APIなし」でブラウザから取得できるデータで 50/200MA を推定します。
+    // まず CoinGecko の market_chart(日足) を試し、失敗した場合のみ Binance の日足OHLCへフォールバックします。
+    // ※価格通貨はUSD/USDTでも、MA距離(%)は通貨に依存しないため問題なし。
+
+    function compute(ts, closeAll){
+      if (!Array.isArray(ts) || !Array.isArray(closeAll) || closeAll.length < 210) throw new Error('ma source too short');
+      if (closeAll.some(v => !isFinite(v) || v <= 0)) throw new Error('ma source invalid');
+
+      const smaLast = (arr, n) => {
+        const a = arr.slice(-n);
+        const s = a.reduce((x,y)=>x+y,0);
+        return s / n;
+      };
+
+      const sma50 = smaLast(closeAll, 50);
+      const sma200 = smaLast(closeAll, 200);
+      const distPct = (sma50 - sma200) / sma200 * 100;
+
+      const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
+      const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
+
+      const smaSeries = (arr, n) => {
+        const out = new Array(arr.length).fill(null);
+        let sum = 0;
+        for (let i=0;i<arr.length;i++){
+          sum += arr[i];
+          if (i >= n) sum -= arr[i-n];
+          if (i >= n-1) out[i] = sum / n;
+        }
+        return out;
+      };
+      const ma50Series = smaSeries(closeAll, 50);
+      const ma200Series = smaSeries(closeAll, 200);
+
+      const minIdx = 199; // 0-basedで200本目
+      const keepN = 220;
+      const start = Math.max(minIdx, closeAll.length - keepN);
+
+      const labels = ts.slice(start).map(t => {
+        const d = new Date(t);
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const dd = String(d.getDate()).padStart(2,'0');
+        return `${mm}/${dd}`;
+      });
+
+      window.__btcMaCross = {
+        sma50, sma200, distPct,
+        label,
+        lastClose: closeAll[closeAll.length-1],
+        updatedAt: Date.now(),
+      };
+
+      window.__btcMaCrossSeries = {
+        labels,
+        close: closeAll.slice(start),
+        ma50: ma50Series.slice(start),
+        ma200: ma200Series.slice(start),
+        updatedAt: Date.now(),
+      };
+    }
+
+    // 1) CoinGecko（日足）
+    try{
+      const cgUrl = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart'
+        + '?vs_currency=usd'
+        + '&days=370'
+        + '&interval=daily';
+      const cg = await fetchJsonRetry(cgUrl, {retries:2});
+      const prices = cg && cg.prices;
+      if (Array.isArray(prices) && prices.length >= 210){
+        const ts = prices.map(p => +p[0]);
+        const closeAll = prices.map(p => +p[1]);
+        compute(ts, closeAll);
+        return;
+      }
+      throw new Error('coingecko prices too short');
+    }catch(e){
+      console.warn('[btc ma] coingecko failed', e);
+    }
+
+    // 2) Binance（日足OHLC）フォールバック
     const url = 'https://api.binance.com/api/v3/klines'
       + '?symbol=BTCUSDT'
       + '&interval=1d'
@@ -1623,61 +1701,7 @@ const EXCLUDE_MCAP_IDS = new Set([
 
     const ts = rows.map(r => +r[0]);
     const closeAll = rows.map(r => +r[4]);
-    if (closeAll.some(v => !isFinite(v) || v <= 0)) throw new Error('binance closes invalid');
-
-    // 直近のMA距離（%）
-    const smaLast = (arr, n) => {
-      const a = arr.slice(-n);
-      const s = a.reduce((x,y)=>x+y,0);
-      return s / n;
-    };
-    const sma50 = smaLast(closeAll, 50);
-    const sma200 = smaLast(closeAll, 200);
-    const distPct = (sma50 - sma200) / sma200 * 100;
-
-    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
-    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
-
-    // チャート用にSMA系列も保持（市場概況で表示）
-    const smaSeries = (arr, n) => {
-      const out = new Array(arr.length).fill(null);
-      let sum = 0;
-      for (let i=0;i<arr.length;i++){
-        sum += arr[i];
-        if (i >= n) sum -= arr[i-n];
-        if (i >= n-1) out[i] = sum / n;
-      }
-      return out;
-    };
-    const ma50Series = smaSeries(closeAll, 50);
-    const ma200Series = smaSeries(closeAll, 200);
-
-    // 200MAが出ている範囲で、直近だけ表示（重くならない程度）
-    const minIdx = 199; // 0-basedで200本目
-    const keepN = 220;
-    const start = Math.max(minIdx, closeAll.length - keepN);
-
-    const labels = ts.slice(start).map(t => {
-      const d = new Date(t);
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const dd = String(d.getDate()).padStart(2,'0');
-      return `${mm}/${dd}`;
-    });
-
-    window.__btcMaCross = {
-      sma50, sma200, distPct,
-      label,
-      lastClose: closeAll[closeAll.length-1],
-      updatedAt: Date.now(),
-    };
-
-    window.__btcMaCrossSeries = {
-      labels,
-      close: closeAll.slice(start),
-      ma50: ma50Series.slice(start),
-      ma200: ma200Series.slice(start),
-      updatedAt: Date.now(),
-    };
+    compute(ts, closeAll);
   }
 
 
@@ -3771,7 +3795,7 @@ function renderAll(){
       await loadMarketsTop250(fromManualRefresh);
 
       // 追加KPI: BTC MAクロス距離
-      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
+      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; window.__btcMaCrossSeries = null; }
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
