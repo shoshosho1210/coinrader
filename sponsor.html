@@ -1,228 +1,272 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>スポンサー募集 | CoinRader</title>
-  <meta name="description" content="CoinRaderのスポンサー（広告/PR枠）のご案内。掲載枠・料金・お申し込み方法。" />
+  <title>スポンサー募集（広告/PR） - CoinRader</title>
+
+  <!-- Icons -->
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- SEO -->
+  <meta name="description" content="CoinRaderのスポンサー（広告/PR枠）のご案内。掲載枠・料金目安・お申し込み方法。" />
+  <link rel="canonical" href="https://coinrader.net/sponsor">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="CoinRader">
+  <meta property="og:title" content="スポンサー募集（広告/PR） | CoinRader">
+  <meta property="og:description" content="CoinRaderのスポンサー（広告/PR枠）のご案内。掲載枠・料金目安・お申し込み方法。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://coinrader.net/sponsor">
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp.png">
+
+  <!-- X (Twitter) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="スポンサー募集（広告/PR） | CoinRader">
+  <meta name="twitter:description" content="CoinRaderのスポンサー（広告/PR枠）のご案内。掲載枠・料金目安・お申し込み方法。">
+  <meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
+
+  <link rel="stylesheet" href="/_page_style.css" />
+
   <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#0f172a;
-      --text:#e5e7eb;
-      --muted:rgba(229,231,235,.72);
-      --muter:rgba(229,231,235,.52);
-      --line:rgba(148,163,184,.22);
-      --accent:#38bdf8;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,.18), transparent 60%),
-                  radial-gradient(1000px 600px at 110% 10%, rgba(52,211,153,.12), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      line-height:1.6;
-    }
-    a{color:var(--accent); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .wrap{max-width:980px; margin:0 auto; padding:28px 16px 64px}
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; margin-bottom:18px;
-    }
-    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px;}
-    .badge{
-      font-size:12px; padding:4px 10px; border:1px solid var(--line);
-      border-radius:999px; color:var(--muted);
-      background:rgba(15,23,42,.55);
-    }
-    .hero{
-      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.62));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:22px 18px;
-      box-shadow: var(--shadow);
-      margin-bottom:16px;
-    }
-    .hero h1{margin:0 0 6px; font-size:26px}
-    .hero p{margin:0; color:var(--muted)}
-    .grid{display:grid; grid-template-columns:1fr; gap:12px}
-    @media (min-width:900px){ .grid{grid-template-columns:1.1fr .9fr} }
-    .card{
-      background:rgba(15,23,42,.78);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding:16px 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.22);
-    }
-    h2{margin:0 0 10px; font-size:18px}
-    h3{margin:14px 0 8px; font-size:15px}
-    .muted{color:var(--muted)}
-    .small{font-size:13px; color:var(--muted)}
-    .list{margin:8px 0 0; padding-left:18px; color:var(--muted)}
-    .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    /* Brand logo (match index/start) */
+    .brandLink{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+    .brandLogo{ height:28px; width:auto; display:block; }
+
+    /* Ensure this page card is centered like other pages */
+    .card{ max-width: 960px; margin: 0 auto; }
+
+    .lead{ color:#cbd5e1; line-height:1.7; margin: 8px 0 16px; }
+
+    .sec{ margin-top: 16px; }
+    .sec h2{ margin: 0 0 8px; font-size: 16px; }
+    .sec h3{ margin: 14px 0 8px; font-size: 14px; color:#e5e7eb; }
+
+    .list{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.7; }
+    .note{ margin-top: 10px; padding: 10px 12px; border-radius: 12px;
+           background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
+           color:#cbd5e1; font-size:12px; line-height:1.7; }
+
+    .pillRow{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .pill{
-      font-size:12px; padding:5px 10px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(2,6,23,.35);
-      color:var(--muted);
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.03);
+      color:#cbd5e1;
     }
-    .table{
-      width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px;
-      border:1px solid var(--line); margin-top:10px;
+
+    /* Table (match dashboard tone) */
+    .tbl{ width:100%; border-collapse:separate; border-spacing:0; margin-top:10px;
+          border:1px solid rgba(255,255,255,.10); border-radius:12px; overflow:hidden; }
+    .tbl th, .tbl td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      vertical-align:top;
+      color:#cbd5e1;
+      font-size:13px;
     }
-    .table th,.table td{
-      padding:10px 10px; border-bottom:1px solid var(--line);
-      vertical-align:top; font-size:13px;
-    }
-    .table th{background:rgba(2,6,23,.35); color:var(--text); text-align:left}
-    .table tr:last-child td{border-bottom:none}
-    .price{font-weight:800; color:var(--text)}
-    .cta{display:flex; flex-direction:column; gap:10px; margin-top:12px;}
+    .tbl th{ color:#e5e7eb; background:rgba(255,255,255,.03); text-align:left; }
+    .tbl tr:last-child td{ border-bottom:none; }
+    .price{ color:#e5e7eb; font-weight:700; white-space:nowrap; }
+
+    /* CTA buttons (similar to headerCta) */
+    .ctaRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     .btn{
       display:inline-flex; align-items:center; justify-content:center;
-      padding:11px 14px; border-radius:12px;
-      border:1px solid rgba(56,189,248,.35);
-      background:rgba(56,189,248,.12);
-      color:var(--text); font-weight:700;
-      text-decoration:none;
+      padding:8px 12px; border-radius:10px;
+      text-decoration:none; font-size:13px; font-weight:700;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      color:#cbd5e1;
     }
-    .btn:hover{background:rgba(56,189,248,.18)}
-    .btn.secondary{border:1px solid var(--line); background:rgba(2,6,23,.28);}
-    .note{
-      border-left:3px solid rgba(251,191,36,.6);
-      padding:10px 12px;
-      background:rgba(251,191,36,.06);
-      border-radius:12px;
-      color:var(--muted);
-      font-size:13px;
-      margin-top:10px;
+    .btn:hover{ filter:brightness(1.15); }
+    .btn.primary{
+      color:#0b1220;
+      background:linear-gradient(180deg,#60a5fa,#3b82f6);
+      border:1px solid rgba(59,130,246,.45);
     }
-    .footer{margin-top:18px; color:var(--muter); font-size:12px}
-    code{background:rgba(2,6,23,.35); padding:2px 6px; border-radius:8px; border:1px solid var(--line)}
+    .btn.primary:hover{ filter:brightness(1.05); }
+
+    /* Header (compact, dashboard-like) */
+    .pageHeader{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:10px 12px; margin:0 0 14px 0;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+    }
+    .pageHeader-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .headerLink{
+      color:#cbd5e1; text-decoration:none; font-size:13px;
+      padding:8px 10px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+    }
+    .headerLink:hover{ filter:brightness(1.15); }
+    .headerCta{
+      color:#0b1220; text-decoration:none; font-size:13px; font-weight:700;
+      padding:8px 12px; border-radius:10px;
+      background:linear-gradient(180deg,#60a5fa,#3b82f6);
+      border:1px solid rgba(59,130,246,.45);
+    }
+    .headerCta:hover{ filter:brightness(1.05); }
+    @media (max-width: 520px){
+      .pageHeader{ align-items:flex-start; }
+      .pageHeader-right{ width:100%; justify-content:flex-start; }
+    }
   </style>
 </head>
-<body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <span>CoinRader</span>
-        <span class="badge">広告・スポンサー募集</span>
-      </div>
-      <a class="badge" href="/">トップへ</a>
-    </div>
 
-    <section class="hero">
+<body>
+  <div class="container">
+    <header class="pageHeader" role="banner">
+      <a class="brandLink" href="/" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
+      </a>
+      <div class="pageHeader-right">
+        <a class="headerLink" href="/" data-ga="nav_dashboard" data-placement="sponsor_header" data-partner="" data-pr="0">ダッシュボード</a>
+        <a class="headerCta" href="/start" data-ga="nav_start" data-placement="sponsor_header" data-partner="" data-pr="0">始め方</a>
+      </div>
+    </header>
+
+    <div class="card">
       <h1>スポンサー募集（広告/PR枠）</h1>
-      <p>CoinRaderは、暗号資産の <b>トレンド / 上昇率 / 出来高</b> を毎日まとめて届けるダッシュボードです。サイト内表示枠・X投稿枠のスポンサーを募集しています。</p>
-      <div class="pillrow">
+      <p class="lead">CoinRaderは、暗号資産の <b>トレンド / 上昇率 / 出来高</b> を毎日わかりやすく届けるダッシュボードです。サイト内表示枠・X投稿枠のスポンサー（広告/PR）を募集しています。</p>
+
+      <div class="pillRow">
         <span class="pill">掲載は「広告/PR」表記</span>
-        <span class="pill">月額 / 2週間お試し対応</span>
+        <span class="pill">月額 / 2週間お試し可</span>
         <span class="pill">クリック計測（GA4）</span>
       </div>
-    </section>
 
-    <div class="grid">
-      <section class="card">
-        <h2>媒体概要</h2>
-        <p class="muted">CoinRader（coinrader.net）は、暗号資産のマーケット情報を見やすく整理して提供します。毎朝の「今日の注目」投稿（X）と連動し、サイト・シェアページへ誘導します。</p>
-
-        <h3>主な掲載面</h3>
+      <div class="sec">
+        <h2>掲載面</h2>
         <ul class="list">
-          <li><b>サイト上部枠</b>（トップ/ダッシュボード）</li>
-          <li><b>シェアページ</b>（/share/YYYYMMDD.html：Xのカードプレビュー用）</li>
+          <li><b>サイト上部</b>（トップ/ダッシュボード）</li>
+          <li><b>シェアページ</b>（<code>/share/YYYYMMDD.html</code>：Xカードプレビュー用）</li>
           <li><b>X投稿</b>（毎日の「今日の注目」投稿末尾）</li>
         </ul>
+      </div>
 
-        <h3>計測</h3>
-        <ul class="list">
-          <li>スポンサーリンクのクリックをイベント計測（例：<code>sponsor_click</code>）。</li>
-          <li>月次で簡易レポート（表示回数/クリック数の目安）を共有可能。</li>
-        </ul>
-
-        <div class="note">
-          金融・暗号資産領域のため、誇大・断定表現（「必ず儲かる」等）や違法性が疑われる内容は掲載できません。掲載内容は事前確認のうえ決定します。
-        </div>
-      </section>
-
-      <aside class="card">
+      <div class="sec">
         <h2>プラン（例）</h2>
-        <p class="small">※価格は目安です。PV/配信回数/掲載内容に応じて調整します。</p>
+        <div class="note">※価格は目安です。PV/配信回数/掲載内容に応じて調整します。</div>
 
-        <table class="table">
-          <tr>
-            <th>プラン</th>
-            <th>掲載内容</th>
-            <th>料金</th>
-          </tr>
-          <tr>
-            <td><b>ライト</b></td>
-            <td class="muted">サイト枠（1枠）<br><span class="small">ロゴ/テキスト＋リンク</span></td>
-            <td class="price">¥10,000〜/月</td>
-          </tr>
-          <tr>
-            <td><b>スタンダード</b></td>
-            <td class="muted">サイト枠＋シェアページ枠<br><span class="small">Xカード閲覧導線に露出</span></td>
-            <td class="price">¥30,000〜/月</td>
-          </tr>
-          <tr>
-            <td><b>プレミアム</b></td>
-            <td class="muted">サイト枠＋シェア枠＋X投稿枠<br><span class="small">回数（毎日/週3等）で調整</span></td>
-            <td class="price">¥80,000〜/月</td>
-          </tr>
+        <table class="tbl" aria-label="スポンサー料金プラン">
+          <thead>
+            <tr>
+              <th style="width:22%;">プラン</th>
+              <th>掲載内容</th>
+              <th style="width:18%;">料金</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>ライト</b></td>
+              <td>サイト枠（1枠）<br><span style="opacity:.85;">ロゴ/テキスト＋リンク</span></td>
+              <td class="price">¥10,000〜/月</td>
+            </tr>
+            <tr>
+              <td><b>スタンダード</b></td>
+              <td>サイト枠＋シェアページ枠<br><span style="opacity:.85;">Xカード閲覧導線に露出</span></td>
+              <td class="price">¥30,000〜/月</td>
+            </tr>
+            <tr>
+              <td><b>プレミアム</b></td>
+              <td>サイト枠＋シェア枠＋X投稿枠<br><span style="opacity:.85;">回数（毎日/週3等）で調整</span></td>
+              <td class="price">¥80,000〜/月</td>
+            </tr>
+          </tbody>
         </table>
 
-        <h3>お試し</h3>
-        <p class="muted">初回は <b>2週間</b> のお試し掲載（割引/短期）も可能です。</p>
+        <div class="sec">
+          <h3>お試し</h3>
+          <ul class="list">
+            <li>初回は <b>2週間</b> のお試し掲載（割引/短期）も可能です。</li>
+          </ul>
+        </div>
+      </div>
 
-        <div class="cta">
-          <!-- TODO: ここをGoogleフォームURLに差し替え -->
-          <a class="btn" href="https://forms.gle/" target="_blank" rel="noopener">スポンサー申込フォーム（Googleフォーム）</a>
+      <div class="sec">
+        <h2>お申し込み</h2>
+        <p class="lead" style="margin-top:8px;">下記のいずれかからご連絡ください（フォーム推奨）。</p>
 
-          <!-- TODO: ここをあなたの連絡先メールに差し替え（今はダミー） -->
-          <a class="btn secondary" href="mailto:contact@coinrader.net?subject=CoinRader%20%E3%82%B9%E3%83%9D%E3%83%B3%E3%82%B5%E3%83%BC%E7%9B%B8%E8%AB%87">メールで相談（contact@coinrader.net）</a>
+        <div class="ctaRow">
+          <!-- TODO: GoogleフォームURLに差し替え -->
+          <a class="btn primary" href="https://forms.gle/" target="_blank" rel="noopener"
+             data-ga="sponsor_apply_form" data-placement="sponsor_apply" data-partner="" data-pr="0">
+             申込フォーム（Googleフォーム）
+          </a>
+
+          <!-- TODO: 連絡先メールに差し替え -->
+          <a class="btn" href="mailto:contact@coinrader.net?subject=CoinRader%20%E3%82%B9%E3%83%9D%E3%83%B3%E3%82%B5%E3%83%BC%E7%9B%B8%E8%AB%87"
+             data-ga="sponsor_apply_mail" data-placement="sponsor_apply" data-partner="" data-pr="0">
+             メールで相談（contact@coinrader.net）
+          </a>
         </div>
 
-        <p class="footer">フォーム/メールは仮です。あなたの運用に合わせて差し替えてください。</p>
-      </aside>
+        <div class="note">
+          ご連絡の際は、<b>①サービス/企業名</b>、<b>②掲載したい内容</b>、<b>③希望プラン/期間</b>、<b>④リンク先URL</b>、<b>⑤素材（ロゴ等）</b>をご共有ください。
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>掲載ガイドライン</h2>
+        <ul class="list">
+          <li>掲載枠は <b>「広告」「PR」</b> と明確に表記します。</li>
+          <li>誇大・断定表現（例：「必ず儲かる」等）や、違法性/不当表示の疑いがある内容は掲載できません。</li>
+          <li>リンク先は、フィッシング/マルウェア等の危険がないことを確認します。</li>
+        </ul>
+        <div class="note">※暗号資産・金融領域のため、掲載内容は事前確認のうえ決定します。</div>
+      </div>
+
+      <div class="sec">
+        <h2>素材（推奨）</h2>
+        <ul class="list">
+          <li>ロゴ：PNG（透過）またはSVG（推奨）</li>
+          <li>PR文：全角50〜80文字（短いほどクリック率が上がりやすいです）</li>
+          <li>リンク：1つ（UTM付与も可）</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <h2>掲載までの流れ</h2>
+        <ol class="list">
+          <li>フォームまたはメールでお問い合わせ</li>
+          <li>掲載内容の確認（表記・リンク先・素材）</li>
+          <li>掲載開始日を確定 → 掲載開始</li>
+          <li>月次で簡易レポート共有（希望者のみ）</li>
+        </ol>
+      </div>
     </div>
 
-    <section class="card" style="margin-top:12px">
-      <h2>掲載仕様</h2>
-
-      <h3>推奨素材</h3>
-      <ul class="list">
-        <li>ロゴ：PNG（透過）またはSVG（推奨）</li>
-        <li>リンク先URL：1つ（UTM付与も可）</li>
-        <li>PR文：全角50〜80文字（短いほどクリック率が上がりやすいです）</li>
-      </ul>
-
-      <h3>表記</h3>
-      <ul class="list">
-        <li>掲載枠は <b>「広告」「PR」</b> と明確に表記します。</li>
-        <li>金融商品に関する断定表現は避け、必要に応じて注意書きを添えます。</li>
-      </ul>
-
-      <h3>掲載までの流れ</h3>
-      <ol class="list">
-        <li>フォームまたはメールでお問い合わせ</li>
-        <li>掲載内容の確認（表記・リンク先・素材）</li>
-        <li>掲載開始日を確定 → 掲載開始</li>
-        <li>月次で簡易レポート共有（希望者のみ）</li>
-      </ol>
-
-      <div class="note">
-        もし「固定のスポンサー枠」以外に、<b>特定テーマの特集（例：ウォレット特集/データツール特集）</b>などのタイアップも可能です。ご希望があればご相談ください。
+    <footer class="footer">
+      <div class="links">
+        <a href="/about" data-ga="nav_about" data-placement="sponsor_footer" data-partner="" data-pr="0">運営者情報</a>
+        <a href="/disclaimer" data-ga="nav_disclaimer" data-placement="sponsor_footer" data-partner="" data-pr="0">免責事項</a>
+        <a href="/data-sources" data-ga="nav_data_sources" data-placement="sponsor_footer" data-partner="" data-pr="0">データソース</a>
+        <a href="/ads-pr" data-ga="nav_ads_pr" data-placement="sponsor_footer" data-partner="" data-pr="0">広告・PR表記</a>
+        <a href="/privacy" data-ga="nav_privacy" data-placement="sponsor_footer" data-partner="" data-pr="0">プライバシーポリシー</a>
+        <a href="/contact" data-ga="nav_contact" data-placement="sponsor_footer" data-partner="" data-pr="0">お問い合わせ</a>
       </div>
-
-      <div class="footer">
-        <div>© CoinRader</div>
-        <div class="muted">本ページはテンプレです。文言・料金・連絡先は運用に合わせて更新してください。</div>
-      </div>
-    </section>
+      <div class="note">© CoinRader</div>
+    </footer>
   </div>
+
+  <script src="/assets/click_tracker.js" defer></script>
 </body>
 </html>
