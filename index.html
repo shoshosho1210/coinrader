@@ -1112,7 +1112,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-meta" id="kpiBreadthNow">-</div>
 <div class="kpi-meta" id="kpiBreadthMoves">-</div>
 <div aria-hidden="true" class="kpi-legend"><span class="item"><span class="dot up"></span>青＝上昇数</span><span class="item"><span class="dot down"></span>赤＝下落数</span></div>
-<div class="kpi-sub" id="kpiBreadthSub">7日前を基準(0%)にした累積リターンで「上昇/下落/中立」を判定し、7日推移を表示します（青＝上昇、赤＝下落、灰＝中立）。</div>
+<div class="kpi-sub" id="kpiBreadthSub">7日前を基準(0%)にした累積リターンで「上昇/下落/中立」を判定し、上昇数/下落数の7日推移を表示します（青＝上昇、赤＝下落）。※中立は数値のみ集計。</div>
 <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
 </div>
 <div class="kpi">
@@ -1138,17 +1138,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
 <div class="kpi-value" id="kpiSentiment">-</div>
 <div class="kpi-meta" id="kpiSentimentMeta">-</div>
-<div class="sent-gauge-wrap">
-<div aria-hidden="true" class="sent-gauge">
-<svg aria-hidden="true" class="sent-gauge-svg" viewbox="0 0 220 120"></svg>
-<div class="sent-gauge-needle" id="sentNeedle"></div>
-<div class="sent-gauge-center"></div>
-</div>
-<div class="sent-gauge-side">
-<div class="sent-label" id="sentLabel">-</div>
-<div class="sent-desc" id="sentDesc">上位250ベースの独自ムード指数</div>
-</div>
-</div>
 <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
 <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
 </div>
@@ -2423,11 +2412,10 @@ if (breadthSub){
         // Labels: just indexes (Chart.js will hide axis anyway)
         const labels = Array.from({length: seriesLen}, (_,i)=>i);
 
-        // Breadth chart (3 lines)
+        // Breadth chart (2 lines)
         makeLineChart('breadthLine', labels, [
           {label:'上昇', data: upArr, border:'rgba(30,136,229,0.9)', fill:false},
-          {label:'下落', data: downArr, border:'rgba(211,47,47,0.9)', fill:false},
-          {label:'中立', data: flatArr, border:'rgba(156,163,175,0.7)', fill:false},
+          {label:'下落', data: downArr, border:'rgba(211,47,47,0.9)', fill:false}
         ], {yBeginAtZero:true});
 
         // Avg return chart (0 baseline fill)
@@ -2575,7 +2563,7 @@ if (breadthSub){
           if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
 
           // gauge needle + small label
-          updateSentimentGauge(score, label);
+          // gauge removed in MarketOverview
 
           const elM = document.getElementById('kpiSentimentMeta');
           if (elM){
