@@ -2463,29 +2463,6 @@ if (breadthSub){
 // use the same label length as other sparklines
             const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
             makeLineChart('rsiLine', rsiLabels, [
-            // threshold lines (30 / 70)
-            {
-              label: '30',
-              data: rsiSeries.map(() => 30),
-              borderColor: 'rgba(255,255,255,0.22)',
-              borderWidth: 1,
-              pointRadius: 0,
-              tension: 0,
-              fill: false,
-              borderDash: [4,4],
-              order: -2
-            },
-            {
-              label: '70',
-              data: rsiSeries.map(() => 70),
-              borderColor: 'rgba(255,255,255,0.22)',
-              borderWidth: 1,
-              pointRadius: 0,
-              tension: 0,
-              fill: false,
-              borderDash: [4,4],
-              order: -2
-            },
             // RSI line
             {
               label: 'RSI',
@@ -2497,7 +2474,7 @@ if (breadthSub){
               fill: false,
               order: 0
             }
-          ], { yMin: 0, yMax: 100 });
+          ], { yMin: 0, yMax: 100, hLines: { values: [30,70], dash: [4,4], color: 'rgba(255,255,255,0.28)', width: 1 } });
           }
         } catch(e) { console.warn('RSI failed', e); }
 
@@ -2965,22 +2942,91 @@ function makeLineChart(canvasId, labels, series, opts){
       order: (s.order != null ? s.order : 0)
     }));
 
+    // Optional horizontal reference lines (e.g., RSI 30/70)
+    const hLinePlugin = {
+      id: 'hLines',
+      afterDraw(chart, args, pluginOpts){
+        const o = pluginOpts || {};
+        const values = Array.isArray(o.values) ? o.values : [];
+        if (!values.length) return;
+        const ctx = chart.ctx;
+        const dash = Array.isArray(o.dash) ? o.dash : [4,4];
+        const color = o.color || 'rgba(255,255,255,0.22)';
+        const width = (o.width != null ? o.width : 1);
+
+        // resolve y-scale across Chart.js v2/v3+
+        const yScale =
+          (chart.scales && (chart.scales.y || chart.scales['y-axis-0'] || chart.scales['y0'])) ||
+          null;
+        if (!yScale || typeof yScale.getPixelForValue !== 'function') return;
+
+        ctx.save();
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color;
+        ctx.setLineDash(dash);
+
+        const left = yScale.left;
+        const right = yScale.right;
+
+        for (const v of values){
+          const y = yScale.getPixelForValue(v);
+          // only draw if within chart area (avoid weird lines outside)
+          if (y >= yScale.top && y <= yScale.bottom){
+            ctx.beginPath();
+            ctx.moveTo(left, y);
+            ctx.lineTo(right, y);
+            ctx.stroke();
+          }
+        }
+
+        ctx.restore();
+      }
+    };
+
+    const yMin = (opts && opts.yMin != null ? opts.yMin : undefined);
+    const yMax = (opts && opts.yMax != null ? opts.yMax : undefined);
+    const beginAtZero = !!(opts && opts.yBeginAtZero);
+
+    // Chart.js v2/v3+ options compatibility
+    const v = (typeof Chart !== 'undefined' && Chart.version) ? String(Chart.version) : '';
+    const isV2 = v.startsWith('2.');
+
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false }, hLines: (opts && opts.hLines) ? opts.hLines : {} }
+    };
+
+    if (isV2){
+      options.scales = {
+        xAxes: [{ display:false }],
+        yAxes: [{
+          display:false,
+          ticks: {
+            beginAtZero: beginAtZero,
+            min: yMin,
+            max: yMax
+          }
+        }]
+      };
+    } else {
+      options.scales = {
+        x: { display:false },
+        y: {
+          display:false,
+          beginAtZero: beginAtZero,
+          min: yMin,
+          max: yMax
+        }
+      };
+    }
+
     charts[canvasId] = new Chart(canvas, {
       type: 'line',
       data: { labels: labels, datasets: datasets },
-      options: {
-        responsive: true, maintainAspectRatio: false, animation: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: {
-          x: { display:false },
-          y: {
-            display:false,
-            beginAtZero: !!(opts && opts.yBeginAtZero),
-            min: (opts && opts.yMin != null ? opts.yMin : undefined),
-            max: (opts && opts.yMax != null ? opts.yMax : undefined)
-          }
-        }
-      }
+      options,
+      plugins: [hLinePlugin]
     });
   }
 
