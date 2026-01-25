@@ -206,25 +206,26 @@
   .kpi-canvas.tall{ height:90px !important; }
   .kpi-canvas.tiny{ height:46px !important; opacity:.8; }
 
-
-  /* RSI threshold overlay (30/70) - CSS based to be version-agnostic */
-  .rsi-chart-wrap{ position:relative; width:100%; height:100%; }
-  .rsi-chart-wrap::before,
-  .rsi-chart-wrap::after{
-    content:"";
-    position:absolute;
-    left:0; right:0;
+  /* RSI threshold overlay (30/70) - DOM overlay (version-agnostic) */
+  .rsi-chart-wrap{ margin-top:8px; }
+  .rsi-chart-area{ position:relative; height:70px; width:100%; }
+  .rsi-chart-area .rsi-th{
+    position:absolute; left:0; right:0;
     height:2px;
     background: rgba(255,255,255,0.22);
     pointer-events:none;
     z-index:2;
   }
   /* 70 line => 30% from top (0..100 scale) */
-  .rsi-chart-wrap::before{ top:30%; }
+  .rsi-chart-area .rsi-70{ top:30%; }
   /* 30 line => 70% from top */
-  .rsi-chart-wrap::after{ top:70%; }
-  .rsi-chart-wrap > canvas{ position:relative; z-index:1; }
-
+  .rsi-chart-area .rsi-30{ top:70%; }
+  .rsi-chart-area > canvas{
+    position:absolute; inset:0;
+    width:100% !important; height:100% !important;
+    margin:0 !important;
+    z-index:1;
+  }
 
   /* Sentiment gauge (Fear & Greed 代替) */
   .sent-gauge-wrap{ display:flex; justify-content:flex-start; align-items:flex-end; gap:14px; margin-top:10px; }
@@ -1124,7 +1125,11 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-meta" id="kpiRsiMeta">-</div>
 <div class="kpi-sub" id="kpiRsiSub">BTCの1時間足相当のRSI（14）を7日分で算出。30以下=売られすぎ、70以上=買われすぎ。</div>
 <div class="rsi-chart-wrap">
-  <canvas class="kpi-canvas" id="rsiLine"></canvas>
+  <div class="rsi-chart-area">
+    <div class="rsi-th rsi-70" aria-hidden="true"></div>
+    <div class="rsi-th rsi-30" aria-hidden="true"></div>
+    <canvas class="kpi-canvas" id="rsiLine"></canvas>
+  </div>
 </div>
 </div>
 <div class="kpi">
