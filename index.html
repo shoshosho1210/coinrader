@@ -578,6 +578,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   gap: 12px;
   margin-top: 12px;
 }
+
+@media (max-width: 820px){
+  .summary-lists{ grid-template-columns: 1fr !important; }
+}
 .summary-card{
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
@@ -1684,13 +1688,12 @@ const EXCLUDE_MCAP_IDS = new Set([
     const sma200 = sma(closes, 200);
     const price = closes[closes.length-1];
 
-    // KPI: 価格 vs SMA200（%）
-    const distPct = ((price - sma200) / sma200) * 100;
+    // KPI: SMA50 vs SMA200（%）
+    const distPct = ((sma50 - sma200) / sma200) * 100;
 
-    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
-    const label = near ? 'SMA200付近' : (distPct > 0 ? '上' : '下');
-
-    window.__btcMaCross = {
+    const near = Math.abs(distPct) <= 0.20; // 0.2%以内を「クロス付近」の目安
+    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
+window.__btcMaCross = {
       price, sma50, sma200, distPct,
       label,
       updatedAt: Date.now(),
