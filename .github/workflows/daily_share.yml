@@ -42,6 +42,7 @@ jobs:
           test -f daily_post_full.txt
           test -f daily_post_short.txt
           test -f daily_share_url.txt
+          test -f daily_note_draft.md
 
       - name: Prune old share pages (keep last 30 days)
         env:
@@ -81,6 +82,7 @@ jobs:
             daily_post_full.txt
             daily_post_short.txt
             daily_share_url.txt
+            daily_note_draft.md
             share/**/*.html
 
       - name: Commit & push if changed
@@ -90,6 +92,7 @@ jobs:
           git config user.email "coinrader-bot@users.noreply.github.com"
 
           git add -f share daily_post_full.txt daily_post_short.txt daily_share_url.txt
+          git add -f daily_note_draft.md
           git status --porcelain
 
           git diff --cached --quiet || git commit -m "Daily share page"
