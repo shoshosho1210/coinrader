@@ -1084,10 +1084,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="overview-card">
 <div class="kpi-grid">
 <div class="kpi">
-<div class="kpi-label">上昇 / 下落（7d推移 / 上位250）</div>
+<div class="kpi-label">上昇 / 下落（24h + 7d推移 / 上位250）</div>
 <div class="kpi-value" id="kpiBreadth">-</div>
+<div class="kpi-meta" id="kpiBreadthNow">-</div>
+<div class="kpi-meta" id="kpiBreadthMoves">-</div>
 <div aria-hidden="true" class="kpi-legend"><span class="item"><span class="dot up"></span>青＝上昇数</span><span class="item"><span class="dot down"></span>赤＝下落数</span></div>
-<div class="kpi-sub" id="kpiBreadthSub">上位250を対象に、7日前を基準にした累積リターンで「上昇/下落/横ばい」を判定し、日次の推移を表示（青＝上昇、赤＝下落、灰＝横ばい）。軸は見やすさのため非表示です。</div>
+<div class="kpi-sub" id="kpiBreadthSub">7日前を基準(0%)にした累積リターンで「上昇/下落/中立」を判定し、7日推移を表示します（青＝上昇、赤＝下落、灰＝中立）。</div>
 <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
 </div>
 <div class="kpi">
@@ -2254,17 +2256,33 @@ function getAltVolumeTop5(){
     const flatPct = (o.flat / denom) * 100;
     const downPct = (o.down / denom) * 100;
 
-    const breadthEl = document.getElementById('kpiBreadth');
-    if (breadthEl){
-      breadthEl.textContent = `上昇 ${o.up} / 下落 ${o.down}（上昇率 ${upPct.toFixed(1)}%）`;
-    }
+    
+const breadthNowEl = document.getElementById('kpiBreadthNow');
+if (breadthNowEl){
+  // 24h snapshot (from /coins/markets price_change_percentage_24h)
+  breadthNowEl.textContent = `24h: 上昇 ${o.up} / 下落 ${o.down}` + (o.flat ? `（中立 ${o.flat}）` : '');
+}
 
-    const breadthSub = document.getElementById('kpiBreadthSub');
-    if (breadthSub){
-      const baseTxt = `対象: 上位250（取得 ${o.n}）のうち、24h騰落率が取得できた ${o.chgN} 銘柄を集計`;
-      const flatTxt = (o.flat > 0) ? `（中立 ${o.flat}）` : '';
-      breadthSub.textContent = `${baseTxt}${flatTxt}`;
-    }
+// Strong movers (24h)
+let up10 = 0, down10 = 0;
+for (const c of (marketsTop || [])){
+  const chg = c && c.price_change_percentage_24h;
+  if (typeof chg === 'number' && isFinite(chg)){
+    if (chg >= 10) up10++;
+    if (chg <= -10) down10++;
+  }
+}
+const breadthMovesEl = document.getElementById('kpiBreadthMoves');
+if (breadthMovesEl){
+  breadthMovesEl.textContent = `強い動き(24h): +10%≥ ${up10} / -10%≤ ${down10}`;
+}
+
+    
+const breadthSub = document.getElementById('kpiBreadthSub');
+if (breadthSub){
+  const baseTxt = `対象: 上位250（取得 ${o.n}）のうち、24h騰落率が取得できた ${o.chgN} 銘柄を集計`;
+  breadthSub.setAttribute('data-base', baseTxt); // for debug / future use
+}
 
     const barUp = document.getElementById('barUp');
     const barFlat = document.getElementById('barFlat');
@@ -2390,9 +2408,10 @@ function getAltVolumeTop5(){
         const lastAvg = avgArr[avgArr.length - 1];
         const kpiB = document.getElementById('kpiBreadth');
         if (kpiB){
-          const denom = (Number(lastUp)||0) + (Number(lastDown)||0);
+          const lastFlat = Number(flatArr[flatArr.length - 1]) || 0;
+          const denom = (Number(lastUp)||0) + (Number(lastDown)||0) + lastFlat;
           const upPct = denom ? ((Number(lastUp)||0) / denom) * 100 : 0;
-          kpiB.textContent = `上昇 ${lastUp} / 下落 ${lastDown}（上昇率 ${upPct.toFixed(1)}%）`;
+          kpiB.textContent = `7d累積: 上昇 ${lastUp} / 下落 ${lastDown}` + ((Number(flatArr[flatArr.length - 1])||0)>0 ? `（中立 ${flatArr[flatArr.length - 1]}）` : '') + `（上昇率 ${upPct.toFixed(1)}%）`;
         }
         const kpiAvg = document.getElementById('kpiAvgChange');
         if (kpiAvg){
