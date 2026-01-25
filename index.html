@@ -1145,7 +1145,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi">
 <div class="kpi-label">BTC 価格と移動平均（50/200日）</div>
 <div class="kpi-value" id="kpiBtcMaNow">-</div>
-<div class="kpi-meta" id="kpiBtcMaMeta">-</div>
+<div class="kpi-meta" id="kpiBtcMaMeta">—</div>
 <div class="kpi-sub" id="kpiBtcMaSub">BTCUSDTの日足からSMA50とSMA200を算出して表示します。</div>
 <canvas class="kpi-canvas" id="btcMaLine"></canvas>
 </div>
@@ -1623,7 +1623,8 @@ const EXCLUDE_MCAP_IDS = new Set([
     const elNow   = document.getElementById('kpiBtcMaNow');
     const elSma50 = document.getElementById('kpiBtcMaSma50');
     const elSma200= document.getElementById('kpiBtcMaSma200');
-    const elDist  = document.getElementById('kpiBtcMaDist');
+    const elDist = document.getElementById('kpiBtcMaDist');
+  const elMeta = document.getElementById('kpiBtcMaMeta');
     const canvas  = document.getElementById('btcMaLine');
 
     const fmtUsd0 = (n)=> (Number.isFinite(n) ? '$' + Math.round(n).toLocaleString('en-US') : '—');
@@ -1739,13 +1740,14 @@ const EXCLUDE_MCAP_IDS = new Set([
 
       const dist = ((last50 - last200) / last200) * 100;
 
-      window.__btcMaCross = { price:lastClose, sma50:last50, sma200:last200, ratio:dist, labels };
+      window.__btcMaCross = { price:lastClose, sma50:last50, sma200:last200, distPct:dist, ratio:dist, labels };
       window.__btcMaCrossSeries = { labels, close, ma50, ma200 };
 
       if (elNow)   elNow.textContent    = fmtUsd0(lastClose);
       if (elSma50) elSma50.textContent  = fmtUsd0(last50);
       if (elSma200)elSma200.textContent = fmtUsd0(last200);
-      if (elDist)  elDist.textContent   = fmtPct2(dist);
+      if (elDist)  elDist.textContent = fmtPct2(dist);
+      if (elMeta) elMeta.textContent = `SMA50 ${fmtUsd(last50)} / SMA200 ${fmtUsd(last200)} / 乖離 ${fmtPct2(dist)}`;
 
       draw(close, ma50, ma200);
     } catch(e){
@@ -1754,7 +1756,8 @@ const EXCLUDE_MCAP_IDS = new Set([
       if (elNow)   elNow.textContent    = '—';
       if (elSma50) elSma50.textContent  = '—';
       if (elSma200)elSma200.textContent = '—';
-      if (elDist)  elDist.textContent   = '—';
+      if (elDist) elDist.textContent = '—';
+      if (elMeta) elMeta.textContent = '—';
       // チャートも消す
       if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -2946,8 +2949,8 @@ if (breadthSub){
 
       // BTC MA cross distance (SMA50 / SMA200)
     const ma = window.__btcMaCross || null;
-    if (ma && Number.isFinite(ma.distPct)) {
-      const d = ma.distPct;
+    if (ma && Number.isFinite((ma.distPct ?? ma.ratio))) {
+      const d = (ma.distPct ?? ma.ratio);
       const label = ma.label || (d > 0 ? 'GC側' : d < 0 ? 'DC側' : '中立');
       setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
       setSum('sumMaSub', label);
