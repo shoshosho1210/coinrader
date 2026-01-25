@@ -2391,6 +2391,24 @@ function makeLineChart(canvasId, labels, values, opts={}){
     }
   });
 }
+// Update small KPI sparklines safely (used by Market Overview strip)
+function updateSummaryAvgSpark(series){
+  try{
+    if (!Array.isArray(series) || series.length < 2) return;
+    if (!document.getElementById('sumAvgSpark')) return;
+    const labels = series.map((_, i) => i);
+    makeLineChart('sumAvgSpark', labels, series, {tension:0.25});
+  }catch(_e){}
+}
+function updateSummaryMcapSpark(series){
+  try{
+    if (!Array.isArray(series) || series.length < 2) return;
+    if (!document.getElementById('sumMcapSpark')) return;
+    const labels = series.map((_, i) => i);
+    makeLineChart('sumMcapSpark', labels, series, {tension:0.25});
+  }catch(_e){}
+}
+
 
 function makeMultiLineChart(canvasId, labels, seriesList){
   if (!ensureChartjs()) return;
@@ -2469,7 +2487,9 @@ const charts = window.__charts || (window.__charts = {});
   
   // Normalized line (0-100) sparkline
   function makeNormalizedLine(canvas, labels, values, opts = {}) {
-    if (!canvas) return null;
+    // Accept canvas element or element id
+    if (typeof canvas === 'string') canvas = document.getElementById(canvas);
+    if (!canvas || typeof canvas.getContext !== 'function') return null;
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
     if (!Array.isArray(values) || values.length < 2) return null;
