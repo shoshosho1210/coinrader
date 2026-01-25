@@ -262,12 +262,10 @@
   
   /* Summary KPI compact rows */
   .summary-kpis .kpi-tile{ padding:9px 12px; }
-  .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; flex-wrap:wrap; }
+  .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }
   .summary-kpis .kpi-tile-big{ margin-top:0; }
   .summary-kpis .kpi-tile-sub.inline{ margin-top:0; font-size:12px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  
-  .kpi-bar-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none;}
-.summary-kpis .mini-vis{ margin-top:6px; }
+  .summary-kpis .mini-vis{ margin-top:6px; }
 @media (max-width: 520px){ .overview-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .kpi-tile-big{font-size:16px;} }
 
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
@@ -798,7 +796,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 /* --- Summary KPI: Breadth mini bar --- */
 .kpi-mini-breadth{margin-top:10px}
 .breadth-track{
-  height:10px;
+  height:6px;
   border-radius:999px;
   overflow:hidden;
   background:rgba(255,255,255,0.08);
@@ -807,7 +805,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .breadth-seg{height:100%}
 .breadth-seg.up{background:rgba(52,211,153,0.85)}
 .breadth-seg.down{background:rgba(248,113,113,0.85)}
-.breadth-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none}
+.breadth-caption{margin-top:6px;font-size:12px;color:rgba(229,231,235,0.85)}
 
 </style>
 </head>
@@ -869,13 +867,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 <div class="kpi-tile kpi-avg250">
 <div class="kpi-tile-title">上位250 平均（24h）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumBreadthInline">—</div></div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div></div>
 <div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
 <div aria-hidden="true" class="breadth-track">
 <div class="breadth-seg up" id="sumBreadthSegUp"></div>
 <div class="breadth-seg down" id="sumBreadthSegDown"></div>
 </div>
-<div class="breadth-caption kpi-bar-caption" id="sumBreadthCaption">上昇/下落（24h）</div>
+<div class="breadth-caption" id="sumBreadthCaption">—</div>
 </div>
 </div>
 <div class="kpi-tile">
@@ -892,7 +890,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="mini-sent-th t75"></div>
 <div class="mini-sent-marker" id="sumSentMarker"></div>
 </div>
-<div class="kpi-bar-caption">恐怖 ← 50 → 強欲</div>
 </div>
 </div><div class="kpi-tile">
 <div class="kpi-tile-title">BTC RSI（14）</div>
@@ -906,7 +903,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="mini-rsi-th t70"></div>
 <div class="mini-rsi-marker" id="sumRsiMarker"></div>
 </div>
-<div class="kpi-bar-caption">売られすぎ ← 50 → 買われすぎ</div>
 </div>
 </div><div class="kpi-tile">
 <div class="kpi-tile-title">BTC ドミナンス</div>
@@ -923,7 +919,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="mini-dom-tick t50"><span>50</span></div>
 <div class="mini-dom-tick t60"><span>60</span></div>
 </div>
-<div class="kpi-bar-caption">BTC / ETH / ステーブル / その他</div>
 </div>
 </div>
 </div><div class="kpi-tile kpi-ma">
@@ -938,7 +933,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="mini-ma-center"></div>
 <div class="mini-ma-marker" id="sumMaMarker"></div>
 </div>
-<div class="mini-ma-label kpi-bar-caption">DC側 ← 0 → GC側</div>
+<div class="mini-ma-label">DC側 ← 0 → GC側</div>
 </div>
 </div></div>
 <div class="summary-lists">
@@ -2634,13 +2629,10 @@ function getAltVolumeTop5(){
         const flat = (o && typeof o.flat==='number' && isFinite(o.flat)) ? o.flat : null;
         const total = (up!=null && down!=null) ? (up + down) : null;
 
-        const inlineEl = document.getElementById('sumBreadthInline');
-        if (inlineEl){
-          if (up==null || down==null) inlineEl.textContent = '—';
-          else inlineEl.textContent = `↑${up} ↓${down}` + ((flat!=null && flat>0) ? ` ＝${flat}` : '');
-        }
-
-        / 下落 ${down}` + ((flat!=null && flat>0) ? `（横ばい ${flat}）` : '');
+        const capEl = document.getElementById('sumBreadthCaption');
+        if (capEl){
+          if (up==null || down==null) capEl.textContent = '—';
+          else capEl.textContent = `上昇 ${up} / 下落 ${down}` + ((flat!=null && flat>0) ? `（横ばい ${flat}）` : '');
         }
 
         const upSeg = document.getElementById('sumBreadthSegUp');
