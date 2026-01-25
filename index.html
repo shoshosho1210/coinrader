@@ -1690,13 +1690,20 @@ const EXCLUDE_MCAP_IDS = new Set([
       console.warn('[btc ma] coingecko failed', e);
     }
 
-    // 2) Binance（日足OHLC）フォールバック
-    const url = 'https://api.binance.com/api/v3/klines'
-      + '?symbol=BTCUSDT'
-      + '&interval=1d'
-      + '&limit=260'; // 200MA + 50MA + 少し余裕
+    // 2) Binance（日足OHLC）フォールバック（複数エンドポイントを順に試す）
+    const binanceUrls = [
+      'https://api.binance.com/api/v3/klines' + '?symbol=BTCUSDT' + '&interval=1d' + '&limit=365',
+      'https://data-api.binance.vision/api/v3/klines' + '?symbol=BTCUSDT' + '&interval=1d' + '&limit=365'
+    ];
 
-    const rows = await fetchJsonRetry(url, {retries:2});
+    let rows = null;
+    for (const u of binanceUrls){
+      try{
+        const r = await fetchJsonRetry(u, {retries:2});
+        if (Array.isArray(r) && r.length >= 210){ rows = r; break; }
+      }catch(e){ /* try next */ }
+    }
+    if (!Array.isArray(rows) || rows.length < 210) throw new Error('Binance klines unavailable');
     if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
 
     const ts = rows.map(r => +r[0]);
