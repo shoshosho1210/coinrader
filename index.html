@@ -1124,6 +1124,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi">
 <div class="kpi-label">平均リターン（7d推移 / 上位250）</div>
 <div class="kpi-value" id="kpiAvgChange">-</div>
+<div class="kpi-meta" id="kpiAvgDist">-</div>
 <div class="kpi-sub" id="kpiAvgSub">上位250の各銘柄について、7日前の価格を基準(0%)として現在までの累積リターンを算出し、その平均を表示します。0より上は平均的に上昇、下は下落。</div>
 <canvas class="kpi-canvas" id="avgLine"></canvas>
 </div>
@@ -2463,6 +2464,24 @@ if (breadthSub){
             med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
           }
           kpiAvg.textContent = `平均 ${fmtPct(lastAvg)} / 中央値 ${fmtPct(med)}`;
+          const kpiAvgDist = document.getElementById('kpiAvgDist');
+          if (kpiAvgDist){
+            const total = lastRets.length || 0;
+            if (total){
+              let up5 = 0, down5 = 0;
+              for (const v of lastRets){
+                if (typeof v === 'number' && isFinite(v)){
+                  if (v >= 5) up5++;
+                  if (v <= -5) down5++;
+                }
+              }
+              const upPct = up5 / total * 100;
+              const downPct = down5 / total * 100;
+              kpiAvgDist.textContent = `±5%: ↑${up5}（${upPct.toFixed(1)}%） / ↓${down5}（${downPct.toFixed(1)}%）`;
+            } else {
+              kpiAvgDist.textContent = '-';
+            }
+          }
         avg7 = lastAvg;
         med7 = med;
         }
