@@ -299,6 +299,12 @@
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
   .kpi-meta{ margin-top:6px; font-size:12px; color:#d1d5db; }
 
+
+  .kpi-stack .kpi-block-title{ margin-top:10px; font-size:11px; color:#cbd5e1; }
+  .kpi-stack .kpi-block:first-of-type .kpi-block-title{ margin-top:6px; }
+  .kpi-stack .kpi-divider{ height:1px; background:#1f2937; margin:10px 0; opacity:.95; }
+
+
   .kpi-legend{ margin-top:6px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:11px; color:#9ca3af; }
   .kpi-legend .item{ display:inline-flex; align-items:center; gap:6px; }
   .kpi-legend .dot{ width:8px; height:8px; border-radius:999px; display:inline-block; }
@@ -1141,26 +1147,26 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
 <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
 </div>
-<div class="kpi">
-<div class="kpi-label">市場時価総額 7d変化（推定 / 上位250）</div>
-<div class="kpi-value" id="kpiMcap7d">-</div>
-<div class="kpi-sub">推定: 上位250の7日スパークラインから「供給一定」を仮定して時価総額の7d推移を概算し、7dの増減（率/差額）を算出。</div>
-<canvas class="kpi-canvas" id="mcap7dLine"></canvas>
-<div class="kpi-sub" style="opacity:.75;margin-top:6px;">※推移は過去7d（スパークライン）</div>
-</div>
-<div class="kpi">
-<div class="kpi-label">上位250 時価総額合計（推定7d推移 / JPY）</div>
-<div class="kpi-value" id="kpiTotalMcap">-</div>
-<div class="kpi-sub">推定: 各銘柄の現在の時価総額×(各時点価格/現在価格) を合算（供給一定の近似）。</div>
-<canvas class="kpi-canvas" id="mcapLine"></canvas>
-</div>
-<div class="kpi">
-<div class="kpi-label">上位250 出来高合計（推定7d推移 / JPY）</div>
-<div class="kpi-value" id="kpiTotalVol">-</div>
-<div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
-<div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。正確な出来高の推移には別データソースが必要です。</div>
-<canvas class="kpi-canvas" id="volLine"></canvas>
-</div>
+<div class="kpi kpi-stack">
+  <div class="kpi-label">市場規模と売買熱（上位250）</div>
+
+  <div class="kpi-block">
+    <div class="kpi-block-title">市場時価総額（7d）</div>
+    <div class="kpi-value" id="kpiTotalMcap">-</div>
+    <div class="kpi-meta" id="kpiMcap7d">-</div>
+    <canvas class="kpi-canvas" id="mcap7dLine"></canvas>
+    <div class="kpi-sub" style="opacity:.75;margin-top:6px;">推定: 上位250の7日スパークラインから「供給一定」を仮定し、7dの増減（率/差額）を概算。</div>
+  </div>
+
+  <div class="kpi-divider"></div>
+
+  <div class="kpi-block">
+    <div class="kpi-block-title">出来高（24h）</div>
+    <div class="kpi-value" id="kpiTotalVol">-</div>
+    <div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
+    <div class="kpi-sub" style="opacity:.75">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。</div>
+    <canvas class="kpi-canvas" id="volLine" style="display:none"></canvas>
+  </div>
 </div>
 <div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7日スパークライン」等から概算しています（目安）。</div>
 </div>
@@ -3309,7 +3315,12 @@ function makeLineChart(canvasId, labels, series, opts){
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
-    // データに NaN / Infinity が混ざると描画が崩れることがあるので、ここでサニタイズ
+    // 非表示のキャンバスは描画しない（統合カード等で使用）
+    try{
+      const st = window.getComputedStyle(canvas);
+      if (st && st.display === 'none') return;
+    } catch(_){}
+// データに NaN / Infinity が混ざると描画が崩れることがあるので、ここでサニタイズ
     const clean = (dataArr || []).map(v => (Number.isFinite(v) ? v : 0));
     const last = clean.length ? clean[clean.length - 1] : 0;
     const norm = (Number.isFinite(last) && last !== 0)
