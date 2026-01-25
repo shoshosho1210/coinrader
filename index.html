@@ -1143,13 +1143,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 <div class="kpi">
-<div class="kpi-label">BTC 価格と移動平均（50/200日）</div>
-<div class="kpi-value" id="kpiBtcMaNow">-</div>
-<div class="kpi-meta" id="kpiBtcMaMeta">—</div>
-<div class="kpi-sub" id="kpiBtcMaSub">BTCUSDTの日足からSMA50とSMA200を算出して表示します。</div>
-<canvas class="kpi-canvas" id="btcMaLine"></canvas>
-</div>
-<div class="kpi">
 <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
 <div class="kpi-value" id="kpiSentiment">-</div>
 <div class="kpi-meta" id="kpiSentimentMeta">-</div>
@@ -1440,19 +1433,9 @@ function readSnapshot(key){
 
   // ============ Fetch helpers ============
   async function cgFetch(url, options = {}){
-    // CoinGecko CORS 対策:
-    // - ブラウザ直叩きがブロックされる環境では、同一オリジンのプロキシ(/cg)経由に自動切替します。
-    // - /cg は Cloudflare Workers / Netlify Functions / 自前サーバで実装してください（手順は別途）。
     const headers = { ...(options.headers || {}) };
     if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
-
-    let finalUrl = url;
-    const CG_HOST = 'https://api.coingecko.com';
-    const proxyPrefix = (window.CG_PROXY_PREFIX ?? (location.hostname.includes('coinrader') ? '/cg' : ''));
-    if (proxyPrefix && typeof url === 'string' && url.startsWith(CG_HOST)) {
-      finalUrl = proxyPrefix + url.substring(CG_HOST.length);
-    }
-    return fetch(finalUrl, { ...options, headers });
+    return fetch(url, { ...options, headers });
   }
 
   async function fetchWithTimeout(url, timeoutMs = 15000, options = {}){
@@ -1610,7 +1593,7 @@ const EXCLUDE_MCAP_IDS = new Set([
       setStatus('最新データの取得が遅れています（保存済みデータを表示中）');
       return;
     }
-    marketsTop = [];
+    throw e;
   }
 }
 
@@ -1618,155 +1601,42 @@ const EXCLUDE_MCAP_IDS = new Set([
   
   // BTC MA cross (SMA50/SMA200) 用データ
   window.__btcMaCross = null;
+
   async function loadBtcMaCross(){
-    // BTCUSDT(日足)の終値から SMA50 / SMA200 を算出し、カードに描画する
-    const elNow   = document.getElementById('kpiBtcMaNow');
-    const elSma50 = document.getElementById('kpiBtcMaSma50');
-    const elSma200= document.getElementById('kpiBtcMaSma200');
-    const elDist = document.getElementById('kpiBtcMaDist');
-  const elMeta = document.getElementById('kpiBtcMaMeta');
-    const canvas  = document.getElementById('btcMaLine');
+    // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
+    // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
+    // ※価格通貨はUSDTだが、MA距離(%)は通貨に依存しないため問題なし。
+    const url = 'https://api.binance.com/api/v3/klines'
+      + '?symbol=BTCUSDT'
+      + '&interval=1d'
+      + '&limit=260'; // 200MA + 50MA + 少し余裕
 
-    const fmtUsd0 = (n)=> (Number.isFinite(n) ? '$' + Math.round(n).toLocaleString('en-US') : '—');
-    const fmtPct2 = (x)=> (Number.isFinite(x) ? (x>=0?'+':'') + x.toFixed(2) + '%' : '—');
+    const rows = await fetchJsonRetry(url, {retries:2});
+    if (!Array.isArray(rows) || rows.length < 210) throw new Error('binance klines too short');
 
-    const smaSeries = (arr, period)=>{
-      const out = new Array(arr.length).fill(null);
-      if (!Array.isArray(arr) || arr.length < period) return out;
-      let sum = 0;
-      for (let i=0;i<arr.length;i++){
-        const v = Number(arr[i]);
-        if (!Number.isFinite(v)) { out[i]=null; continue; }
-        sum += v;
-        if (i >= period) sum -= Number(arr[i-period]);
-        if (i >= period-1) out[i] = sum / period;
-      }
-      return out;
+    // close価格（index 4）
+    const closes = rows.map(r => +r[4]).filter(v => isFinite(v) && v > 0);
+    if (closes.length < 210) throw new Error('binance closes invalid');
+
+    const sma = (arr, n) => {
+      const a = arr.slice(-n);
+      const s = a.reduce((x,y)=>x+y,0);
+      return s / n;
     };
 
-    const draw = (close, ma50, ma200)=>{
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+    const sma50 = sma(closes, 50);
+    const sma200 = sma(closes, 200);
+    const distPct = (sma50 - sma200) / sma200 * 100;
 
-      // CSSサイズに合わせて解像度を調整（PC/スマホでズレないように）
-      const dpr = window.devicePixelRatio || 1;
-      const w = canvas.clientWidth || 520;
-      const h = canvas.clientHeight || 160;
-      canvas.width  = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr,0,0,dpr,0,0);
+    const near = Math.abs(distPct) <= 0.30; // 0.3%以内を「近い」目安
+    const label = near ? 'クロス付近' : (distPct > 0 ? 'GC側' : 'DC側');
 
-      ctx.clearRect(0,0,w,h);
-
-      // 直近 N 本だけ描画（重くしない）
-      const N = Math.min(close.length, 260);
-      const c = close.slice(-N);
-      const m50 = ma50.slice(-N);
-      const m200 = ma200.slice(-N);
-
-      // スケール（null は除外）
-      const vals = [];
-      for (let i=0;i<N;i++){
-        if (Number.isFinite(c[i])) vals.push(c[i]);
-        if (Number.isFinite(m50[i])) vals.push(m50[i]);
-        if (Number.isFinite(m200[i])) vals.push(m200[i]);
-      }
-      if (!vals.length) return;
-      const minV = Math.min(...vals);
-      const maxV = Math.max(...vals);
-      const pad = (maxV - minV) * 0.05 || 1;
-      const lo = minV - pad;
-      const hi = maxV + pad;
-
-      const x = (i)=> (i/(N-1)) * (w-16) + 8;
-      const y = (v)=> (h-10) - ((v - lo)/(hi - lo)) * (h-20);
-
-      // grid(薄い)
-      ctx.globalAlpha = 0.25;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(8, h/2);
-      ctx.lineTo(w-8, h/2);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-
-      const strokeLine = (arr, color, width)=>{
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        ctx.beginPath();
-        let started = false;
-        for (let i=0;i<N;i++){
-          const v = arr[i];
-          if (!Number.isFinite(v)) continue;
-          const xx = x(i), yy = y(v);
-          if (!started){ ctx.moveTo(xx,yy); started=true; }
-          else ctx.lineTo(xx,yy);
-        }
-        if (started) ctx.stroke();
-      };
-
-      // Close: 白 / SMA50: 青 / SMA200: 赤
-      strokeLine(c,   '#e5e7eb', 2);
-      strokeLine(m50, '#3b82f6', 1.5);
-      strokeLine(m200,'#ef4444', 1.5);
+    window.__btcMaCross = {
+      sma50, sma200, distPct,
+      label,
+      updatedAt: Date.now(),
     };
-
-    try{
-      // Binance の Public API（CORSが通ることが多い）で日足を取得
-      const endTime = Date.now();
-      const startTime = endTime - 410*24*60*60*1000; // 約410日分
-      const url = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&startTime=${startTime}&endTime=${endTime}&limit=1000`;
-
-      const klines = await fetchJsonRetry(url, {retries:2, timeoutMs:12000, label:'btc-ma-binance'});
-      if (!Array.isArray(klines) || klines.length < 210) throw new Error('binance klines too short');
-
-      const labels = klines.map(k=> {
-        const d = new Date(k[0]);
-        return isNaN(d) ? '' : d.toISOString().slice(0,10);
-      });
-      const close = klines.map(k=> Number(k[4]));
-
-      const ma50 = smaSeries(close, 50);
-      const ma200 = smaSeries(close, 200);
-
-      const lastClose = close[close.length-1];
-      const last50 = ma50[ma50.length-1];
-      const last200 = ma200[ma200.length-1];
-      if (!Number.isFinite(lastClose) || !Number.isFinite(last50) || !Number.isFinite(last200)) {
-        throw new Error('SMA not ready');
-      }
-
-      const dist = ((last50 - last200) / last200) * 100;
-
-      window.__btcMaCross = { price:lastClose, sma50:last50, sma200:last200, distPct:dist, ratio:dist, labels };
-      window.__btcMaCrossSeries = { labels, close, ma50, ma200 };
-
-      if (elNow)   elNow.textContent    = fmtUsd0(lastClose);
-      if (elSma50) elSma50.textContent  = fmtUsd0(last50);
-      if (elSma200)elSma200.textContent = fmtUsd0(last200);
-      if (elDist)  elDist.textContent = fmtPct2(dist);
-      if (elMeta) elMeta.textContent = `SMA50 ${fmtUsd(last50)} / SMA200 ${fmtUsd(last200)} / 乖離 ${fmtPct2(dist)}`;
-
-      draw(close, ma50, ma200);
-    } catch(e){
-      console.warn('[btc ma] failed', e);
-      SECTION_ERRORS.btcMa = true;
-      if (elNow)   elNow.textContent    = '—';
-      if (elSma50) elSma50.textContent  = '—';
-      if (elSma200)elSma200.textContent = '—';
-      if (elDist) elDist.textContent = '—';
-      if (elMeta) elMeta.textContent = '—';
-      // チャートも消す
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        if (ctx) ctx.clearRect(0,0,canvas.width,canvas.height);
-      }
-    }
   }
-
-
 
 
 async function loadTrendingTop5(forceNetwork=false){
@@ -1799,8 +1669,8 @@ async function loadTrendingTop5(forceNetwork=false){
 
   // markets が取れていない場合は無理に進めない
   if (!marketsTop.length){
-    // CoinGecko がCORS等で取れない場合でも、表示できるセクション（例: BTC MA）は描画する
     trendingCoins = [];
+    return;
   }
 
   // F5連打など短時間の再読み込みはネット取得をスキップ（API制限対策）
@@ -1927,7 +1797,7 @@ async function loadTrendingTop5(forceNetwork=false){
       console.warn('trending fetch failed, using cache/top:', e);
       return;
     }
-    trendingCoins = [];
+    throw e;
   }
 }
 
@@ -2677,30 +2547,6 @@ if (breadthSub){
 }
         } catch(e) { console.warn('RSI failed', e); }
 
-
-    // BTC 価格 + SMA50/200（日足）
-    try{
-      const s = window.__btcMaCrossSeries;
-      const m = window.__btcMaCross;
-      if (s && Array.isArray(s.labels) && s.labels.length > 20){
-        const lastIdx = s.close.length - 1;
-        const lastClose = s.close[lastIdx];
-        const last50 = s.ma50[lastIdx];
-        const last200 = s.ma200[lastIdx];
-
-        const fmtUsdt0 = (v)=> (typeof v==='number' && isFinite(v)) ? (Math.round(v).toLocaleString('en-US') + ' USDT') : '-';
-        setText('kpiBtcMaNow', fmtUsdt0(lastClose));
-        const meta = `MA50 ${fmtUsdt0(last50)} / MA200 ${fmtUsdt0(last200)}` + (m ? `  (${m.label}, ${fmtPct(m.distPct, 2)})` : '');
-        setText('kpiBtcMaMeta', meta);
-
-        makeLineChart('btcMaLine', s.labels, [
-          {label:'BTC', data:s.close, borderColor:'rgba(255,255,255,0.95)', tension:0.35},
-          {label:'MA50', data:s.ma50, borderColor:'rgba(80,170,255,0.95)', tension:0.35},
-          {label:'MA200', data:s.ma200, borderColor:'rgba(255,90,90,0.95)', tension:0.35},
-        ], { yMin: null, yMax: null });
-      }
-    }catch(e){}
-
         // CoinRader Sentiment (0-100) — top250ベース
         try{
           const denomS = (Number(lastUp)||0) + (Number(lastDown)||0);
@@ -2949,8 +2795,8 @@ if (breadthSub){
 
       // BTC MA cross distance (SMA50 / SMA200)
     const ma = window.__btcMaCross || null;
-    if (ma && Number.isFinite((ma.distPct ?? ma.ratio))) {
-      const d = (ma.distPct ?? ma.ratio);
+    if (ma && Number.isFinite(ma.distPct)) {
+      const d = ma.distPct;
       const label = ma.label || (d > 0 ? 'GC側' : d < 0 ? 'DC側' : '中立');
       setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
       setSum('sumMaSub', label);
@@ -3859,7 +3705,7 @@ function renderAll(){
       await loadMarketsTop250(fromManualRefresh);
 
       // 追加KPI: BTC MAクロス距離
-      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; window.__btcMaCrossSeries = null; }
+      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
