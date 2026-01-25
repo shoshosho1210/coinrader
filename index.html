@@ -867,7 +867,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 <div class="kpi-tile kpi-avg250">
 <div class="kpi-tile-title">上位250 平均（24h）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div></div>
 <div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
 <div aria-hidden="true" class="breadth-track">
 <div class="breadth-seg up" id="sumBreadthSegUp"></div>
@@ -875,14 +875,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 <div class="breadth-caption" id="sumBreadthCaption">—</div>
 </div>
-<div aria-hidden="true" class="mini-spark mini-vis" title="7d推移（平均リターン）のスパークライン">
-<svg preserveaspectratio="none" viewbox="0 0 100 30">
-<path class="fill" d="" id="sumAvgSparkFill"></path>
-<line class="zero" id="sumAvgSparkZero" x1="0" x2="100" y1="15" y2="15"></line>
-<polyline class="line" id="sumAvgSparkLine" points=""></polyline>
-</svg>
 </div>
-</div><div class="kpi-tile">
+<div class="kpi-tile">
 <div class="kpi-tile-title">恐怖指数（0–100）</div>
 <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
 <div aria-hidden="true" class="mini-vis">
