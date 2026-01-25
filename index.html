@@ -692,7 +692,14 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 
   /* MA cross mini bar (v74) */
-  .mini-ma-track{
+  
+/* Breadth (Up/Down) mini bar */
+.mini-breadth-track{position:relative;height:10px;border-radius:999px;background:rgba(148,163,184,0.26);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(148,163,184,0.18);}
+.mini-breadth-up{position:absolute;left:0;top:0;bottom:0;width:0%;background:rgba(72,235,142,0.60);}
+.mini-breadth-down{position:absolute;right:0;top:0;bottom:0;width:0%;background:rgba(255,82,82,0.70);}
+.mini-breadth-marker{position:absolute;top:-3px;width:8px;height:16px;border-radius:999px;background:#e5e7eb;box-shadow:0 2px 10px rgba(0,0,0,0.35);transform:translateX(-50%);opacity:0.95;}
+
+.mini-ma-track{
     position:relative;
     height:10px;
     border-radius:999px;
@@ -705,7 +712,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .mini-ma-zone.mid{ left:35%; width:30%; background:rgba(120,186,255,0.45); }
   .mini-ma-zone.pos{ left:65%; width:35%; background:rgba(72,235,142,0.62); }
 
-  /* Guard: prevent stray mini-zone overlays if injected outside track */
+  .mini-ma-zone.down{background:rgba(255,82,82,0.75);} .mini-ma-zone.neutral{background:rgba(148,163,184,0.35);} .mini-ma-zone.up{background:rgba(72,235,142,0.58);} 
+/* Guard: prevent stray mini-zone overlays if injected outside track */
   .mini-rsi-zone, .mini-sent-zone, .mini-ma-zone{ display:none; }
   .mini-rsi-track .mini-rsi-zone{ display:block; }
   .mini-sent-track .mini-sent-zone{ display:block; }
@@ -937,7 +945,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     <div class="mini-vis mini-dom-track" id="sumDomTrack" aria-hidden="true">
       <div class="mini-dom-seg btc"></div>
       <div class="mini-dom-seg eth"></div>
-      <div class="mini-dom-seg stbl"></div>
+      <div class="mini-dom-seg stb"></div>
       <div class="mini-dom-seg oth"></div>
       <div class="mini-dom-marker" id="sumDomMarker" style="left:50%"></div>
     </div>
@@ -2419,6 +2427,8 @@ const charts = window.__charts || (window.__charts = {});
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
+    // Destroy any previous chart on this canvas to avoid Chart.js reuse errors
+    if (charts[canvas.id]) { try { charts[canvas.id].destroy(); } catch(e){} charts[canvas.id] = null; }
 
     const total = values.reduce((a,b)=>a+(typeof b==='number'?b:0), 0) || 1;
     const dataVals = values.map(v => (typeof v==='number' && isFinite(v)) ? v : 0);
@@ -2456,7 +2466,53 @@ const charts = window.__charts || (window.__charts = {});
   }
 
 
-  function makeBaselineChart(canvasId, labels, dataArr){
+  
+  // Normalized line (0-100) sparkline
+  function makeNormalizedLine(canvas, labels, values, opts = {}) {
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    if (!Array.isArray(values) || values.length < 2) return null;
+
+    // Destroy previous chart on same canvas
+    if (charts[canvas.id]) { try { charts[canvas.id].destroy(); } catch(e){} charts[canvas.id] = null; }
+
+    const vmin = Math.min(...values);
+    const vmax = Math.max(...values);
+    const denom = (vmax - vmin) || 1;
+    const norm = values.map(v => ((v - vmin) / denom) * 100);
+
+    const lineColor = opts.lineColor || '#e5e7eb';
+    const fill = (opts.fill === false) ? false : true;
+
+    charts[canvas.id] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: norm,
+          borderColor: lineColor,
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.35,
+          fill: fill ? { target: 'origin', above: 'rgba(229,231,235,0.14)', below: 'rgba(255,82,82,0.16)' } : false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false, min: 0, max: 100 }
+        }
+      }
+    });
+    return charts[canvas.id];
+  }
+
+function makeBaselineChart(canvasId, labels, dataArr){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
