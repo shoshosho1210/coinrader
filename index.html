@@ -2637,7 +2637,7 @@ function getAltVolumeTop5(){
         const inlineEl = document.getElementById('sumBreadthInline');
         if (inlineEl){
           if (up==null || down==null) inlineEl.textContent = '—';
-          else inlineEl.textContent = `↑${up} ↓${down}` + ((flat!=null && flat>0) ? ` ＝${flat}` : '');
+          else inlineEl.textContent = `銘柄数：上昇${up}/下落${down}` + ((flat!=null) ? `/横ばい${flat}` : '');
         }
 
 
