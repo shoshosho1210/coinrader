@@ -206,20 +206,21 @@
   .kpi-canvas.tall{ height:90px !important; }
   .kpi-canvas.tiny{ height:46px !important; opacity:.8; }
 
-  /* RSI threshold overlay (30/70) - DOM overlay (version-agnostic) */
+  /* RSI threshold overlay (30/70) - DOM overlay (pixel-aligned via JS) */
   .rsi-chart-wrap{ margin-top:8px; }
   .rsi-chart-area{ position:relative; height:70px; width:100%; }
   .rsi-chart-area .rsi-th{
     position:absolute; left:0; right:0;
     height:2px;
-    background: rgba(255,255,255,0.22);
     pointer-events:none;
     z-index:2;
+    opacity:0.9;
   }
-  /* 70 line => 30% from top (0..100 scale) */
-  .rsi-chart-area .rsi-70{ top:30%; }
-  /* 30 line => 70% from top */
-  .rsi-chart-area .rsi-30{ top:70%; }
+  /* upper threshold (70) */
+  .rsi-chart-area .rsi-70{ background: rgba(239,68,68,0.65); } /* red */
+  /* lower threshold (30) */
+  .rsi-chart-area .rsi-30{ background: rgba(59,130,246,0.65); } /* blue */
+
   .rsi-chart-area > canvas{
     position:absolute; inset:0;
     width:100% !important; height:100% !important;
@@ -2490,12 +2491,12 @@ if (breadthSub){
 // use the same label length as other sparklines
             const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
 
-            // Draw RSI with 30/70 guide lines (plugin-based; version-safe)
+            // Draw RSI (0-100固定)。30/70の閾値ラインはDOMオーバーレイで表示（Chart.js差分に依存しない）
             makeLineChart('rsiLine', rsiLabels, [
               {
                 label: 'RSI',
                 data: rsiSeries,
-                borderColor: '#a78bfa',
+                borderColor: 'rgba(255,255,255,0.92)',
                 borderWidth: 2,
                 pointRadius: 0,
                 tension: 0.35,
@@ -2503,13 +2504,7 @@ if (breadthSub){
               }
             ], {
               yMin: 0,
-              yMax: 100,
-              hLines: {
-                values: [30, 70],
-                dash: [6, 4],
-                color: 'rgba(255,255,255,0.55)',
-                width: 1.25
-              }
+              yMax: 100
             });
 }
         } catch(e) { console.warn('RSI failed', e); }
@@ -2778,7 +2773,55 @@ if (breadthSub){
   function clearCharts(){
     Object.values(charts).forEach(c => { try{ c.destroy(); }catch(e){} });
     Object.keys(charts).forEach(k => delete charts[k]);
+  
+  // --- RSI threshold overlay (30/70) ---
+  // Position DOM lines to match Chart.js scale exactly (works across v2/v3+).
+  let __rsiOverlayResizeBound = false;
+  function syncRsiThresholdOverlay(){
+    const chart = charts['rsiLine'];
+    const canvas = document.getElementById('rsiLine');
+    if (!chart || !canvas) return;
+
+    const wrap = canvas.closest('.rsi-chart-area');
+    if (!wrap) return;
+
+    const line70 = wrap.querySelector('.rsi-70');
+    const line30 = wrap.querySelector('.rsi-30');
+    if (!line70 || !line30) return;
+
+    // Resolve y-scale across Chart.js versions
+    let yScale = null;
+    if (chart.scales){
+      if (chart.scales.y && typeof chart.scales.y.getPixelForValue === 'function'){
+        yScale = chart.scales.y;
+      } else {
+        const all = Object.values(chart.scales);
+        yScale = all.find(s => s && typeof s.getPixelForValue === 'function' && (s.axis === 'y' || String(s.id||'').startsWith('y'))) || null;
+        if (!yScale) yScale = (chart.scales['y-axis-0'] || chart.scales['y0'] || null);
+      }
+    }
+    if (!yScale || typeof yScale.getPixelForValue !== 'function') return;
+
+    // Pixel in canvas coordinate space (0 at top of canvas)
+    const y70 = yScale.getPixelForValue(70);
+    const y30 = yScale.getPixelForValue(30);
+
+    // Apply (clamp just in case)
+    const h = wrap.clientHeight || 0;
+    const clamp = (v) => (h ? Math.max(0, Math.min(h, v)) : v);
+
+    line70.style.top = clamp(y70) + 'px';
+    line30.style.top = clamp(y30) + 'px';
+
+    // Bind resize once
+    if (!__rsiOverlayResizeBound){
+      __rsiOverlayResizeBound = true;
+      window.addEventListener('resize', () => {
+        requestAnimationFrame(syncRsiThresholdOverlay);
+      }, { passive:true });
+    }
   }
+}
 
 function drawSparkline(canvasId, data){
   const canvas = document.getElementById(canvasId);
@@ -3078,6 +3121,13 @@ function makeLineChart(canvasId, labels, series, opts){
       options,
       plugins: [hLinePlugin]
     });
+
+    // Sync RSI threshold overlay lines (30/70) after render
+    if (canvasId === 'rsiLine') {
+      // Wait for layout/scale calculation
+      requestAnimationFrame(() => { try{ syncRsiThresholdOverlay(); }catch(_){} });
+      setTimeout(() => { try{ syncRsiThresholdOverlay(); }catch(_){} }, 80);
+    }
   }
 
   // Sentiment gauge (0-100 => fear..greed). Render as a "filled" semi-gauge + needle.
