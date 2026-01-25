@@ -2491,10 +2491,10 @@ if (breadthSub){
         makeLineChart('breadthLine', labels, [
           {label:'上昇', data: upArr, border:'rgba(30,136,229,0.9)', fill:false},
           {label:'下落', data: downArr, border:'rgba(211,47,47,0.9)', fill:false}
-        ], {yBeginAtZero:true});
+        ], {yBeginAtZero:true, dayGrid:true});
 
         // Avg return chart (0 baseline fill)
-        makeBaselineChart('avgLine', labels, avgArr);
+        makeBaselineChart('avgLine', labels, avgArr, {dayGrid:true});
         // KPI表示を「7d推移」ベース（最新点）に合わせる
         lastUp = upArr[upArr.length - 1];
         lastDown = downArr[downArr.length - 1];
@@ -2585,6 +2585,7 @@ if (breadthSub){
                 fill: false
               }
             ], {
+              dayGrid:true,
               yMin: 0,
               yMax: 100,
               hLines: {
@@ -2701,21 +2702,21 @@ if (breadthSub){
             bg:'rgba(255,255,255,0.10)',
             tension:0.25,
             pointRadius:0
-          }], {yMin:minS, yMax:maxS});
+          }], {yMin:minS, yMax:maxS, dayGrid:true});
         }catch(e){ console.warn('sentiment failed', e); }
 
         // Market cap estimate (normalize to last for readability)
-        makeNormalizedLine('mcapLine', labels, mcapArr);
+        makeNormalizedLine('mcapLine', labels, mcapArr, {dayGrid:true});
 
         // Market cap 7d spark (use full 7d from sparkline)
         try {
           if (mcapArr && mcapArr.length >= 3) {
-            makeNormalizedLine('mcap7dLine', labels, mcapArr);
+            makeNormalizedLine('mcap7dLine', labels, mcapArr, {dayGrid:true});
           }
         } catch(_){}
 
         // Volume estimate (normalize)
-        makeNormalizedLine('volLine', labels, volArr);
+        makeNormalizedLine('volLine', labels, volArr, {dayGrid:true});
       }
     } catch(e) { console.warn('overview series failed', e); }
 
@@ -3223,6 +3224,11 @@ function makeLineChart(canvasId, labels, series, opts){
     const yMax = (opts && opts.yMax != null ? opts.yMax : undefined);
     const beginAtZero = !!(opts && opts.yBeginAtZero);
 
+    // Day grid (vertical separators) for 7d charts in MarketOverview
+    const dayGrid = !!(opts && opts.dayGrid);
+    const xGridColor = (opts && opts.xGridColor) ? opts.xGridColor : 'rgba(255,255,255,0.08)';
+    const xGridWidth = (opts && opts.xGridWidth != null) ? opts.xGridWidth : 1;
+
     // Chart.js v2/v3+ options compatibility
     const v = (typeof Chart !== 'undefined' && Chart.version) ? String(Chart.version) : '';
     const isV2 = v.startsWith('2.');
@@ -3236,7 +3242,11 @@ function makeLineChart(canvasId, labels, series, opts){
 
     if (isV2){
       options.scales = {
-        xAxes: [{ display:false }],
+        xAxes: [{
+          display: dayGrid ? true : false,
+          ticks: { display:false, autoSkip:true, maxTicksLimit: 8 },
+          gridLines: dayGrid ? { display:true, color: xGridColor, lineWidth: xGridWidth, drawBorder:false, drawTicks:false } : { display:false }
+        }],
         yAxes: [{
           display:false,
           ticks: {
@@ -3248,7 +3258,11 @@ function makeLineChart(canvasId, labels, series, opts){
       };
     } else {
       options.scales = {
-        x: { display:false },
+        x: {
+          display: dayGrid ? true : false,
+          ticks: { display:false, autoSkip:true, maxTicksLimit: 8 },
+          grid: { display: dayGrid, color: xGridColor, lineWidth: xGridWidth, drawBorder:false }
+        },
         y: {
           display:false,
           beginAtZero: beginAtZero,
@@ -3373,7 +3387,7 @@ function makeLineChart(canvasId, labels, series, opts){
     if (lb && labelText != null) lb.textContent = String(labelText);
   }
 
-  function makeBaselineChart(canvasId, labels, dataArr){
+  function makeBaselineChart(canvasId, labels, dataArr, opts){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -3396,6 +3410,10 @@ function makeLineChart(canvasId, labels, series, opts){
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const dayGrid = !!(opts && opts.dayGrid);
+    const xGridColor = (opts && opts.xGridColor) ? opts.xGridColor : 'rgba(255,255,255,0.08)';
+    const xGridWidth = (opts && opts.xGridWidth != null) ? opts.xGridWidth : 1;
+
     charts[canvasId] = new Chart(ctx, {
       type: 'line',
       data: {
@@ -3416,12 +3434,12 @@ function makeLineChart(canvasId, labels, series, opts){
       options: {
         responsive:true, maintainAspectRatio:false, animation:false,
         plugins:{ legend:{display:false}, tooltip:{enabled:false} },
-        scales:{ x:{display:false}, y:{display:false} }
+        scales:{ x:{ display: dayGrid ? true : false, ticks:{display:false, autoSkip:true, maxTicksLimit:8}, grid:{ display: dayGrid, color: xGridColor, lineWidth: xGridWidth, drawBorder:false } }, y:{display:false} }
       }
     });
   }
 
-  function makeNormalizedLine(canvasId, labels, dataArr){
+  function makeNormalizedLine(canvasId, labels, dataArr, opts){
     if (!ensureChartjs()) return;
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -3444,6 +3462,10 @@ function makeLineChart(canvasId, labels, series, opts){
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const dayGrid = !!(opts && opts.dayGrid);
+    const xGridColor = (opts && opts.xGridColor) ? opts.xGridColor : 'rgba(255,255,255,0.08)';
+    const xGridWidth = (opts && opts.xGridWidth != null) ? opts.xGridWidth : 1;
+
     charts[canvasId] = new Chart(ctx, {
       type:'line',
       data:{ labels: labels, datasets:[{
@@ -3457,7 +3479,7 @@ function makeLineChart(canvasId, labels, series, opts){
       }]},
       options:{ responsive:true, maintainAspectRatio:false, animation:false,
         plugins:{ legend:{display:false}, tooltip:{enabled:false} },
-        scales:{ x:{display:false}, y:{display:false} }
+        scales:{ x:{ display: dayGrid ? true : false, ticks:{display:false, autoSkip:true, maxTicksLimit:8}, grid:{ display: dayGrid, color: xGridColor, lineWidth: xGridWidth, drawBorder:false } }, y:{display:false} }
       }
     });
   }
