@@ -520,7 +520,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 @media (max-width: 560px){
   .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .summary-kpis .kpi-tile.kpi-ma{ grid-column: 1 / -1; }
+  .summary-kpis .kpi-tile.kpi-avg250{ grid-column: 1 / -1; }
   #sec-summary .section-sub{ display:none; }
 }
 .summary-lists{
@@ -914,7 +914,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 
-<div class="kpi-tile">
+<div class="kpi-tile kpi-avg250">
 <div class="kpi-tile-title">上位250 平均（24h）</div>
 <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
 <div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
