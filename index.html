@@ -2463,34 +2463,8 @@ if (breadthSub){
 // use the same label length as other sparklines
             const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
 
-            // Draw RSI with 30/70 guide lines as datasets (Chart.js version-safe)
-            const rsiGuides30 = new Array(rsiSeries.length).fill(30);
-            const rsiGuides70 = new Array(rsiSeries.length).fill(70);
+            // Draw RSI with 30/70 guide lines (plugin-based; version-safe)
             makeLineChart('rsiLine', rsiLabels, [
-              {
-                label: '70',
-                data: rsiGuides70,
-                borderColor: 'rgba(255,255,255,0.60)',
-                borderWidth: 1.5,
-                pointRadius: 0,
-                tension: 0,
-                fill: false,
-                borderDash: [6,4],
-                borderDashOffset: 0,
-                order: 3
-              },
-              {
-                label: '30',
-                data: rsiGuides30,
-                borderColor: 'rgba(255,255,255,0.60)',
-                borderWidth: 1.5,
-                pointRadius: 0,
-                tension: 0,
-                fill: false,
-                borderDash: [6,4],
-                borderDashOffset: 0,
-                order: 3
-              },
               {
                 label: 'RSI',
                 data: rsiSeries,
@@ -2498,11 +2472,19 @@ if (breadthSub){
                 borderWidth: 2,
                 pointRadius: 0,
                 tension: 0.35,
-                fill: false,
-                order: 2
+                fill: false
               }
-            ], { yMin: 0, yMax: 100 });
-          }
+            ], {
+              yMin: 0,
+              yMax: 100,
+              hLines: {
+                values: [30, 70],
+                dash: [6, 4],
+                color: 'rgba(255,255,255,0.55)',
+                width: 1.25
+              }
+            });
+}
         } catch(e) { console.warn('RSI failed', e); }
 
         // CoinRader Sentiment (0-100) — top250ベース
@@ -2981,24 +2963,33 @@ function makeLineChart(canvasId, labels, series, opts){
         const color = o.color || 'rgba(255,255,255,0.22)';
         const width = (o.width != null ? o.width : 1);
 
-        // resolve y-scale across Chart.js v2/v3+
-        const yScale =
-          (chart.scales && (chart.scales.y || chart.scales['y-axis-0'] || chart.scales['y0'])) ||
-          null;
+        // resolve y-scale across Chart.js versions
+        let yScale = null;
+        if (chart.scales){
+          if (chart.scales.y && typeof chart.scales.y.getPixelForValue === 'function'){
+            yScale = chart.scales.y;
+          } else {
+            const all = Object.values(chart.scales);
+            yScale = all.find(s => (s && (s.axis === 'y' || String(s.id||'').startsWith('y')) && typeof s.getPixelForValue === 'function')) || null;
+            if (!yScale) yScale = (chart.scales['y-axis-0'] || chart.scales['y0'] || null);
+          }
+        }
         if (!yScale || typeof yScale.getPixelForValue !== 'function') return;
+
+        const area = chart.chartArea || { left: yScale.left, right: yScale.right, top: yScale.top, bottom: yScale.bottom };
 
         ctx.save();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
         ctx.setLineDash(dash);
 
-        const left = yScale.left;
-        const right = yScale.right;
+        const left = area.left;
+        const right = area.right;
 
         for (const v of values){
           const y = yScale.getPixelForValue(v);
           // only draw if within chart area (avoid weird lines outside)
-          if (y >= yScale.top && y <= yScale.bottom){
+          if (y >= area.top && y <= area.bottom){
             ctx.beginPath();
             ctx.moveTo(left, y);
             ctx.lineTo(right, y);
