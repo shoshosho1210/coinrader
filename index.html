@@ -797,6 +797,21 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .updatedPill{ max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .statusPill{ white-space: nowrap; }
 }
+
+/* --- Summary KPI: Breadth mini bar --- */
+.kpi-mini-breadth{margin-top:10px}
+.breadth-track{
+  height:6px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,0.08);
+  display:flex;
+}
+.breadth-seg{height:100%}
+.breadth-seg.up{background:rgba(52,211,153,0.85)}
+.breadth-seg.down{background:rgba(248,113,113,0.85)}
+.breadth-caption{margin-top:6px;font-size:12px;color:rgba(229,231,235,0.85)}
+
 </style>
 </head>
 <body>
@@ -902,6 +917,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-tile">
 <div class="kpi-tile-title">上位250 平均（24h）</div>
 <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+<div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
+  <div class="breadth-track" aria-hidden="true">
+    <div class="breadth-seg up" id="sumBreadthSegUp"></div>
+    <div class="breadth-seg down" id="sumBreadthSegDown"></div>
+  </div>
+  <div class="breadth-caption" id="sumBreadthCaption">—</div>
+</div>
 <div aria-hidden="true" class="mini-spark mini-vis" title="7d推移（平均リターン）のスパークライン">
 <svg preserveaspectratio="none" viewbox="0 0 100 30">
 <path class="fill" d="" id="sumAvgSparkFill"></path>
@@ -2611,6 +2633,39 @@ function getAltVolumeTop5(){
       const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
       setSum('sumAvg24Main', fmt2(avg24));
       setSum('sumAvg24Sub', (med24==null) ? null : ('中央値 ' + fmt2(med24)));
+
+      // Breadth (24h up/down counts, Top250)
+      (function(){
+        const up = (o && typeof o.up==='number' && isFinite(o.up)) ? o.up : null;
+        const down = (o && typeof o.down==='number' && isFinite(o.down)) ? o.down : null;
+        const flat = (o && typeof o.flat==='number' && isFinite(o.flat)) ? o.flat : null;
+        const total = (up!=null && down!=null) ? (up + down) : null;
+
+        const capEl = document.getElementById('sumBreadthCaption');
+        if (capEl){
+          if (up==null || down==null) capEl.textContent = '—';
+          else capEl.textContent = `上昇 ${up} / 下落 ${down}` + ((flat!=null && flat>0) ? `（横ばい ${flat}）` : '');
+        }
+
+        const upSeg = document.getElementById('sumBreadthSegUp');
+        const downSeg = document.getElementById('sumBreadthSegDown');
+        if (upSeg && downSeg){
+          if (total && total > 0){
+            const upPct = (up / total) * 100;
+            const downPct = 100 - upPct;
+            upSeg.style.width = `${upPct}%`;
+            downSeg.style.width = `${downPct}%`;
+            upSeg.style.opacity = '1';
+            downSeg.style.opacity = '1';
+          } else {
+            upSeg.style.width = '50%';
+            downSeg.style.width = '50%';
+            upSeg.style.opacity = '0.35';
+            downSeg.style.opacity = '0.35';
+          }
+        }
+      })();
+
 
       // BTC MA cross distance (SMA50 / SMA200)
     const ma = window.__btcMaCross || null;
