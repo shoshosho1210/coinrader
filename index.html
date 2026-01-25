@@ -210,6 +210,7 @@
   .rsi-chart-wrap{ margin-top:8px; }
   .rsi-chart-area{ position:relative; height:70px; width:100%; }
   .rsi-chart-area .rsi-th{
+    display:none; /* thresholds are drawn on-canvas for perfect alignment */
     position:absolute; left:0; right:0;
     height:2px;
     pointer-events:none;
@@ -2504,7 +2505,13 @@ if (breadthSub){
               }
             ], {
               yMin: 0,
-              yMax: 100
+              yMax: 100,
+              hLines: {
+                lines: [
+                  { value: 30, color: 'rgba(59,130,246,0.75)', width: 1, dash: [] },
+                  { value: 70, color: 'rgba(239,68,68,0.75)', width: 1, dash: [] }
+                ]
+              }
             });
 }
         } catch(e) { console.warn('RSI failed', e); }
@@ -3046,12 +3053,11 @@ function makeLineChart(canvasId, labels, series, opts){
           : ((chart && chart.options && chart.options.plugins && chart.options.plugins.hLines)
               || (chart && chart.config && chart.config.options && chart.config.options.plugins && chart.config.options.plugins.hLines)
               || {});
+        const lines = Array.isArray(o.lines) ? o.lines : [];
         const values = Array.isArray(o.values) ? o.values : [];
-        if (!values.length) return;
+        const items = lines.length ? lines : values.map(v => ({ value: v }));
+        if (!items.length) return;
         const ctx = chart.ctx;
-        const dash = Array.isArray(o.dash) ? o.dash : [4,4];
-        const color = o.color || 'rgba(255,255,255,0.22)';
-        const width = (o.width != null ? o.width : 1);
 
         // resolve y-scale across Chart.js versions
         let yScale = null;
@@ -3068,25 +3074,26 @@ function makeLineChart(canvasId, labels, series, opts){
 
         const area = chart.chartArea || { left: yScale.left, right: yScale.right, top: yScale.top, bottom: yScale.bottom };
 
-        ctx.save();
-        ctx.lineWidth = width;
-        ctx.strokeStyle = color;
-        ctx.setLineDash(dash);
-
         const left = area.left;
         const right = area.right;
 
-        for (const v of values){
+        ctx.save();
+        for (const it of items){
+          const v = (it && it.value != null) ? it.value : it;
           const y = yScale.getPixelForValue(v);
-          // only draw if within chart area (avoid weird lines outside)
           if (y >= area.top && y <= area.bottom){
+            const color = (it && it.color) ? it.color : (o.color || 'rgba(255,255,255,0.28)');
+            const width = (it && it.width != null) ? it.width : (o.width != null ? o.width : 1);
+            const dash = Array.isArray(it && it.dash) ? it.dash : (Array.isArray(o.dash) ? o.dash : []);
+            ctx.lineWidth = width;
+            ctx.strokeStyle = color;
+            ctx.setLineDash(dash);
             ctx.beginPath();
             ctx.moveTo(left, y);
             ctx.lineTo(right, y);
             ctx.stroke();
           }
         }
-
         ctx.restore();
       }
     };
@@ -3136,13 +3143,6 @@ function makeLineChart(canvasId, labels, series, opts){
       options,
       plugins: [hLinePlugin]
     });
-
-    // Sync RSI threshold overlay lines (30/70) after render
-    if (canvasId === 'rsiLine') {
-      // Wait for layout/scale calculation
-      requestAnimationFrame(() => { try{ syncRsiThresholdOverlay(); }catch(_){} });
-      setTimeout(() => { try{ syncRsiThresholdOverlay(); }catch(_){} }, 80);
-    }
   }
 
   // Sentiment gauge (0-100 => fear..greed). Render as a "filled" semi-gauge + needle.
