@@ -2462,19 +2462,44 @@ if (breadthSub){
             }
 // use the same label length as other sparklines
             const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
+
+            // Draw RSI with 30/70 guide lines as datasets (Chart.js version-safe)
+            const rsiGuides30 = new Array(rsiSeries.length).fill(30);
+            const rsiGuides70 = new Array(rsiSeries.length).fill(70);
             makeLineChart('rsiLine', rsiLabels, [
-            // RSI line
-            {
-              label: 'RSI',
-              data: rsiSeries,
-              borderColor: '#a78bfa',
-              borderWidth: 2,
-              pointRadius: 0,
-              tension: 0.35,
-              fill: false,
-              order: 0
-            }
-          ], { yMin: 0, yMax: 100, hLines: { values: [30,70], dash: [4,4], color: 'rgba(255,255,255,0.28)', width: 1 } });
+              {
+                label: '70',
+                data: rsiGuides70,
+                borderColor: 'rgba(255,255,255,0.28)',
+                borderWidth: 1,
+                pointRadius: 0,
+                tension: 0,
+                fill: false,
+                borderDash: [4,4],
+                order: 0
+              },
+              {
+                label: '30',
+                data: rsiGuides30,
+                borderColor: 'rgba(255,255,255,0.28)',
+                borderWidth: 1,
+                pointRadius: 0,
+                tension: 0,
+                fill: false,
+                borderDash: [4,4],
+                order: 0
+              },
+              {
+                label: 'RSI',
+                data: rsiSeries,
+                borderColor: '#a78bfa',
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.35,
+                fill: false,
+                order: 1
+              }
+            ], { yMin: 0, yMax: 100 });
           }
         } catch(e) { console.warn('RSI failed', e); }
 
