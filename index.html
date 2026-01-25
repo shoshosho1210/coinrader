@@ -2412,6 +2412,101 @@ function makeMultiLineChart(canvasId, labels, seriesList){
   });
 }
 
+// --- added back missing chart helpers (v99) ---
+const charts = window.__charts || (window.__charts = {});
+
+  function drawDonut(canvasId, labels, values){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const total = values.reduce((a,b)=>a+(typeof b==='number'?b:0), 0) || 1;
+    const dataVals = values.map(v => (typeof v==='number' && isFinite(v)) ? v : 0);
+
+    // 見やすい落ち着いた色（サイトの雰囲気に合わせる）
+    const colors = ['rgba(250, 204, 21, 0.85)','rgba(96, 165, 250, 0.85)','rgba(52, 211, 153, 0.85)','rgba(156, 163, 175, 0.55)'];
+
+    charts[canvasId] = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data: dataVals, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#e5e7eb', boxWidth: 10, padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed || 0;
+                const p = (v/total)*100;
+                return ` ${ctx.label}: ${p.toFixed(2)}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+
+  function makeBaselineChart(canvasId, labels, dataArr){
+    if (!ensureChartjs()) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    // 既存チャートがあると Chart.js が "Canvas is already in use" を投げるため、必ず破棄してから再生成する
+    try {
+      if (charts && charts[canvasId]) {
+        charts[canvasId].destroy();
+        delete charts[canvasId];
+      }
+    } catch(_e){}
+
+    try {
+      if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+      }
+    } catch(_e){}
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    charts[canvasId] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: dataArr,
+          pointRadius: 0,
+          borderWidth: 2,
+          borderColor: '#e5e7eb',
+          tension: 0.25,
+          fill: {
+            target: { value: 0 },
+            above: 'rgba(30, 136, 229, 0.22)',
+            below: 'rgba(211, 47, 47, 0.22)'
+          }
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false, animation:false,
+        plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+        scales:{ x:{display:false}, y:{display:false} }
+      }
+    });
+  }
+
+// --- end added helpers ---
+
+
 function buildOverview(){
     const arr = marketsTop || [];
     const n = arr.length;
