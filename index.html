@@ -287,18 +287,11 @@
   /* Summary KPI compact rows */
   .summary-kpis .kpi-tile{ padding:9px 12px; }
   .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; flex-wrap:wrap; }
-
-/* 今日の注目：ドミナンスはスマホでも同一行に収める */
-.summary-kpis .kpi-tile.kpi-dom .kpi-value-row{ flex-wrap:nowrap; gap:8px; }
-.summary-kpis .kpi-tile.kpi-dom .kpi-tile-sub.inline{ white-space:nowrap; }
-@media (max-width:560px){
-  .summary-kpis .kpi-tile.kpi-dom .kpi-tile-big{ font-size: clamp(18px, 5.2vw, 22px); }
-  .summary-kpis .kpi-tile.kpi-dom .kpi-tile-sub.inline{ font-size: clamp(11px, 3.0vw, 13px); letter-spacing:-0.2px; }
-}
-
-  /* Keep Avg250 value + breadth on a single line to avoid card height jump */
+  /* Keep value row on one line for some KPI tiles */
   .summary-kpis .kpi-tile.kpi-avg250 .kpi-value-row{ flex-wrap:nowrap; }
-  .summary-kpis .kpi-tile.kpi-avg250 #sumBreadthInline{ white-space:nowrap; font-size:12px; opacity:0.95; }
+  .summary-kpis .kpi-tile.kpi-breadth .kpi-value-row{ flex-wrap:nowrap; }
+  .summary-kpis .kpi-tile.kpi-dom .kpi-value-row{ flex-wrap:nowrap; }
+  .summary-kpis .kpi-tile.kpi-dom #sumDomSub{ white-space:nowrap; font-size:12px; opacity:.95; }
   .summary-kpis .kpi-tile-big{ margin-top:0; }
   .summary-kpis .kpi-tile-sub.inline{ margin-top:0; font-size:12px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   
@@ -558,14 +551,19 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .summary-block{ margin-top: 18px; }
 .summary-kpis{
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
   margin-top: 10px;
 }
 
+@media (max-width: 1024px){
+  .summary-kpis{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 @media (max-width: 560px){
   .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .summary-kpis .kpi-tile.kpi-avg250{ grid-column: 1 / -1; }
+}
+
   #sec-summary .section-sub{ display:none; }
 }
 .summary-lists{
@@ -766,6 +764,31 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   user-select:none;
 }
 
+
+/* Avg return mini track (centered at 0) */
+.mini-avg-track{
+  position:relative;
+  height:10px;
+  border-radius:999px;
+  background: linear-gradient(90deg,
+    rgba(255,82,82,0.60) 0%,
+    rgba(245,158,11,0.44) 33%,
+    rgba(120,186,255,0.45) 66%,
+    rgba(72,235,142,0.62) 100%);
+  overflow:hidden;
+  box-shadow: inset 0 0 0 1px rgba(148,163,184,0.18);
+}
+.mini-avg-center{ position:absolute; left:50%; top:-4px; bottom:-4px; width:1px; background:rgba(226,232,240,0.22); }
+.mini-avg-marker{
+  position:absolute;
+  top:50%;
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  transform: translate(-50%, -50%);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 0 0 2px rgba(11,18,32,0.9);
+}
 /* Dominance mini donut (SVG) */
 
   .mini-donut{
@@ -906,83 +929,101 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 <div class="summary-kpis" id="summaryKpis">
 
+<div class="kpi-tile kpi-sent">
+  <div class="kpi-tile-title">恐怖指数（0–100）</div>
+  <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+  <div aria-hidden="true" class="mini-vis">
+    <div class="mini-sent-track">
+      <div class="mini-sent-zone fear"></div>
+      <div class="mini-sent-zone caution"></div>
+      <div class="mini-sent-zone neutral"></div>
+      <div class="mini-sent-zone greed"></div>
+      <div class="mini-sent-th t25"></div>
+      <div class="mini-sent-th t50"></div>
+      <div class="mini-sent-th t75"></div>
+      <div class="mini-sent-marker" id="sumSentMarker"></div>
+    </div>
+    <div class="kpi-bar-caption">恐怖 ← 50 → 強欲</div>
+  </div>
+</div>
 
-
+<div class="kpi-tile kpi-rsi">
+  <div class="kpi-tile-title">BTC RSI（14）</div>
+  <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+  <div aria-hidden="true" class="mini-vis">
+    <div class="mini-rsi-track">
+      <div class="mini-rsi-zone low"></div>
+      <div class="mini-rsi-zone mid"></div>
+      <div class="mini-rsi-zone high"></div>
+      <div class="mini-rsi-th t30"></div>
+      <div class="mini-rsi-th t70"></div>
+      <div class="mini-rsi-marker" id="sumRsiMarker"></div>
+    </div>
+    <div class="kpi-bar-caption">売られすぎ ← 50 → 買われすぎ</div>
+  </div>
+</div>
 
 <div class="kpi-tile kpi-avg250">
-<div class="kpi-tile-title">上位250 平均（24h）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumBreadthInline">—</div></div>
-<div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
-<div aria-hidden="true" class="breadth-track">
-<div class="breadth-seg up" id="sumBreadthSegUp"></div>
-<div class="breadth-seg down" id="sumBreadthSegDown"></div>
+  <div class="kpi-tile-title">上位250 平均（24h）</div>
+  <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+  <div aria-hidden="true" class="mini-vis" title="上位250の平均変化率（24h）。0より右=上昇、左=下落。">
+    <div class="mini-avg-track">
+      <div class="mini-avg-center"></div>
+      <div class="mini-avg-marker" id="sumAvgMarker"></div>
+    </div>
+    <div class="kpi-bar-caption">下落 ← 0 → 上昇</div>
+  </div>
 </div>
-<div class="breadth-caption kpi-bar-caption" id="sumBreadthCaption">上昇/下落（24h）</div>
+
+<div class="kpi-tile kpi-breadth">
+  <div class="kpi-tile-title">上昇 / 下落 銘柄数（24h）</div>
+  <div class="kpi-value-row"><div class="kpi-tile-big" id="sumBreadthMain">-</div><div class="kpi-tile-sub inline" id="sumBreadthSub">-</div></div>
+  <div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数（price_change_percentage_24h から算出）">
+    <div aria-hidden="true" class="breadth-track">
+      <div class="breadth-seg up" id="sumBreadthSegUp"></div>
+      <div class="breadth-seg down" id="sumBreadthSegDown"></div>
+    </div>
+    <div class="breadth-caption kpi-bar-caption" id="sumBreadthCaption">上昇/下落（24h）</div>
+  </div>
 </div>
+
+<div class="kpi-tile kpi-ma">
+  <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
+  <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
+  <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
+    <div class="mini-ma-track">
+      <div class="mini-ma-zone dc-strong"></div>
+      <div class="mini-ma-zone dc-weak"></div>
+      <div class="mini-ma-zone gc-weak"></div>
+      <div class="mini-ma-zone gc-strong"></div>
+      <div class="mini-ma-center"></div>
+      <div class="mini-ma-marker" id="sumMaMarker"></div>
+    </div>
+    <div class="mini-ma-label kpi-bar-caption">DC側 ← 0 → GC側</div>
+  </div>
 </div>
-<div class="kpi-tile">
-<div class="kpi-tile-title">恐怖指数（0–100）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
-<div aria-hidden="true" class="mini-vis">
-<div class="mini-sent-track">
-<div class="mini-sent-zone fear"></div>
-<div class="mini-sent-zone caution"></div>
-<div class="mini-sent-zone neutral"></div>
-<div class="mini-sent-zone greed"></div>
-<div class="mini-sent-th t25"></div>
-<div class="mini-sent-th t50"></div>
-<div class="mini-sent-th t75"></div>
-<div class="mini-sent-marker" id="sumSentMarker"></div>
+
+<div class="kpi-tile kpi-dom">
+  <div class="kpi-tile-title">BTC ドミナンス</div>
+  <div class="kpi-with-donut">
+    <div class="kpi-text">
+      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
+    </div>
+    <div aria-hidden="true" class="mini-dom-bar mini-vis" title="BTC/ETH/ステーブル/Others 構成">
+      <div aria-label="Dominance bar" class="mini-dom-track" role="img">
+        <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
+        <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
+        <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
+        <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
+        <div class="mini-dom-tick t50"><span>50</span></div>
+        <div class="mini-dom-tick t60"><span>60</span></div>
+      </div>
+      <div class="kpi-bar-caption">BTC / ETH / ステーブル / その他</div>
+    </div>
+  </div>
 </div>
-<div class="kpi-bar-caption">恐怖 ← 50 → 強欲</div>
-</div>
-</div><div class="kpi-tile">
-<div class="kpi-tile-title">BTC RSI（14）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
-<div aria-hidden="true" class="mini-vis">
-<div class="mini-rsi-track">
-<div class="mini-rsi-zone low"></div>
-<div class="mini-rsi-zone mid"></div>
-<div class="mini-rsi-zone high"></div>
-<div class="mini-rsi-th t30"></div>
-<div class="mini-rsi-th t70"></div>
-<div class="mini-rsi-marker" id="sumRsiMarker"></div>
-</div>
-<div class="kpi-bar-caption">売られすぎ ← 50 → 買われすぎ</div>
-</div>
-</div><div class="kpi-tile">
-<div class="kpi-tile-title">BTC ドミナンス</div>
-<div class="kpi-with-donut">
-<div class="kpi-text">
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
-</div>
-<div aria-hidden="true" class="mini-dom-bar mini-vis" title="BTC/ETH/ステーブル/Others 構成">
-<div aria-label="Dominance bar" class="mini-dom-track" role="img">
-<div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
-<div class="mini-dom-seg eth" id="sumDomSegEth"></div>
-<div class="mini-dom-seg stb" id="sumDomSegStb"></div>
-<div class="mini-dom-seg oth" id="sumDomSegOth"></div>
-<div class="mini-dom-tick t50"><span>50</span></div>
-<div class="mini-dom-tick t60"><span>60</span></div>
-</div>
-<div class="kpi-bar-caption">BTC / ETH / ステーブル / その他</div>
-</div>
-</div>
-</div><div class="kpi-tile kpi-ma">
-<div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
-<div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
-<div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
-<div class="mini-ma-track">
-<div class="mini-ma-zone dc-strong"></div>
-<div class="mini-ma-zone dc-weak"></div>
-<div class="mini-ma-zone gc-weak"></div>
-<div class="mini-ma-zone gc-strong"></div>
-<div class="mini-ma-center"></div>
-<div class="mini-ma-marker" id="sumMaMarker"></div>
-</div>
-<div class="mini-ma-label kpi-bar-caption">DC側 ← 0 → GC側</div>
-</div>
-</div></div>
+
+</div></div></div>
 <div class="summary-lists">
 <div class="summary-card">
 <div class="summary-card-title">🔥 トレンド TOP5</div>
@@ -2766,7 +2807,17 @@ if (breadthSub){
       const med24 = (o && typeof o.medianChg==='number' && isFinite(o.medianChg)) ? o.medianChg : null;
       const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
       setSum('sumAvg24Main', fmt2(avg24));
-      setSum('sumAvg24Sub', null);
+      setSum('sumAvg24Sub', '平均');
+
+      // Avg marker (range -5%..+5%)
+      (function(){
+        const mEl = document.getElementById('sumAvgMarker');
+        if(!mEl) return;
+        if(avg24==null || !isFinite(avg24)) { mEl.style.left='50%'; return; }
+        const v = Math.max(-5, Math.min(5, avg24));
+        const pct = ((v + 5) / 10) * 100;
+        mEl.style.left = pct + '%';
+      })();
 
       // Breadth (24h up/down counts, Top250)
       (function(){
@@ -2775,10 +2826,19 @@ if (breadthSub){
         const flat = (o && typeof o.flat==='number' && isFinite(o.flat)) ? o.flat : null;
         const total = (up!=null && down!=null) ? (up + down) : null;
 
-        const inlineEl = document.getElementById('sumBreadthInline');
-        if (inlineEl){
-          if (up==null || down==null) inlineEl.textContent = '—';
-          else inlineEl.textContent = `銘柄数：↑${up} ↓${down}`;
+        const mainEl = document.getElementById('sumBreadthMain');
+        const subEl = document.getElementById('sumBreadthSub');
+        if (mainEl){
+          if (up==null || down==null) mainEl.textContent = '—';
+          else mainEl.textContent = `↑${up} ↓${down}`;
+        }
+        if (subEl){
+          if (up==null || down==null) subEl.textContent = '—';
+          else {
+            const total2 = up + down;
+            const upPct = total2>0 ? Math.round((up/total2)*100) : 50;
+            subEl.textContent = (up>=down) ? `上昇優勢 ${upPct}%` : `下落優勢 ${100-upPct}%`;
+          }
         }
 
 
