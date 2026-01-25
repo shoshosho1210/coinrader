@@ -1,47 +1,41 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>CoinRader - 暗号資産ダッシュボード</title>
-
 <!-- SEO / Canonical -->
-<meta name="description" content="CoinRaderは暗号資産の時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新するダッシュボードです。">
-<link rel="canonical" href="https://coinrader.net/">
-
+<meta content="CoinRaderは暗号資産の時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新するダッシュボードです。" name="description"/>
+<link href="https://coinrader.net/" rel="canonical"/>
 <!-- Favicon / PWA -->
-<link rel="icon" href="/assets/icons/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#0f172a">
-
+<link href="/assets/icons/favicon.ico" rel="icon"/>
+<link href="/assets/icons/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="/assets/icons/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="/site.webmanifest" rel="manifest"/>
+<meta content="#0f172a" name="theme-color"/>
 <!-- OGP -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="CoinRader">
-<meta property="og:title" content="CoinRader - 暗号資産ダッシュボード">
-<meta property="og:description" content="時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新。">
-<meta property="og:url" content="https://coinrader.net/">
-<meta property="og:image" content="https://coinrader.net/assets/og/ogp.png?v=20260124">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
+<meta content="website" property="og:type"/>
+<meta content="CoinRader" property="og:site_name"/>
+<meta content="CoinRader - 暗号資産ダッシュボード" property="og:title"/>
+<meta content="時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新。" property="og:description"/>
+<meta content="https://coinrader.net/" property="og:url"/>
+<meta content="https://coinrader.net/assets/og/ogp.png?v=20260124" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
 <!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CoinRader - 暗号資産ダッシュボード">
-<meta name="twitter:description" content="時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新。">
-<meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png?v=20260124">
-
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="CoinRader - 暗号資産ダッシュボード" name="twitter:title"/>
+<meta content="時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新。" name="twitter:description"/>
+<meta content="https://coinrader.net/assets/og/ogp.png?v=20260124" name="twitter:image"/>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-TDEBXC7DH6');
 </script>
-
 <style>
   .hero{padding:28px 0 16px;}
   .hero-inner{max-width:1600px;margin:0 auto;padding:0 18px;}
@@ -523,6 +517,12 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   gap: 12px;
   margin-top: 10px;
 }
+
+@media (max-width: 560px){
+  .summary-kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-kpis .kpi-tile.kpi-ma{ grid-column: 1 / -1; }
+  #sec-summary .section-sub{ display:none; }
+}
 .summary-lists{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -801,358 +801,333 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </head>
 <body>
 <header class="appHeader" role="banner">
-  <div class="hdr-inner">
-    <div class="hdr-left">
-      <button class="iconBtn menuBtn" id="menuBtn" type="button" aria-label="メニュー" aria-controls="sideMenu" aria-expanded="false">
-        <span class="burger" aria-hidden="true"></span>
-      </button>
-      <a href="/" class="brandLink" aria-label="CoinRader ホーム">
-        <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
-      </a>
-    </div>
-    <div class="hdr-right">
-      <div class="statusPill" id="statusPill"><span class="dot"></span><span>接続中</span></div>
-      <div class="miniNote" id="miniNote" title="自動更新（約3分ごと）">自動3分</div>
-      <div class="updatedPill" id="updatedPill">更新: --</div>
-      <button class="btn small" id="refreshBtn" type="button">更新</button>
-    </div>
-  </div>
+<div class="hdr-inner">
+<div class="hdr-left">
+<button aria-controls="sideMenu" aria-expanded="false" aria-label="メニュー" class="iconBtn menuBtn" id="menuBtn" type="button">
+<span aria-hidden="true" class="burger"></span>
+</button>
+<a aria-label="CoinRader ホーム" class="brandLink" href="/">
+<img alt="CoinRader" class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png"/>
+</a>
+</div>
+<div class="hdr-right">
+<div class="statusPill" id="statusPill"><span class="dot"></span><span>接続中</span></div>
+<div class="miniNote" id="miniNote" title="自動更新（約3分ごと）">自動3分</div>
+<div class="updatedPill" id="updatedPill">更新: --</div>
+<button class="btn small" id="refreshBtn" type="button">更新</button>
+</div>
+</div>
 </header>
-
-<div class="sideMenuOverlay" id="sideMenuOverlay" hidden></div>
-<aside class="sideMenu" id="sideMenu" aria-hidden="true">
-  <div class="sideMenuHeader">
-    <div class="sideMenuTitle">メニュー</div>
-    <button class="iconBtn" id="menuCloseBtn" type="button" aria-label="閉じる">×</button>
-  </div>
-  <nav class="sideMenuNav" aria-label="ページ内メニュー">
-      <a class="sideNavLink" href="#sec-trend" onclick="scrollToId('sec-trend'); return false;">トレンドTOP5</a>
-      <a class="sideNavLink" href="#sec-gainers" onclick="scrollToId('sec-gainers'); return false;">上昇率TOP5</a>
-      <a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
-      <a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
-      <a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
-      <a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
-    </nav>
-  <div class="sideMenuFooter">
-    <a class="sideNavLink" href="/start">始め方</a>
-    <a class="sideNavLink" href="/data-sources">データソース</a>
-    <a class="sideNavLink" href="/ads-pr">広告・PR表記</a>
-    <a class="sideNavLink" href="/privacy">プライバシーポリシー</a>
-    <a class="sideNavLink" href="/contact">お問い合わせ</a>
-  </div>
+<div class="sideMenuOverlay" hidden="" id="sideMenuOverlay"></div>
+<aside aria-hidden="true" class="sideMenu" id="sideMenu">
+<div class="sideMenuHeader">
+<div class="sideMenuTitle">メニュー</div>
+<button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button">×</button>
+</div>
+<nav aria-label="ページ内メニュー" class="sideMenuNav">
+<a class="sideNavLink" href="#sec-trend" onclick="scrollToId('sec-trend'); return false;">トレンドTOP5</a>
+<a class="sideNavLink" href="#sec-gainers" onclick="scrollToId('sec-gainers'); return false;">上昇率TOP5</a>
+<a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
+<a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
+<a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
+<a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
+</nav>
+<div class="sideMenuFooter">
+<a class="sideNavLink" href="/start">始め方</a>
+<a class="sideNavLink" href="/data-sources">データソース</a>
+<a class="sideNavLink" href="/ads-pr">広告・PR表記</a>
+<a class="sideNavLink" href="/privacy">プライバシーポリシー</a>
+<a class="sideNavLink" href="/contact">お問い合わせ</a>
+</div>
 </aside>
+<section aria-label="今日の注目" class="summary-block" id="sec-summary">
+<div class="section-header">
+<div>
+<div class="section-title">今日の注目</div>
+<div class="section-sub">市場の空気と、いま注目の銘柄を最短で確認できます。</div>
+</div>
+<div class="section-actions">
+<a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
+</div>
+</div>
+<div class="summary-kpis" id="summaryKpis"><div class="kpi-tile">
+<div class="kpi-tile-title">BTC ドミナンス</div>
+<div class="kpi-with-donut">
+<div class="kpi-text">
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
+</div>
+<div aria-hidden="true" class="mini-dom-bar mini-vis" title="BTC/ETH/ステーブル/Others 構成">
+<div aria-label="Dominance bar" class="mini-dom-track" role="img">
+<div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
+<div class="mini-dom-seg eth" id="sumDomSegEth"></div>
+<div class="mini-dom-seg stb" id="sumDomSegStb"></div>
+<div class="mini-dom-seg oth" id="sumDomSegOth"></div>
+<div class="mini-dom-tick t50"><span>50</span></div>
+<div class="mini-dom-tick t60"><span>60</span></div>
+</div>
+</div>
+</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">恐怖指数（0–100）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+<div aria-hidden="true" class="mini-vis">
+<div class="mini-sent-track">
+<div class="mini-sent-zone fear"></div>
+<div class="mini-sent-zone caution"></div>
+<div class="mini-sent-zone neutral"></div>
+<div class="mini-sent-zone greed"></div>
+<div class="mini-sent-th t25"></div>
+<div class="mini-sent-th t50"></div>
+<div class="mini-sent-th t75"></div>
+<div class="mini-sent-marker" id="sumSentMarker"></div>
+</div>
+</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">BTC RSI（14）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+<div aria-hidden="true" class="mini-vis">
+<div class="mini-rsi-track">
+<div class="mini-rsi-zone low"></div>
+<div class="mini-rsi-zone mid"></div>
+<div class="mini-rsi-zone high"></div>
+<div class="mini-rsi-th t30"></div>
+<div class="mini-rsi-th t70"></div>
+<div class="mini-rsi-marker" id="sumRsiMarker"></div>
+</div>
+</div>
+</div>
 
-<section id="sec-summary" class="summary-block" aria-label="今日の注目">
-  <div class="section-header">
-    <div>
-      <div class="section-title">今日の注目</div>
-      <div class="section-sub">市場の空気（KPI）と、いま見られている/動いている/資金が集まっている銘柄を最短で確認できます。</div>
-    </div>
-    <div class="section-actions">
-      <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">Market Overview</a>
-    </div>
-  </div>
-
-  <div class="summary-kpis" id="summaryKpis">
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">恐怖指数（0–100）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
-      <div class="mini-vis" aria-hidden="true">
-        <div class="mini-sent-track">
-          <div class="mini-sent-zone fear"></div>
-          <div class="mini-sent-zone caution"></div>
-          <div class="mini-sent-zone neutral"></div>
-          <div class="mini-sent-zone greed"></div>
-          <div class="mini-sent-th t25"></div>
-          <div class="mini-sent-th t50"></div>
-          <div class="mini-sent-th t75"></div>
-          <div class="mini-sent-marker" id="sumSentMarker"></div>
-        </div>
-      </div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">BTC RSI（14）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
-      <div class="mini-vis" aria-hidden="true">
-        <div class="mini-rsi-track">
-          <div class="mini-rsi-zone low"></div>
-          <div class="mini-rsi-zone mid"></div>
-          <div class="mini-rsi-zone high"></div>
-          <div class="mini-rsi-th t30"></div>
-          <div class="mini-rsi-th t70"></div>
-          <div class="mini-rsi-marker" id="sumRsiMarker"></div>
-        </div>
-      </div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">BTC ドミナンス</div>
-      <div class="kpi-with-donut">
-        <div class="kpi-text">
-          <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
-        </div>
-        <div class="mini-dom-bar mini-vis" aria-hidden="true" title="BTC/ETH/ステーブル/Others 構成">
-          <div class="mini-dom-track" role="img" aria-label="Dominance bar">
-            <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
-            <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
-            <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
-            <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
-            <div class="mini-dom-tick t50"><span>50</span></div>
-            <div class="mini-dom-tick t60"><span>60</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">上位250 平均（24h）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
-      <div class="mini-spark mini-vis" aria-hidden="true" title="7d推移（平均リターン）のスパークライン">
-        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-          <path id="sumAvgSparkFill" class="fill" d=""></path>
-          <line id="sumAvgSparkZero" class="zero" x1="0" y1="15" x2="100" y2="15"></line>
-          <polyline id="sumAvgSparkLine" class="line" points=""></polyline>
-        </svg>
-      </div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
-      <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
-      <div class="mini-vis" aria-hidden="true" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
-        <div class="mini-ma-track">
-  <div class="mini-ma-zone dc-strong"></div>
-  <div class="mini-ma-zone dc-weak"></div>
-  <div class="mini-ma-zone gc-weak"></div>
-  <div class="mini-ma-zone gc-strong"></div>
-  <div class="mini-ma-center"></div>
-  <div class="mini-ma-marker" id="sumMaMarker"></div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">上位250 平均（24h）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumAvg24Main">-</div><div class="kpi-tile-sub inline" id="sumAvg24Sub">-</div></div>
+<div aria-hidden="true" class="mini-spark mini-vis" title="7d推移（平均リターン）のスパークライン">
+<svg preserveaspectratio="none" viewbox="0 0 100 30">
+<path class="fill" d="" id="sumAvgSparkFill"></path>
+<line class="zero" id="sumAvgSparkZero" x1="0" x2="100" y1="15" y2="15"></line>
+<polyline class="line" id="sumAvgSparkLine" points=""></polyline>
+</svg>
+</div>
+</div>
+<div class="kpi-tile kpi-ma">
+<div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
+<div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
+<div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=DC側(マイナス) / 右=GC側(プラス)。">
+<div class="mini-ma-track">
+<div class="mini-ma-zone dc-strong"></div>
+<div class="mini-ma-zone dc-weak"></div>
+<div class="mini-ma-zone gc-weak"></div>
+<div class="mini-ma-zone gc-strong"></div>
+<div class="mini-ma-center"></div>
+<div class="mini-ma-marker" id="sumMaMarker"></div>
 </div>
 <div class="mini-ma-label">DC側 ← 0 → GC側</div>
-      </div>
-    </div>
 </div>
-  </div>
-
-  <div class="summary-lists">
-    <div class="summary-card">
-      <div class="summary-card-title">🔥 トレンド TOP5</div>
-      <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
-    </div>
-    <div class="summary-card">
-      <div class="summary-card-title">🚀 Up TOP5（24h）</div>
-      <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
-    </div>
-    <div class="summary-card">
-      <div class="summary-card-title">📊 Vol(Alt) TOP5（24h）</div>
-      <ol class="summary-ol" id="summaryVolAltList"><li class="summary-li muted">データ取得中…</li></ol>
-    </div>
-  </div>
+</div>
+</div>
+<div class="summary-lists">
+<div class="summary-card">
+<div class="summary-card-title">🔥 トレンド TOP5</div>
+<ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
+</div>
+<div class="summary-card">
+<div class="summary-card-title">🚀 Up TOP5（24h）</div>
+<ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
+</div>
+<div class="summary-card">
+<div class="summary-card-title">📊 Vol(Alt) TOP5（24h）</div>
+<ol class="summary-ol" id="summaryVolAltList"><li class="summary-li muted">データ取得中…</li></ol>
+</div>
+</div>
 </section>
-
-
-<section class="cta-block" aria-label="おすすめ取引所導線">
-  <div class="cta-inner">
-    <div class="cta-text">
-      <div class="cta-title">取引所おすすめ（広告・PR）</div>
-      <div class="cta-sub">国内取引所を用途別に比較。公式サイト/キャンペーン導線をまとめています。</div>
-    </div>
-    <div class="cta-actions">
-      <a class="btn primary" href="/ads-pr" data-cta="top_to_adspr" data-placement="index_cta_block" data-partner="" data-pr="0">取引所おすすめを見る</a>
-      <a class="btn" href="/start" data-cta="top_to_start" data-placement="index_cta_block" data-partner="" data-pr="0">始め方</a>
-    </div>
-  </div>
-  <div class="cta-note">※当サイトは一部リンクにアフィリエイト広告を含みます。</div>
+<section aria-label="おすすめ取引所導線" class="cta-block">
+<div class="cta-inner">
+<div class="cta-text">
+<div class="cta-title">取引所おすすめ（広告・PR）</div>
+<div class="cta-sub">国内取引所を用途別に比較。公式サイト/キャンペーン導線をまとめています。</div>
+</div>
+<div class="cta-actions">
+<a class="btn primary" data-cta="top_to_adspr" data-partner="" data-placement="index_cta_block" data-pr="0" href="/ads-pr">取引所おすすめを見る</a>
+<a class="btn" data-cta="top_to_start" data-partner="" data-placement="index_cta_block" data-pr="0" href="/start">始め方</a>
+</div>
+</div>
+<div class="cta-note">※当サイトは一部リンクにアフィリエイト広告を含みます。</div>
 </section>
-
 <section id="sec-trend">
-  <div class="section-header">
-    <div>
-      <div class="section-title">トレンド TOP5</div>
-      <div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
-    </div>
-    <div class="section-actions">
-<a class="linkbtn" href="https://www.coingecko.com/ja/highlights/trending-crypto" target="_blank" rel="noopener" data-ga="ext_coingecko_trending" data-placement="index_trend_header" data-partner="coingecko" data-pr="0">もっと見る</a>
-    </div>
-  </div>
-  <div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
+<div class="section-header">
+<div>
+<div class="section-title">トレンド TOP5</div>
+<div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
+</div>
+<div class="section-actions">
+<a class="linkbtn" data-ga="ext_coingecko_trending" data-partner="coingecko" data-placement="index_trend_header" data-pr="0" href="https://www.coingecko.com/ja/highlights/trending-crypto" rel="noopener" target="_blank">もっと見る</a>
+</div>
+</div>
+<div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
 </section>
-
 <section id="sec-gainers">
-  <div class="section-header">
-    <div>
-      <div class="section-title">上昇率 TOP5</div>
-      <div class="section-sub">ステーブル除外＋24h出来高5億円以上を優先した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
-    </div>
-    <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja/crypto-gainers-losers" target="_blank" rel="noopener" data-ga="ext_coingecko_gainers" data-placement="index_gainers_header" data-partner="coingecko" data-pr="0">もっと見る</a>
-    </div>
-  </div>
-  <div class="grid" id="grid-gainers"><div class="msg">データ取得中…</div></div>
+<div class="section-header">
+<div>
+<div class="section-title">上昇率 TOP5</div>
+<div class="section-sub">ステーブル除外＋24h出来高5億円以上を優先した24h騰落率TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+</div>
+<div class="section-actions">
+<a class="linkbtn" data-ga="ext_coingecko_gainers" data-partner="coingecko" data-placement="index_gainers_header" data-pr="0" href="https://www.coingecko.com/ja/crypto-gainers-losers" rel="noopener" target="_blank">もっと見る</a>
+</div>
+</div>
+<div class="grid" id="grid-gainers"><div class="msg">データ取得中…</div></div>
 </section>
-
 <section id="sec-volume">
-  <div class="section-header">
-    <div>
-      <div class="section-title">出来高 TOP5</div>
-      <div class="section-sub">24h出来高TOP5（全体：BTC/ETH/ステーブル含む／時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
-    </div>
-    <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener" data-ga="ext_coingecko_high_volume" data-placement="index_volume_header" data-partner="coingecko" data-pr="0">もっと見る</a>
-    </div>
-  </div>
-  <div class="grid" id="grid-volume"><div class="msg">データ取得中…</div></div>
+<div class="section-header">
+<div>
+<div class="section-title">出来高 TOP5</div>
+<div class="section-sub">24h出来高TOP5（全体：BTC/ETH/ステーブル含む／時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+</div>
+<div class="section-actions">
+<a class="linkbtn" data-ga="ext_coingecko_high_volume" data-partner="coingecko" data-placement="index_volume_header" data-pr="0" href="https://www.coingecko.com/ja/highlights/high-volume" rel="noopener" target="_blank">もっと見る</a>
+</div>
+</div>
+<div class="grid" id="grid-volume"><div class="msg">データ取得中…</div></div>
 </section>
-
-
 <section id="sec-alt-volume">
-  <div class="section-header">
-    <div>
-      <div class="section-title">出来高（アルト）TOP5</div>
-      <div class="section-sub">BTC/ETH/ステーブルを除外した24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
-    </div>
-    <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja/highlights/high-volume" target="_blank" rel="noopener"
-         data-ga="ext_coingecko_high_volume_alt" data-placement="index_alt_volume_header" data-partner="coingecko" data-pr="0">もっと見る</a>
-    </div>
-  </div>
-  <div class="grid" id="grid-alt-volume"><div class="msg">データ取得中…</div></div>
+<div class="section-header">
+<div>
+<div class="section-title">出来高（アルト）TOP5</div>
+<div class="section-sub">BTC/ETH/ステーブルを除外した24h出来高TOP5（時価総額上位250銘柄から抽出）／カード内チャート：過去24時間（1d）（サンプル間隔・点数はAPI依存）</div>
+</div>
+<div class="section-actions">
+<a class="linkbtn" data-ga="ext_coingecko_high_volume_alt" data-partner="coingecko" data-placement="index_alt_volume_header" data-pr="0" href="https://www.coingecko.com/ja/highlights/high-volume" rel="noopener" target="_blank">もっと見る</a>
+</div>
+</div>
+<div class="grid" id="grid-alt-volume"><div class="msg">データ取得中…</div></div>
 </section>
-
-
 <section id="sec-mcap">
-  <div class="section-header">
-    <div>
-      <div class="section-title">時価総額 TOP20</div>
-      <div class="section-sub">時価総額上位20（JPY）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
-    </div>
-    <div class="section-actions">
-      <a class="linkbtn" href="https://www.coingecko.com/ja" target="_blank" rel="noopener" data-ga="ext_coingecko_home" data-placement="index_mcap_header" data-partner="coingecko" data-pr="0">もっと見る</a>
-    </div>
-  </div>
-  <div class="grid" id="grid-mcap"><div class="msg">データ取得中…</div></div>
+<div class="section-header">
+<div>
+<div class="section-title">時価総額 TOP20</div>
+<div class="section-sub">時価総額上位20（JPY）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
+</div>
+<div class="section-actions">
+<a class="linkbtn" data-ga="ext_coingecko_home" data-partner="coingecko" data-placement="index_mcap_header" data-pr="0" href="https://www.coingecko.com/ja" rel="noopener" target="_blank">もっと見る</a>
+</div>
+</div>
+<div class="grid" id="grid-mcap"><div class="msg">データ取得中…</div></div>
 </section>
-
 <section id="sec-overview">
-  <div class="section-header">
-    <div>
-      <div class="section-title">Market Overview</div>
-      <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
-    </div>
-    <div class="section-actions">
-      <button class="linkbtn" id="btnOverviewToggle" type="button">詳細</button>
-      <a class="linkbtn" href="https://www.coingecko.com" target="_blank" rel="noopener" data-ga="ext_coingecko_home" data-placement="index_overview_header" data-partner="coingecko" data-pr="0">もっと見る</a>
-    </div>
-  </div>
-
-
-  <div class="overview-kpi-strip" id="overviewKpiStrip">
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
-      <div class="kpi-tile-big" id="kpiStripMcapMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripMcapSub">-</div>
-    </div>
-
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">Dominance（上位250）</div>
-      <div class="kpi-tile-big" id="kpiStripDomMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripDomSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">市場の上昇下落（24h）</div>
-      <div class="kpi-tile-big" id="kpiStripBreadthMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripBreadthSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">平均 / 中央値（7d）</div>
-      <div class="kpi-tile-big" id="kpiStripAvgMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripAvgSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">BTC RSI（14 / 7d）</div>
-      <div class="kpi-tile-big" id="kpiStripRsiMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripRsiSub">-</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-tile-title">CoinRader Sentiment（0–100）</div>
-      <div class="kpi-tile-big" id="kpiStripSentMain">-</div>
-      <div class="kpi-tile-sub" id="kpiStripSentSub">-</div>
-    </div>
-  </div>
-
-  <div class="overview is-collapsed" id="overviewWrap">
-    <div class="overview-card">
-      <div class="donut-wrap"><canvas id="domChart"></canvas></div>
-      <div class="dom-metrics" id="domMetrics">-</div>
-      <div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
-    </div>
-
-    <div class="overview-card">
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="kpi-label">上昇 / 下落（7d推移 / 上位250）</div>
-          <div class="kpi-value" id="kpiBreadth">-</div>
-          <div class="kpi-legend" aria-hidden="true"><span class="item"><span class="dot up"></span>青＝上昇数</span><span class="item"><span class="dot down"></span>赤＝下落数</span></div>
-          <div class="kpi-sub" id="kpiBreadthSub">上位250を対象に、7日前を基準にした累積リターンで「上昇/下落/横ばい」を判定し、日次の推移を表示（青＝上昇、赤＝下落、灰＝横ばい）。軸は見やすさのため非表示です。</div>
-          <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">平均リターン（7d推移 / 上位250）</div>
-          <div class="kpi-value" id="kpiAvgChange">-</div>
-          <div class="kpi-sub" id="kpiAvgSub">上位250の各銘柄について、7日前の価格を基準(0%)として現在までの累積リターンを算出し、その平均を表示します。0より上は平均的に上昇、下は下落。</div>
-          <canvas class="kpi-canvas" id="avgLine"></canvas>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">BTC RSI（14 / 7d推移）</div>
-          <div class="kpi-value" id="kpiRsi">-</div>
-          <div class="kpi-sub" id="kpiRsiSub">RSIは価格の上げ下げの強さを0〜100で表す指標です（一般に70以上=買われ過ぎ、30以下=売られ過ぎ）。BTCの1時間足相当の7日スパークラインから算出しています。</div>
-          <canvas class="kpi-canvas" id="rsiLine"></canvas>
-        </div>
-
-        <div class="kpi">
-          <div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
-          <div class="kpi-value" id="kpiSentiment">-</div>
-          <div class="kpi-meta" id="kpiSentimentMeta">-</div>
-          <div class="sent-gauge-wrap">
-            <div class="sent-gauge" aria-hidden="true">
-              <svg class="sent-gauge-svg" viewBox="0 0 220 120" aria-hidden="true"></svg>
-              <div class="sent-gauge-needle" id="sentNeedle"></div>
-              <div class="sent-gauge-center"></div>
-            </div>
-            <div class="sent-gauge-side">
-              <div class="sent-label" id="sentLabel">-</div>
-              <div class="sent-desc" id="sentDesc">上位250ベースの独自ムード指数</div>
-            </div>
-          </div>
-          <div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
-          <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
-        </div>
-
-        <div class="kpi">
-          <div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
-          <div class="kpi-value" id="kpiMcap24h">-</div>
-          <div class="kpi-sub">推定: 各銘柄の現在時価総額を24h騰落率で逆算して前日を推定し、全体の増減（率/差額）を算出。</div>
-          <canvas class="kpi-canvas" id="mcap24hLine"></canvas>
-          <div class="kpi-sub" style="opacity:.75;margin-top:6px;">※推移は過去24h（7dスパークライン末尾）</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">上位250 時価総額合計（推定7d推移 / JPY）</div>
-          <div class="kpi-value" id="kpiTotalMcap">-</div>
-          <div class="kpi-sub">推定: 各銘柄の現在の時価総額×(各時点価格/現在価格) を合算（供給一定の近似）。</div>
-          <canvas class="kpi-canvas" id="mcapLine"></canvas>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">上位250 出来高合計（推定7d推移 / JPY）</div>
-          <div class="kpi-value" id="kpiTotalVol">-</div>
-          <div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
-          <div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。正確な出来高の推移には別データソースが必要です。</div>
-          <canvas class="kpi-canvas" id="volLine"></canvas>
-        </div>
-      </div>
-      <div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7日スパークライン」等から概算しています（目安）。</div>
-    </div>
-  </div>
-
-  <div class="msg" id="overviewMsg" style="display:none"></div>
+<div class="section-header">
+<div>
+<div class="section-title">Market Overview</div>
+<div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
+</div>
+<div class="section-actions">
+<button class="linkbtn" id="btnOverviewToggle" type="button">詳細</button>
+<a class="linkbtn" data-ga="ext_coingecko_home" data-partner="coingecko" data-placement="index_overview_header" data-pr="0" href="https://www.coingecko.com" rel="noopener" target="_blank">もっと見る</a>
+</div>
+</div>
+<div class="overview-kpi-strip" id="overviewKpiStrip">
+<div class="kpi-tile">
+<div class="kpi-tile-title">時価総額（上位250 / JPY）</div>
+<div class="kpi-tile-big" id="kpiStripMcapMain">-</div>
+<div class="kpi-tile-sub" id="kpiStripMcapSub">-</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">Dominance（上位250）</div>
+<div class="kpi-tile-big" id="kpiStripDomMain">-</div>
+<div class="kpi-tile-sub" id="kpiStripDomSub">-</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">市場の上昇下落（24h）</div>
+<div class="kpi-tile-big" id="kpiStripBreadthMain">-</div>
+<div class="kpi-tile-sub" id="kpiStripBreadthSub">-</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">平均 / 中央値（7d）</div>
+<div class="kpi-tile-big" id="kpiStripAvgMain">-</div>
+<div class="kpi-tile-sub" id="kpiStripAvgSub">-</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">BTC RSI（14 / 7d）</div>
+<div class="kpi-tile-big" id="kpiStripRsiMain">-</div>
+<div class="kpi-tile-sub" id="kpiStripRsiSub">-</div>
+</div>
+<div class="kpi-tile">
+<div class="kpi-tile-title">CoinRader Sentiment（0–100）</div>
+<div class="kpi-tile-big" id="kpiStripSentMain">-</div>
+<div class="kpi-tile-sub" id="kpiStripSentSub">-</div>
+</div>
+</div>
+<div class="overview is-collapsed" id="overviewWrap">
+<div class="overview-card">
+<div class="donut-wrap"><canvas id="domChart"></canvas></div>
+<div class="dom-metrics" id="domMetrics">-</div>
+<div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
+</div>
+<div class="overview-card">
+<div class="kpi-grid">
+<div class="kpi">
+<div class="kpi-label">上昇 / 下落（7d推移 / 上位250）</div>
+<div class="kpi-value" id="kpiBreadth">-</div>
+<div aria-hidden="true" class="kpi-legend"><span class="item"><span class="dot up"></span>青＝上昇数</span><span class="item"><span class="dot down"></span>赤＝下落数</span></div>
+<div class="kpi-sub" id="kpiBreadthSub">上位250を対象に、7日前を基準にした累積リターンで「上昇/下落/横ばい」を判定し、日次の推移を表示（青＝上昇、赤＝下落、灰＝横ばい）。軸は見やすさのため非表示です。</div>
+<canvas class="kpi-canvas tall" id="breadthLine"></canvas>
+</div>
+<div class="kpi">
+<div class="kpi-label">平均リターン（7d推移 / 上位250）</div>
+<div class="kpi-value" id="kpiAvgChange">-</div>
+<div class="kpi-sub" id="kpiAvgSub">上位250の各銘柄について、7日前の価格を基準(0%)として現在までの累積リターンを算出し、その平均を表示します。0より上は平均的に上昇、下は下落。</div>
+<canvas class="kpi-canvas" id="avgLine"></canvas>
+</div>
+<div class="kpi">
+<div class="kpi-label">BTC RSI（14 / 7d推移）</div>
+<div class="kpi-value" id="kpiRsi">-</div>
+<div class="kpi-sub" id="kpiRsiSub">RSIは価格の上げ下げの強さを0〜100で表す指標です（一般に70以上=買われ過ぎ、30以下=売られ過ぎ）。BTCの1時間足相当の7日スパークラインから算出しています。</div>
+<canvas class="kpi-canvas" id="rsiLine"></canvas>
+</div>
+<div class="kpi">
+<div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
+<div class="kpi-value" id="kpiSentiment">-</div>
+<div class="kpi-meta" id="kpiSentimentMeta">-</div>
+<div class="sent-gauge-wrap">
+<div aria-hidden="true" class="sent-gauge">
+<svg aria-hidden="true" class="sent-gauge-svg" viewbox="0 0 220 120"></svg>
+<div class="sent-gauge-needle" id="sentNeedle"></div>
+<div class="sent-gauge-center"></div>
+</div>
+<div class="sent-gauge-side">
+<div class="sent-label" id="sentLabel">-</div>
+<div class="sent-desc" id="sentDesc">上位250ベースの独自ムード指数</div>
+</div>
+</div>
+<div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
+<canvas class="kpi-canvas tiny" id="sentLine"></canvas>
+</div>
+<div class="kpi">
+<div class="kpi-label">市場時価総額 24h変化（推定 / 上位250）</div>
+<div class="kpi-value" id="kpiMcap24h">-</div>
+<div class="kpi-sub">推定: 各銘柄の現在時価総額を24h騰落率で逆算して前日を推定し、全体の増減（率/差額）を算出。</div>
+<canvas class="kpi-canvas" id="mcap24hLine"></canvas>
+<div class="kpi-sub" style="opacity:.75;margin-top:6px;">※推移は過去24h（7dスパークライン末尾）</div>
+</div>
+<div class="kpi">
+<div class="kpi-label">上位250 時価総額合計（推定7d推移 / JPY）</div>
+<div class="kpi-value" id="kpiTotalMcap">-</div>
+<div class="kpi-sub">推定: 各銘柄の現在の時価総額×(各時点価格/現在価格) を合算（供給一定の近似）。</div>
+<canvas class="kpi-canvas" id="mcapLine"></canvas>
+</div>
+<div class="kpi">
+<div class="kpi-label">上位250 出来高合計（推定7d推移 / JPY）</div>
+<div class="kpi-value" id="kpiTotalVol">-</div>
+<div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
+<div class="kpi-sub">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。正確な出来高の推移には別データソースが必要です。</div>
+<canvas class="kpi-canvas" id="volLine"></canvas>
+</div>
+</div>
+<div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7日スパークライン」等から概算しています（目安）。</div>
+</div>
+</div>
+<div class="msg" id="overviewMsg" style="display:none"></div>
 </section>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   if (typeof Chart !== "undefined" && Chart.registerables) { Chart.register.apply(null, Chart.registerables); }
@@ -3482,6 +3457,5 @@ function renderAll(){
   })();
 ;
 </script>
-
 </body>
 </html>
