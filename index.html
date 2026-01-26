@@ -882,25 +882,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .breadth-seg.up{background:rgba(52,211,153,0.85)}
 .breadth-seg.down{background:rgba(248,113,113,0.85)}
 .breadth-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none}
-/* ▼▼▼ 追加CSS：レンジバーとスマートバッジ ▼▼▼ */
-/*  .range-bar-wrap {
-    display: flex; align-items: center; gap: 6px; margin-top: 6px;
-    font-size: 10px; color: #6b7280; font-family: sans-serif;
-  }
-  .range-track {
-    flex: 1; height: 4px; border-radius: 2px;
-    background: rgba(255,255,255,0.1);
-    position: relative;
-  }
-  .range-pos {
-    position: absolute; top: 50%; transform: translate(-50%, -50%);
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #e5e7eb;
-    border: 1px solid #111827;
-    box-shadow: 0 0 4px rgba(255,255,255,0.5);
-  }
-  .range-val { white-space: nowrap; opacity: 0.7; }*/
-
+  /* ▼▼▼ 追加CSS：スマートバッジ ▼▼▼ */
   .meta-row {
     display: flex; justify-content: flex-end; align-items: center; gap: 5px;
     font-size: 11px; color: #9ca3af; margin-top: 3px;
@@ -3572,7 +3554,7 @@ function makeLineChart(canvasId, labels, series, opts){
     });
   }
 
-// 安全なカード生成関数（エラー修正・3行コンパクト版）
+// 安全なカード生成関数（3行コンパクト・レンジバー削除版）
   function renderInto(gridId, coins, mode, sectionKey){
     const grid = document.getElementById(gridId);
     if(!grid) return;
@@ -3668,30 +3650,9 @@ function makeLineChart(canvasId, labels, series, opts){
       // ★統合：すべてを1つのフレックス行に入れる
       const kpiLineHtml = `<div class="meta-row" style="flex-wrap:wrap; justify-content:flex-end; gap:6px;">${mainMetricHtml} ${turnoverBadge} ${athBadge}</div>`;
 
-      // 3. レンジバー（高値・安値）
-      let rangeHtml = '';
-      if (typeof coin.high_24h === 'number' && typeof coin.low_24h === 'number' && typeof coin.current_price === 'number') {
-        const high = coin.high_24h;
-        const low = coin.low_24h;
-        const cur = coin.current_price;
-        if (high > low) {
-          let pct = ((cur - low) / (high - low)) * 100;
-          pct = Math.max(0, Math.min(100, pct)); 
-          rangeHtml = `
-            <div class="range-bar-wrap">
-              <span class="range-val">L</span>
-              <div class="range-track">
-                <div class="range-pos" style="left: ${pct}%;"></div>
-              </div>
-              <span class="range-val">H</span>
-            </div>
-          `;
-        }
-      }
-
       const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
 
-      // HTML生成
+      // HTML生成（レンジバーなし）
       card.innerHTML = `
         <div class="rank-badge ${rankCls}">#${idx+1}</div>
         <div class="card-header">
@@ -3708,12 +3669,12 @@ function makeLineChart(canvasId, labels, series, opts){
             ${kpiLineHtml}
           </div>
         </div>
-        ${rangeHtml} <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
+        <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
       `;
 
       grid.appendChild(card);
 
-      // Sparkline描画処理（既存のロジックを維持）
+      // Sparkline描画処理（変更なし）
       if (mode==='mcap' && !(coin && coin.sparkline_in_7d && Array.isArray(coin.sparkline_in_7d.price) && coin.sparkline_in_7d.price.length)){
         return;
       }
@@ -3761,6 +3722,7 @@ function makeLineChart(canvasId, labels, series, opts){
       ensureSparklineLater();
     });
   }
+  
   function renderQuickSummary(){
     const rankIcon = (i)=> (i===0?'🥇':(i===1?'🥈':(i===2?'🥉':String(i+1))));
     const pctText = (n)=>{
