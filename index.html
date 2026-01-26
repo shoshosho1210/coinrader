@@ -1278,6 +1278,9 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="section-sub">※追加APIなし：時価総額上位250（JPY）から算出した概況</div>
 </div>
 <div class="section-actions">
+  <button class="linkbtn" onclick="shareMarketStatus()" style="background:#000; border-color:#333;">
+    <span style="font-size:11px">𝕏</span> 共有
+  </button>
 <button class="linkbtn" id="btnOverviewToggle" type="button">詳細</button>
 <a class="linkbtn" data-ga="ext_coingecko_home" data-partner="coingecko" data-placement="index_overview_header" data-pr="0" href="https://www.coingecko.com" rel="noopener" target="_blank">もっと見る</a>
 </div>
@@ -4206,6 +4209,52 @@ function renderAll(){
 
   function closePageModal() {
     document.getElementById('pageModalOverlay').classList.remove('open');
+  }
+// ▼▼▼ 追加：市場状況をXでシェアする関数 ▼▼▼
+  function shareMarketStatus() {
+    // 1. BTC情報の取得
+    const btc = marketsTop.find(c => c.id === 'bitcoin');
+    let btcText = '';
+    if (btc) {
+      const p = (btc.current_price / 10000).toFixed(0); // 万単位
+      const chg = btc.price_change_percentage_24h;
+      const icon = chg > 0 ? '📈' : (chg < 0 ? '📉' : '➡️');
+      const sign = chg > 0 ? '+' : '';
+      btcText = `BTC: ¥${p}万 (${sign}${chg.toFixed(1)}%) ${icon}`;
+    }
+
+    // 2. トレンド銘柄の取得（上位3つ）
+    const trendNames = trendingCoins.slice(0, 3).map(c => c.symbol.toUpperCase());
+    const trendText = trendNames.length ? `\n🔥Trend: ${trendNames.join(', ')}` : '';
+
+    // 3. 上昇率トップの取得
+    const gainers = getGainersTop5();
+    const topGainer = gainers.length ? gainers[0] : null;
+    let gainerText = '';
+    if (topGainer) {
+      const gSym = topGainer.symbol.toUpperCase();
+      const gPct = topGainer.price_change_percentage_24h.toFixed(1);
+      gainerText = `\n🚀Top: ${gSym} +${gPct}%`;
+    }
+
+    // 4. テキストの組み立て
+    const text = [
+      `【市場速報】`,
+      btcText,
+      trendText,
+      gainerText,
+      `\n#CoinRader #仮想通貨`,
+      `https://coinrader.net` // ←ここにあなたのサイトURL
+    ].join('');
+
+    // 5. Xの投稿画面を開く
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+    
+    // アナリティクス計測（もしあれば）
+    if(typeof fireCtaClick === 'function'){
+      fireCtaClick({cta_id:'share_x', placement:'overview', partner:'self', pr:0});
+    }
   }
 </script>
 </body>
