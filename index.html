@@ -1021,6 +1021,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .info-body h3 { margin: 16px 0 8px; font-size: 15px; color: #fff; }
   .info-body p { margin-bottom: 12px; }
   .info-body ul { padding-left: 20px; margin-bottom: 12px; }
+  .info-body a { color: #60a5fa; text-decoration: underline; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -4148,60 +4149,75 @@ function renderAll(){
       </div>
   </div>
 </div>
-
+<div class="info-modal-overlay" id="infoModalOverlay" onclick="closeInfoModal()">
+  <div class="info-modal" onclick="event.stopPropagation()">
+    <div class="info-header">
+      <div class="info-title" id="infoModalTitle">タイトル</div>
+      <button class="info-close" onclick="closeInfoModal()">×</button>
+    </div>
+    <div class="info-body" id="infoModalBody">
+      </div>
+  </div>
+</div>
 <script>
-  // ▼▼▼ 追加：モーダル制御スクリプト ▼▼▼
+  // ▼▼▼ ここに「飛び先の画面内容」を定義します ▼▼▼
   const MODAL_CONTENTS = {
     'start': {
-      title: 'CoinRaderの始め方',
+      title: '🔰 CoinRaderの始め方',
       body: `
-        <p>CoinRaderへようこそ。ここは「今の市場」を最速で把握するためのダッシュボードです。</p>
-        <h3>🔥 トレンド</h3>
-        <p>今、世界中で検索されている注目コインTOP5です。</p>
-        <h3>📊 3つの重要指標</h3>
-        <p>「上昇率」「出来高」「時価総額」のタブを切り替えて、市場の動きをチェックしてください。</p>
+        <p>CoinRaderへようこそ。ここは「今の仮想通貨市場」を最速で把握するためのダッシュボードです。</p>
+        <h3>🔥 1. トレンドを掴む</h3>
+        <p>画面上部の「トレンド」タブには、今世界中で検索されている注目コインTOP5が表示されます。</p>
+        <h3>📊 2. 資金の流れを見る</h3>
+        <p>「出来高」や「上昇率」を見ることで、どのコインに資金が流れているかが一目でわかります。</p>
         <h3>💡 ヒント</h3>
-        <p>各カードをタップすると、詳細データ（CoinGecko）へアクセスできます。</p>
+        <p>気になったコインのカードをタップすると、CoinGeckoの詳細ページへジャンプして深い分析ができます。</p>
       `
     },
     'data': {
-      title: 'データソースについて',
+      title: '📊 データソースについて',
       body: `
-        <p>当サイトの市場データは、以下のAPIを利用して取得しています。</p>
+        <p>当サイトの市場データは、信頼性の高い以下のAPIを利用して取得しています。</p>
         <ul>
-          <li><strong>CoinGecko API</strong>（価格、チャート、トレンド）</li>
-          <li><strong>Binance Public Data</strong>（一部のテクニカル指標推定用）</li>
+          <li><strong>CoinGecko API</strong><br>価格、チャート、トレンド情報など主要データの取得に使用。</li>
+          <li><strong>Binance Public Data</strong><br>BTCのMA（移動平均線）クロス分析などのテクニカル指標推定に使用。</li>
         </ul>
-        <p>※無料プランのAPIを使用しているため、更新頻度は約3分〜5分間隔となります。</p>
+        <p style="font-size:12px; opacity:0.7;">※APIの制限により、更新頻度は約3分〜5分間隔となります。正確なリアルタイム価格は各取引所でご確認ください。</p>
       `
     },
     'ads': {
-      title: '広告・PR表記',
+      title: '📢 広告・PR表記',
       body: `
-        <p>当サイトは、サーバー運営費を賄うためにアフィリエイトプログラムに参加しています。</p>
-        <p>「取引所おすすめ」などのリンクを経由して口座開設などが行われた場合、当サイトに紹介料が入ることがあります。</p>
+        <p>当サイトは運営費を賄うため、一部のリンクにアフィリエイトプログラムを使用しています。</p>
+        <p>「取引所おすすめ」などのリンクを経由して口座開設が行われた場合、当サイトに紹介料が入ることがありますが、ユーザー様に追加費用が発生することは一切ありません。</p>
+        <p>得られた収益は、より高速なサーバーへの移行や新機能の開発に使わせていただきます。</p>
       `
     },
     'privacy': {
-      title: 'プライバシーポリシー',
+      title: '🔒 プライバシーポリシー',
       body: `
-        <p>当サイトでは、アクセス解析のためにGoogle Analyticsを使用しています。データは匿名で収集されており、個人を特定するものではありません。</p>
+        <p>当サイトでは、サイトの利用状況を把握するためにGoogle Analyticsを使用しています。</p>
+        <p>データは匿名で収集されており、個人を特定するものではありません。お使いのブラウザの設定でCookieを無効にすることで、データの収集を拒否できます。</p>
       `
     },
     'contact': {
-      title: 'お問い合わせ',
+      title: '📩 お問い合わせ',
       body: `
-        <p>不具合の報告や機能リクエストは、以下の公式SNSまでご連絡ください。</p>
-        <p><strong>X (Twitter):</strong> <a href="https://x.com/" target="_blank" style="color:#60a5fa">@CoinRader_JP</a></p>
+        <p>不具合の報告や機能リクエスト、広告掲載のご相談は以下の公式SNSまでご連絡ください。</p>
+        <p><strong>X (Twitter):</strong> <a href="https://x.com/" target="_blank">@CoinRader_JP</a></p>
+        <p>※個人運営のため、返信にお時間をいただく場合があります。</p>
       `
     }
   };
 
+  // モーダルを開く関数
   function openInfoModal(key){
     const content = MODAL_CONTENTS[key];
     if(!content) return;
+    
     document.getElementById('infoModalTitle').textContent = content.title;
     document.getElementById('infoModalBody').innerHTML = content.body;
+    
     document.getElementById('infoModalOverlay').classList.add('open');
     
     // サイドメニューが開いていれば閉じる
@@ -4211,6 +4227,7 @@ function renderAll(){
     if(overlay) overlay.hidden = true;
   }
 
+  // モーダルを閉じる関数
   function closeInfoModal(){
     document.getElementById('infoModalOverlay').classList.remove('open');
   }
