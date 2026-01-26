@@ -3903,41 +3903,46 @@ function renderAll(){
     // タブタイトルを書き換え
     document.title = `BTC ¥${price} ${chgText} | CoinRader`;
   }
-// スケルトン生成関数
-  function makeSkeletons(count) {
-    let html = '';
-    for(let i=0; i<count; i++){
-      html += `
-        <div class="skeleton-card">
-          <div class="sk-row">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <div class="sk-icon skeleton-pulse"></div>
-              <div style="display:flex; flex-direction:column; gap:6px;">
-                <div class="sk-line skeleton-pulse" style="width:60px; height:12px;"></div>
-                <div class="sk-line skeleton-pulse" style="width:40px;"></div>
-              </div>
-            </div>
-            <div class="sk-lines">
-              <div class="sk-line skeleton-pulse" style="width:80px; height:14px;"></div>
-              <div class="sk-line skeleton-pulse" style="width:50px;"></div>
-            </div>
+      <div class="skeleton sk-card">
+        <div class="sk-header">
+          <div class="sk-circle"></div>
+          <div class="sk-lines">
+            <div class="sk-bar sk-w-40"></div>
+            <div class="sk-bar sk-w-30"></div>
           </div>
-          <div class="sk-chart skeleton-pulse"></div>
         </div>
-      `;
-    }
-    return html;
+        <div class="sk-bottom">
+          <div class="sk-bar sk-w-40"></div>
+          <div class="sk-bar sk-w-60"></div>
+        </div>
+      </div>
+    `).join('');
   }
-
   function setLoadingAll(){
-    // 各セクションにスケルトンを5個ずつ注入（スマホ・PC両対応）
-    const loadingHTML = makeSkeletons(5);
+    const html = getSkeletonHTML(5); // 5つ表示
     
-    const grids = ['grid-trend','grid-gainers','grid-volume','grid-alt-volume'];
+    const grids = ['grid-trend', 'grid-gainers', 'grid-volume', 'grid-alt-volume', 'grid-mcap'];
     grids.forEach(id => {
       const el = document.getElementById(id);
-      if(el) el.innerHTML = loadingHTML;
+      if(el) el.innerHTML = html;
     });
+
+    const om = document.getElementById('overviewMsg');
+    if (om){ om.style.display='none'; om.textContent=''; }
+  }
+  // ===== Refresh UI (auto/manual refresh without flicker) =====
+  let HAS_RENDERED_ONCE = false;
+
+  const SECTION_ERRORS = { trend:false };
+  function resetSectionErrors(){ SECTION_ERRORS.trend=false; }
+
+  function setRefreshingAll(on){
+    const ids = ['grid-trend','grid-gainers','grid-volume','grid-alt-volume','grid-mcap'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('refreshing', !!on);
+    });
+  }
 
     // 時価総額は20個なので多めに
     const mcapEl = document.getElementById('grid-mcap');
