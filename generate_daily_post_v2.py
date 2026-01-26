@@ -7,6 +7,31 @@ import requests
 from pathlib import Path
 from typing import Any
 
+
+
+# --- index.html と同等の出来高(アルト)除外ロジック ---
+EXCLUDE_VOLUME_IDS = {
+    'tether','usd-coin','dai','true-usd','first-digital-usd','ethena-usde',
+    'wrapped-bitcoin','staked-ether',
+    # 追加で除外したい銘柄はここにidを足す
+}
+EXCLUDE_NAME_KEYWORDS = [
+    'usd','us dollar','stable','tether','usd coin',
+    'wrapped','bridged','wormhole','portal',
+    'staked','staking','restaked',
+    'wbtc','weth','steth'
+]
+
+def is_excluded_for_alt_volume(coin: dict) -> bool:
+    cid = (coin.get('id') or '').lower()
+    name = (coin.get('name') or '').lower()
+    sym  = (coin.get('symbol') or '').lower()
+    if cid in EXCLUDE_VOLUME_IDS:
+        return True
+    for k in EXCLUDE_NAME_KEYWORDS:
+        if k in name or k in sym:
+            return True
+    return False
 BASE_URL = "https://api.coingecko.com/api/v3"
 
 CG_DEMO_KEY = os.getenv("CG_DEMO_KEY", "").strip()   # Demo API key
@@ -185,7 +210,8 @@ def build_post():
         [c for c in markets_top
          if isinstance(c.get("total_volume"), (int, float))
          and (not is_stable_coin(c))
-         and (not is_btc_or_eth(c))],
+         and (not is_btc_or_eth(c)
+         and (not is_excluded_for_alt_volume(c))],,
         key=lambda x: x.get("total_volume") or 0,
         reverse=True
     )[:5]
