@@ -2446,7 +2446,11 @@ if (breadthSub){
     const mcap24hEl = document.getElementById('kpiMcap7d');
     if (mcap24hEl){
       const pct = fmtPct(o.mcap7dPct);
-      const delta = yenSigned(o.mcap7dDelta);
+      // ▼ 修正後：符号をつけて yenLarge で丸める
+      const dVal = o.mcap7dDelta;
+      const absVal = Math.abs(dVal);
+      // yenLargeは絶対値で計算して「¥〇〇兆」を返すため、手動で符号をつける
+      const delta = (dVal >= 0 ? '+' : '-') + yenLarge(absVal);
       mcap24hEl.textContent = `${pct}（${delta}）`;
     }
 
