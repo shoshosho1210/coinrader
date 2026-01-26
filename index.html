@@ -1067,11 +1067,11 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   </div>
 </nav>
 <div class="sideMenuFooter">
-  <a class="sideNavLink" href="#" onclick="openInfoModal('start'); return false;">🔰 始め方</a>
-  <a class="sideNavLink" href="#" onclick="openInfoModal('data'); return false;">📊 データソース</a>
-  <a class="sideNavLink" href="#" onclick="openInfoModal('ads'); return false;">📢 広告・PR表記</a>
-  <a class="sideNavLink" href="#" onclick="openInfoModal('privacy'); return false;">🔒 プライバシーポリシー</a>
-  <a class="sideNavLink" href="#" onclick="openInfoModal('contact'); return false;">📩 お問い合わせ</a>
+  <a class="sideNavLink" href="#" onclick="openPageModal('start.html', '🔰 始め方'); return false;">🔰 始め方</a>
+  <a class="sideNavLink" href="#" onclick="openPageModal('data-sources.html', '📊 データソース'); return false;">📊 データソース</a>
+  <a class="sideNavLink" href="#" onclick="openPageModal('adr-pr.html', '📢 広告・PR表記'); return false;">📢 広告・PR表記</a>
+  <a class="sideNavLink" href="#" onclick="openPageModal('privacy.html', '🔒 プライバシーポリシー'); return false;">🔒 プライバシーポリシー</a>
+  <a class="sideNavLink" href="#" onclick="openPageModal('disclaimer.html', '📩 お問い合わせ'); return false;">📩 お問い合わせ</a>
 </div>
 </aside>
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
@@ -4139,97 +4139,71 @@ function renderAll(){
   })();
 ;
 </script>
-  <div class="info-modal-overlay" id="infoModalOverlay" onclick="closeInfoModal()">
+<div class="info-modal-overlay" id="pageModalOverlay" onclick="closePageModal()">
   <div class="info-modal" onclick="event.stopPropagation()">
     <div class="info-header">
-      <div class="info-title" id="infoModalTitle">タイトル</div>
-      <button class="info-close" onclick="closeInfoModal()">×</button>
+      <div class="info-title" id="pageModalTitle">タイトル</div>
+      <button class="info-close" onclick="closePageModal()">×</button>
     </div>
-    <div class="info-body" id="infoModalBody">
+    <div class="info-body" id="pageModalBody">
+      <div style="text-align:center; padding:40px; color:#94a3b8;">
+        読み込み中...
       </div>
-  </div>
-</div>
-<div class="info-modal-overlay" id="infoModalOverlay" onclick="closeInfoModal()">
-  <div class="info-modal" onclick="event.stopPropagation()">
-    <div class="info-header">
-      <div class="info-title" id="infoModalTitle">タイトル</div>
-      <button class="info-close" onclick="closeInfoModal()">×</button>
     </div>
-    <div class="info-body" id="infoModalBody">
-      </div>
   </div>
 </div>
 <script>
-  // ▼▼▼ ここに「飛び先の画面内容」を定義します ▼▼▼
-  const MODAL_CONTENTS = {
-    'start': {
-      title: '🔰 CoinRaderの始め方',
-      body: `
-        <p>CoinRaderへようこそ。ここは「今の仮想通貨市場」を最速で把握するためのダッシュボードです。</p>
-        <h3>🔥 1. トレンドを掴む</h3>
-        <p>画面上部の「トレンド」タブには、今世界中で検索されている注目コインTOP5が表示されます。</p>
-        <h3>📊 2. 資金の流れを見る</h3>
-        <p>「出来高」や「上昇率」を見ることで、どのコインに資金が流れているかが一目でわかります。</p>
-        <h3>💡 ヒント</h3>
-        <p>気になったコインのカードをタップすると、CoinGeckoの詳細ページへジャンプして深い分析ができます。</p>
-      `
-    },
-    'data': {
-      title: '📊 データソースについて',
-      body: `
-        <p>当サイトの市場データは、信頼性の高い以下のAPIを利用して取得しています。</p>
-        <ul>
-          <li><strong>CoinGecko API</strong><br>価格、チャート、トレンド情報など主要データの取得に使用。</li>
-          <li><strong>Binance Public Data</strong><br>BTCのMA（移動平均線）クロス分析などのテクニカル指標推定に使用。</li>
-        </ul>
-        <p style="font-size:12px; opacity:0.7;">※APIの制限により、更新頻度は約3分〜5分間隔となります。正確なリアルタイム価格は各取引所でご確認ください。</p>
-      `
-    },
-    'ads': {
-      title: '📢 広告・PR表記',
-      body: `
-        <p>当サイトは運営費を賄うため、一部のリンクにアフィリエイトプログラムを使用しています。</p>
-        <p>「取引所おすすめ」などのリンクを経由して口座開設が行われた場合、当サイトに紹介料が入ることがありますが、ユーザー様に追加費用が発生することは一切ありません。</p>
-        <p>得られた収益は、より高速なサーバーへの移行や新機能の開発に使わせていただきます。</p>
-      `
-    },
-    'privacy': {
-      title: '🔒 プライバシーポリシー',
-      body: `
-        <p>当サイトでは、サイトの利用状況を把握するためにGoogle Analyticsを使用しています。</p>
-        <p>データは匿名で収集されており、個人を特定するものではありません。お使いのブラウザの設定でCookieを無効にすることで、データの収集を拒否できます。</p>
-      `
-    },
-    'contact': {
-      title: '📩 お問い合わせ',
-      body: `
-        <p>不具合の報告や機能リクエスト、広告掲載のご相談は以下の公式SNSまでご連絡ください。</p>
-        <p><strong>X (Twitter):</strong> <a href="https://x.com/" target="_blank">@CoinRader_JP</a></p>
-        <p>※個人運営のため、返信にお時間をいただく場合があります。</p>
-      `
-    }
-  };
+  // ▼▼▼ 外部HTML読み込みスクリプト ▼▼▼
+  
+  async function openPageModal(url, title) {
+    const overlay = document.getElementById('pageModalOverlay');
+    const titleEl = document.getElementById('pageModalTitle');
+    const bodyEl = document.getElementById('pageModalBody');
+    
+    // 1. モーダルを開く（まずは「読み込み中」を表示）
+    titleEl.textContent = title;
+    bodyEl.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#94a3b8;">読み込み中...</div>';
+    overlay.classList.add('open');
 
-  // モーダルを開く関数
-  function openInfoModal(key){
-    const content = MODAL_CONTENTS[key];
-    if(!content) return;
-    
-    document.getElementById('infoModalTitle').textContent = content.title;
-    document.getElementById('infoModalBody').innerHTML = content.body;
-    
-    document.getElementById('infoModalOverlay').classList.add('open');
-    
     // サイドメニューが開いていれば閉じる
     const menu = document.getElementById('sideMenu');
-    const overlay = document.getElementById('sideMenuOverlay');
+    const menuOverlay = document.getElementById('sideMenuOverlay');
     if(menu) menu.classList.remove('is-open');
-    if(overlay) overlay.hidden = true;
+    if(menuOverlay) menuOverlay.hidden = true;
+
+    try {
+      // 2. ファイルを取得 (Fetch)
+      // キャッシュを防ぐために ?v=... をつけるのがコツです
+      const res = await fetch(url + '?v=' + Date.now());
+      
+      if (!res.ok) {
+        throw new Error('ページが見つかりませんでした (' + res.status + ')');
+      }
+
+      // 3. テキストとして取得
+      const text = await res.text();
+
+      // 4. HTMLから <body> の中身だけを簡易的に抽出する（フルHTMLの場合）
+      // ※もし start.html がパーツのみなら text そのままでOK
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/html');
+      
+      // bodyがあればその中身、なければ全体を表示
+      const content = doc.body ? doc.body.innerHTML : text;
+      
+      bodyEl.innerHTML = content;
+
+    } catch (e) {
+      console.error(e);
+      bodyEl.innerHTML = `<div style="padding:20px;text-align:center;color:#f87171;">
+        読み込みに失敗しました。<br><br>
+        <small>${e.message}</small>
+      </div>`;
+    }
   }
 
-  // モーダルを閉じる関数
-  function closeInfoModal(){
-    document.getElementById('infoModalOverlay').classList.remove('open');
+  function closePageModal() {
+    document.getElementById('pageModalOverlay').classList.remove('open');
   }
 </script>
 </body>
