@@ -292,7 +292,7 @@ def build_post():
         f"出来高(全体): {fmt_rank(vol_all_syms)}\n"
         f"出来高(アルト): {fmt_rank(vol_alt_syms)}\n"
         f"→ {post_url}\n"
-        f"#暗号資産"
+        f"#暗号資産 #Crypto #ビットコイン #Bitcoin"
     )
 
     # X向け（見やすさ優先：改行＋絵文字。出来高はアルトを表示）
@@ -307,7 +307,7 @@ def build_post():
             f"🔥Trend: {' / '.join(trend_items[:n_trend])}\n"
             f"🚀Up(24h,出来高≥5億円優先): {' | '.join(up_parts)}\n"
             f"📊Vol(アルト): {' / '.join(vol_alt_syms[:n_vol])}\n"
-            f"→ {post_url} #暗号資産"
+            f"→ {post_url} #暗号資産 #Crypto #ビットコイン #Bitcoin"
         )
         return short
 
@@ -327,7 +327,7 @@ def build_post():
             f" Trend:{'/'.join(trend_items[:2])}"
             f" | Up:{up2}"
             f" | Vol:{'/'.join(vol_alt_syms[:2])}"
-            f" → {post_url} #暗号資産"
+            f" → {post_url} #暗号資産 #Crypto #ビットコイン #Bitcoin"
         )
         if len(short) > 280:
             short = short[:277] + "…"
