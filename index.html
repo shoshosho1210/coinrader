@@ -950,6 +950,41 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .sk-w-30 { width: 30%; }
   .sk-w-60 { width: 60%; }
   .sk-bottom { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; margin-top: 10px; }
+  /* ▼▼▼ 追加：スティッキーナビゲーション（横スクロールタブ） ▼▼▼ */
+  .sticky-nav {
+    position: sticky;
+    top: var(--hdr-h); /* ヘッダーの高さに合わせて固定 */
+    z-index: 89;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin: 0 -12px 18px;
+    padding: 8px 12px;
+  }
+  .sticky-nav-inner {
+    display: flex; gap: 8px; overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sticky-nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700;
+    color: #94a3b8; text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.2s ease;
+  }
+  .nav-tab:hover, .nav-tab:active {
+    color: #f9fafb;
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+  }
+  .nav-tab span { font-size: 12px; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -973,19 +1008,29 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 </header>
+<nav class="sticky-nav" aria-label="クイックアクセス">
+  <div class="sticky-nav-inner">
+    <a href="#sec-trend" class="nav-tab" onclick="scrollToId('sec-trend'); return false;"><span>🔥</span>トレンド</a>
+    <a href="#sec-gainers" class="nav-tab" onclick="scrollToId('sec-gainers'); return false;"><span>🚀</span>上昇率</a>
+    <a href="#sec-volume" class="nav-tab" onclick="scrollToId('sec-volume'); return false;"><span>📊</span>出来高</a>
+    <a href="#sec-alt-volume" class="nav-tab" onclick="scrollToId('sec-alt-volume'); return false;"><span>💎</span>アルト</a>
+    <a href="#sec-mcap" class="nav-tab" onclick="scrollToId('sec-mcap'); return false;"><span>🏆</span>時価総額</a>
+    <a href="#sec-overview" class="nav-tab" onclick="scrollToId('sec-overview'); return false;"><span>📈</span>概況</a>
+  </div>
+</nav>
 <div class="sideMenuOverlay" hidden="" id="sideMenuOverlay"></div>
 <aside aria-hidden="true" class="sideMenu" id="sideMenu">
 <div class="sideMenuHeader">
 <div class="sideMenuTitle">メニュー</div>
 <button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button">×</button>
 </div>
-<nav aria-label="ページ内メニュー" class="sideMenuNav">
-<a class="sideNavLink" href="#sec-trend" onclick="scrollToId('sec-trend'); return false;">トレンドTOP5</a>
-<a class="sideNavLink" href="#sec-gainers" onclick="scrollToId('sec-gainers'); return false;">上昇率TOP5</a>
-<a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
-<a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
-<a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
-<a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
+//<nav aria-label="ページ内メニュー" class="sideMenuNav">
+//<a class="sideNavLink" href="#sec-trend" onclick="scrollToId('sec-trend'); return false;">トレンドTOP5</a>
+//<a class="sideNavLink" href="#sec-gainers" onclick="scrollToId('sec-gainers'); return false;">上昇率TOP5</a>
+//<a class="sideNavLink" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">出来高TOP5</a>
+//<a class="sideNavLink" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">出来高 24h変化率</a>
+//<a class="sideNavLink" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">時価総額TOP20</a>
+//<a class="sideNavLink" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
 </nav>
 <div class="sideMenuFooter">
 <a class="sideNavLink" href="/start">始め方</a>
