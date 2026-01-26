@@ -3903,32 +3903,49 @@ function renderAll(){
     // タブタイトルを書き換え
     document.title = `BTC ¥${price} ${chgText} | CoinRader`;
   }
-  function getSkeletonHTML(count = 5) {
-    // データ構造に似せたダミーHTMLを生成
-    return Array(count).fill(0).map(() => `
-      <div class="skeleton sk-card">
-        <div class="sk-header">
-          <div class="sk-circle"></div>
-          <div class="sk-lines">
-            <div class="sk-bar sk-w-40"></div>
-            <div class="sk-bar sk-w-30"></div>
+// スケルトン生成関数
+  function makeSkeletons(count) {
+    let html = '';
+    for(let i=0; i<count; i++){
+      html += `
+        <div class="skeleton-card">
+          <div class="sk-row">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="sk-icon skeleton-pulse"></div>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div class="sk-line skeleton-pulse" style="width:60px; height:12px;"></div>
+                <div class="sk-line skeleton-pulse" style="width:40px;"></div>
+              </div>
+            </div>
+            <div class="sk-lines">
+              <div class="sk-line skeleton-pulse" style="width:80px; height:14px;"></div>
+              <div class="sk-line skeleton-pulse" style="width:50px;"></div>
+            </div>
           </div>
+          <div class="sk-chart skeleton-pulse"></div>
         </div>
-        <div class="sk-bottom">
-          <div class="sk-bar sk-w-40"></div>
-          <div class="sk-bar sk-w-60"></div>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }
+    return html;
   }
+
   function setLoadingAll(){
-    const html = getSkeletonHTML(5); // 5つ表示
+    // 各セクションにスケルトンを5個ずつ注入（スマホ・PC両対応）
+    const loadingHTML = makeSkeletons(5);
     
-    const grids = ['grid-trend', 'grid-gainers', 'grid-volume', 'grid-alt-volume', 'grid-mcap'];
+    const grids = ['grid-trend','grid-gainers','grid-volume','grid-alt-volume'];
     grids.forEach(id => {
       const el = document.getElementById(id);
-      if(el) el.innerHTML = html;
+      if(el) el.innerHTML = loadingHTML;
     });
+
+    // 時価総額は20個なので多めに
+    const mcapEl = document.getElementById('grid-mcap');
+    if(mcapEl) mcapEl.innerHTML = makeSkeletons(10); // 画面埋まる程度に10個
+
+    const om = document.getElementById('overviewMsg');
+    if (om){ om.style.display='none'; om.textContent=''; }
+  }
 
     const om = document.getElementById('overviewMsg');
     if (om){ om.style.display='none'; om.textContent=''; }
