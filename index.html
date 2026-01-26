@@ -3592,9 +3592,18 @@ const placementMap = {
         : '-';
 
       const rankText = coin.market_cap_rank ? ('#' + coin.market_cap_rank) : '-';
+      // ▼ 修正後：回転率（Turnover）を計算して付与
+      let turnoverHtml = '';
+      if (typeof coin.total_volume === 'number' && typeof coin.market_cap === 'number' && coin.market_cap > 0) {
+        const rate = (coin.total_volume / coin.market_cap) * 100;
+        // 100%超えなら炎アイコン、50%超えなら太字など強調しても良い
+        const icon = rate >= 100 ? ' 🔥' : ''; 
+        turnoverHtml = ` <span style="opacity:0.8; font-size:0.9em;">(回転率 ${rate.toFixed(1)}%${icon})</span>`;
+      }
+
       const volMeta = (typeof coin.total_volume === 'number')
-        ? `出来高(24h): ${yenLarge(coin.total_volume)}`  // yenLargeに変更
-        : '出来高(24h): -';
+        ? `出来高: ${yenLarge(coin.total_volume)}${turnoverHtml}`
+        : '出来高: -';
 
       const extraMeta = (mode==='mcap')
         ? `時価総額: ${yenLarge(coin.market_cap)} / 順位: ${rankText}` // yenLargeに変更
