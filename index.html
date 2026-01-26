@@ -882,7 +882,38 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .breadth-seg.up{background:rgba(52,211,153,0.85)}
 .breadth-seg.down{background:rgba(248,113,113,0.85)}
 .breadth-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none}
+/* ▼▼▼ 追加CSS：レンジバーとスマートバッジ ▼▼▼ */
+  .range-bar-wrap {
+    display: flex; align-items: center; gap: 6px; margin-top: 6px;
+    font-size: 10px; color: #6b7280; font-family: sans-serif;
+  }
+  .range-track {
+    flex: 1; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .range-pos {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e5e7eb;
+    border: 1px solid #111827;
+    box-shadow: 0 0 4px rgba(255,255,255,0.5);
+  }
+  .range-val { white-space: nowrap; opacity: 0.7; }
 
+  .meta-row {
+    display: flex; justify-content: flex-end; align-items: center; gap: 5px;
+    font-size: 11px; color: #9ca3af; margin-top: 3px;
+    flex-wrap: wrap;
+  }
+  .meta-val { opacity: 0.9; white-space: nowrap; }
+  .meta-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    padding: 1px 5px; border-radius: 4px;
+    font-size: 10px; white-space: nowrap;
+  }
+  /* ▲▲▲ 追加CSSここまで ▲▲▲ */
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -3541,12 +3572,16 @@ function makeLineChart(canvasId, labels, series, opts){
     });
   }
 
+// 安全なカード生成関数（エラー修正・3行コンパクト版）
   function renderInto(gridId, coins, mode, sectionKey){
     const grid = document.getElementById(gridId);
+    if(!grid) return;
     grid.innerHTML = '';
 
     if (!coins || !coins.length){
-      if (sectionKey === 'trend' && SECTION_ERRORS.trend){
+      // SECTION_ERRORS が未定義の場合のガード
+      const hasError = (typeof SECTION_ERRORS !== 'undefined' && SECTION_ERRORS.trend);
+      if (sectionKey === 'trend' && hasError){
         grid.innerHTML = '<div class="msg">トレンドの取得に失敗しました（他のデータは表示しています）。時間をおいて再読み込みしてください。</div>';
         return;
       }
@@ -3561,11 +3596,11 @@ function makeLineChart(canvasId, labels, series, opts){
 
       const card = document.createElement('div');
       card.className = `card ${trendClass}`;
-
       
       card.dataset.coinId = (coin && coin.id) ? coin.id : '';
       card.dataset.sectionKey = sectionKey;
-const placementMap = {
+      
+      const placementMap = {
         trend: 'index_card_trend',
         gainers: 'index_card_gainers',
         volume: 'index_card_volume',
@@ -3575,13 +3610,15 @@ const placementMap = {
 
       card.onclick = () => {
         const url = coinGeckoUrlFor(coin);
-        fireCtaClick({
-          cta_id: 'card_open',
-          placement,
-          partner: 'coingecko',
-          pr: 0,
-          link_url: url
-        });
+        if (typeof fireCtaClick === 'function') {
+          fireCtaClick({
+            cta_id: 'card_open',
+            placement,
+            partner: 'coingecko',
+            pr: 0,
+            link_url: url
+          });
+        }
         window.open(url, '_blank', 'noopener');
       };
 
@@ -3591,26 +3628,70 @@ const placementMap = {
         ? ((change>=0?'+':'') + change.toFixed(2) + '%')
         : '-';
 
-      const rankText = coin.market_cap_rank ? ('#' + coin.market_cap_rank) : '-';
-      // ▼ 修正後：回転率（Turnover）を計算して付与
-      let turnoverHtml = '';
+      // 1. シンボルの横に置くランクバッジ（TOP20以外で表示）
+      const globalRankHtml = (coin.market_cap_rank && mode !== 'mcap') 
+        ? `<span style="background:rgba(255,255,255,0.1); padding:0 4px; border-radius:3px; margin-left:4px; font-size:10px; color:#cbd5e1;">#${coin.market_cap_rank}</span>` 
+        : '';
+
+      // 2. KPI行（出来高・回転率・ATH）を1行にまとめる
+      
+      // (A) 売買回転率
+      let turnoverBadge = '';
       if (typeof coin.total_volume === 'number' && typeof coin.market_cap === 'number' && coin.market_cap > 0) {
         const rate = (coin.total_volume / coin.market_cap) * 100;
-        // 100%超えなら炎アイコン、50%超えなら太字など強調しても良い
-        const icon = rate >= 100 ? ' 🔥' : ''; 
-        turnoverHtml = ` <span style="opacity:0.8; font-size:0.9em;">(回転率 ${rate.toFixed(1)}%${icon})</span>`;
+        const icon = rate >= 100 ? '🔥' : '🔄'; 
+        turnoverBadge = `<span class="meta-badge" title="売買回転率">${icon} ${rate.toFixed(1)}%</span>`;
       }
 
-      const volMeta = (typeof coin.total_volume === 'number')
-        ? `出来高: ${yenLarge(coin.total_volume)}${turnoverHtml}`
-        : '出来高: -';
+      // (B) ATH（最高値）
+      let athBadge = '';
+      if (typeof coin.ath_change_percentage === 'number') {
+        const ath = coin.ath_change_percentage;
+        if (ath > -1.0) {
+          athBadge = `<span class="meta-badge" style="color:#facc15; border-color:rgba(250,204,21,0.3);">🏆 ATH</span>`;
+        } else {
+          athBadge = `<span class="meta-badge" title="ATH比">📉 ${ath.toFixed(1)}%</span>`;
+        }
+      }
 
-      const extraMeta = (mode==='mcap')
-        ? `時価総額: ${yenLarge(coin.market_cap)} / 順位: ${rankText}` // yenLargeに変更
-        : `時価総額順位: ${rankText}`;
+      // (C) メイン指標（モードによって「出来高」か「時価総額」か切り替え）
+      let mainMetricHtml = '';
+      if (mode === 'mcap') {
+        // 時価総額モード
+        mainMetricHtml = `<span class="meta-val">Cap ${yenLarge(coin.market_cap)}</span>`;
+      } else {
+        // 通常モード（出来高を表示）
+        const val = (typeof coin.total_volume === 'number') ? yenLarge(coin.total_volume) : '-';
+        mainMetricHtml = `<span class="meta-val">Vol ${val}</span>`;
+      }
+
+      // ★統合：すべてを1つのフレックス行に入れる
+      const kpiLineHtml = `<div class="meta-row" style="flex-wrap:wrap; justify-content:flex-end; gap:6px;">${mainMetricHtml} ${turnoverBadge} ${athBadge}</div>`;
+
+      // 3. レンジバー（高値・安値）
+      let rangeHtml = '';
+      if (typeof coin.high_24h === 'number' && typeof coin.low_24h === 'number' && typeof coin.current_price === 'number') {
+        const high = coin.high_24h;
+        const low = coin.low_24h;
+        const cur = coin.current_price;
+        if (high > low) {
+          let pct = ((cur - low) / (high - low)) * 100;
+          pct = Math.max(0, Math.min(100, pct)); 
+          rangeHtml = `
+            <div class="range-bar-wrap">
+              <span class="range-val">L</span>
+              <div class="range-track">
+                <div class="range-pos" style="left: ${pct}%;"></div>
+              </div>
+              <span class="range-val">H</span>
+            </div>
+          `;
+        }
+      }
 
       const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
 
+      // HTML生成
       card.innerHTML = `
         <div class="rank-badge ${rankCls}">#${idx+1}</div>
         <div class="card-header">
@@ -3618,29 +3699,25 @@ const placementMap = {
             <img class="coin-icon" src="${coin.image}" alt="${coin.name}">
             <div>
               <div class="coin-name">${coin.name}</div>
-              <div class="coin-symbol">${(coin.symbol||'').toUpperCase()}</div>
+              <div class="coin-symbol">${(coin.symbol||'').toUpperCase()}${globalRankHtml}</div>
             </div>
           </div>
           <div>
             <div class="price">${yen(coin.current_price)}</div>
             <div class="change ${changeClass}">24h: ${pctText}</div>
-            <div class="meta">${volMeta}</div>
-            <div class="meta">${extraMeta}</div>
+            ${kpiLineHtml}
           </div>
         </div>
-        <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
+        ${rangeHtml} <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
       `;
 
       grid.appendChild(card);
 
-      // Sparkline:
-      // mcapスナップショットではsparklineを保存しないため、無い場合はフェッチせずスキップ（API節約）
+      // Sparkline描画処理（既存のロジックを維持）
       if (mode==='mcap' && !(coin && coin.sparkline_in_7d && Array.isArray(coin.sparkline_in_7d.price) && coin.sparkline_in_7d.price.length)){
         return;
       }
-      // be defensive. If anything goes wrong, fall back to a tiny synthetic line.
       const ensureSparklineLater = () => {
-        // If no chart instance after layout/async, draw a 2-point synthetic line as last resort.
         setTimeout(() => {
           try{
             if (!charts[canvasId]){
@@ -3652,46 +3729,30 @@ const placementMap = {
       };
 
       try{
-
-      const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
-      if (use24h){
-        // まずは markets(sparkline_in_7d) から 24h 相当を切り出して描画（追加APIを減らす）
-        const sp7 = coin?.sparkline_in_7d?.price;
-        const sp24 = derive24hFrom7d(sp7);
-        if (hasAtLeast2Finite(sp24)) {
-          drawSparkline(canvasId, sp24);
+        const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
+        if (use24h){
+          const sp7 = coin?.sparkline_in_7d?.price;
+          const sp24 = derive24hFrom7d(sp7);
+          if (hasAtLeast2Finite(sp24)) {
+            drawSparkline(canvasId, sp24);
+          } else {
+            const syn0 = buildSyntheticSparkline(coin);
+            if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
+            fetchSparkline1d(coin.id).then(arr => {
+              if (hasAtLeast2Finite(arr)) drawSparkline(canvasId, arr);
+            }).catch(() => {});
+          }
         } else {
-          // フォールバック（sparkline が欠ける場合）
-          // まずは必ず「サンプル」を描いておき、取得できたら上書き
-          const syn0 = buildSyntheticSparkline(coin);
-          if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
-
-          fetchSparkline1d(coin.id).then(arr => {
-            if (hasAtLeast2Finite(arr)) {
-              drawSparkline(canvasId, arr);
-            }
-          }).catch(() => {
-            // 失敗時はサンプルのまま
-          });
+          const sp = coin?.sparkline_in_7d?.price;
+          drawSparkline(canvasId, sp);
+          if (!hasAtLeast2Finite(sp)) {
+            const syn0 = buildSyntheticSparkline(coin);
+            if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
+            fetchSparkline7dFallback(coin.id).then(arr => {
+              if (hasAtLeast2Finite(arr)) drawSparkline(canvasId, arr);
+            }).catch(() => {});
+          }
         }
-      } else {
-        const sp = coin?.sparkline_in_7d?.price;
-        drawSparkline(canvasId, sp);
-        // Fallback: some coins don't return sparkline_in_7d (new listings etc.)
-        if (!hasAtLeast2Finite(sp)) {
-          // まずは必ず「サンプル」を描いておき、取得できたら上書き
-          const syn0 = buildSyntheticSparkline(coin);
-          if (hasAtLeast2Finite(syn0)) drawSparkline(canvasId, syn0);
-
-          fetchSparkline7dFallback(coin.id).then(arr => {
-            if (hasAtLeast2Finite(arr)) {
-              drawSparkline(canvasId, arr);
-            }
-          }).catch(() => {
-            // 失敗時はサンプルのまま
-          });
-        }
-      }
       } catch(e){
         console.warn('sparkline failed:', coin?.id || coin?.symbol || idx, e);
         const syn = buildSyntheticSparkline(coin);
@@ -3700,7 +3761,6 @@ const placementMap = {
       ensureSparklineLater();
     });
   }
-
   function renderQuickSummary(){
     const rankIcon = (i)=> (i===0?'🥇':(i===1?'🥈':(i===2?'🥉':String(i+1))));
     const pctText = (n)=>{
