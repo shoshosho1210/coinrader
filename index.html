@@ -3808,9 +3808,23 @@ function renderAll(){
     renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
     try{ renderQuickSummary(); }catch(e){ console.warn("quick summary failed", e); }
-
+    // ★追加：ブラウザのタブタイトルを動的に更新（BTC価格とトレンド）
+    updateDynamicTitle();
   }
+  // ★追加：タイトル更新関数
+  function updateDynamicTitle(){
+    // BTCを探す
+    const btc = marketsTop.find(c => c.id === 'bitcoin');
+    if(!btc) return;
 
+    const price = (btc.current_price / 10000).toFixed(0) + '万'; // "1352万"
+    const change = btc.price_change_percentage_24h;
+    const sign = (change >= 0) ? '+' : '';
+    const chgText = (typeof change === 'number') ? `(${sign}${change.toFixed(1)}%)` : '';
+
+    // タブタイトルを書き換え
+    document.title = `BTC ¥${price} ${chgText} | CoinRader`;
+  }
   function setLoadingAll(){
     document.getElementById('grid-trend').innerHTML = '<div class="msg">データ取得中…</div>';
     document.getElementById('grid-gainers').innerHTML = '<div class="msg">データ取得中…</div>';
