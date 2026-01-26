@@ -210,11 +210,13 @@ def build_post():
         [c for c in markets_top
          if isinstance(c.get("total_volume"), (int, float))
          and (not is_stable_coin(c))
-         and (not is_btc_or_eth(c)
-         and (not is_excluded_for_alt_volume(c))],,
+         and (not is_btc_or_eth(c))
+         and (not is_excluded_for_alt_volume(c))
+        ],
         key=lambda x: x.get("total_volume") or 0,
         reverse=True
     )[:5]
+
 
     vol_all_syms = [safe_sym(c.get("name",""), c.get("symbol","")) for c in volume_all]
     vol_alt_syms = [safe_sym(c.get("name",""), c.get("symbol","")) for c in volume_alt]
