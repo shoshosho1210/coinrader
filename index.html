@@ -1907,10 +1907,12 @@ function getMarketCapTop20(){
     "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
     "frax","pax-dollar","paypal-usd","gemini-dollar","paxos-standard","binance-usd","liquity-usd",
     "usd1"
+  
   ]);
   const STABLE_SYMBOLS = new Set([
     "usdt","usdc","dai","tusd","usde","fdusd","pyusd","gusd","usdp","busd","lusd","frax",
     "usd1", "bsc-usd"
+  
   ]);
   function isStableCoin(c){
     const id = (c?.id || "").toLowerCase();
