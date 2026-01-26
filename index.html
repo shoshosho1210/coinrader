@@ -882,47 +882,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .breadth-seg.up{background:rgba(52,211,153,0.85)}
 .breadth-seg.down{background:rgba(248,113,113,0.85)}
 .breadth-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none}
-  /* Market Pulse UI */
-  .market-pulse-banner {
-    background: linear-gradient(90deg, #1e293b, #0f172a);
-    padding: 12px 18px;
-    border-radius: 12px;
-    margin: 10px 4px 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .pulse-info { display: flex; flex-direction: column; }
-  .pulse-label { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
-  .pulse-value { font-size: 16px; font-weight: 700; color: #10b981; }
-  .pulse-indicator { 
-    background: rgba(16, 185, 129, 0.1); 
-    color: #10b981; 
-    padding: 4px 8px; 
-    border-radius: 6px; 
-    font-size: 12px; 
-    font-weight: bold;
-  }
-/* シェアボタンのスタイル */
-.btn-share-pulse {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-radius: 6px;
-  padding: 6px 12px;
-  margin-left: 8px;
-  cursor: pointer;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.2s;
-}
-.btn-share-pulse:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-}
+
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -946,22 +906,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 </header>
-<div class="market-pulse-banner" id="marketPulseUnit" style="display:none;">
-  <div class="pulse-info">
-    <div class="pulse-label">Market Vitality (TOP20)</div>
-    <div class="pulse-value" id="pulseStatus">Analyzing...</div>
-  </div>
-  
-  <div style="display:flex; align-items:center;">
-    <div class="pulse-indicator">
-      <span id="upCount">-</span> UP / <span id="downCount">-</span> DOWN
-    </div>
-      <button onclick="sharePulse()" class="btn-share-pulse" aria-label="Xで状況を共有">
-        <span style="font-weight:bold; font-family: sans-serif;">𝕏</span> 共有
-      </button>
-  </div>
-</div>
-
 <div class="sideMenuOverlay" hidden="" id="sideMenuOverlay"></div>
 <aside aria-hidden="true" class="sideMenu" id="sideMenu">
 <div class="sideMenuHeader">
@@ -3818,7 +3762,6 @@ function renderAll(){
     renderInto('grid-alt-volume', getAltVolumeTop5(), 'alt_volume', 'alt_volume');
     renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
     renderOverview();
-    updateMarketPulse();   // ← ★ここに1行追加するだけ！★
     try{ renderQuickSummary(); }catch(e){ console.warn("quick summary failed", e); }
 
   }
@@ -3959,66 +3902,6 @@ function renderAll(){
     try{ startAutoRefresh(); }catch(_e){}
   })();
 ;
-// 安全なパルス更新関数
-function updateMarketPulse() {
-  // グローバル変数 marketsTop が無い、または空なら何もしない
-  if (typeof marketsTop === 'undefined' || !Array.isArray(marketsTop) || marketsTop.length === 0) return;
-
-  const top20 = marketsTop.slice(0, 20);
-  const up = top20.filter(c => c.price_change_percentage_24h > 0).length;
-  const down = top20.filter(c => c.price_change_percentage_24h < 0).length;
-
-  const unitEl = document.getElementById('marketPulseUnit');
-  const upEl = document.getElementById('upCount');
-  const downEl = document.getElementById('downCount');
-  const statusEl = document.getElementById('pulseStatus');
-
-  if (unitEl && upEl && downEl && statusEl) {
-    unitEl.style.display = 'flex'; // データが準備できたら表示
-    upEl.textContent = up;
-    downEl.textContent = down;
-
-    if (up >= 13) {
-      statusEl.textContent = "Bullish / 強気 🚀";
-      statusEl.style.color = "#10b981";
-    } else if (down >= 13) {
-      statusEl.textContent = "Bearish / 警戒 ⚠️";
-      statusEl.style.color = "#f87171";
-    } else {
-      statusEl.textContent = "Neutral / 均衡 ⚖️";
-      statusEl.style.color = "#9ca3af";
-    }
-  }
-}
-// Xシェア機能（ポップアップ版）
-function sharePulse() {
-  // 画面の現在の数値を取得
-  const statusEl = document.getElementById('pulseStatus');
-  const upEl = document.getElementById('upCount');
-  const downEl = document.getElementById('downCount');
-
-  // 要素がない場合の安全策
-  if (!statusEl || !upEl || !downEl) return;
-
-  const status = statusEl.innerText;
-  const up = upEl.innerText;
-  const down = downEl.innerText;
-  
-  // 投稿文を作成
-  const text = `今の仮想通貨市場は【${status}】\n(TOP20: ${up} UP / ${down} DOWN)\n\n投資判断を5秒でサポートするダッシュボード #CoinRader`;
-  
-  // URL生成
-  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent("https://coinrader.net")}`;
-  
-  // ポップアップウィンドウの設定（画面中央に小窓を開く）
-  const width = 550;
-  const height = 420;
-  const left = (screen.width - width) / 2;
-  const top = (screen.height - height) / 2;
-  const windowFeatures = `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`;
-
-  window.open(shareUrl, 'twitter-share-dialog', windowFeatures);
-}
 </script>
 </body>
 </html>
