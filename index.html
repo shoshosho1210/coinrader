@@ -1550,7 +1550,27 @@ async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
     if (typeof n !== 'number') return '-';
     return n.toLocaleString('ja-JP', { style:'currency', currency:'JPY', maximumFractionDigits: 0 });
   }
-
+  // ★追加：大きな数値用（時価総額・出来高用：万・億・兆）
+  function yenLarge(n){
+    if (typeof n !== 'number') return '-';
+    if (n === 0) return '¥0';
+    
+    // 1兆以上
+    if (Math.abs(n) >= 1_000_000_000_000) {
+      return '¥' + (n / 1_000_000_000_000).toFixed(2) + '兆';
+    }
+    // 1億以上
+    if (Math.abs(n) >= 100_000_000) {
+      return '¥' + (n / 100_000_000).toFixed(1) + '億'; // 億は小数点1桁で見やすく
+    }
+    // 1万以上
+    if (Math.abs(n) >= 10_000) {
+      return '¥' + (n / 10_000).toFixed(0) + '万';
+    }
+    
+    // それ未満は通常の円表記
+    return yen(n);
+  }
   function yenSigned(n){
     if (typeof n !== 'number' || !isFinite(n)) return '-';
     const sign = n > 0 ? '+' : (n < 0 ? '-' : '');
@@ -2419,8 +2439,8 @@ if (breadthSub){
     }
 
     // Totals
-    document.getElementById('kpiTotalMcap').textContent = yen(o.totalMcap);
-    document.getElementById('kpiTotalVol').textContent = yen(o.totalVol);
+    document.getElementById('kpiTotalMcap').textContent = yenLarge(o.totalMcap);
+    document.getElementById('kpiTotalVol').textContent = yenLarge(o.totalVol);
 
     // Market cap 24h change (estimate)
     const mcap24hEl = document.getElementById('kpiMcap7d');
@@ -3569,11 +3589,11 @@ const placementMap = {
 
       const rankText = coin.market_cap_rank ? ('#' + coin.market_cap_rank) : '-';
       const volMeta = (typeof coin.total_volume === 'number')
-        ? `出来高(24h): ${yen(coin.total_volume)}`
+        ? `出来高(24h): ${yenLarge(coin.total_volume)}`  // yenLargeに変更
         : '出来高(24h): -';
 
       const extraMeta = (mode==='mcap')
-        ? `時価総額: ${yen(coin.market_cap)} / 順位: ${rankText}`
+        ? `時価総額: ${yenLarge(coin.market_cap)} / 順位: ${rankText}` // yenLargeに変更
         : `時価総額順位: ${rankText}`;
 
       const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
