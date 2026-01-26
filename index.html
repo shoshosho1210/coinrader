@@ -4,9 +4,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>CoinRader - 暗号資産ダッシュボード</title>
-<!-- SEO / Canonical -->
-<meta content="CoinRaderは暗号資産の時価総額TOP20、トレンド、上昇率、出来高を3分ごとに自動更新するダッシュボードです。" name="description"/>
+<title>CoinRader | 5秒で掴む、次の仮想通貨トレンド</title>
+<meta content="CoinRaderは、3分更新のリアルタイムデータで『クジラの動き』と『市場の熱量』を可視化。投資判断を最速化するダッシュボードです。" name="description"/>
+<link href="https://coinrader.net/" rel="canonical"/>
+<meta content="CoinRader - 今日の相場は『買い』か？" property="og:title"/>
+<meta content="3分更新のリアルタイムデータで、投資家の意思決定をサポート。" property="og:description"/>
 <link href="https://coinrader.net/" rel="canonical"/>
 <!-- Favicon / PWA -->
 <link href="/assets/icons/favicon.ico" rel="icon"/>
@@ -882,12 +884,43 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .breadth-seg.up{background:rgba(52,211,153,0.85)}
 .breadth-seg.down{background:rgba(248,113,113,0.85)}
 .breadth-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none}
-
+/* Market Pulse UI (2026 Trend) */
+  .market-pulse-banner {
+    background: linear-gradient(90deg, #1e293b, #0f172a);
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin: 10px 4px 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .pulse-info { display: flex; flex-direction: column; }
+  .pulse-label { font-size: 11px; color: #9ca3af; margin-bottom: 2px; }
+  .pulse-value { font-size: 16px; font-weight: 700; color: #10b981; }
+  .pulse-indicator { 
+    background: rgba(16, 185, 129, 0.1); 
+    color: #10b981; 
+    padding: 4px 8px; 
+    border-radius: 6px; 
+    font-size: 12px; 
+    font-weight: bold;
+  }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
 </head>
 <body>
+<div class="market-pulse-banner">
+  <div class="pulse-info">
+    <div class="pulse-label">Market Vitality (TOP20)</div>
+    <div class="pulse-value" id="pulseStatus">Analyzing...</div>
+  </div>
+  <div class="pulse-indicator">
+    <span id="upCount">-</span> UP / <span id="downCount">-</span> DOWN
+  </div>
+</div>
 <header class="appHeader" role="banner">
 <div class="hdr-inner">
 <div class="hdr-left">
@@ -2337,6 +2370,8 @@ function getAltVolumeTop5(){
   }
 
   function renderOverview(){
+    // 関数の最初に追記
+    if(typeof updateMarketPulseFromData === 'function') updateMarketPulseFromData(data);
     const msg = document.getElementById('overviewMsg');
     msg.style.display = 'none';
 
@@ -3906,6 +3941,29 @@ function renderAll(){
     try{ startAutoRefresh(); }catch(_e){}
   })();
 ;
+// 2026 Trend: Market Pulse Updater
+  function updateMarketPulseFromData(data) {
+    if (!data || !Array.isArray(data)) return;
+    const top20 = data.slice(0, 20);
+    const up = top20.filter(c => parseFloat(c.priceChangePercent) > 0).length;
+    const down = top20.length - up;
+
+    const statusEl = document.getElementById('pulseStatus');
+    document.getElementById('upCount').textContent = up;
+    document.getElementById('downCount').textContent = down;
+
+    if (up > down + 2) {
+      statusEl.textContent = "Bullish Phase / 強気 🚀";
+      statusEl.style.color = "#10b981";
+    } else if (down > up + 2) {
+      statusEl.textContent = "Bearish Phase / 警戒 ⚠️";
+      statusEl.style.color = "#f87171";
+    } else {
+      statusEl.textContent = "Neutral / 均衡状態 ⚖️";
+      statusEl.style.color = "#9ca3af";
+    }
+  }
+  // 既存の renderOverview 等の中で、データ取得後にこの関数を呼ぶようにすると自動連動します。
 </script>
 </body>
 </html>
