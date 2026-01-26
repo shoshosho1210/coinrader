@@ -1,0 +1,2624 @@
+{
+  "date": "20260126",
+  "generated_at": "2026-01-26T16:16:14.175740+09:00",
+  "breadth": {
+    "up": 10,
+    "down": 238,
+    "avgChg": -2.2135769758064505,
+    "upRatio": 4.032258064516129
+  },
+  "btc": {
+    "price_jpy": 13549384.0
+  },
+  "eth": {
+    "price_jpy": 445631.0
+  },
+  "trend": [
+    {
+      "symbol": "RIVER",
+      "label": "RIVER"
+    },
+    {
+      "symbol": "TAIKO",
+      "label": "TAIKO"
+    },
+    {
+      "symbol": "BTC",
+      "label": "BTC"
+    },
+    {
+      "symbol": "SKR",
+      "label": "SKR"
+    },
+    {
+      "symbol": "PENGU",
+      "label": "PENGU"
+    }
+  ],
+  "gainers": [
+    {
+      "id": "river",
+      "symbol": "RIVER",
+      "name": "River",
+      "pc24": 36.43742,
+      "vol_jpy": 13718041664,
+      "rank": 68
+    },
+    {
+      "id": "stable-2",
+      "symbol": "STABLE",
+      "name": "​​Stable",
+      "pc24": 2.03864,
+      "vol_jpy": 4509495091,
+      "rank": 188
+    },
+    {
+      "id": "ape-and-pepe",
+      "symbol": "APEPE",
+      "name": "Ape and Pepe",
+      "pc24": 1.70627,
+      "vol_jpy": 2033213286,
+      "rank": 245
+    },
+    {
+      "id": "decred",
+      "symbol": "DCR",
+      "name": "Decred",
+      "pc24": 1.25297,
+      "vol_jpy": 668220034,
+      "rank": 209
+    },
+    {
+      "id": "morpho",
+      "symbol": "MORPHO",
+      "name": "Morpho",
+      "pc24": 0.81199,
+      "vol_jpy": 2288007102,
+      "rank": 127
+    }
+  ],
+  "vol_alt": [
+    {
+      "id": "solana",
+      "symbol": "SOL",
+      "name": "Solana",
+      "pc24": -4.19109,
+      "vol_jpy": 1009623957132,
+      "rank": 7
+    },
+    {
+      "id": "ripple",
+      "symbol": "XRP",
+      "name": "XRP",
+      "pc24": -1.83291,
+      "vol_jpy": 492376793328,
+      "rank": 5
+    },
+    {
+      "id": "binancecoin",
+      "symbol": "BNB",
+      "name": "BNB",
+      "pc24": -1.80636,
+      "vol_jpy": 227063509440,
+      "rank": 4
+    },
+    {
+      "id": "dogecoin",
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "pc24": -1.99785,
+      "vol_jpy": 176547995765,
+      "rank": 10
+    },
+    {
+      "id": "sui",
+      "symbol": "SUI",
+      "name": "Sui",
+      "pc24": -2.60259,
+      "vol_jpy": 114368544470,
+      "rank": 30
+    }
+  ],
+  "top250": [
+    {
+      "id": "bitcoin",
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "rank": 1,
+      "pc24": -1.79284,
+      "vol_jpy": 7920317873599,
+      "price_jpy": 13549384,
+      "mcap_jpy": 270436965573837
+    },
+    {
+      "id": "ethereum",
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "rank": 2,
+      "pc24": -2.48257,
+      "vol_jpy": 4612666466910,
+      "price_jpy": 445631,
+      "mcap_jpy": 53747404546395
+    },
+    {
+      "id": "tether",
+      "symbol": "USDT",
+      "name": "Tether",
+      "rank": 3,
+      "pc24": -0.96987,
+      "vol_jpy": 13692363224152,
+      "price_jpy": 153.98,
+      "mcap_jpy": 28759173685041
+    },
+    {
+      "id": "binancecoin",
+      "symbol": "BNB",
+      "name": "BNB",
+      "rank": 4,
+      "pc24": -1.80636,
+      "vol_jpy": 227063509440,
+      "price_jpy": 134431,
+      "mcap_jpy": 18323435794281
+    },
+    {
+      "id": "ripple",
+      "symbol": "XRP",
+      "name": "XRP",
+      "rank": 5,
+      "pc24": -1.83291,
+      "vol_jpy": 492376793328,
+      "price_jpy": 289.54,
+      "mcap_jpy": 17615794235659
+    },
+    {
+      "id": "usd-coin",
+      "symbol": "USDC",
+      "name": "USDC",
+      "rank": 6,
+      "pc24": -1.00301,
+      "vol_jpy": 972374844678,
+      "price_jpy": 154.11,
+      "mcap_jpy": 11168468342489
+    },
+    {
+      "id": "solana",
+      "symbol": "SOL",
+      "name": "Solana",
+      "rank": 7,
+      "pc24": -4.19109,
+      "vol_jpy": 1009623957132,
+      "price_jpy": 18850.8,
+      "mcap_jpy": 10666119076325
+    },
+    {
+      "id": "tron",
+      "symbol": "TRX",
+      "name": "TRON",
+      "rank": 8,
+      "pc24": -0.50839,
+      "vol_jpy": 88673009737,
+      "price_jpy": 45.74,
+      "mcap_jpy": 4335275150601
+    },
+    {
+      "id": "staked-ether",
+      "symbol": "STETH",
+      "name": "Lido Staked Ether",
+      "rank": 9,
+      "pc24": -2.56015,
+      "vol_jpy": 3762451485,
+      "price_jpy": 445524,
+      "mcap_jpy": 4195164922398
+    },
+    {
+      "id": "dogecoin",
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "rank": 10,
+      "pc24": -1.99785,
+      "vol_jpy": 176547995765,
+      "price_jpy": 18.73,
+      "mcap_jpy": 3152687080584
+    },
+    {
+      "id": "figure-heloc",
+      "symbol": "FIGR_HELOC",
+      "name": "Figure Heloc",
+      "rank": 11,
+      "pc24": null,
+      "vol_jpy": 38997212,
+      "price_jpy": 159.74,
+      "mcap_jpy": 2361356476643
+    },
+    {
+      "id": "cardano",
+      "symbol": "ADA",
+      "name": "Cardano",
+      "rank": 12,
+      "pc24": -2.98163,
+      "vol_jpy": 84692193829,
+      "price_jpy": 53.62,
+      "mcap_jpy": 1970580800808
+    },
+    {
+      "id": "wrapped-steth",
+      "symbol": "WSTETH",
+      "name": "Wrapped stETH",
+      "rank": 13,
+      "pc24": -2.52992,
+      "vol_jpy": 4166405773,
+      "price_jpy": 546038,
+      "mcap_jpy": 1870910421197
+    },
+    {
+      "id": "bitcoin-cash",
+      "symbol": "BCH",
+      "name": "Bitcoin Cash",
+      "rank": 14,
+      "pc24": -3.23778,
+      "vol_jpy": 51061602216,
+      "price_jpy": 89164,
+      "mcap_jpy": 1782666916419
+    },
+    {
+      "id": "whitebit",
+      "symbol": "WBT",
+      "name": "WhiteBIT Coin",
+      "rank": 15,
+      "pc24": -1.48041,
+      "vol_jpy": 11966950885,
+      "price_jpy": 8280.74,
+      "mcap_jpy": 1770699616984
+    },
+    {
+      "id": "wrapped-bitcoin",
+      "symbol": "WBTC",
+      "name": "Wrapped Bitcoin",
+      "rank": 16,
+      "pc24": -1.89519,
+      "vol_jpy": 53395606152,
+      "price_jpy": 13501081,
+      "mcap_jpy": 1686909886314
+    },
+    {
+      "id": "wrapped-beacon-eth",
+      "symbol": "WBETH",
+      "name": "Wrapped Beacon ETH",
+      "rank": 17,
+      "pc24": -2.56747,
+      "vol_jpy": 2852065657,
+      "price_jpy": 485294,
+      "mcap_jpy": 1632075085556
+    },
+    {
+      "id": "wrapped-eeth",
+      "symbol": "WEETH",
+      "name": "Wrapped eETH",
+      "rank": 18,
+      "pc24": -2.56672,
+      "vol_jpy": 1377259519,
+      "price_jpy": 484143,
+      "mcap_jpy": 1461111261133
+    },
+    {
+      "id": "usds",
+      "symbol": "USDS",
+      "name": "USDS",
+      "rank": 19,
+      "pc24": -1.00561,
+      "vol_jpy": 1790019661,
+      "price_jpy": 154.1,
+      "mcap_jpy": 1443776804719
+    },
+    {
+      "id": "binance-bridged-usdt-bnb-smart-chain",
+      "symbol": "BSC-USD",
+      "name": "Binance Bridged USDT (BNB Smart Chain)",
+      "rank": 20,
+      "pc24": -0.98233,
+      "vol_jpy": 185821777831,
+      "price_jpy": 153.95,
+      "mcap_jpy": 1383746016908
+    },
+    {
+      "id": "monero",
+      "symbol": "XMR",
+      "name": "Monero",
+      "rank": 21,
+      "pc24": -5.82993,
+      "vol_jpy": 23289575575,
+      "price_jpy": 71471,
+      "mcap_jpy": 1314002060533
+    },
+    {
+      "id": "leo-token",
+      "symbol": "LEO",
+      "name": "LEO Token",
+      "rank": 22,
+      "pc24": 0.05326,
+      "vol_jpy": 106353122,
+      "price_jpy": 1402.15,
+      "mcap_jpy": 1293388161769
+    },
+    {
+      "id": "chainlink",
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "rank": 23,
+      "pc24": -2.8858,
+      "vol_jpy": 75245364768,
+      "price_jpy": 1822.78,
+      "mcap_jpy": 1290176818638
+    },
+    {
+      "id": "coinbase-wrapped-btc",
+      "symbol": "CBBTC",
+      "name": "Coinbase Wrapped BTC",
+      "rank": 24,
+      "pc24": -1.88787,
+      "vol_jpy": 72380857767,
+      "price_jpy": 13538170,
+      "mcap_jpy": 1059446660299
+    },
+    {
+      "id": "stellar",
+      "symbol": "XLM",
+      "name": "Stellar",
+      "rank": 25,
+      "pc24": -1.9566,
+      "vol_jpy": 18850558207,
+      "price_jpy": 31.98,
+      "mcap_jpy": 1036199805888
+    },
+    {
+      "id": "ethena-usde",
+      "symbol": "USDE",
+      "name": "Ethena USDe",
+      "rank": 26,
+      "pc24": -1.00587,
+      "vol_jpy": 34905707149,
+      "price_jpy": 153.98,
+      "mcap_jpy": 1015816669816
+    },
+    {
+      "id": "weth",
+      "symbol": "WETH",
+      "name": "WETH",
+      "rank": 27,
+      "pc24": -2.54793,
+      "vol_jpy": 20051379165,
+      "price_jpy": 445692,
+      "mcap_jpy": 1009978331779
+    },
+    {
+      "id": "zcash",
+      "symbol": "ZEC",
+      "name": "Zcash",
+      "rank": 28,
+      "pc24": -2.46466,
+      "vol_jpy": 81481852162,
+      "price_jpy": 54182,
+      "mcap_jpy": 892656182877
+    },
+    {
+      "id": "canton-network",
+      "symbol": "CC",
+      "name": "Canton",
+      "rank": 29,
+      "pc24": -4.21228,
+      "vol_jpy": 2657938603,
+      "price_jpy": 23.25,
+      "mcap_jpy": 873734372166
+    },
+    {
+      "id": "sui",
+      "symbol": "SUI",
+      "name": "Sui",
+      "rank": 30,
+      "pc24": -2.60259,
+      "vol_jpy": 114368544470,
+      "price_jpy": 222.64,
+      "mcap_jpy": 843246558206
+    },
+    {
+      "id": "hyperliquid",
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "rank": 31,
+      "pc24": -4.1963,
+      "vol_jpy": 33886380633,
+      "price_jpy": 3413.52,
+      "mcap_jpy": 813707360014
+    },
+    {
+      "id": "litecoin",
+      "symbol": "LTC",
+      "name": "Litecoin",
+      "rank": 32,
+      "pc24": -1.68174,
+      "vol_jpy": 79914413895,
+      "price_jpy": 10464.5,
+      "mcap_jpy": 802639993012
+    },
+    {
+      "id": "avalanche-2",
+      "symbol": "AVAX",
+      "name": "Avalanche",
+      "rank": 33,
+      "pc24": -3.01524,
+      "vol_jpy": 51414617809,
+      "price_jpy": 1797.31,
+      "mcap_jpy": 774956621154
+    },
+    {
+      "id": "usd1-wlfi",
+      "symbol": "USD1",
+      "name": "USD1",
+      "rank": 34,
+      "pc24": -1.04905,
+      "vol_jpy": 360787658763,
+      "price_jpy": 154.04,
+      "mcap_jpy": 761783405310
+    },
+    {
+      "id": "world-liberty-financial",
+      "symbol": "WLFI",
+      "name": "World Liberty Financial",
+      "rank": 35,
+      "pc24": -5.57884,
+      "vol_jpy": 24665602626,
+      "price_jpy": 25.79,
+      "mcap_jpy": 702222986750
+    },
+    {
+      "id": "usdt0",
+      "symbol": "USDT0",
+      "name": "USDT0",
+      "rank": 36,
+      "pc24": -0.97093,
+      "vol_jpy": 29295198666,
+      "price_jpy": 153.96,
+      "mcap_jpy": 701431041981
+    },
+    {
+      "id": "shiba-inu",
+      "symbol": "SHIB",
+      "name": "Shiba Inu",
+      "rank": 37,
+      "pc24": -1.57889,
+      "vol_jpy": 16386043780,
+      "price_jpy": 0.00118762,
+      "mcap_jpy": 698685168551
+    },
+    {
+      "id": "hedera-hashgraph",
+      "symbol": "HBAR",
+      "name": "Hedera",
+      "rank": 38,
+      "pc24": -1.50368,
+      "vol_jpy": 20172635076,
+      "price_jpy": 16.34,
+      "mcap_jpy": 698658360138
+    },
+    {
+      "id": "dai",
+      "symbol": "DAI",
+      "name": "Dai",
+      "rank": 39,
+      "pc24": -1.01193,
+      "vol_jpy": 11511018224,
+      "price_jpy": 154.09,
+      "mcap_jpy": 673618211348
+    },
+    {
+      "id": "susds",
+      "symbol": "SUSDS",
+      "name": "sUSDS",
+      "rank": 40,
+      "pc24": -1.09873,
+      "vol_jpy": 777451584,
+      "price_jpy": 167.05,
+      "mcap_jpy": 659360692529
+    },
+    {
+      "id": "ethena-staked-usde",
+      "symbol": "SUSDE",
+      "name": "Ethena Staked USDe",
+      "rank": 41,
+      "pc24": -0.88869,
+      "vol_jpy": 2454350187,
+      "price_jpy": 187.51,
+      "mcap_jpy": 586255490683
+    },
+    {
+      "id": "paypal-usd",
+      "symbol": "PYUSD",
+      "name": "PayPal USD",
+      "rank": 42,
+      "pc24": -1.11357,
+      "vol_jpy": 23222054925,
+      "price_jpy": 153.91,
+      "mcap_jpy": 577558278038
+    },
+    {
+      "id": "the-open-network",
+      "symbol": "TON",
+      "name": "Toncoin",
+      "rank": 43,
+      "pc24": -1.76745,
+      "vol_jpy": 14270386913,
+      "price_jpy": 234.97,
+      "mcap_jpy": 572327952316
+    },
+    {
+      "id": "crypto-com-chain",
+      "symbol": "CRO",
+      "name": "Cronos",
+      "rank": 44,
+      "pc24": -0.91523,
+      "vol_jpy": 2757740321,
+      "price_jpy": 13.94,
+      "mcap_jpy": 555190871214
+    },
+    {
+      "id": "rain",
+      "symbol": "RAIN",
+      "name": "Rain",
+      "rank": 45,
+      "pc24": -3.02703,
+      "vol_jpy": 6791843869,
+      "price_jpy": 1.49,
+      "mcap_jpy": 506979762250
+    },
+    {
+      "id": "polkadot",
+      "symbol": "DOT",
+      "name": "Polkadot",
+      "rank": 46,
+      "pc24": -3.26569,
+      "vol_jpy": 21185501695,
+      "price_jpy": 286.4,
+      "mcap_jpy": 475575159438
+    },
+    {
+      "id": "uniswap",
+      "symbol": "UNI",
+      "name": "Uniswap",
+      "rank": 47,
+      "pc24": -5.44328,
+      "vol_jpy": 48305369015,
+      "price_jpy": 709.11,
+      "mcap_jpy": 449904988679
+    },
+    {
+      "id": "mantle",
+      "symbol": "MNT",
+      "name": "Mantle",
+      "rank": 48,
+      "pc24": -5.68646,
+      "vol_jpy": 11122898647,
+      "price_jpy": 132.38,
+      "mcap_jpy": 430207036422
+    },
+    {
+      "id": "memecore",
+      "symbol": "M",
+      "name": "MemeCore",
+      "rank": 49,
+      "pc24": -1.80289,
+      "vol_jpy": 2066882203,
+      "price_jpy": 248.98,
+      "mcap_jpy": 430179095079
+    },
+    {
+      "id": "tether-gold",
+      "symbol": "XAUT",
+      "name": "Tether Gold",
+      "rank": 50,
+      "pc24": -0.08761,
+      "vol_jpy": 69539811459,
+      "price_jpy": 784251,
+      "mcap_jpy": 407594278346
+    },
+    {
+      "id": "bitget-token",
+      "symbol": "BGB",
+      "name": "Bitget Token",
+      "rank": 51,
+      "pc24": -2.25885,
+      "vol_jpy": 3094428640,
+      "price_jpy": 552.92,
+      "mcap_jpy": 387278406710
+    },
+    {
+      "id": "aave",
+      "symbol": "AAVE",
+      "name": "Aave",
+      "rank": 52,
+      "pc24": -2.98519,
+      "vol_jpy": 52232150338,
+      "price_jpy": 23382,
+      "mcap_jpy": 355058788342
+    },
+    {
+      "id": "bittensor",
+      "symbol": "TAO",
+      "name": "Bittensor",
+      "rank": 53,
+      "pc24": -1.45702,
+      "vol_jpy": 15268662548,
+      "price_jpy": 36095,
+      "mcap_jpy": 346178428815
+    },
+    {
+      "id": "falcon-finance",
+      "symbol": "USDF",
+      "name": "Falcon USD",
+      "rank": 54,
+      "pc24": -1.00412,
+      "vol_jpy": 208553322,
+      "price_jpy": 153.56,
+      "mcap_jpy": 334588031460
+    },
+    {
+      "id": "okb",
+      "symbol": "OKB",
+      "name": "OKB",
+      "rank": 55,
+      "pc24": -1.56973,
+      "vol_jpy": 4173573947,
+      "price_jpy": 15788.97,
+      "mcap_jpy": 331501758152
+    },
+    {
+      "id": "pax-gold",
+      "symbol": "PAXG",
+      "name": "PAX Gold",
+      "rank": 56,
+      "pc24": -0.69832,
+      "vol_jpy": 82385362057,
+      "price_jpy": 787883,
+      "mcap_jpy": 316854180894
+    },
+    {
+      "id": "pepe",
+      "symbol": "PEPE",
+      "name": "Pepe",
+      "rank": 57,
+      "pc24": -2.92242,
+      "vol_jpy": 65317390575,
+      "price_jpy": 0.00074805,
+      "mcap_jpy": 314134252920
+    },
+    {
+      "id": "near",
+      "symbol": "NEAR",
+      "name": "NEAR Protocol",
+      "rank": 58,
+      "pc24": -2.95619,
+      "vol_jpy": 20594476555,
+      "price_jpy": 226.55,
+      "mcap_jpy": 291328609747
+    },
+    {
+      "id": "internet-computer",
+      "symbol": "ICP",
+      "name": "Internet Computer",
+      "rank": 59,
+      "pc24": -3.78449,
+      "vol_jpy": 11787751648,
+      "price_jpy": 511.18,
+      "mcap_jpy": 279766333043
+    },
+    {
+      "id": "jito-staked-sol",
+      "symbol": "JITOSOL",
+      "name": "Jito Staked SOL",
+      "rank": 60,
+      "pc24": -4.25186,
+      "vol_jpy": 3209331666,
+      "price_jpy": 23676,
+      "mcap_jpy": 272498724968
+    },
+    {
+      "id": "ethereum-classic",
+      "symbol": "ETC",
+      "name": "Ethereum Classic",
+      "rank": 61,
+      "pc24": -1.65826,
+      "vol_jpy": 9022230293,
+      "price_jpy": 1756.09,
+      "mcap_jpy": 272352921357
+    },
+    {
+      "id": "binance-peg-weth",
+      "symbol": "WETH",
+      "name": "Binance-Peg WETH",
+      "rank": 62,
+      "pc24": -2.44072,
+      "vol_jpy": 7556917270,
+      "price_jpy": 445785,
+      "mcap_jpy": 269552423714
+    },
+    {
+      "id": "blackrock-usd-institutional-digital-liquidity-fund",
+      "symbol": "BUIDL",
+      "name": "BlackRock USD Institutional Digital Liquidity Fund",
+      "rank": 63,
+      "pc24": -0.99477,
+      "vol_jpy": null,
+      "price_jpy": 154.17,
+      "mcap_jpy": 259849949795
+    },
+    {
+      "id": "htx-dao",
+      "symbol": "HTX",
+      "name": "HTX DAO",
+      "rank": 64,
+      "pc24": -1.05832,
+      "vol_jpy": 8940858724,
+      "price_jpy": 0.00027389,
+      "mcap_jpy": 251048739517
+    },
+    {
+      "id": "hashnote-usyc",
+      "symbol": "USYC",
+      "name": "Circle USYC",
+      "rank": 65,
+      "pc24": null,
+      "vol_jpy": 211310,
+      "price_jpy": 176.09,
+      "mcap_jpy": 254586854384
+    },
+    {
+      "id": "ondo-finance",
+      "symbol": "ONDO",
+      "name": "Ondo",
+      "rank": 66,
+      "pc24": -2.83334,
+      "vol_jpy": 9272196251,
+      "price_jpy": 50.82,
+      "mcap_jpy": 247342895549
+    },
+    {
+      "id": "global-dollar",
+      "symbol": "USDG",
+      "name": "Global Dollar",
+      "rank": 67,
+      "pc24": -0.98984,
+      "vol_jpy": 2604522118,
+      "price_jpy": 154.13,
+      "mcap_jpy": 245747711724
+    },
+    {
+      "id": "river",
+      "symbol": "RIVER",
+      "name": "River",
+      "rank": 68,
+      "pc24": 36.43742,
+      "vol_jpy": 13718041664,
+      "price_jpy": 12335.89,
+      "mcap_jpy": 241461086768
+    },
+    {
+      "id": "kelp-dao-restaked-eth",
+      "symbol": "RSETH",
+      "name": "Kelp DAO Restaked ETH",
+      "rank": 69,
+      "pc24": -2.54359,
+      "vol_jpy": 50016943,
+      "price_jpy": 473437,
+      "mcap_jpy": 239258952871
+    },
+    {
+      "id": "sky",
+      "symbol": "SKY",
+      "name": "Sky",
+      "rank": 70,
+      "pc24": -1.43663,
+      "vol_jpy": 2297201760,
+      "price_jpy": 10.26,
+      "mcap_jpy": 236141612960
+    },
+    {
+      "id": "wrapped-solana",
+      "symbol": "SOL",
+      "name": "Wrapped SOL",
+      "rank": 71,
+      "pc24": -4.16886,
+      "vol_jpy": 117949708248,
+      "price_jpy": 18852.18,
+      "mcap_jpy": 235877602936
+    },
+    {
+      "id": "jupiter-perpetuals-liquidity-provider-token",
+      "symbol": "JLP",
+      "name": "Jupiter Perpetuals Liquidity Provider Token",
+      "rank": 72,
+      "pc24": -2.47453,
+      "vol_jpy": 3831728746,
+      "price_jpy": 695.77,
+      "mcap_jpy": 234963659051
+    },
+    {
+      "id": "aster-2",
+      "symbol": "ASTER",
+      "name": "Aster",
+      "rank": 73,
+      "pc24": -6.29195,
+      "vol_jpy": 19525102585,
+      "price_jpy": 94.59,
+      "mcap_jpy": 232183991534
+    },
+    {
+      "id": "pump-fun",
+      "symbol": "PUMP",
+      "name": "Pump.fun",
+      "rank": 74,
+      "pc24": -6.02053,
+      "vol_jpy": 30299247922,
+      "price_jpy": 0.385398,
+      "mcap_jpy": 227350004460
+    },
+    {
+      "id": "pi-network",
+      "symbol": "PI",
+      "name": "Pi Network",
+      "rank": 75,
+      "pc24": -4.30247,
+      "vol_jpy": 2394559358,
+      "price_jpy": 26.86,
+      "mcap_jpy": 225097919014
+    },
+    {
+      "id": "ripple-usd",
+      "symbol": "RLUSD",
+      "name": "Ripple USD",
+      "rank": 76,
+      "pc24": -1.00463,
+      "vol_jpy": 15770830282,
+      "price_jpy": 154.12,
+      "mcap_jpy": 218217964206
+    },
+    {
+      "id": "kucoin-shares",
+      "symbol": "KCS",
+      "name": "KuCoin",
+      "rank": 77,
+      "pc24": -1.66578,
+      "vol_jpy": 533349966,
+      "price_jpy": 1645.79,
+      "mcap_jpy": 217541702234
+    },
+    {
+      "id": "binance-staked-sol",
+      "symbol": "BNSOL",
+      "name": "Binance Staked SOL",
+      "rank": 78,
+      "pc24": -4.02665,
+      "vol_jpy": 859468388,
+      "price_jpy": 20660,
+      "mcap_jpy": 204723280457
+    },
+    {
+      "id": "ethena",
+      "symbol": "ENA",
+      "name": "Ethena",
+      "rank": 79,
+      "pc24": -4.4379,
+      "vol_jpy": 23604768784,
+      "price_jpy": 25.65,
+      "mcap_jpy": 203826042494
+    },
+    {
+      "id": "bfusd",
+      "symbol": "BFUSD",
+      "name": "BFUSD",
+      "rank": 80,
+      "pc24": -0.96524,
+      "vol_jpy": 1681608835,
+      "price_jpy": 153.87,
+      "mcap_jpy": 203127392607
+    },
+    {
+      "id": "wbnb",
+      "symbol": "WBNB",
+      "name": "Wrapped BNB",
+      "rank": 81,
+      "pc24": -1.80491,
+      "vol_jpy": 59064534131,
+      "price_jpy": 134391,
+      "mcap_jpy": 201692161097
+    },
+    {
+      "id": "syrupusdc",
+      "symbol": "SYRUPUSDC",
+      "name": "syrupUSDC",
+      "rank": 82,
+      "pc24": -1.00318,
+      "vol_jpy": 1260170264,
+      "price_jpy": 176.98,
+      "mcap_jpy": 201165955430
+    },
+    {
+      "id": "binance-bridged-usdc-bnb-smart-chain",
+      "symbol": "USDC",
+      "name": "Binance Bridged USDC (BNB Smart Chain)",
+      "rank": 83,
+      "pc24": -1.00126,
+      "vol_jpy": 24223480701,
+      "price_jpy": 154.11,
+      "mcap_jpy": 198697650380
+    },
+    {
+      "id": "polygon-ecosystem-token",
+      "symbol": "POL",
+      "name": "POL (ex-MATIC)",
+      "rank": 84,
+      "pc24": -2.83926,
+      "vol_jpy": 10550763510,
+      "price_jpy": 18.75,
+      "mcap_jpy": 198144963197
+    },
+    {
+      "id": "worldcoin-wld",
+      "symbol": "WLD",
+      "name": "Worldcoin",
+      "rank": 85,
+      "pc24": -3.14549,
+      "vol_jpy": 12861893000,
+      "price_jpy": 70.26,
+      "mcap_jpy": 193648116491
+    },
+    {
+      "id": "hash-2",
+      "symbol": "HASH",
+      "name": "Provenance Blockchain",
+      "rank": 86,
+      "pc24": 1.83084,
+      "vol_jpy": 2539043,
+      "price_jpy": 3.59,
+      "mcap_jpy": 193426816196
+    },
+    {
+      "id": "rocket-pool-eth",
+      "symbol": "RETH",
+      "name": "Rocket Pool ETH",
+      "rank": 87,
+      "pc24": -2.60191,
+      "vol_jpy": 187917892,
+      "price_jpy": 515179,
+      "mcap_jpy": 186334640606
+    },
+    {
+      "id": "aptos",
+      "symbol": "APT",
+      "name": "Aptos",
+      "rank": 88,
+      "pc24": -1.68796,
+      "vol_jpy": 16194582631,
+      "price_jpy": 236.39,
+      "mcap_jpy": 181402709726
+    },
+    {
+      "id": "myx-finance",
+      "symbol": "MYX",
+      "name": "MYX Finance",
+      "rank": 89,
+      "pc24": -13.04184,
+      "vol_jpy": 3870180431,
+      "price_jpy": 912.04,
+      "mcap_jpy": 173626048329
+    },
+    {
+      "id": "gatechain-token",
+      "symbol": "GT",
+      "name": "Gate",
+      "rank": 90,
+      "pc24": -2.26686,
+      "vol_jpy": 615929953,
+      "price_jpy": 1498.26,
+      "mcap_jpy": 172618171248
+    },
+    {
+      "id": "cosmos",
+      "symbol": "ATOM",
+      "name": "Cosmos Hub",
+      "rank": 91,
+      "pc24": -1.81827,
+      "vol_jpy": 6160282894,
+      "price_jpy": 349.54,
+      "mcap_jpy": 171440213675
+    },
+    {
+      "id": "quant-network",
+      "symbol": "QNT",
+      "name": "Quant",
+      "rank": 92,
+      "pc24": -1.50167,
+      "vol_jpy": 2751081409,
+      "price_jpy": 11690.13,
+      "mcap_jpy": 169572872616
+    },
+    {
+      "id": "usdd",
+      "symbol": "USDD",
+      "name": "USDD",
+      "rank": 93,
+      "pc24": -0.96249,
+      "vol_jpy": 465759825,
+      "price_jpy": 153.96,
+      "mcap_jpy": 168269483671
+    },
+    {
+      "id": "kaspa",
+      "symbol": "KAS",
+      "name": "Kaspa",
+      "rank": 94,
+      "pc24": -3.13131,
+      "vol_jpy": 4543630475,
+      "price_jpy": 6.19,
+      "mcap_jpy": 165823682596
+    },
+    {
+      "id": "algorand",
+      "symbol": "ALGO",
+      "name": "Algorand",
+      "rank": 95,
+      "pc24": 0.43653,
+      "vol_jpy": 6352011533,
+      "price_jpy": 18.2,
+      "mcap_jpy": 161595634888
+    },
+    {
+      "id": "render-token",
+      "symbol": "RENDER",
+      "name": "Render",
+      "rank": 96,
+      "pc24": -4.58822,
+      "vol_jpy": 13370986137,
+      "price_jpy": 296.07,
+      "mcap_jpy": 153615186971
+    },
+    {
+      "id": "arbitrum",
+      "symbol": "ARB",
+      "name": "Arbitrum",
+      "rank": 97,
+      "pc24": -2.81592,
+      "vol_jpy": 14387783134,
+      "price_jpy": 26.37,
+      "mcap_jpy": 153490398894
+    },
+    {
+      "id": "midnight-3",
+      "symbol": "NIGHT",
+      "name": "Midnight",
+      "rank": 98,
+      "pc24": -0.26312,
+      "vol_jpy": 1673019743,
+      "price_jpy": 9.02,
+      "mcap_jpy": 149897167906
+    },
+    {
+      "id": "official-trump",
+      "symbol": "TRUMP",
+      "name": "Official Trump",
+      "rank": 99,
+      "pc24": -2.89765,
+      "vol_jpy": 27892193433,
+      "price_jpy": 744.79,
+      "mcap_jpy": 149001326442
+    },
+    {
+      "id": "ignition-fbtc",
+      "symbol": "FBTC",
+      "name": "Function FBTC",
+      "rank": 100,
+      "pc24": -1.96904,
+      "vol_jpy": 20527345,
+      "price_jpy": 13533929,
+      "mcap_jpy": 148658217828
+    },
+    {
+      "id": "filecoin",
+      "symbol": "FIL",
+      "name": "Filecoin",
+      "rank": 101,
+      "pc24": -2.87127,
+      "vol_jpy": 16670887505,
+      "price_jpy": 196.71,
+      "mcap_jpy": 145546509168
+    },
+    {
+      "id": "lombard-staked-btc",
+      "symbol": "LBTC",
+      "name": "Lombard Staked BTC",
+      "rank": 102,
+      "pc24": -1.94379,
+      "vol_jpy": 1123640544,
+      "price_jpy": 13553875,
+      "mcap_jpy": 143067002498
+    },
+    {
+      "id": "nexo",
+      "symbol": "NEXO",
+      "name": "NEXO",
+      "rank": 103,
+      "pc24": -3.78708,
+      "vol_jpy": 1790392218,
+      "price_jpy": 140.12,
+      "mcap_jpy": 140061390116
+    },
+    {
+      "id": "vechain",
+      "symbol": "VET",
+      "name": "VeChain",
+      "rank": 104,
+      "pc24": -2.12057,
+      "vol_jpy": 3703253725,
+      "price_jpy": 1.57,
+      "mcap_jpy": 134619404026
+    },
+    {
+      "id": "bridged-usdc-polygon-pos-bridge",
+      "symbol": "USDC.E",
+      "name": "Polygon Bridged USDC (Polygon PoS)",
+      "rank": 105,
+      "pc24": -1.00308,
+      "vol_jpy": 3439761084,
+      "price_jpy": 154.11,
+      "mcap_jpy": 133235684462
+    },
+    {
+      "id": "flare-networks",
+      "symbol": "FLR",
+      "name": "Flare",
+      "rank": 106,
+      "pc24": -2.76956,
+      "vol_jpy": 948020413,
+      "price_jpy": 1.59,
+      "mcap_jpy": 132302851701
+    },
+    {
+      "id": "usdtb",
+      "symbol": "USDTB",
+      "name": "USDtb",
+      "rank": 107,
+      "pc24": -1.04582,
+      "vol_jpy": 166728133,
+      "price_jpy": 153.97,
+      "mcap_jpy": 131351313036
+    },
+    {
+      "id": "mantle-staked-ether",
+      "symbol": "METH",
+      "name": "Mantle Staked Ether",
+      "rank": 108,
+      "pc24": -2.53729,
+      "vol_jpy": 439947269,
+      "price_jpy": 483107,
+      "mcap_jpy": 126922313600
+    },
+    {
+      "id": "superstate-short-duration-us-government-securities-fund-ustb",
+      "symbol": "USTB",
+      "name": "Superstate Short Duration U.S. Government Securities Fund (USTB)",
+      "rank": 109,
+      "pc24": -0.99477,
+      "vol_jpy": null,
+      "price_jpy": 1690.77,
+      "mcap_jpy": 126372649277
+    },
+    {
+      "id": "syrupusdt",
+      "symbol": "SYRUPUSDT",
+      "name": "syrupUSDT",
+      "rank": 110,
+      "pc24": -0.93568,
+      "vol_jpy": 116158057,
+      "price_jpy": 171.48,
+      "mcap_jpy": 125600200838
+    },
+    {
+      "id": "liquid-staked-ethereum",
+      "symbol": "LSETH",
+      "name": "Liquid Staked ETH",
+      "rank": 111,
+      "pc24": -1.8434,
+      "vol_jpy": 424257,
+      "price_jpy": 474229,
+      "mcap_jpy": 121753748219
+    },
+    {
+      "id": "solv-btc",
+      "symbol": "SOLVBTC",
+      "name": "Solv Protocol BTC",
+      "rank": 112,
+      "pc24": -1.84271,
+      "vol_jpy": 133315756,
+      "price_jpy": 13515887,
+      "mcap_jpy": 119074817436
+    },
+    {
+      "id": "story-2",
+      "symbol": "IP",
+      "name": "Story",
+      "rank": 113,
+      "pc24": -4.88959,
+      "vol_jpy": 10297653423,
+      "price_jpy": 338.74,
+      "mcap_jpy": 118158772265
+    },
+    {
+      "id": "wrappedm-by-m0",
+      "symbol": "WM",
+      "name": "WrappedM by M0",
+      "rank": 114,
+      "pc24": -0.97307,
+      "vol_jpy": 451552806,
+      "price_jpy": 154.09,
+      "mcap_jpy": 117682305388
+    },
+    {
+      "id": "bonk",
+      "symbol": "BONK",
+      "name": "Bonk",
+      "rank": 115,
+      "pc24": -2.04945,
+      "vol_jpy": 11736119735,
+      "price_jpy": 0.00133393,
+      "mcap_jpy": 117317042733
+    },
+    {
+      "id": "xdce-crowd-sale",
+      "symbol": "XDC",
+      "name": "XDC Network",
+      "rank": 116,
+      "pc24": -3.13286,
+      "vol_jpy": 3967940027,
+      "price_jpy": 6.09,
+      "mcap_jpy": 116270035961
+    },
+    {
+      "id": "dash",
+      "symbol": "DASH",
+      "name": "Dash",
+      "rank": 117,
+      "pc24": -7.28495,
+      "vol_jpy": 33932024677,
+      "price_jpy": 9218.05,
+      "mcap_jpy": 115402510581
+    },
+    {
+      "id": "pancakeswap-token",
+      "symbol": "CAKE",
+      "name": "PancakeSwap",
+      "rank": 118,
+      "pc24": -1.47783,
+      "vol_jpy": 5956073647,
+      "price_jpy": 290.13,
+      "mcap_jpy": 114199384279
+    },
+    {
+      "id": "ousg",
+      "symbol": "OUSG",
+      "name": "OUSG",
+      "rank": 119,
+      "pc24": -0.99477,
+      "vol_jpy": 0.0,
+      "price_jpy": 17586.11,
+      "mcap_jpy": 112564844821
+    },
+    {
+      "id": "janus-henderson-anemoy-aaa-clo-fund",
+      "symbol": "JAAA",
+      "name": "Janus Henderson Anemoy AAA CLO Fund",
+      "rank": 120,
+      "pc24": -0.97599,
+      "vol_jpy": null,
+      "price_jpy": 157.8,
+      "mcap_jpy": 111654088842
+    },
+    {
+      "id": "ondo-us-dollar-yield",
+      "symbol": "USDY",
+      "name": "Ondo US Dollar Yield",
+      "rank": 121,
+      "pc24": -0.4001,
+      "vol_jpy": 11751763,
+      "price_jpy": 170.74,
+      "mcap_jpy": 107565667439
+    },
+    {
+      "id": "sei-network",
+      "symbol": "SEI",
+      "name": "Sei",
+      "rank": 122,
+      "pc24": -2.25658,
+      "vol_jpy": 6685405596,
+      "price_jpy": 16.14,
+      "mcap_jpy": 106703438396
+    },
+    {
+      "id": "arbitrum-bridged-wbtc-arbitrum-one",
+      "symbol": "WBTC",
+      "name": "Arbitrum Bridged WBTC (Arbitrum One)",
+      "rank": 123,
+      "pc24": -1.96625,
+      "vol_jpy": 17203628428,
+      "price_jpy": 13511362,
+      "mcap_jpy": 106265193982
+    },
+    {
+      "id": "renzo-restaked-eth",
+      "symbol": "EZETH",
+      "name": "Renzo Restaked ETH",
+      "rank": 124,
+      "pc24": -2.55928,
+      "vol_jpy": 45796013,
+      "price_jpy": 476455,
+      "mcap_jpy": 104755803555
+    },
+    {
+      "id": "clbtc",
+      "symbol": "CLBTC",
+      "name": "clBTC",
+      "rank": 125,
+      "pc24": -3.15117,
+      "vol_jpy": 85370,
+      "price_jpy": 13435014,
+      "mcap_jpy": 103761524917
+    },
+    {
+      "id": "stakewise-v3-oseth",
+      "symbol": "OSETH",
+      "name": "StakeWise Staked ETH",
+      "rank": 126,
+      "pc24": -2.55784,
+      "vol_jpy": 60761483,
+      "price_jpy": 473762,
+      "mcap_jpy": 102498883880
+    },
+    {
+      "id": "morpho",
+      "symbol": "MORPHO",
+      "name": "Morpho",
+      "rank": 127,
+      "pc24": 0.81199,
+      "vol_jpy": 2288007102,
+      "price_jpy": 187.45,
+      "mcap_jpy": 101792208142
+    },
+    {
+      "id": "polygon-pos-bridged-dai-polygon-pos",
+      "symbol": "DAI",
+      "name": "Polygon PoS Bridged DAI (Polygon POS)",
+      "rank": 128,
+      "pc24": -1.0178,
+      "vol_jpy": 2453802691,
+      "price_jpy": 154.11,
+      "mcap_jpy": 97831858348
+    },
+    {
+      "id": "usdai",
+      "symbol": "USDAI",
+      "name": "USDai",
+      "rank": 129,
+      "pc24": -1.0446,
+      "vol_jpy": 816514329,
+      "price_jpy": 154.02,
+      "mcap_jpy": 97563823409
+    },
+    {
+      "id": "l2-standard-bridged-weth-base",
+      "symbol": "WETH",
+      "name": "L2 Standard Bridged WETH (Base)",
+      "rank": 130,
+      "pc24": -2.46763,
+      "vol_jpy": 23267190667,
+      "price_jpy": 445945,
+      "mcap_jpy": 97259607378
+    },
+    {
+      "id": "eutbl",
+      "symbol": "EUTBL",
+      "name": "Spiko EU T-Bills Money Market Fund",
+      "rank": 131,
+      "pc24": -0.78092,
+      "vol_jpy": null,
+      "price_jpy": 191.14,
+      "mcap_jpy": 96296985390
+    },
+    {
+      "id": "tezos",
+      "symbol": "XTZ",
+      "name": "Tezos",
+      "rank": 132,
+      "pc24": -1.31317,
+      "vol_jpy": 3617686509,
+      "price_jpy": 89.17,
+      "mcap_jpy": 95766772380
+    },
+    {
+      "id": "binance-peg-xrp",
+      "symbol": "XRP",
+      "name": "Binance-Peg XRP",
+      "rank": 133,
+      "pc24": -1.81666,
+      "vol_jpy": 394461442,
+      "price_jpy": 289.56,
+      "mcap_jpy": 94281919265
+    },
+    {
+      "id": "jupiter-staked-sol",
+      "symbol": "JUPSOL",
+      "name": "Jupiter Staked SOL",
+      "rank": 134,
+      "pc24": -4.31697,
+      "vol_jpy": 946243055,
+      "price_jpy": 21932,
+      "mcap_jpy": 93863114964
+    },
+    {
+      "id": "beldex",
+      "symbol": "BDX",
+      "name": "Beldex",
+      "rank": 135,
+      "pc24": -4.18758,
+      "vol_jpy": 1543888567,
+      "price_jpy": 12.38,
+      "mcap_jpy": 93731714157
+    },
+    {
+      "id": "jupiter-exchange-solana",
+      "symbol": "JUP",
+      "name": "Jupiter",
+      "rank": 136,
+      "pc24": -4.77479,
+      "vol_jpy": 3416282439,
+      "price_jpy": 29.24,
+      "mcap_jpy": 93311156926
+    },
+    {
+      "id": "pudgy-penguins",
+      "symbol": "PENGU",
+      "name": "Pudgy Penguins",
+      "rank": 137,
+      "pc24": -2.54124,
+      "vol_jpy": 21301974747,
+      "price_jpy": 1.48,
+      "mcap_jpy": 92590164872
+    },
+    {
+      "id": "wrapped-flare",
+      "symbol": "WFLR",
+      "name": "Wrapped Flare",
+      "rank": 138,
+      "pc24": -2.83906,
+      "vol_jpy": 784777761,
+      "price_jpy": 1.59,
+      "mcap_jpy": 92260782155
+    },
+    {
+      "id": "usual-usd",
+      "symbol": "USD0",
+      "name": "Usual USD",
+      "rank": 139,
+      "pc24": -0.97475,
+      "vol_jpy": 155682835,
+      "price_jpy": 153.79,
+      "mcap_jpy": 89800975885
+    },
+    {
+      "id": "optimism",
+      "symbol": "OP",
+      "name": "Optimism",
+      "rank": 140,
+      "pc24": -2.06528,
+      "vol_jpy": 11619821839,
+      "price_jpy": 45.61,
+      "mcap_jpy": 88575503717
+    },
+    {
+      "id": "arbitrum-bridged-weth-arbitrum-one",
+      "symbol": "WETH",
+      "name": "Arbitrum Bridged WETH (Arbitrum One)",
+      "rank": 141,
+      "pc24": -2.49279,
+      "vol_jpy": 49490961419,
+      "price_jpy": 445693,
+      "mcap_jpy": 87277013345
+    },
+    {
+      "id": "chiliz",
+      "symbol": "CHZ",
+      "name": "Chiliz",
+      "rank": 142,
+      "pc24": -1.61552,
+      "vol_jpy": 19485054412,
+      "price_jpy": 7.92,
+      "mcap_jpy": 81205115031
+    },
+    {
+      "id": "blockstack",
+      "symbol": "STX",
+      "name": "Stacks",
+      "rank": 143,
+      "pc24": -0.2635,
+      "vol_jpy": 2333226675,
+      "price_jpy": 45.8,
+      "mcap_jpy": 81052006457
+    },
+    {
+      "id": "virtual-protocol",
+      "symbol": "VIRTUAL",
+      "name": "Virtuals Protocol",
+      "rank": 144,
+      "pc24": -2.73358,
+      "vol_jpy": 11910401265,
+      "price_jpy": 122.1,
+      "mcap_jpy": 80193156681
+    },
+    {
+      "id": "tbtc",
+      "symbol": "TBTC",
+      "name": "tBTC",
+      "rank": 145,
+      "pc24": -1.94418,
+      "vol_jpy": 2377472907,
+      "price_jpy": 13518452,
+      "mcap_jpy": 80084969269
+    },
+    {
+      "id": "c8ntinuum",
+      "symbol": "CTM",
+      "name": "c8ntinuum",
+      "rank": 146,
+      "pc24": -1.37674,
+      "vol_jpy": 146388774,
+      "price_jpy": 18.23,
+      "mcap_jpy": 79496616358
+    },
+    {
+      "id": "curve-dao-token",
+      "symbol": "CRV",
+      "name": "Curve DAO",
+      "rank": 147,
+      "pc24": -2.06199,
+      "vol_jpy": 10067390516,
+      "price_jpy": 53.99,
+      "mcap_jpy": 79440662499
+    },
+    {
+      "id": "fetch-ai",
+      "symbol": "FET",
+      "name": "Artificial Superintelligence Alliance",
+      "rank": 148,
+      "pc24": -1.80039,
+      "vol_jpy": 8025321470,
+      "price_jpy": 34.48,
+      "mcap_jpy": 79430218133
+    },
+    {
+      "id": "a7a5",
+      "symbol": "A7A5",
+      "name": "A7A5",
+      "rank": 149,
+      "pc24": -0.18462,
+      "vol_jpy": 143306,
+      "price_jpy": 2.02,
+      "mcap_jpy": 79180571650
+    },
+    {
+      "id": "kinetic-staked-hype",
+      "symbol": "KHYPE",
+      "name": "Kinetiq Staked HYPE",
+      "rank": 150,
+      "pc24": -4.24149,
+      "vol_jpy": 2031473191,
+      "price_jpy": 3449.62,
+      "mcap_jpy": 78154242901
+    },
+    {
+      "id": "janus-henderson-anemoy-treasury-fund",
+      "symbol": "JTRSY",
+      "name": "Janus Henderson Anemoy Treasury Fund",
+      "rank": 151,
+      "pc24": -0.99477,
+      "vol_jpy": null,
+      "price_jpy": 168.38,
+      "mcap_jpy": 77661981303
+    },
+    {
+      "id": "first-digital-usd",
+      "symbol": "FDUSD",
+      "name": "First Digital USD",
+      "rank": 152,
+      "pc24": -0.96328,
+      "vol_jpy": 469840001663,
+      "price_jpy": 153.77,
+      "mcap_jpy": 76834664889
+    },
+    {
+      "id": "gho",
+      "symbol": "GHO",
+      "name": "GHO",
+      "rank": 153,
+      "pc24": -0.95972,
+      "vol_jpy": 1072586746,
+      "price_jpy": 154.09,
+      "mcap_jpy": 76294624039
+    },
+    {
+      "id": "true-usd",
+      "symbol": "TUSD",
+      "name": "TrueUSD",
+      "rank": 154,
+      "pc24": -0.93246,
+      "vol_jpy": 959530646,
+      "price_jpy": 153.98,
+      "mcap_jpy": 76137360303
+    },
+    {
+      "id": "fasttoken",
+      "symbol": "FTN",
+      "name": "Fasttoken",
+      "rank": 155,
+      "pc24": -1.12387,
+      "vol_jpy": 1651397418,
+      "price_jpy": 167.1,
+      "mcap_jpy": 72649530141
+    },
+    {
+      "id": "gteth",
+      "symbol": "GTETH",
+      "name": "GTETH",
+      "rank": 156,
+      "pc24": -2.53523,
+      "vol_jpy": 16863842,
+      "price_jpy": 445801,
+      "mcap_jpy": 71044875210
+    },
+    {
+      "id": "injective-protocol",
+      "symbol": "INJ",
+      "name": "Injective",
+      "rank": 157,
+      "pc24": -2.37382,
+      "vol_jpy": 6873214617,
+      "price_jpy": 680.78,
+      "mcap_jpy": 68081094457
+    },
+    {
+      "id": "kaia",
+      "symbol": "KAIA",
+      "name": "Kaia",
+      "rank": 158,
+      "pc24": -3.3698,
+      "vol_jpy": 9555180098,
+      "price_jpy": 11.59,
+      "mcap_jpy": 67983821335
+    },
+    {
+      "id": "lido-dao",
+      "symbol": "LDO",
+      "name": "Lido DAO",
+      "rank": 159,
+      "pc24": -0.61026,
+      "vol_jpy": 5883467046,
+      "price_jpy": 79.78,
+      "mcap_jpy": 67385161573
+    },
+    {
+      "id": "cap-usd",
+      "symbol": "CUSD",
+      "name": "Cap USD",
+      "rank": 160,
+      "pc24": -1.86179,
+      "vol_jpy": 2278407,
+      "price_jpy": 152.82,
+      "mcap_jpy": 66449842465
+    },
+    {
+      "id": "steakhouse-usdc-morpho-vault",
+      "symbol": "STEAKUSDC",
+      "name": "Steakhouse USDC Morpho Vault",
+      "rank": 161,
+      "pc24": -0.98923,
+      "vol_jpy": 1084.96,
+      "price_jpy": 171.94,
+      "mcap_jpy": 66407848644
+    },
+    {
+      "id": "ether-fi-liquid-eth",
+      "symbol": "LIQUIDETH",
+      "name": "Ether.Fi Liquid ETH",
+      "rank": 162,
+      "pc24": -2.45203,
+      "vol_jpy": 423404,
+      "price_jpy": 479796,
+      "mcap_jpy": 65970419269
+    },
+    {
+      "id": "msol",
+      "symbol": "MSOL",
+      "name": "Marinade Staked SOL",
+      "rank": 163,
+      "pc24": -4.23491,
+      "vol_jpy": 844954481,
+      "price_jpy": 25519,
+      "mcap_jpy": 64988723852
+    },
+    {
+      "id": "doublezero",
+      "symbol": "2Z",
+      "name": "DoubleZero",
+      "rank": 164,
+      "pc24": -10.44549,
+      "vol_jpy": 3100603898,
+      "price_jpy": 18.61,
+      "mcap_jpy": 64625185409
+    },
+    {
+      "id": "ether-fi",
+      "symbol": "ETHFI",
+      "name": "Ether.fi",
+      "rank": 165,
+      "pc24": -2.13183,
+      "vol_jpy": 5855487395,
+      "price_jpy": 91.39,
+      "mcap_jpy": 63796462858
+    },
+    {
+      "id": "coinbase-wrapped-staked-eth",
+      "symbol": "CBETH",
+      "name": "Coinbase Wrapped Staked ETH",
+      "rank": 166,
+      "pc24": -2.47795,
+      "vol_jpy": 3821644424,
+      "price_jpy": 499934,
+      "mcap_jpy": 63673547502
+    },
+    {
+      "id": "aerodrome-finance",
+      "symbol": "AERO",
+      "name": "Aerodrome Finance",
+      "rank": 167,
+      "pc24": -3.87296,
+      "vol_jpy": 2642534791,
+      "price_jpy": 69.37,
+      "mcap_jpy": 63290894867
+    },
+    {
+      "id": "usdb",
+      "symbol": "USDB",
+      "name": "USDB",
+      "rank": 168,
+      "pc24": -0.83403,
+      "vol_jpy": 37656881,
+      "price_jpy": 153.93,
+      "mcap_jpy": 62417850694
+    },
+    {
+      "id": "kinesis-silver",
+      "symbol": "KAG",
+      "name": "Kinesis Silver",
+      "rank": 169,
+      "pc24": 2.70193,
+      "vol_jpy": 470367380,
+      "price_jpy": 16729.55,
+      "mcap_jpy": 62253503343
+    },
+    {
+      "id": "newton-project",
+      "symbol": "AB",
+      "name": "AB",
+      "rank": 170,
+      "pc24": -2.61616,
+      "vol_jpy": 1389973839,
+      "price_jpy": 0.633252,
+      "mcap_jpy": 62163540522
+    },
+    {
+      "id": "floki",
+      "symbol": "FLOKI",
+      "name": "FLOKI",
+      "rank": 171,
+      "pc24": -3.3116,
+      "vol_jpy": 5485265362,
+      "price_jpy": 0.00641698,
+      "mcap_jpy": 61940027432
+    },
+    {
+      "id": "just",
+      "symbol": "JST",
+      "name": "JUST",
+      "rank": 172,
+      "pc24": -1.09627,
+      "vol_jpy": 4153296253,
+      "price_jpy": 6.98,
+      "mcap_jpy": 61319383565
+    },
+    {
+      "id": "stader-ethx",
+      "symbol": "ETHX",
+      "name": "Stader ETHx",
+      "rank": 173,
+      "pc24": -2.49712,
+      "vol_jpy": 53180678,
+      "price_jpy": 480901,
+      "mcap_jpy": 61256112562
+    },
+    {
+      "id": "sbtc-2",
+      "symbol": "SBTC",
+      "name": "sBTC",
+      "rank": 174,
+      "pc24": -2.69832,
+      "vol_jpy": 7532503,
+      "price_jpy": 13536194,
+      "mcap_jpy": 61056505986
+    },
+    {
+      "id": "lighter",
+      "symbol": "LIT",
+      "name": "Lighter",
+      "rank": 175,
+      "pc24": -10.76434,
+      "vol_jpy": 10641990686,
+      "price_jpy": 243.87,
+      "mcap_jpy": 60999621541
+    },
+    {
+      "id": "bittorrent",
+      "symbol": "BTT",
+      "name": "BitTorrent",
+      "rank": 176,
+      "pc24": -2.07905,
+      "vol_jpy": 3615153018,
+      "price_jpy": 6.182e-05,
+      "mcap_jpy": 60962183918
+    },
+    {
+      "id": "sun-token",
+      "symbol": "SUN",
+      "name": "Sun Token",
+      "rank": 177,
+      "pc24": -2.86668,
+      "vol_jpy": 4716664719,
+      "price_jpy": 3.15,
+      "mcap_jpy": 60621607751
+    },
+    {
+      "id": "layerzero",
+      "symbol": "ZRO",
+      "name": "LayerZero",
+      "rank": 178,
+      "pc24": -2.61314,
+      "vol_jpy": 13252127535,
+      "price_jpy": 295.18,
+      "mcap_jpy": 60422061195
+    },
+    {
+      "id": "kinesis-gold",
+      "symbol": "KAU",
+      "name": "Kinesis Gold",
+      "rank": 179,
+      "pc24": 1.24899,
+      "vol_jpy": 193897366,
+      "price_jpy": 25273,
+      "mcap_jpy": 60375876649
+    },
+    {
+      "id": "celestia",
+      "symbol": "TIA",
+      "name": "Celestia",
+      "rank": 180,
+      "pc24": -2.03171,
+      "vol_jpy": 7070811592,
+      "price_jpy": 68.62,
+      "mcap_jpy": 59817076858
+    },
+    {
+      "id": "the-graph",
+      "symbol": "GRT",
+      "name": "The Graph",
+      "rank": 181,
+      "pc24": -1.08948,
+      "vol_jpy": 2834090728,
+      "price_jpy": 5.55,
+      "mcap_jpy": 59333002169
+    },
+    {
+      "id": "axie-infinity",
+      "symbol": "AXS",
+      "name": "Axie Infinity",
+      "rank": 182,
+      "pc24": -2.97475,
+      "vol_jpy": 66031517688,
+      "price_jpy": 350.66,
+      "mcap_jpy": 59302976537
+    },
+    {
+      "id": "resolv-usr",
+      "symbol": "USR",
+      "name": "Resolv USR",
+      "rank": 183,
+      "pc24": -0.9905,
+      "vol_jpy": 106042998,
+      "price_jpy": 154.12,
+      "mcap_jpy": 58186698157
+    },
+    {
+      "id": "staked-aave",
+      "symbol": "STKAAVE",
+      "name": "Staked Aave",
+      "rank": 184,
+      "pc24": -3.59,
+      "vol_jpy": 26196603,
+      "price_jpy": 23048,
+      "mcap_jpy": 57991704757
+    },
+    {
+      "id": "syrup",
+      "symbol": "SYRUP",
+      "name": "Maple Finance",
+      "rank": 185,
+      "pc24": -2.73451,
+      "vol_jpy": 1886747311,
+      "price_jpy": 50.07,
+      "mcap_jpy": 57394127598
+    },
+    {
+      "id": "euro-coin",
+      "symbol": "EURC",
+      "name": "EURC",
+      "rank": 186,
+      "pc24": -0.69,
+      "vol_jpy": 6403490932,
+      "price_jpy": 182.77,
+      "mcap_jpy": 57209659914
+    },
+    {
+      "id": "resolv-wstusr",
+      "symbol": "WSTUSR",
+      "name": "Resolv wstUSR",
+      "rank": 187,
+      "pc24": -0.97373,
+      "vol_jpy": 129054701,
+      "price_jpy": 174.09,
+      "mcap_jpy": 57054889627
+    },
+    {
+      "id": "stable-2",
+      "symbol": "STABLE",
+      "name": "​​Stable",
+      "rank": 188,
+      "pc24": 2.03864,
+      "vol_jpy": 4509495091,
+      "price_jpy": 3.16,
+      "mcap_jpy": 56620507780
+    },
+    {
+      "id": "iota",
+      "symbol": "IOTA",
+      "name": "IOTA",
+      "rank": 189,
+      "pc24": -2.49271,
+      "vol_jpy": 1450726100,
+      "price_jpy": 13.21,
+      "mcap_jpy": 56209716518
+    },
+    {
+      "id": "wrapped-apecoin",
+      "symbol": "WAPE",
+      "name": "Wrapped ApeCoin",
+      "rank": 190,
+      "pc24": -2.84435,
+      "vol_jpy": 64682456,
+      "price_jpy": 27.9,
+      "mcap_jpy": 55978203080
+    },
+    {
+      "id": "the-sandbox",
+      "symbol": "SAND",
+      "name": "The Sandbox",
+      "rank": 191,
+      "pc24": -6.8327,
+      "vol_jpy": 11945982803,
+      "price_jpy": 20.89,
+      "mcap_jpy": 55744885621
+    },
+    {
+      "id": "gnosis",
+      "symbol": "GNO",
+      "name": "Gnosis",
+      "rank": 192,
+      "pc24": -1.74399,
+      "vol_jpy": 909487255,
+      "price_jpy": 21094,
+      "mcap_jpy": 55543900291
+    },
+    {
+      "id": "starknet",
+      "symbol": "STRK",
+      "name": "Starknet",
+      "rank": 193,
+      "pc24": -4.29631,
+      "vol_jpy": 7550135716,
+      "price_jpy": 10.46,
+      "mcap_jpy": 54418842184
+    },
+    {
+      "id": "bitcoin-cash-sv",
+      "symbol": "BSV",
+      "name": "Bitcoin SV",
+      "rank": 194,
+      "pc24": -2.05703,
+      "vol_jpy": 1655324728,
+      "price_jpy": 2719.54,
+      "mcap_jpy": 54266592588
+    },
+    {
+      "id": "trust-wallet-token",
+      "symbol": "TWT",
+      "name": "Trust Wallet",
+      "rank": 195,
+      "pc24": -3.26826,
+      "vol_jpy": 1564181366,
+      "price_jpy": 129.73,
+      "mcap_jpy": 54092931271
+    },
+    {
+      "id": "apenft",
+      "symbol": "NFT",
+      "name": "AINFT",
+      "rank": 196,
+      "pc24": -1.20699,
+      "vol_jpy": 3820159299,
+      "price_jpy": 5.463e-05,
+      "mcap_jpy": 54072062754
+    },
+    {
+      "id": "conflux-token",
+      "symbol": "CFX",
+      "name": "Conflux",
+      "rank": 197,
+      "pc24": -4.31347,
+      "vol_jpy": 2616248405,
+      "price_jpy": 10.42,
+      "mcap_jpy": 53686442968
+    },
+    {
+      "id": "crvusd",
+      "symbol": "CRVUSD",
+      "name": "crvUSD",
+      "rank": 198,
+      "pc24": -1.05496,
+      "vol_jpy": 6067348741,
+      "price_jpy": 154.04,
+      "mcap_jpy": 53017142704
+    },
+    {
+      "id": "spx6900",
+      "symbol": "SPX",
+      "name": "SPX6900",
+      "rank": 199,
+      "pc24": -6.87169,
+      "vol_jpy": 2841245978,
+      "price_jpy": 56.63,
+      "mcap_jpy": 52670591090
+    },
+    {
+      "id": "jasmycoin",
+      "symbol": "JASMY",
+      "name": "JasmyCoin",
+      "rank": 200,
+      "pc24": -4.13233,
+      "vol_jpy": 3311734458,
+      "price_jpy": 1.063,
+      "mcap_jpy": 52552833361
+    },
+    {
+      "id": "ethereum-name-service",
+      "symbol": "ENS",
+      "name": "Ethereum Name Service",
+      "rank": 201,
+      "pc24": -1.96155,
+      "vol_jpy": 3635521448,
+      "price_jpy": 1374.29,
+      "mcap_jpy": 52438864528
+    },
+    {
+      "id": "telcoin",
+      "symbol": "TEL",
+      "name": "Telcoin",
+      "rank": 202,
+      "pc24": -6.74637,
+      "vol_jpy": 292971064,
+      "price_jpy": 0.548494,
+      "mcap_jpy": 52159810888
+    },
+    {
+      "id": "olympus",
+      "symbol": "OHM",
+      "name": "Olympus",
+      "rank": 203,
+      "pc24": -0.961,
+      "vol_jpy": 56319513,
+      "price_jpy": 3177.01,
+      "mcap_jpy": 52061630666
+    },
+    {
+      "id": "ether-fi-staked-eth",
+      "symbol": "EETH",
+      "name": "ether.fi Staked ETH",
+      "rank": 204,
+      "pc24": -1.70596,
+      "vol_jpy": 14624737,
+      "price_jpy": 449546,
+      "mcap_jpy": 51583030739
+    },
+    {
+      "id": "pyth-network",
+      "symbol": "PYTH",
+      "name": "Pyth Network",
+      "rank": 205,
+      "pc24": -2.69069,
+      "vol_jpy": 2701894153,
+      "price_jpy": 8.95,
+      "mcap_jpy": 51542074027
+    },
+    {
+      "id": "bitcoin-avalanche-bridged-btc-b",
+      "symbol": "BTC.B",
+      "name": "Avalanche Bridged BTC (Avalanche)",
+      "rank": 206,
+      "pc24": -1.87543,
+      "vol_jpy": 3514291931,
+      "price_jpy": 13542102,
+      "mcap_jpy": 51210917866
+    },
+    {
+      "id": "dogwifcoin",
+      "symbol": "WIF",
+      "name": "dogwifhat",
+      "rank": 207,
+      "pc24": -2.20261,
+      "vol_jpy": 14922621106,
+      "price_jpy": 50.16,
+      "mcap_jpy": 50078423277
+    },
+    {
+      "id": "pendle",
+      "symbol": "PENDLE",
+      "name": "Pendle",
+      "rank": 208,
+      "pc24": -4.88933,
+      "vol_jpy": 7337851333,
+      "price_jpy": 294.15,
+      "mcap_jpy": 49294847296
+    },
+    {
+      "id": "decred",
+      "symbol": "DCR",
+      "name": "Decred",
+      "rank": 209,
+      "pc24": 1.25297,
+      "vol_jpy": 668220034,
+      "price_jpy": 2815.69,
+      "mcap_jpy": 49001208345
+    },
+    {
+      "id": "pippin",
+      "symbol": "PIPPIN",
+      "name": "pippin",
+      "rank": 210,
+      "pc24": -9.15478,
+      "vol_jpy": 5414161099,
+      "price_jpy": 47.87,
+      "mcap_jpy": 48102008907
+    },
+    {
+      "id": "binance-peg-dogecoin",
+      "symbol": "DOGE",
+      "name": "Binance-Peg Dogecoin",
+      "rank": 211,
+      "pc24": -2.17123,
+      "vol_jpy": 168365566,
+      "price_jpy": 18.73,
+      "mcap_jpy": 47962047093
+    },
+    {
+      "id": "usx",
+      "symbol": "USX",
+      "name": "USX",
+      "rank": 212,
+      "pc24": -1.00309,
+      "vol_jpy": 476800176,
+      "price_jpy": 154.05,
+      "mcap_jpy": 46183227168
+    },
+    {
+      "id": "undeads-games",
+      "symbol": "UDS",
+      "name": "Undeads Games",
+      "rank": 213,
+      "pc24": -1.43815,
+      "vol_jpy": 93990456,
+      "price_jpy": 369.53,
+      "mcap_jpy": 46035447450
+    },
+    {
+      "id": "binance-peg-busd",
+      "symbol": "BUSD",
+      "name": "Binance-Peg BUSD",
+      "rank": 214,
+      "pc24": -0.63291,
+      "vol_jpy": 273160966,
+      "price_jpy": 154.18,
+      "mcap_jpy": 44733511301
+    },
+    {
+      "id": "wrapped-stx-velar",
+      "symbol": "WSTX",
+      "name": "Wrapped STX (Velar)",
+      "rank": 215,
+      "pc24": -4.69521,
+      "vol_jpy": 170749,
+      "price_jpy": 44.65,
+      "mcap_jpy": 44658259500
+    },
+    {
+      "id": "gala",
+      "symbol": "GALA",
+      "name": "GALA",
+      "rank": 216,
+      "pc24": -1.15535,
+      "vol_jpy": 5319417162,
+      "price_jpy": 0.944428,
+      "mcap_jpy": 44471750671
+    },
+    {
+      "id": "humanity",
+      "symbol": "H",
+      "name": "Humanity",
+      "rank": 217,
+      "pc24": -3.38302,
+      "vol_jpy": 2240356377,
+      "price_jpy": 24.36,
+      "mcap_jpy": 44469130234
+    },
+    {
+      "id": "unit-bitcoin",
+      "symbol": "UBTC",
+      "name": "Unit Bitcoin",
+      "rank": 218,
+      "pc24": -1.8359,
+      "vol_jpy": 7159852584,
+      "price_jpy": 13541800,
+      "mcap_jpy": 44328268292
+    },
+    {
+      "id": "fartcoin",
+      "symbol": "FARTCOIN",
+      "name": "Fartcoin",
+      "rank": 219,
+      "pc24": -2.98788,
+      "vol_jpy": 11951435932,
+      "price_jpy": 44.01,
+      "mcap_jpy": 43952279716
+    },
+    {
+      "id": "decentraland",
+      "symbol": "MANA",
+      "name": "Decentraland",
+      "rank": 220,
+      "pc24": -4.23333,
+      "vol_jpy": 4658919800,
+      "price_jpy": 22.78,
+      "mcap_jpy": 43582406696
+    },
+    {
+      "id": "zebec-network",
+      "symbol": "ZBCN",
+      "name": "Zebec Network",
+      "rank": 221,
+      "pc24": -4.27623,
+      "vol_jpy": 1820354749,
+      "price_jpy": 0.439604,
+      "mcap_jpy": 43050426176
+    },
+    {
+      "id": "kraken-wrapped-btc",
+      "symbol": "KBTC",
+      "name": "Kraken Wrapped BTC",
+      "rank": 222,
+      "pc24": -2.06554,
+      "vol_jpy": 63164614,
+      "price_jpy": 13551248,
+      "mcap_jpy": 42703748933
+    },
+    {
+      "id": "frax",
+      "symbol": "FRAX",
+      "name": "Legacy Frax Dollar",
+      "rank": 223,
+      "pc24": -1.0405,
+      "vol_jpy": 446631112,
+      "price_jpy": 153.02,
+      "mcap_jpy": 42269792624
+    },
+    {
+      "id": "theta-token",
+      "symbol": "THETA",
+      "name": "Theta Network",
+      "rank": 224,
+      "pc24": -5.78414,
+      "vol_jpy": 1581556233,
+      "price_jpy": 42.04,
+      "mcap_jpy": 41997668278
+    },
+    {
+      "id": "benqi-liquid-staked-avax",
+      "symbol": "SAVAX",
+      "name": "BENQI Liquid Staked AVAX",
+      "rank": 225,
+      "pc24": -3.11249,
+      "vol_jpy": 61813797,
+      "price_jpy": 2239.52,
+      "mcap_jpy": 41162238259
+    },
+    {
+      "id": "gate-wrapped-btc",
+      "symbol": "GTBTC",
+      "name": "Gate Wrapped BTC",
+      "rank": 226,
+      "pc24": -1.91235,
+      "vol_jpy": 58590131,
+      "price_jpy": 13579051,
+      "mcap_jpy": 40679559576
+    },
+    {
+      "id": "astherus-staked-bnb",
+      "symbol": "ASBNB",
+      "name": "Aster Staked BNB",
+      "rank": 227,
+      "pc24": -1.86116,
+      "vol_jpy": 13932825,
+      "price_jpy": 142480,
+      "mcap_jpy": 40438749192
+    },
+    {
+      "id": "susdai",
+      "symbol": "SUSDAI",
+      "name": "Staked USDai",
+      "rank": 228,
+      "pc24": -1.05435,
+      "vol_jpy": 282930459,
+      "price_jpy": 163.95,
+      "mcap_jpy": 40431327350
+    },
+    {
+      "id": "raydium",
+      "symbol": "RAY",
+      "name": "Raydium",
+      "rank": 229,
+      "pc24": -4.71682,
+      "vol_jpy": 4075060576,
+      "price_jpy": 148.97,
+      "mcap_jpy": 39978760009
+    },
+    {
+      "id": "basic-attention-token",
+      "symbol": "BAT",
+      "name": "Basic Attention",
+      "rank": 230,
+      "pc24": -3.01704,
+      "vol_jpy": 2788969496,
+      "price_jpy": 26.72,
+      "mcap_jpy": 39899879230
+    },
+    {
+      "id": "polygon-pos-bridged-weth-polygon-pos",
+      "symbol": "WETH",
+      "name": "Polygon PoS Bridged WETH (Polygon POS)",
+      "rank": 231,
+      "pc24": -2.46896,
+      "vol_jpy": 1458892036,
+      "price_jpy": 445662,
+      "mcap_jpy": 39685530758
+    },
+    {
+      "id": "plasma",
+      "symbol": "XPL",
+      "name": "Plasma",
+      "rank": 232,
+      "pc24": -5.50008,
+      "vol_jpy": 10922504219,
+      "price_jpy": 18.38,
+      "mcap_jpy": 39608731770
+    },
+    {
+      "id": "sonic-3",
+      "symbol": "S",
+      "name": "Sonic",
+      "rank": 233,
+      "pc24": -2.55387,
+      "vol_jpy": 4027181423,
+      "price_jpy": 10.46,
+      "mcap_jpy": 39592868683
+    },
+    {
+      "id": "arbitrum-bridged-wrapped-eeth",
+      "symbol": "WEETH",
+      "name": "Arbitrum Bridged Wrapped eETH (Arbitrum)",
+      "rank": 234,
+      "pc24": -2.46104,
+      "vol_jpy": 508673844,
+      "price_jpy": 484275,
+      "mcap_jpy": 39546436670
+    },
+    {
+      "id": "binance-wrapped-btc",
+      "symbol": "BBTC",
+      "name": "Binance Wrapped BTC",
+      "rank": 235,
+      "pc24": -1.75104,
+      "vol_jpy": 5557229,
+      "price_jpy": 13531578,
+      "mcap_jpy": 39249893837
+    },
+    {
+      "id": "btse-token",
+      "symbol": "BTSE",
+      "name": "BTSE Token",
+      "rank": 236,
+      "pc24": -1.58135,
+      "vol_jpy": 1842766040,
+      "price_jpy": 240.83,
+      "mcap_jpy": 39036924082
+    },
+    {
+      "id": "neo",
+      "symbol": "NEO",
+      "name": "NEO",
+      "rank": 237,
+      "pc24": -2.24225,
+      "vol_jpy": 1837707978,
+      "price_jpy": 548.05,
+      "mcap_jpy": 38655367247
+    },
+    {
+      "id": "zksync",
+      "symbol": "ZK",
+      "name": "ZKsync",
+      "rank": 238,
+      "pc24": -1.97433,
+      "vol_jpy": 3371399435,
+      "price_jpy": 4.33,
+      "mcap_jpy": 37908270970
+    },
+    {
+      "id": "mimblewimblecoin",
+      "symbol": "MWC",
+      "name": "MimbleWimbleCoin",
+      "rank": 239,
+      "pc24": -1.53908,
+      "vol_jpy": 18918185,
+      "price_jpy": 3443.52,
+      "mcap_jpy": 37898590924
+    },
+    {
+      "id": "wrapped-ether-mantle-bridge",
+      "symbol": "WETH",
+      "name": "Mantle Bridged WETH (Mantle)",
+      "rank": 240,
+      "pc24": -2.51724,
+      "vol_jpy": 512865781,
+      "price_jpy": 445638,
+      "mcap_jpy": 37282571553
+    },
+    {
+      "id": "frax-ether",
+      "symbol": "FRXETH",
+      "name": "Frax Ether",
+      "rank": 241,
+      "pc24": -2.56078,
+      "vol_jpy": 182225810,
+      "price_jpy": 444532,
+      "mcap_jpy": 36984835477
+    },
+    {
+      "id": "wrapped-aave-ethereum-usdc",
+      "symbol": "WAETHUSDC",
+      "name": "Wrapped Aave Ethereum USDC",
+      "rank": 242,
+      "pc24": -0.36097,
+      "vol_jpy": 5730860444,
+      "price_jpy": 178.89,
+      "mcap_jpy": 36855631041
+    },
+    {
+      "id": "chain-2",
+      "symbol": "XCN",
+      "name": "Onyxcoin",
+      "rank": 243,
+      "pc24": -6.88828,
+      "vol_jpy": 1779164243,
+      "price_jpy": 0.987041,
+      "mcap_jpy": 36297278301
+    },
+    {
+      "id": "arbitrum-bridged-wsteth-arbitrum",
+      "symbol": "WSTETH",
+      "name": "Arbitrum Bridged wstETH (Arbitrum)",
+      "rank": 244,
+      "pc24": -2.53661,
+      "vol_jpy": 103145888,
+      "price_jpy": 546009,
+      "mcap_jpy": 36237076245
+    },
+    {
+      "id": "ape-and-pepe",
+      "symbol": "APEPE",
+      "name": "Ape and Pepe",
+      "rank": 245,
+      "pc24": 1.70627,
+      "vol_jpy": 2033213286,
+      "price_jpy": 0.00017194,
+      "mcap_jpy": 36122789072
+    },
+    {
+      "id": "compound-governance-token",
+      "symbol": "COMP",
+      "name": "Compound",
+      "rank": 246,
+      "pc24": -1.70174,
+      "vol_jpy": 3546575826,
+      "price_jpy": 3688.35,
+      "mcap_jpy": 35664916020
+    },
+    {
+      "id": "mantle-restaked-eth",
+      "symbol": "CMETH",
+      "name": "Mantle Restaked ETH",
+      "rank": 247,
+      "pc24": -2.41262,
+      "vol_jpy": 957282076,
+      "price_jpy": 483364,
+      "mcap_jpy": 35467799403
+    },
+    {
+      "id": "wefi",
+      "symbol": "WFI",
+      "name": "WeFi",
+      "rank": 248,
+      "pc24": -1.35466,
+      "vol_jpy": 476057604,
+      "price_jpy": 447.07,
+      "mcap_jpy": 35224749885
+    },
+    {
+      "id": "swissborg",
+      "symbol": "BORG",
+      "name": "SwissBorg",
+      "rank": 249,
+      "pc24": -0.83606,
+      "vol_jpy": 99524093,
+      "price_jpy": 35.26,
+      "mcap_jpy": 34705045100
+    },
+    {
+      "id": "golem",
+      "symbol": "GLM",
+      "name": "Golem",
+      "rank": 250,
+      "pc24": -0.55356,
+      "vol_jpy": 1151676991,
+      "price_jpy": 34.63,
+      "mcap_jpy": 34668429219
+    }
+  ]
+}
