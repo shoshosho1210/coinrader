@@ -882,7 +882,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .breadth-seg.up{background:rgba(52,211,153,0.85)}
 .breadth-seg.down{background:rgba(248,113,113,0.85)}
 .breadth-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none}
-  /* ▼▼▼ 追加CSS：スマートバッジ ▼▼▼ */
   .meta-row {
     display: flex; justify-content: flex-end; align-items: center; gap: 5px;
     font-size: 11px; color: #9ca3af; margin-top: 3px;
@@ -895,7 +894,21 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     padding: 1px 5px; border-radius: 4px;
     font-size: 10px; white-space: nowrap;
   }
-  /* ▲▲▲ 追加CSSここまで ▲▲▲ */
+  .card {
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.1s;
+  }
+  .card:active {
+    transform: scale(0.98); /* 押した時に少し縮む */
+    background-color: rgba(30, 41, 59, 1); /* 少し明るくなる */
+  }
+  /* 画像エラー時の代替円（CSSで描画） */
+  .coin-icon-fallback {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #334155; color: #94a3b8;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -3554,14 +3567,13 @@ function makeLineChart(canvasId, labels, series, opts){
     });
   }
 
-// 安全なカード生成関数（3行コンパクト・レンジバー削除版）
+// 安全なカード生成関数（3行コンパクト・画像最適化・レンジバー削除版）
   function renderInto(gridId, coins, mode, sectionKey){
     const grid = document.getElementById(gridId);
     if(!grid) return;
     grid.innerHTML = '';
 
     if (!coins || !coins.length){
-      // SECTION_ERRORS が未定義の場合のガード
       const hasError = (typeof SECTION_ERRORS !== 'undefined' && SECTION_ERRORS.trend);
       if (sectionKey === 'trend' && hasError){
         grid.innerHTML = '<div class="msg">トレンドの取得に失敗しました（他のデータは表示しています）。時間をおいて再読み込みしてください。</div>';
@@ -3610,14 +3622,12 @@ function makeLineChart(canvasId, labels, series, opts){
         ? ((change>=0?'+':'') + change.toFixed(2) + '%')
         : '-';
 
-      // 1. シンボルの横に置くランクバッジ（TOP20以外で表示）
+      // 1. シンボルの横に置くランクバッジ
       const globalRankHtml = (coin.market_cap_rank && mode !== 'mcap') 
         ? `<span style="background:rgba(255,255,255,0.1); padding:0 4px; border-radius:3px; margin-left:4px; font-size:10px; color:#cbd5e1;">#${coin.market_cap_rank}</span>` 
         : '';
 
-      // 2. KPI行（出来高・回転率・ATH）を1行にまとめる
-      
-      // (A) 売買回転率
+      // 2. KPI行
       let turnoverBadge = '';
       if (typeof coin.total_volume === 'number' && typeof coin.market_cap === 'number' && coin.market_cap > 0) {
         const rate = (coin.total_volume / coin.market_cap) * 100;
@@ -3625,7 +3635,6 @@ function makeLineChart(canvasId, labels, series, opts){
         turnoverBadge = `<span class="meta-badge" title="売買回転率">${icon} ${rate.toFixed(1)}%</span>`;
       }
 
-      // (B) ATH（最高値）
       let athBadge = '';
       if (typeof coin.ath_change_percentage === 'number') {
         const ath = coin.ath_change_percentage;
@@ -3636,28 +3645,25 @@ function makeLineChart(canvasId, labels, series, opts){
         }
       }
 
-      // (C) メイン指標（モードによって「出来高」か「時価総額」か切り替え）
       let mainMetricHtml = '';
       if (mode === 'mcap') {
-        // 時価総額モード
         mainMetricHtml = `<span class="meta-val">Cap ${yenLarge(coin.market_cap)}</span>`;
       } else {
-        // 通常モード（出来高を表示）
         const val = (typeof coin.total_volume === 'number') ? yenLarge(coin.total_volume) : '-';
         mainMetricHtml = `<span class="meta-val">Vol ${val}</span>`;
       }
 
-      // ★統合：すべてを1つのフレックス行に入れる
       const kpiLineHtml = `<div class="meta-row" style="flex-wrap:wrap; justify-content:flex-end; gap:6px;">${mainMetricHtml} ${turnoverBadge} ${athBadge}</div>`;
 
       const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
 
-      // HTML生成（レンジバーなし）
+      // HTML生成（画像最適化入り）
       card.innerHTML = `
         <div class="rank-badge ${rankCls}">#${idx+1}</div>
         <div class="card-header">
           <div class="coin-header">
-            <img class="coin-icon" src="${coin.image}" alt="${coin.name}">
+            <img class="coin-icon" src="${coin.image}" alt="${coin.name}" loading="lazy" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="coin-icon-fallback" style="display:none;">${(coin.symbol||'?').charAt(0).toUpperCase()}</div>
             <div>
               <div class="coin-name">${coin.name}</div>
               <div class="coin-symbol">${(coin.symbol||'').toUpperCase()}${globalRankHtml}</div>
@@ -3674,7 +3680,7 @@ function makeLineChart(canvasId, labels, series, opts){
 
       grid.appendChild(card);
 
-      // Sparkline描画処理（変更なし）
+      // Sparkline
       if (mode==='mcap' && !(coin && coin.sparkline_in_7d && Array.isArray(coin.sparkline_in_7d.price) && coin.sparkline_in_7d.price.length)){
         return;
       }
