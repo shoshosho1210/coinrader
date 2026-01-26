@@ -985,6 +985,42 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     transform: translateY(-1px);
   }
   .nav-tab span { font-size: 12px; }
+  /* ▼▼▼ 追加：情報表示用モーダル ▼▼▼ */
+  .info-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .info-modal-overlay.open { opacity: 1; pointer-events: auto; }
+  
+  .info-modal {
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    width: 90%; max-width: 500px;
+    max-height: 80vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: scale(0.95); transition: transform 0.2s;
+  }
+  .info-modal-overlay.open .info-modal { transform: scale(1); }
+
+  .info-header {
+    padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .info-title { font-weight: 700; font-size: 16px; color: #f9fafb; }
+  .info-close {
+    background: none; border: none; color: #9ca3af; font-size: 24px; cursor: pointer; padding: 0 8px;
+  }
+  .info-body { padding: 20px; overflow-y: auto; font-size: 14px; line-height: 1.6; color: #cbd5e1; }
+  .info-body h3 { margin: 16px 0 8px; font-size: 15px; color: #fff; }
+  .info-body p { margin-bottom: 12px; }
+  .info-body ul { padding-left: 20px; margin-bottom: 12px; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1030,11 +1066,11 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   </div>
 </nav>
 <div class="sideMenuFooter">
-<a class="sideNavLink" href="/start">始め方</a>
-<a class="sideNavLink" href="/data-sources">データソース</a>
-<a class="sideNavLink" href="/ads-pr">広告・PR表記</a>
-<a class="sideNavLink" href="/privacy">プライバシーポリシー</a>
-<a class="sideNavLink" href="/contact">お問い合わせ</a>
+  <a class="sideNavLink" href="#" onclick="openInfoModal('start'); return false;">🔰 始め方</a>
+  <a class="sideNavLink" href="#" onclick="openInfoModal('data'); return false;">📊 データソース</a>
+  <a class="sideNavLink" href="#" onclick="openInfoModal('ads'); return false;">📢 広告・PR表記</a>
+  <a class="sideNavLink" href="#" onclick="openInfoModal('privacy'); return false;">🔒 プライバシーポリシー</a>
+  <a class="sideNavLink" href="#" onclick="openInfoModal('contact'); return false;">📩 お問い合わせ</a>
 </div>
 </aside>
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
@@ -4101,6 +4137,83 @@ function renderAll(){
     try{ startAutoRefresh(); }catch(_e){}
   })();
 ;
+</script>
+  <div class="info-modal-overlay" id="infoModalOverlay" onclick="closeInfoModal()">
+  <div class="info-modal" onclick="event.stopPropagation()">
+    <div class="info-header">
+      <div class="info-title" id="infoModalTitle">タイトル</div>
+      <button class="info-close" onclick="closeInfoModal()">×</button>
+    </div>
+    <div class="info-body" id="infoModalBody">
+      </div>
+  </div>
+</div>
+
+<script>
+  // ▼▼▼ 追加：モーダル制御スクリプト ▼▼▼
+  const MODAL_CONTENTS = {
+    'start': {
+      title: 'CoinRaderの始め方',
+      body: `
+        <p>CoinRaderへようこそ。ここは「今の市場」を最速で把握するためのダッシュボードです。</p>
+        <h3>🔥 トレンド</h3>
+        <p>今、世界中で検索されている注目コインTOP5です。</p>
+        <h3>📊 3つの重要指標</h3>
+        <p>「上昇率」「出来高」「時価総額」のタブを切り替えて、市場の動きをチェックしてください。</p>
+        <h3>💡 ヒント</h3>
+        <p>各カードをタップすると、詳細データ（CoinGecko）へアクセスできます。</p>
+      `
+    },
+    'data': {
+      title: 'データソースについて',
+      body: `
+        <p>当サイトの市場データは、以下のAPIを利用して取得しています。</p>
+        <ul>
+          <li><strong>CoinGecko API</strong>（価格、チャート、トレンド）</li>
+          <li><strong>Binance Public Data</strong>（一部のテクニカル指標推定用）</li>
+        </ul>
+        <p>※無料プランのAPIを使用しているため、更新頻度は約3分〜5分間隔となります。</p>
+      `
+    },
+    'ads': {
+      title: '広告・PR表記',
+      body: `
+        <p>当サイトは、サーバー運営費を賄うためにアフィリエイトプログラムに参加しています。</p>
+        <p>「取引所おすすめ」などのリンクを経由して口座開設などが行われた場合、当サイトに紹介料が入ることがあります。</p>
+      `
+    },
+    'privacy': {
+      title: 'プライバシーポリシー',
+      body: `
+        <p>当サイトでは、アクセス解析のためにGoogle Analyticsを使用しています。データは匿名で収集されており、個人を特定するものではありません。</p>
+      `
+    },
+    'contact': {
+      title: 'お問い合わせ',
+      body: `
+        <p>不具合の報告や機能リクエストは、以下の公式SNSまでご連絡ください。</p>
+        <p><strong>X (Twitter):</strong> <a href="https://x.com/" target="_blank" style="color:#60a5fa">@CoinRader_JP</a></p>
+      `
+    }
+  };
+
+  function openInfoModal(key){
+    const content = MODAL_CONTENTS[key];
+    if(!content) return;
+    document.getElementById('infoModalTitle').textContent = content.title;
+    document.getElementById('infoModalBody').innerHTML = content.body;
+    document.getElementById('infoModalOverlay').classList.add('open');
+    
+    // サイドメニューが開いていれば閉じる
+    const menu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('sideMenuOverlay');
+    if(menu) menu.classList.remove('is-open');
+    if(overlay) overlay.hidden = true;
+  }
+
+  function closeInfoModal(){
+    document.getElementById('infoModalOverlay').classList.remove('open');
+  }
 </script>
 </body>
 </html>
