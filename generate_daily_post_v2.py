@@ -4,6 +4,7 @@
 import os
 import datetime as dt
 import requests
+import json
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,14 @@ EXCLUDE_NAME_KEYWORDS = [
     'wbtc','weth','steth'
 ]
 
+
+def write_daily_snapshot(date_tag: str, snapshot: dict) -> str:
+    """Write data/daily/YYYYMMDD.json for weekly aggregation."""
+    out_dir = Path("data/daily")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{date_tag}.json"
+    out_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+    return str(out_path)
 def is_excluded_for_alt_volume(coin: dict) -> bool:
     cid = (coin.get('id') or '').lower()
     name = (coin.get('name') or '').lower()
@@ -227,6 +236,55 @@ def build_post():
     share_url, share_path = build_share_page(today, SITE_URL)
     post_url = share_url if USE_SHARE_URL_IN_POST else SITE_URL
 
+
+    # --- Daily snapshot for weekly report (data/daily/YYYYMMDD.json) ---
+    date_tag = dt.datetime.now(jst).strftime("%Y%m%d")
+
+    # Breadth (top250)
+    pcs = [c.get("price_change_percentage_24h") for c in markets_top
+           if isinstance(c.get("price_change_percentage_24h"), (int, float))]
+    up = sum(1 for x in pcs if x > 0)
+    down = sum(1 for x in pcs if x < 0)
+    avg_chg = (sum(pcs) / len(pcs)) if pcs else None
+    up_ratio = (up / (up + down) * 100.0) if (up + down) > 0 else None
+
+    # BTC/ETH price (JPY)
+    def find_price(sym: str, cid: str):
+        for c in markets_top:
+            if (c.get("id") == cid) or ((c.get("symbol") or "").lower() == sym):
+                p = c.get("current_price")
+                if isinstance(p, (int, float)):
+                    return float(p)
+        return None
+
+    btc_price = find_price("btc", "bitcoin")
+    eth_price = find_price("eth", "ethereum")
+
+    snapshot = {
+        "date": date_tag,
+        "generated_at": dt.datetime.now(jst).isoformat(),
+        "breadth": {"up": up, "down": down, "avgChg": avg_chg, "upRatio": up_ratio},
+        "btc": {"price_jpy": btc_price},
+        "eth": {"price_jpy": eth_price},
+        "trend": [{"symbol": (s.split("(")[-1].replace(")","") if "(" in s else s).upper(), "label": s} for s in trend_items[:5]],
+        "gainers": [
+            {"id": g.get("id"), "symbol": (g.get("symbol") or "").upper(), "name": g.get("name"),
+             "pc24": g.get("price_change_percentage_24h"), "vol_jpy": g.get("total_volume"), "rank": g.get("market_cap_rank")}
+            for g in gain_top[:5]
+        ],
+        "vol_alt": [
+            {"id": v.get("id"), "symbol": (v.get("symbol") or "").upper(), "name": v.get("name"),
+             "pc24": v.get("price_change_percentage_24h"), "vol_jpy": v.get("total_volume"), "rank": v.get("market_cap_rank")}
+            for v in volume_alt[:5]
+        ],
+        "top250": [
+            {"id": c.get("id"), "symbol": (c.get("symbol") or "").upper(), "name": c.get("name"),
+             "rank": c.get("market_cap_rank"), "pc24": c.get("price_change_percentage_24h"),
+             "vol_jpy": c.get("total_volume"), "price_jpy": c.get("current_price"), "mcap_jpy": c.get("market_cap")}
+            for c in markets_top
+        ],
+    }
+    write_daily_snapshot(date_tag, snapshot)
     full = (
         f"【今日の注目 {today}】\n"
         f"トレンド: {fmt_rank(trend_items)}\n"
