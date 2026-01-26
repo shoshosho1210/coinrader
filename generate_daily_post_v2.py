@@ -1,489 +1,469 @@
 #!/usr/bin/env python3
-# generate_daily_post_v2.py
-# CoinRader: X投稿用デイリー集計（index系のランキングルールに合わせる）
+# -*- coding: utf-8 -*-
+"""
+CoinRader: 日次ポスト文（X用） + shareページURLを生成するスクリプト。
+
+出力:
+  - daily_post_short.txt   (Xにそのまま貼れる短文)
+  - daily_post_full.txt    (短文 + 有料(詳細版)向けの下書き)
+  - daily_share_url.txt    (shareページURLのみ)
+  - share/YYYYMMDD.html    (OGP用の固定HTML)
+  - data/daily/YYYYMMDD.json (週次集計用スナップショット)
+
+要件(サイト側に合わせる):
+  - Up(24h) は出来高しきい値(既定 5億円)を優先し、不足時は出来高順で補完
+  - Vol(アルト) は BTC/ETH を除外し、ステーブル系も除外
+"""
 from __future__ import annotations
 
-import os
 import datetime as dt
+import json
+import os
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
-BASE_URL = "https://api.coingecko.com/api/v3"
 
-CG_DEMO_KEY = os.getenv("CG_DEMO_KEY", "").strip()   # Demo API key
-VS = os.getenv("VS_CURRENCY", "jpy")                # indexはjpy想定
-SITE_URL = os.getenv("SITE_URL", "https://coinrader.net/").strip().rstrip("/") + "/"
-OGP_IMAGE_URL = os.getenv("OGP_IMAGE_URL", "https://coinrader.net/assets/og/ogp.png").strip()
+# -----------------------------
+# Config
+# -----------------------------
+SITE_URL = os.getenv("SITE_URL", "https://coinrader.net/").rstrip("/") + "/"
+CG_DEMO_KEY = os.getenv("CG_DEMO_KEY", "")  # CoinGecko Demo Key (optional)
+VS = "jpy"
 
-# shareページ（Xカード展開用）を日付で切って生成する（例: /share/20260124.html）
-SHARE_DIR = os.getenv("SHARE_DIR", "share").strip()
-USE_SHARE_URL_IN_POST = os.getenv("USE_SHARE_URL_IN_POST", "1").strip() not in ("0", "false", "False")
+# ランキング抽出のルール（index.html側に合わせる想定）
+MIN_VOL_JPY = float(os.getenv("MIN_VOL_JPY", "500000000"))  # 5億円
+TOP_N = 3
 
-TIMEOUT = 20
-
-# 上昇率のノイズ対策（出来高下限を満たす銘柄を優先）
-MIN_GAINERS_24H_VOLUME_JPY = int(os.getenv("MIN_GAINERS_24H_VOLUME_JPY", "500000000"))  # 5億円
-
-RANK_EMOJI = ["1️⃣", "2️⃣", "3️⃣"]
-
-# ===== stable / major 判定 =====
-STABLE_IDS = {
-    "tether", "usd-coin", "dai", "true-usd", "first-digital-usd", "ethena-usde",
-    "frax", "pax-dollar", "paypal-usd", "gemini-dollar", "paxos-standard", "binance-usd", "liquity-usd",
+# ステーブル系（出来高(アルト) から除外・上昇率補完時の除外の参考）
+# ※新しいステーブルが増えやすいので、symbol ベースで広めに除外
+STABLE_SYMBOLS = {
+    "usdt", "usdc", "dai", "busd", "tusd", "usdp", "gusd",
+    "fdusd", "usde", "susde", "usds", "usdy",
+    "usd1", "usdd", "usdm", "eurt", "eurs", "eurc",
 }
-STABLE_SYMBOLS = {"usdt", "usdc", "dai", "tusd", "usde", "fdusd", "pyusd", "gusd", "usdp", "busd", "lusd", "frax"}
+
+MAJOR_EXCLUDE_FOR_ALT_VOL = {"btc", "eth"}  # Vol(アルト)から除外
+
+HEADERS = {
+    "User-Agent": "coinrader-bot/1.0",
+    "Accept": "application/json",
+}
 
 
-def is_stable_coin(c: dict) -> bool:
-    cid = (c.get("id") or "").lower()
-    sym = (c.get("symbol") or "").lower()
-    name = (c.get("name") or "").lower()
-    if cid in STABLE_IDS or sym in STABLE_SYMBOLS:
-        return True
-    # fallback heuristic（軽め）
-    if ("stable" in name) and (("usd" in name) or ("usd" in sym)):
-        return True
-    return False
-
-
-def is_btc_or_eth(c: dict) -> bool:
-    cid = (c.get("id") or "").lower()
-    sym = (c.get("symbol") or "").lower()
-    return cid in ("bitcoin", "ethereum") or sym in ("btc", "eth")
-
-
-def cg_get(path: str, params: dict | None = None) -> Any:
-    url = f"{BASE_URL}{path}"
-    headers = {}
+# -----------------------------
+# Helpers
+# -----------------------------
+def cg_headers() -> Dict[str, str]:
+    h = dict(HEADERS)
     if CG_DEMO_KEY:
-        headers["x-cg-demo-api-key"] = CG_DEMO_KEY
-    r = requests.get(url, params=params or {}, headers=headers, timeout=TIMEOUT)
+        # CoinGecko Demo API Key header
+        h["x-cg-demo-api-key"] = CG_DEMO_KEY
+    return h
+
+
+def safe_num(x: Any) -> Optional[float]:
+    try:
+        v = float(x)
+        if v != v:  # NaN
+            return None
+        return v
+    except Exception:
+        return None
+
+
+def fmt_pct(x: Optional[float], digits: int = 1) -> str:
+    if x is None:
+        return "—"
+    sign = "+" if x >= 0 else ""
+    return f"{sign}{x:.{digits}f}%"
+
+
+def fmt_jpy_yoku(x: Optional[float]) -> str:
+    """ざっくり億円表記（例: 2413.5億円）"""
+    if x is None:
+        return "—"
+    oku = x / 1e8
+    return f"{oku:.1f}億円"
+
+
+def today_yyyymmdd_jst() -> str:
+    jst = dt.timezone(dt.timedelta(hours=9))
+    return dt.datetime.now(jst).strftime("%Y%m%d")
+
+
+def ensure_dir(p: Path) -> None:
+    p.mkdir(parents=True, exist_ok=True)
+
+
+# -----------------------------
+# Fetchers
+# -----------------------------
+def fetch_json(url: str, params: Optional[Dict[str, Any]] = None) -> Any:
+    r = requests.get(url, params=params, headers=cg_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
 
 
-def safe_sym(name: str, symbol: str) -> str:
-    sym = (symbol or "").upper()
-    if sym and len(sym) <= 12:
-        return sym
-    # まれに symbol が長い/空のとき
-    n = (name or "").strip()
-    return (n[:12].upper() or "UNKNOWN")
-
-
-def fmt_rank(items: List[str]) -> str:
-    return " ".join([f"{i+1}.{s}" for i, s in enumerate(items)])
-
-
-def vol_oku_jpy(v: float) -> float:
-    # 1億円 = 1e8 JPY
-    return v / 1e8
-
-
-def fmt_oku_jpy(v: float) -> str:
-    return f"{vol_oku_jpy(v):.1f}億円"
-
-
-def build_share_page(date_str: str, site_base: str) -> Tuple[str, str]:
-    """share/YYYYMMDD.html を生成し、そのURLとローカルパスを返す。
-    - Xのカードキャッシュ対策として、日付ごとに別URLにする
-    - 画面表示ではトップへリダイレクト（meta refresh）
-    """
-    yyyymmdd = date_str.replace("-", "")
-    site_base = site_base.rstrip("/")
-    share_url = f"{site_base}/{SHARE_DIR}/{yyyymmdd}.html"
-
-    # 画像キャッシュ回避用クエリ（ogp.png自体は同じでOK）
-    ogp_image = OGP_IMAGE_URL
-    if "?" in ogp_image:
-        ogp_image_q = ogp_image + f"&v={yyyymmdd}"
-    else:
-        ogp_image_q = ogp_image + f"?v={yyyymmdd}"
-
-    html = f'''<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CoinRader - 今日の注目 {date_str}</title>
-
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CoinRader">
-  <meta property="og:title" content="CoinRader - 今日の注目 {date_str}">
-  <meta property="og:description" content="トレンド/上昇率/出来高をひと目で。">
-  <meta property="og:url" content="{share_url}">
-  <meta property="og:image" content="{ogp_image_q}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="CoinRader - 今日の注目 {date_str}">
-  <meta name="twitter:description" content="トレンド/上昇率/出来高をひと目で。">
-  <meta name="twitter:image" content="{ogp_image_q}">
-
-  <meta http-equiv="refresh" content="0;url={site_base}/?v={yyyymmdd}">
-</head>
-<body></body>
-</html>
-'''
-    share_dir = Path(SHARE_DIR)
-    share_dir.mkdir(parents=True, exist_ok=True)
-    out_path = share_dir / f"{yyyymmdd}.html"
-    out_path.write_text(html, encoding="utf-8")
-    return share_url, str(out_path)
-
-
-def build_gainers_top5(markets_top: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    base = [
-        c for c in markets_top
-        if isinstance(c.get("price_change_percentage_24h"), (int, float))
-        and (not is_stable_coin(c))
-    ]
-
-    primary = [
-        c for c in base
-        if isinstance(c.get("total_volume"), (int, float))
-        and c["total_volume"] >= MIN_GAINERS_24H_VOLUME_JPY
-    ]
-    primary.sort(key=lambda x: x.get("price_change_percentage_24h", 0), reverse=True)
-
-    if len(primary) >= 5:
-        return primary[:5]
-
-    picked = {c.get("id") for c in primary}
-    fallback = [c for c in base if isinstance(c.get("total_volume"), (int, float))]
-    fallback.sort(key=lambda x: x.get("total_volume") or 0, reverse=True)
-
-    for c in fallback:
-        if len(primary) >= 5:
-            break
-        cid = c.get("id")
-        if cid and cid not in picked:
-            primary.append(c)
-            picked.add(cid)
-    return primary[:5]
-
-
-def build_note_draft(
-    today: str,
-    post_url: str,
-    share_url: str,
-    trend_syms: List[str],
-    gain_top: List[Dict[str, Any]],
-    vol_alt_syms: List[str],
-    markets_top: List[Dict[str, Any]],
-) -> str:
-    """noteに貼り付ける下書き（Markdown）を生成（短い解説も自動で埋める）。"""
-
-    # symbol->market mapping (top250 only)
-    by_sym: Dict[str, Dict[str, Any]] = {}
-    for m in markets_top:
-        s = (m.get("symbol") or "").upper()
-        if s and s not in by_sym:
-            by_sym[s] = m
-
-    def get_m(sym: str) -> Dict[str, Any] | None:
-        return by_sym.get(sym.upper())
-
-    def pct24(m: Dict[str, Any] | None) -> float | None:
-        if not m:
-            return None
-        v = m.get("price_change_percentage_24h_in_currency")
-        if v is None:
-            v = m.get("price_change_percentage_24h")
-        try:
-            return float(v)
-        except Exception:
-            return None
-
-    def voljpy(m: Dict[str, Any] | None) -> float | None:
-        if not m:
-            return None
-        try:
-            return float(m.get("total_volume"))
-        except Exception:
-            return None
-
-    def mcap_rank(m: Dict[str, Any] | None) -> int | None:
-        if not m:
-            return None
-        v = m.get("market_cap_rank")
-        try:
-            return int(v)
-        except Exception:
-            return None
-
-    def explain_line(sym: str, kind: str) -> str:
-        m = get_m(sym)
-        p = pct24(m)
-        v = voljpy(m)
-        r = mcap_rank(m)
-        parts: List[str] = []
-        if p is not None:
-            parts.append(f"24h {p:+.1f}%")
-        if v is not None:
-            parts.append(f"出来高 {fmt_oku_jpy(v)}")
-        if r is not None:
-            parts.append(f"時価総額#{r}")
-        if not parts:
-            return f"{sym}：top250外/データ未取得の可能性"
-        # kind-specific tail
-        if kind == "trend":
-            parts.append("（CoinGeckoトレンド）")
-        elif kind == "up":
-            if v is not None:
-                ok = "✓" if v >= MIN_GAINERS_24H_VOLUME_JPY else "×"
-                parts.append(f"出来高しきい値({fmt_oku_jpy(float(MIN_GAINERS_24H_VOLUME_JPY))}) {ok}")
-        return f"{sym}：" + " / ".join(parts)
-
-    # Market mood (top250, non-stables)
-    changes: List[float] = []
-    up_cnt = 0
-    dn_cnt = 0
-    for m in markets_top:
-        if is_stable_coin(m):
-            continue
-        p = pct24(m)
-        if p is None:
-            continue
-        changes.append(p)
-        if p >= 0:
-            up_cnt += 1
-        else:
-            dn_cnt += 1
-    mood_line = ""
-    if changes:
-        avg = sum(changes) / len(changes)
-        ratio = (up_cnt / max(1, (up_cnt + dn_cnt))) * 100.0
-        mood = "上昇優勢" if up_cnt >= dn_cnt else "下落優勢"
-        mood_line = f"- 市場ムード：{mood}（上昇 {up_cnt} / 下落 {dn_cnt}、平均 {avg:+.2f}%、上昇比率 {ratio:.0f}%）"
-    else:
-        mood_line = "- 市場ムード：算出できませんでした（データ不足）"
-
-    # Up top3 symbols
-    up_syms = [safe_sym(x.get("name", ""), x.get("symbol", "")) for x in gain_top[:3]]
-
-    # Overlaps for watch memo
-    tset = set([s.upper() for s in trend_syms[:3]])
-    uset = set([s.upper() for s in up_syms])
-    vset = set([s.upper() for s in vol_alt_syms[:3]])
-
-    watch: List[str] = []
-    for s in [*trend_syms[:3], *up_syms, *vol_alt_syms[:3]]:
-        su = s.upper()
-        if su in tset and su in vset:
-            watch.append(f"{s}：トレンド×出来高で注目度高め（過熱には注意）")
-        elif su in uset and su in vset:
-            watch.append(f"{s}：上昇×出来高（急騰/急落の反動に注意）")
-    # fill if empty
-    if not watch:
-        if up_syms:
-            watch.append(f"{up_syms[0]}：上昇トップ。出来高と継続性を確認")
-        if trend_syms:
-            watch.append(f"{trend_syms[0]}：トレンド上位。話題性の継続を確認")
-        if vol_alt_syms:
-            watch.append(f"{vol_alt_syms[0]}：出来高上位。価格変動との連動を確認")
-    watch = watch[:3]
-
-    # Build the free blocks (same as X post)
-    free_lines = [
-        f"【今日の注目 {today}】",
-        "",
-        "🔥トレンド",
-        f"{RANK_EMOJI[0]} {trend_syms[0]}" if len(trend_syms) > 0 else f"{RANK_EMOJI[0]} -",
-        f"{RANK_EMOJI[1]} {trend_syms[1]}" if len(trend_syms) > 1 else f"{RANK_EMOJI[1]} -",
-        f"{RANK_EMOJI[2]} {trend_syms[2]}" if len(trend_syms) > 2 else f"{RANK_EMOJI[2]} -",
-        "",
-        "🚀上昇率(24h)",
-        f"{RANK_EMOJI[0]} {up_syms[0]} {pct24(get_m(up_syms[0])):+.1f}%" if len(up_syms) > 0 and pct24(get_m(up_syms[0])) is not None else f"{RANK_EMOJI[0]} {up_syms[0]}" if len(up_syms)>0 else f"{RANK_EMOJI[0]} -",
-        f"{RANK_EMOJI[1]} {up_syms[1]} {pct24(get_m(up_syms[1])):+.1f}%" if len(up_syms) > 1 and pct24(get_m(up_syms[1])) is not None else f"{RANK_EMOJI[1]} {up_syms[1]}" if len(up_syms)>1 else f"{RANK_EMOJI[1]} -",
-        f"{RANK_EMOJI[2]} {up_syms[2]} {pct24(get_m(up_syms[2])):+.1f}%" if len(up_syms) > 2 and pct24(get_m(up_syms[2])) is not None else f"{RANK_EMOJI[2]} {up_syms[2]}" if len(up_syms)>2 else f"{RANK_EMOJI[2]} -",
-        "",
-        "📊出来高(アルト)",
-        f"{RANK_EMOJI[0]} {vol_alt_syms[0]}" if len(vol_alt_syms) > 0 else f"{RANK_EMOJI[0]} -",
-        f"{RANK_EMOJI[1]} {vol_alt_syms[1]}" if len(vol_alt_syms) > 1 else f"{RANK_EMOJI[1]} -",
-        f"{RANK_EMOJI[2]} {vol_alt_syms[2]}" if len(vol_alt_syms) > 2 else f"{RANK_EMOJI[2]} -",
-        "",
-        f"→ {post_url}",
-    ]
-
-    paid_lines = [
-        "----",
-        "ここから有料（詳細版）",
-        "",
-        "## 今日のサマリー",
-        mood_line,
-        "",
-        "## トレンド解説（上位3）",
-        f"- {explain_line(trend_syms[0], 'trend')}" if len(trend_syms) > 0 else "- -",
-        f"- {explain_line(trend_syms[1], 'trend')}" if len(trend_syms) > 1 else "- -",
-        f"- {explain_line(trend_syms[2], 'trend')}" if len(trend_syms) > 2 else "- -",
-        "",
-        "## 上昇率解説（上位3）",
-        f"- {explain_line(up_syms[0], 'up')}" if len(up_syms) > 0 else "- -",
-        f"- {explain_line(up_syms[1], 'up')}" if len(up_syms) > 1 else "- -",
-        f"- {explain_line(up_syms[2], 'up')}" if len(up_syms) > 2 else "- -",
-        "",
-        "## 出来高解説（アルト上位3）",
-        f"- {explain_line(vol_alt_syms[0], 'vol')}" if len(vol_alt_syms) > 0 else "- -",
-        f"- {explain_line(vol_alt_syms[1], 'vol')}" if len(vol_alt_syms) > 1 else "- -",
-        f"- {explain_line(vol_alt_syms[2], 'vol')}" if len(vol_alt_syms) > 2 else "- -",
-        "",
-        "## 監視メモ（最大3）",
-        *[f"- {w}" for w in watch],
-        "",
-        "## 算出ルール（要約）",
-        f"- 上昇率は出来高 {fmt_oku_jpy(float(MIN_GAINERS_24H_VOLUME_JPY))} 以上を優先（不足時は出来高順で補完）",
-        "- ステーブル系は上昇率・出来高(アルト)から除外",
-        "- BTC/ETHは出来高(アルト)から除外",
-        "",
-        f"（リンク）{share_url}",
-    ]
-
-    # note貼り付け用Markdown
-    return "\n".join([*free_lines, "", *paid_lines]).strip() + "\n"
-
-
-def build_post() -> Tuple[str, str, str, str, str]:
-    # --- Trending TOP（/search/trending） ---
-    trending = cg_get("/search/trending")
-    trend_items: List[str] = []
-    for c in (trending.get("coins") or [])[:10]:
-        item = c.get("item") or {}
-        name = item.get("name", "")
-        sym = item.get("symbol", "")
-        if name or sym:
-            trend_items.append(safe_sym(name, sym))
-        if len(trend_items) >= 5:
-            break
-
-    # --- markets（時価総額上位250 / vs=jpy） ---
-    markets_top: List[Dict[str, Any]] = cg_get("/coins/markets", {
+def load_top250() -> List[Dict[str, Any]]:
+    url = "https://api.coingecko.com/api/v3/coins/markets"
+    params = {
         "vs_currency": VS,
         "order": "market_cap_desc",
         "per_page": 250,
         "page": 1,
         "sparkline": "false",
         "price_change_percentage": "24h",
-    }) or []
+    }
+    data = fetch_json(url, params)
+    return data if isinstance(data, list) else []
 
-    # --- 上昇率TOP5（出来高しきい値を優先） ---
-    gain_top = build_gainers_top5(markets_top)
-    gain_top5_full = [
-        f"{safe_sym(x.get('name',''), x.get('symbol',''))}({x.get('price_change_percentage_24h', 0):+.1f}%)"
-        for x in gain_top
-    ]
 
-    # --- 出来高TOP5（全体 / アルト）---
-    volume_all = sorted(
-        [c for c in markets_top if isinstance(c.get("total_volume"), (int, float))],
-        key=lambda x: x.get("total_volume") or 0,
-        reverse=True
-    )[:5]
+def load_trending() -> List[Dict[str, Any]]:
+    url = "https://api.coingecko.com/api/v3/search/trending"
+    data = fetch_json(url)
+    out: List[Dict[str, Any]] = []
+    coins = (data or {}).get("coins") if isinstance(data, dict) else None
+    if isinstance(coins, list):
+        for c in coins:
+            item = c.get("item", {}) if isinstance(c, dict) else {}
+            if not isinstance(item, dict):
+                continue
+            out.append({
+                "id": item.get("id"),
+                "name": item.get("name"),
+                "symbol": (item.get("symbol") or "").upper(),
+                "market_cap_rank": item.get("market_cap_rank"),
+            })
+    return out
 
-    volume_alt = sorted(
-        [c for c in markets_top
-         if isinstance(c.get("total_volume"), (int, float))
-         and (not is_stable_coin(c))
-         and (not is_btc_or_eth(c))],
-        key=lambda x: x.get("total_volume") or 0,
-        reverse=True
-    )[:5]
 
-    vol_all_syms = [safe_sym(c.get("name", ""), c.get("symbol", "")) for c in volume_all]
-    vol_alt_syms = [safe_sym(c.get("name", ""), c.get("symbol", "")) for c in volume_alt]
+# -----------------------------
+# Ranking logic (align to index)
+# -----------------------------
+def is_stable_symbol(sym: str) -> bool:
+    return sym.lower() in STABLE_SYMBOLS
 
-    # --- Date (JST) ---
-    jst = dt.timezone(dt.timedelta(hours=9))
-    today = dt.datetime.now(jst).strftime("%Y-%m-%d")
-    share_url, share_path = build_share_page(today, SITE_URL)
-    post_url = share_url if USE_SHARE_URL_IN_POST else SITE_URL
 
-    # Full (plain)
-    full = (
-        f"【今日の注目 {today}】\n"
-        f"トレンド: {fmt_rank(trend_items)}\n"
-        f"上昇率(24h): {fmt_rank(gain_top5_full)}\n"
-        f"出来高(全体): {fmt_rank(vol_all_syms)}\n"
-        f"出来高(アルト): {fmt_rank(vol_alt_syms)}\n"
-        f"→ {post_url}\n"
+def build_gainers_24h(markets: List[Dict[str, Any]], n: int = TOP_N, min_vol_jpy: float = MIN_VOL_JPY) -> List[Dict[str, Any]]:
+    """
+    上昇率TOP: 出来高>=しきい値を優先。
+    足りない場合は、出来高が大きい順で補完（ただしステーブル系は除外）。
+    """
+    rows: List[Dict[str, Any]] = []
+    for c in markets:
+        sym = (c.get("symbol") or "").upper()
+        pc = safe_num(c.get("price_change_percentage_24h"))
+        vol = safe_num(c.get("total_volume"))
+        if sym == "" or pc is None or vol is None:
+            continue
+        if is_stable_symbol(sym):
+            continue
+        rows.append({
+            "id": c.get("id"),
+            "symbol": sym,
+            "name": c.get("name"),
+            "pc24": pc,
+            "vol_jpy": vol,
+            "mc_rank": c.get("market_cap_rank"),
+        })
+
+    # 1) vol>=threshold の中で上昇率降順
+    pri = [r for r in rows if r["vol_jpy"] >= min_vol_jpy]
+    pri.sort(key=lambda r: r["pc24"], reverse=True)
+
+    picked: List[Dict[str, Any]] = pri[:n]
+
+    # 2) 足りない分は（残り）出来高降順で補完
+    if len(picked) < n:
+        picked_syms = {r["symbol"] for r in picked}
+        rest = [r for r in rows if r["symbol"] not in picked_syms]
+        rest.sort(key=lambda r: r["vol_jpy"], reverse=True)
+        picked.extend(rest[: max(0, n - len(picked))])
+
+    return picked[:n]
+
+
+def build_alt_volume(markets: List[Dict[str, Any]], n: int = TOP_N) -> List[Dict[str, Any]]:
+    """
+    出来高(アルト): BTC/ETH + ステーブル系を除外して出来高降順。
+    """
+    rows: List[Dict[str, Any]] = []
+    for c in markets:
+        sym = (c.get("symbol") or "").lower()
+        if not sym:
+            continue
+        if sym in MAJOR_EXCLUDE_FOR_ALT_VOL:
+            continue
+        if sym in STABLE_SYMBOLS:
+            continue
+        vol = safe_num(c.get("total_volume"))
+        if vol is None:
+            continue
+        rows.append({
+            "id": c.get("id"),
+            "symbol": sym.upper(),
+            "name": c.get("name"),
+            "vol_jpy": vol,
+            "pc24": safe_num(c.get("price_change_percentage_24h")),
+            "mc_rank": c.get("market_cap_rank"),
+        })
+    rows.sort(key=lambda r: r["vol_jpy"], reverse=True)
+    return rows[:n]
+
+
+def build_breadth_stats(markets: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    index.html の「上位250の24h上昇/下落銘柄数」相当:
+      - up/down/flat: price_change_percentage_24h の符号
+      - avgChg: 平均（%）
+      - medianChg: 中央値（%）
+    """
+    chgs: List[float] = []
+    up = down = flat = 0
+    for c in markets:
+        pc = safe_num(c.get("price_change_percentage_24h"))
+        if pc is None:
+            continue
+        chgs.append(pc)
+        if pc > 0:
+            up += 1
+        elif pc < 0:
+            down += 1
+        else:
+            flat += 1
+    avg = sum(chgs) / len(chgs) if chgs else None
+    # median
+    med = None
+    if chgs:
+        chgs_sorted = sorted(chgs)
+        mid = len(chgs_sorted) // 2
+        if len(chgs_sorted) % 2 == 1:
+            med = chgs_sorted[mid]
+        else:
+            med = (chgs_sorted[mid - 1] + chgs_sorted[mid]) / 2
+    total = up + down + flat
+    up_ratio = (up / (up + down) * 100) if (up + down) > 0 else None
+    return {
+        "up": up, "down": down, "flat": flat,
+        "avgChg": avg, "medianChg": med,
+        "total": total,
+        "upRatio": up_ratio,
+    }
+
+
+def find_coin_by_symbol(markets: List[Dict[str, Any]], symbol_upper: str) -> Optional[Dict[str, Any]]:
+    for c in markets:
+        if (c.get("symbol") or "").upper() == symbol_upper.upper():
+            return c
+    return None
+
+
+# -----------------------------
+# Share HTML (OGP)
+# -----------------------------
+def build_share_html(date_yyyymmdd: str) -> str:
+    # OGPは share 固定ページにし、画像は ogp.png を参照
+    title = f"CoinRader - 今日の注目 {date_yyyymmdd[:4]}-{date_yyyymmdd[4:6]}-{date_yyyymmdd[6:]}"
+    og_img = f"{SITE_URL}assets/og/ogp.png?v={date_yyyymmdd}"
+
+    # NOTE: Twitterカードは `summary_large_image` が基本
+    html = f"""<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta property="og:title" content="{title}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{SITE_URL}share/{date_yyyymmdd}.html">
+<meta property="og:image" content="{og_img}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:image" content="{og_img}">
+<meta http-equiv="refresh" content="0; url={SITE_URL}?v={date_yyyymmdd}">
+</head>
+<body>
+<p>Redirecting… <a href="{SITE_URL}?v={date_yyyymmdd}">{SITE_URL}?v={date_yyyymmdd}</a></p>
+</body>
+</html>
+"""
+    return html
+
+
+# -----------------------------
+# Daily post text
+# -----------------------------
+def build_short_post(date_yyyymmdd: str, trend: List[Dict[str, Any]], gainers: List[Dict[str, Any]], vol_alt: List[Dict[str, Any]], share_url: str) -> str:
+    d = f"{date_yyyymmdd[:4]}-{date_yyyymmdd[4:6]}-{date_yyyymmdd[6:]}"
+    # 1️⃣2️⃣3️⃣（環境差異が出やすいので「絵文字そのもの」で入れる）
+    nums = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+
+    trend_s = " ".join([f'{nums[i]} {trend[i]["symbol"]}' for i in range(min(len(trend), TOP_N))])
+    up_s = " | ".join([f'{nums[i]} {gainers[i]["symbol"]} {fmt_pct(gainers[i]["pc24"], 1)}' for i in range(min(len(gainers), TOP_N))])
+    vol_s = " ".join([f'{nums[i]} {vol_alt[i]["symbol"]}' for i in range(min(len(vol_alt), TOP_N))])
+
+    # A案：3ブロックとも「横方向の位置を揃える」ため、改行 + 空行で視認性を優先
+    return (
+        f"【今日の注目 {d}】\n\n"
+        f"🔥トレンド  {trend_s}\n\n"
+        f"🚀上昇率(24h)  {up_s}\n\n"
+        f"📊出来高(アルト)  {vol_s}\n\n"
+        f"→ {share_url}\n"
         f"#暗号資産"
     )
 
-    # Short (ranked, no extra note line)
-    def build_short(n_trend: int = 3, n_up: int = 3, n_vol: int = 3) -> str:
-        up_parts: List[str] = []
-        for x in gain_top[:n_up]:
-            sym = safe_sym(x.get("name", ""), x.get("symbol", ""))
-            pct = float(x.get("price_change_percentage_24h", 0) or 0)
-            up_parts.append(f"{sym} {pct:+.1f}%")
 
-        # align: rank emojis appear on their own line entries
-        short_lines = [
-            f"【今日の注目 {today}】",
-            "🔥トレンド",
-            *( [f"{RANK_EMOJI[i]} {trend_items[i]}" for i in range(min(n_trend, len(trend_items)))] ),
-            "",
-            "🚀上昇率(24h)",
-            *( [f"{RANK_EMOJI[i]} {up_parts[i]}" for i in range(min(n_up, len(up_parts)))] ),
-            "",
-            "📊出来高(アルト)",
-            *( [f"{RANK_EMOJI[i]} {vol_alt_syms[i]}" for i in range(min(n_vol, len(vol_alt_syms)))] ),
-            f"→ {post_url} #暗号資産",
-        ]
-        return "\n".join(short_lines)
+def build_full_post_with_note(
+    short_post: str,
+    breadth: Dict[str, Any],
+    trend: List[Dict[str, Any]],
+    gainers: List[Dict[str, Any]],
+    vol_alt: List[Dict[str, Any]],
+    markets: List[Dict[str, Any]],
+) -> str:
+    # NOTE 下書き（有料詳細版用）
+    up = breadth.get("up")
+    down = breadth.get("down")
+    avg = breadth.get("avgChg")
+    up_ratio = breadth.get("upRatio")
+    mood = "上昇優勢" if (up is not None and down is not None and up >= down) else "下落優勢"
+    up_ratio_s = f"{round(up_ratio)}%" if isinstance(up_ratio, (int, float)) else "—"
 
-    short = build_short()
+    def coin_line(r: Dict[str, Any], kind: str) -> str:
+        sym = r.get("symbol")
+        c = find_coin_by_symbol(markets, sym) if sym else None
+        if not c:
+            # トレンドで top250外のケース
+            return f"{sym}：top250外/データ未取得の可能性"
+        pc = safe_num(c.get("price_change_percentage_24h"))
+        vol = safe_num(c.get("total_volume"))
+        mcr = c.get("market_cap_rank")
+        vol_ok = (vol is not None and vol >= MIN_VOL_JPY)
+        vol_ok_s = "✓" if vol_ok else "×"
+        if kind == "trend":
+            return f"{sym}：24h {fmt_pct(pc,1)} / 出来高 {fmt_jpy_yoku(vol)} / 時価総額#{mcr} / （CoinGeckoトレンド）"
+        if kind == "up":
+            return f"{sym}：24h {fmt_pct(pc,1)} / 出来高 {fmt_jpy_yoku(vol)} / 時価総額#{mcr} / 出来高しきい値({MIN_VOL_JPY/1e8:.1f}億円) {vol_ok_s}"
+        if kind == "vol":
+            return f"{sym}：24h {fmt_pct(pc,1)} / 出来高 {fmt_jpy_yoku(vol)} / 時価総額#{mcr}"
+        return f"{sym}"
 
-    # 280字超なら段階的に短縮
-    if len(short) > 280:
-        short = build_short(n_trend=2, n_up=2, n_vol=2)
-    if len(short) > 280:
-        # 最終手段：1行圧縮
-        up2 = " / ".join([
-            f"{safe_sym(x.get('name',''), x.get('symbol',''))}{float(x.get('price_change_percentage_24h',0) or 0):+.1f}%"
-            for x in gain_top[:2]
-        ])
-        short = (
-            f"【今日の注目 {today}】"
-            f" Trend:{'/'.join(trend_items[:2])}"
-            f" | Up:{up2}"
-            f" | Vol:{'/'.join(vol_alt_syms[:2])}"
-            f" → {post_url} #暗号資産"
-        )
-        if len(short) > 280:
-            short = short[:277] + "…"
+    trend_lines = "\n".join([f"{t['symbol']}：{coin_line(t,'trend')}" if t.get("symbol") else "—" for t in trend[:TOP_N]])
+    up_lines = "\n".join([coin_line(g, "up") for g in gainers[:TOP_N]])
+    vol_lines = "\n".join([coin_line(v, "vol") for v in vol_alt[:TOP_N]])
 
-    # note draft
-    note_md = build_note_draft(
-        today=today,
-        post_url=post_url,
-        share_url=share_url,
-        trend_syms=trend_items,
-        gain_top=gain_top,
-        vol_alt_syms=vol_alt_syms,
-        markets_top=markets_top,
+    memo = []
+    if gainers:
+        memo.append(f"{gainers[0]['symbol']}：上昇トップ。出来高と継続性を確認")
+    if trend:
+        memo.append(f"{trend[0]['symbol']}：トレンド上位。話題性の継続を確認")
+    if vol_alt:
+        memo.append(f"{vol_alt[0]['symbol']}：出来高上位。価格変動との連動を確認")
+    memo = memo[:3]
+    memo_lines = "\n".join(memo) if memo else "—"
+
+    rules = (
+        f"上昇率は出来高 {MIN_VOL_JPY/1e8:.1f}億円 以上を優先（不足時は出来高順で補完）\n"
+        "ステーブル系は上昇率・出来高(アルト)から除外\n"
+        "BTC/ETHは出来高(アルト)から除外"
     )
 
-    return full, short, note_md, share_url, share_path
+    return (
+        f"{short_post}\n\n"
+        "ここから有料（詳細版）\n\n"
+        "今日のサマリー\n"
+        f"市場ムード：{mood}（上昇 {up} / 下落 {down}、平均 {fmt_pct(avg,2)}、上昇比率 {up_ratio_s}）\n"
+        "トレンド解説（上位3）\n"
+        f"{trend_lines}\n"
+        "上昇率解説（上位3）\n"
+        f"{up_lines}\n"
+        "出来高解説（アルト上位3）\n"
+        f"{vol_lines}\n"
+        "監視メモ（最大3）\n"
+        f"{memo_lines}\n"
+        "算出ルール（要約）\n"
+        f"{rules}\n"
+    )
+
+
+# -----------------------------
+# Snapshot for weekly
+# -----------------------------
+def write_snapshot(date_yyyymmdd: str, payload: Dict[str, Any]) -> None:
+    out_dir = Path("data/daily")
+    ensure_dir(out_dir)
+    p = out_dir / f"{date_yyyymmdd}.json"
+    # UTF-8（BOMなし）でOK。週次生成はPythonで読むため。
+    p.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+# -----------------------------
+# Main
+# -----------------------------
+def main() -> None:
+    date_yyyymmdd = os.getenv("DATE_YYYYMMDD") or today_yyyymmdd_jst()
+    share_url = f"{SITE_URL}share/{date_yyyymmdd}.html"
+
+    markets = load_top250()
+    trending = load_trending()
+
+    # Trend: まず trending 上位から TOP_N
+    trend = trending[:TOP_N]
+
+    gainers = build_gainers_24h(markets, n=TOP_N, min_vol_jpy=MIN_VOL_JPY)
+    vol_alt = build_alt_volume(markets, n=TOP_N)
+    breadth = build_breadth_stats(markets)
+
+    # Daily files
+    short_post = build_short_post(date_yyyymmdd, trend, gainers, vol_alt, share_url)
+    full_post = build_full_post_with_note(short_post, breadth, trend, gainers, vol_alt, markets)
+
+    # Windows側での文字化け対策：utf-8-sig で書く
+    Path("daily_post_short.txt").write_text(short_post, encoding="utf-8-sig")
+    Path("daily_post_full.txt").write_text(full_post, encoding="utf-8-sig")
+    Path("daily_share_url.txt").write_text(share_url, encoding="utf-8-sig")
+
+    # Share page
+    ensure_dir(Path("share"))
+    share_html = build_share_html(date_yyyymmdd)
+    Path("share") .joinpath(f"{date_yyyymmdd}.html").write_text(share_html, encoding="utf-8")
+
+    # Snapshot（週次用）
+    # BTC/ETH（価格系列は週次で使う）
+    btc = find_coin_by_symbol(markets, "BTC")
+    eth = find_coin_by_symbol(markets, "ETH")
+    snapshot = {
+        "date": date_yyyymmdd,
+        "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "site_url": SITE_URL,
+        "rules": {
+            "min_vol_jpy": MIN_VOL_JPY,
+            "stable_symbols": sorted(STABLE_SYMBOLS),
+            "exclude_alt_vol": sorted(MAJOR_EXCLUDE_FOR_ALT_VOL),
+        },
+        "breadth": breadth,
+        "trend": trend,
+        "gainers": gainers,
+        "vol_alt": vol_alt,
+        "btc": {
+            "price_jpy": safe_num(btc.get("current_price")) if btc else None,
+            "pc24": safe_num(btc.get("price_change_percentage_24h")) if btc else None,
+        },
+        "eth": {
+            "price_jpy": safe_num(eth.get("current_price")) if eth else None,
+            "pc24": safe_num(eth.get("price_change_percentage_24h")) if eth else None,
+        },
+    }
+    write_snapshot(date_yyyymmdd, snapshot)
+
+    print(short_post)
+    print("\n---\n")
+    print("wrote: daily_post_short.txt / daily_post_full.txt / daily_share_url.txt / share/*.html / data/daily/*.json")
 
 
 if __name__ == "__main__":
-    full, short, note_md, share_url, share_path = build_post()
-
-    # Windowsのメモ帳対策：UTF-8(BOM)で保存
-    Path("daily_post_full.txt").write_text(full, encoding="utf-8-sig")
-    Path("daily_post_short.txt").write_text(short, encoding="utf-8-sig")
-    Path("daily_share_url.txt").write_text(share_url, encoding="utf-8-sig")
-    Path("daily_note_draft.md").write_text(note_md, encoding="utf-8-sig")
-
-    print(full)
-    print("\n--- short ---\n")
-    print(short)
-    print("\n--- note draft ---\n")
-    print(note_md)
-    print("\n--- share ---\n")
-    print(share_url)
-    print(f"(generated: {share_path})")
+    main()
