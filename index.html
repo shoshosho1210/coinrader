@@ -2978,11 +2978,12 @@ if (breadthSub){
 
 
 
+// スパークライン描画（グラデーション・高級感版）
 function drawSparkline(canvasId, data){
   const canvas = document.getElementById(canvasId);
   if(!canvas) return;
 
-  // If the canvas isn't laid out yet (size 0), retry a few times.
+  // レイアウト未完了(サイズ0)の場合はリトライ
   const w = canvas.clientWidth || canvas.width;
   const h = canvas.clientHeight || canvas.height;
   if(!w || !h){
@@ -3000,13 +3001,27 @@ function drawSparkline(canvasId, data){
   const finite = cleaned.filter(v => v !== null);
 
   const ctx = canvas.getContext("2d");
-  if(finite.length < 2){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    return;
-  }
+  // 既存の描画をクリア
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const base = finite[0];                 // ← ベースライン（最初の値）
-  const enableFill = finite.length >= 10; // 少なすぎる時は塗らない
+  if(finite.length < 2) return;
+
+  const base = finite[0];                 // ベースライン（始値）
+  const enableFill = finite.length >= 10; // 点数が少なすぎる時は線だけにする
+
+  // ★グラデーションの作成（ここがポイント）
+  // 上昇用（青）
+  const gradUp = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradUp.addColorStop(0, 'rgba(30, 136, 229, 0.4)');  // 上部: 少し濃い青
+  gradUp.addColorStop(1, 'rgba(30, 136, 229, 0.0)');  // 下部: 透明
+
+// ▼ 修正箇所：下落用（赤）
+  // 変更前：上（濃い）→ 下（透明）
+  // 変更後：上（透明）→ 下（濃い）
+  // これにより、暴落してグラフが下に行くほど「血が濃くなる（赤色がはっきりする）」ようになります。
+  const gradDown = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  gradDown.addColorStop(0, 'rgba(211, 47, 47, 0.05)'); // 上（開始点付近）は薄く
+  gradDown.addColorStop(1, 'rgba(211, 47, 47, 0.5)');  // 下（暴落の底）は濃く
 
   try{
     if(charts[canvasId]) charts[canvasId].destroy();
@@ -3017,19 +3032,20 @@ function drawSparkline(canvasId, data){
         labels: cleaned.map((_, i) => i),
         datasets: [{
           data: cleaned,
-          borderColor: "rgba(255,255,255,0.85)",
+          // 線自体の色（少し明るくして視認性を高める）
+          borderColor: "rgba(255,255,255, 0.9)", 
           borderWidth: 1.5,
           pointRadius: 0,
-          tension: 0.25,
+          // 曲線にして滑らかさを出す（0:カクカク ～ 1:グニャグニャ）
+          tension: 0.2, 
 
-          // ★ここがポイント：ベースライン(base)より上/下で塗り分け
+          // ★グラデーションを適用
           fill: enableFill ? {
             target: { value: base },
-            above: "rgba(30,136,229,0.22)", // 青
-            below: "rgba(211,47,47,0.22)"   // 赤
+            above: gradUp,   // 始値より上なら青グラデ
+            below: gradDown  // 始値より下なら赤グラデ
           } : false,
 
-          // fill の above/below を使うので、dataset の backgroundColor は透明でOK
           backgroundColor: "rgba(0,0,0,0)",
           spanGaps: true
         }]
@@ -3037,9 +3053,15 @@ function drawSparkline(canvasId, data){
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: false,
+        animation: false, // パフォーマンス優先
         plugins: { legend: { display:false }, tooltip: { enabled:false } },
-        scales: { x: { display:false }, y: { display:false } }
+        scales: { x: { display:false }, y: { display:false } },
+        elements: {
+          line: {
+            borderJoinStyle: 'round', // 線の継ぎ目を丸くする
+            capBezierPoints: true
+          }
+        }
       }
     });
   }catch(err){
@@ -3048,7 +3070,6 @@ function drawSparkline(canvasId, data){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 }
-
 
 function buildSyntheticSparkline(coin){
   // Last-resort mini sparkline from 24h change (2 points) so the canvas is never blank.
