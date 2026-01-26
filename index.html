@@ -3903,8 +3903,10 @@ function renderAll(){
     // タブタイトルを書き換え
     document.title = `BTC ¥${price} ${chgText} | CoinRader`;
   }
-  // スケルトン生成関数
-  function makeSkeletons(count) {
+// ▼ 修正：スケルトン表示用のHTML生成関数
+  function getSkeletonHTML(count = 5) {
+    // データ構造に似せたダミーHTMLを生成
+    return Array(count).fill(0).map(() => `
       <div class="skeleton sk-card">
         <div class="sk-header">
           <div class="sk-circle"></div>
@@ -3920,6 +3922,8 @@ function renderAll(){
       </div>
     `).join('');
   }
+
+  // ▼ 修正：読み込み中はスケルトンを表示する
   function setLoadingAll(){
     const html = getSkeletonHTML(5); // 5つ表示
     
