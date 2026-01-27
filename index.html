@@ -4501,102 +4501,83 @@ function setupSideMenu() {
   });
 }
 
-// ▼▼▼ 修正版：チラつき防止 ＆ 5大指標多角的分析ロジック ▼▼▼
+// ▼▼▼ 根拠データ表示 ＆ チラつき防止版 ロジック ▼▼▼
 let _aiThinking = false;
-let _lastAiScore = null; // 前回の結果を記憶して無駄なチカチカを防ぐ
+let _lastAiScore = null;
 
 function updateAiInsight() {
   const box = document.getElementById('aiInsightBox');
   const textEl = document.getElementById('aiInsightText');
   if (!box || !textEl || _aiThinking) return;
 
-  // 1. 各指標の値を取得
+  // 1. 各指標の生の数値を取得
   const sent = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
   const rsi = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
   const dom = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
   const maDist = parseFloat(document.getElementById('sumMaMain')?.textContent) || 0;
-  // 出来高タイルから変化率のニュアンスを判定（+なら上昇）
-  const volTxt = document.getElementById('kpiStripVolSub')?.textContent || "";
-  const isVolRising = volTxt.includes('+');
 
-  // データが揃っていない場合は何もしない
   if (sent === null || rsi === null || dom === null) return;
 
-  // 前回のスコア合計と比較して、変化がなければ更新しない（チラつき防止）
   const currentTotal = sent + rsi + dom;
   if (_lastAiScore === currentTotal) return;
 
   _aiThinking = true;
 
-  // 【チラつき防止】砂時計で全消去せず、右上に小さな「分析中」サインを出す
+  // 更新中サイン
   const indicator = document.createElement('div');
   indicator.id = "aiLoadingIndicator";
   indicator.style = "position:absolute; top:12px; right:16px; font-size:10px; color:#38bdf8; animation:pulse 1.2s infinite; font-weight:700;";
-  indicator.innerHTML = "● AI分析を更新中...";
+  indicator.innerHTML = "● 根拠データを照合中...";
   box.style.position = "relative";
   box.appendChild(indicator);
 
-  // 配列からランダムに1つ選ぶ
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
   setTimeout(() => {
-    // 判定用フラグ
-    const isExtremeGreed = sent >= 75;
-    const isExtremeFear = sent <= 25;
+    // 判定基準
     const isOverbought = rsi >= 70;
     const isOversold = rsi <= 30;
-    const isAltFlow = dom < 52; // ドミナンス低下＝アルトへの資金流入
     const isTrendUp = maDist > 0;
 
-    // --- インサイトの組み立て ---
-    let sentimentText = "";
-    if (isExtremeGreed) sentimentText = pick(["市場は<strong>極度の強欲</strong>状態。心理的な過熱がピークに達しています。", "センチメントは<strong>極めて楽観的</strong>。市場全体に強い高揚感が広がっています。"]);
-    else if (sent > 50) sentimentText = "市場心理は<strong>強気</strong>を維持。投資家の買い意欲は底堅い状態です。";
-    else if (sent > 25) sentimentText = "市場には<strong>慎重姿勢</strong>が見られます。リスク回避を意識した動きです。";
-    else sentimentText = pick(["市場は<strong>極度の恐怖</strong>状態。パニック的な売りが出やすい冷え込んだ地合いです。", "心理面は<strong>総悲観</strong>。需給が極端に悪化している可能性があります。"]);
-
-    let rsiText = "";
-    if (isOverbought) rsiText = `RSIは${Math.round(rsi)}で<strong>買われすぎ</strong>。調整売りが警戒される水準です。`;
-    else if (isOversold) rsiText = `RSIは${Math.round(rsi)}で<strong>売られすぎ</strong>。技術的な反発が意識される領域です。`;
-    else rsiText = "テクニカル指標は中立圏。明確な方向感を探る展開です。";
-
-    // --- 総合概況（5指標を統合） ---
+    // --- メイン考察（ロジックは前回同様） ---
     let strategyText = "";
-    // パターン1: 天井警戒
-    if (isExtremeGreed && isOverbought) {
-      strategyText = `心理・テクニカル共に上限。${isVolRising ? "出来高を伴う上昇ですが" : "出来高が細っており"}、短期的なスピード調整を念頭に置くべき警戒フェーズです。`;
-    }
-    // パターン2: 底打ち期待
-    else if (isExtremeFear && isOversold) {
-      strategyText = `総悲観の中、売り一巡の兆候があります。${isTrendUp ? "長期トレンドは崩れておらず" : "トレンドは弱気ですが"}、自律反発を狙った打診買いが検討される需給環境です。`;
-    }
-    // パターン3: アルトシーズン
-    else if (isAltFlow && isTrendUp) {
-      strategyText = "BTCの支配力が低下し、<strong>アルトコインへ資金が循環</strong>しています。地合いは良好で、個別物色が活発化しやすい環境です。";
-    }
-    // パターン4: じり安・待機
-    else if (!isTrendUp && sent < 45) {
-      strategyText = `移動平均線の下側で推移する<strong>上値の重い展開</strong>。${isVolRising ? "売り圧力が強く" : "取引も細っており"}、需給の好転を待つ静観が妥当な局面です。`;
-    }
-    // パターン5: 中立・安定
-    else {
-      strategyText = "主要データに極端な偏りはなく、安定した推移。次の大きな動き出しを注視する待機的なフェーズです。";
-    }
+    if (sent >= 75 && isOverbought) strategyText = "心理・テクニカル共に過熱が極限に達しています。上昇トレンド中ですが、急激なリバウンド（調整）への警戒を最優先すべき局面です。";
+    else if (sent <= 25 && isOversold) strategyText = "パニック売りが観測されますが、データ上は強い反発力を内包しています。長期的な押し目として意識されやすい需給環境です。";
+    else if (dom < 52 && isTrendUp) strategyText = "BTCからアルトコインへ資金が循環する「リスクオン」の状態です。個別銘柄にチャンスが生まれやすい地合いと言えます。";
+    else strategyText = "現在は明確なトレンドの発生を待つ、踊り場的なフェーズです。主要指標に極端な偏りがないため、静観が妥当な局面です。";
 
-    // 表示反映
+    // --- 📊 根拠セクションの作成 ---
+    // 数値に応じたタグの色と文字を定義
+    const getTag = (val, type) => {
+      if (type === 'rsi') {
+        if (val >= 70) return `<span style="color:#f87171;">買われすぎ(${val})</span>`;
+        if (val <= 30) return `<span style="color:#60a5fa;">売られすぎ(${val})</span>`;
+        return `<span style="color:#94a3b8;">中立(${val})</span>`;
+      }
+      if (type === 'sent') {
+        if (val >= 75) return `<span style="color:#4ade80;">極度の強欲(${val})</span>`;
+        if (val <= 25) return `<span style="color:#f87171;">極度の恐怖(${val})</span>`;
+        return `<span style="color:#94a3b8;">中立(${val})</span>`;
+      }
+      return val;
+    };
+
+    // 最終表示
     textEl.innerHTML = `
-      <ul style="margin:0 0 12px 0; padding-left:1.4em; line-height:1.6; color:#cbd5e1; font-weight:500;">
-        <li style="margin-bottom:6px;">${sentimentText}</li>
-        <li>${rsiText}</li>
-      </ul>
-      <div style="padding:12px; border-top:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.2); border-radius:8px; color:#f1f5f9; font-size:13px; line-height:1.7;">
-        <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-          <span style="font-size:16px;">💡</span><strong style="color:#7dd3fc;">多角的インサイト:</strong>
-        </div>
+      <div style="margin-bottom:15px; line-height:1.7; color:#f1f5f9;">
+        <span style="font-size:18px; margin-right:4px;">💡</span><strong>AIインサイト:</strong><br>
         ${strategyText}
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:8px; font-size:11px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">
-          <span>資金シェア: ${dom > 55 ? 'BTC集中' : 'アルト分散'}</span>
-          <span>トレンド: ${isTrendUp ? '上昇維持' : '下落基調'}</span>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.25); border-radius:10px; padding:12px; border:1px solid rgba(255,255,255,0.05);">
+        <div style="font-size:11px; color:#64748b; margin-bottom:8px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">
+          Analysis Basis (データ根拠)
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 15px; font-size:12px;">
+          <div style="color:#94a3b8;">心理面: ${getTag(sent, 'sent')}</div>
+          <div style="color:#94a3b8;">勢い: ${getTag(rsi, 'rsi')}</div>
+          <div style="color:#94a3b8;">資金流向: <span style="color:#e2e8f0">${dom < 52 ? 'アルト流入' : 'BTC集中'}</span></div>
+          <div style="color:#94a3b8;">トレンド: <span style="color:#e2e8f0">${isTrendUp ? '上昇継続' : '下落基調'}</span></div>
         </div>
       </div>
     `;
