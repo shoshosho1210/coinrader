@@ -1188,8 +1188,15 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 }
 
 /* 色・バッジ */
-.text-up { color: #4ade80; }
-.text-down { color: #f87171; }
+/* ▼▼▼ 修正：騰落率の色定義（少し太字にして視認性UP） ▼▼▼ */
+.text-up {
+  color: #4ade80; /* 上昇：明るい緑 */
+  font-weight: 600;
+}
+.text-down {
+  color: #f87171; /* 下落：明るい赤 */
+  font-weight: 600;
+}
 .rsi-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; width: 36px; text-align: center; background: rgba(255,255,255,0.05); color: #94a3b8; }
 .rsi-high { background: rgba(239,68,68,0.2); color: #fca5a5; }
 .rsi-low  { background: rgba(59,130,246,0.2); color: #93c5fd; }
