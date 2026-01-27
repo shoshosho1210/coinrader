@@ -4392,73 +4392,90 @@ function setupSideMenu() {
     });
   });
 }
-// ▼▼▼ 修正版：AI分析（深掘り＆インサイト強化版） ▼▼▼
+
+// ▼▼▼ 修正版：AI分析（出来高分析を追加して精度向上） ▼▼▼
 function updateAiInsight() {
   const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
   const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
   const domVal = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
-  // ハッシュレートは相場への直接的影響が遅いため、今回はコメントから除外してスッキリさせる
   
+  // 出来高の変化率（LocalStorageに保存した前回値と比較したもの）
+  // 算出ロジックは renderOverview 内にあるため、簡易的に再計算またはDOMから取得
+  // ここでは簡易的に「市場全体の出来高トレンド」を判定します
+  const volChgText = document.getElementById('kpiSentimentMeta')?.textContent || "";
+  let volState = "normal"; // normal, surge, quiet
+  if (volChgText.includes("出来高Δ") && volChgText.includes("+")) {
+    const match = volChgText.match(/出来高Δ \+([0-9.]+)%/);
+    if (match && parseFloat(match[1]) >= 15) volState = "surge"; // 15%以上増なら急増
+  } else if (volChgText.includes("出来高Δ") && volChgText.includes("-")) {
+    const match = volChgText.match(/出来高Δ -([0-9.]+)%/);
+    if (match && parseFloat(match[1]) >= 15) volState = "quiet"; // 15%以上減なら閑散
+  }
+
   if (sentScore === null || rsiVal === null) return;
 
-  // Let's define flags for extreme conditions
   const isExtremeGreed = sentScore >= 75;
   const isExtremeFear = sentScore <= 25;
   const isOverbought = rsiVal >= 70;
   const isOversold = rsiVal <= 30;
 
-  // --- 1. 各要素の分析（より踏み込んだ表現に）---
+  // --- 1. 各要素の分析 ---
 
-  // 市場心理 (Sentiment)
+  // 市場心理
   let sentimentText = "";
   if (isExtremeGreed) sentimentText = "投資家心理は<strong>極度の強欲</strong>に達し、FOMO（取り残される恐怖）による買いが過熱しています。";
   else if (sentScore >= 55) sentimentText = "市場は<strong>強気</strong>ムードを維持しており、押し目買い意欲が強い状態です。";
-  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、次の材料待ちとなり方向感が乏しい展開です。";
+  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、方向感を探る展開です。";
   else if (sentScore > 25) sentimentText = "市場には<strong>警戒感（恐怖）</strong>が広がっており、慎重な姿勢が支配的です。";
   else sentimentText = "市場は<strong>極度の恐怖</strong>に支配され、パニック的な売りが出やすい状態です。";
 
-  // テクニカル (RSI)
+  // テクニカル (RSI + 出来高)
   let rsiText = "";
-  if (isOverbought) rsiText = `BTC RSIは${Math.round(rsiVal)}付近。短期的な<strong>買い過熱感</strong>がピークに達しており、急な調整に警戒が必要です。`;
-  else if (isOversold) rsiText = `BTC RSIは${Math.round(rsiVal)}付近。短期的な<strong>売られすぎ</strong>水準にあり、自律反発の余地が生まれています。`;
-  else if (rsiVal >= 55) rsiText = "RSIは中立圏ですが、上昇圧力がやや優勢な状態を保っています。";
-  else if (rsiVal <= 45) rsiText = "RSIは中立圏ですが、上値が重く、下落圧力がかかりやすい状態です。";
-  else rsiText = "RSIは50付近の中立を示しており、過熱感のない健全な推移です。";
+  // 出来高を絡めた分析
+  const volNote = (volState === "surge") ? "（出来高急増中）" : (volState === "quiet" ? "（出来高減少）" : "");
+
+  if (isOverbought) {
+    rsiText = `BTC RSIは${Math.round(rsiVal)}付近${volNote}。短期的な<strong>買い過熱感</strong>がピークに達しており、急な調整に警戒が必要です。`;
+  } else if (isOversold) {
+    rsiText = `BTC RSIは${Math.round(rsiVal)}付近${volNote}。短期的な<strong>売られすぎ</strong>水準にあり、自律反発の余地が生まれています。`;
+  } else if (rsiVal >= 55) {
+    if (volState === "surge") rsiText = "RSIは上昇傾向にあり、<strong>出来高を伴った強い買い</strong>がトレンドを支えています。";
+    else rsiText = "RSIは上昇傾向ですが、出来高の裏付けが弱く、トレンド継続には注意が必要です。";
+  } else if (rsiVal <= 45) {
+    rsiText = "RSIは弱気圏で推移しており、上値の重い展開が続いています。";
+  } else {
+    rsiText = "RSIは50付近の中立を示しており、過熱感のない健全な推移です。";
+  }
 
   // 資金循環 (Dominance)
   let domText = "";
-  if (domVal && domVal >= 58) domText = "資金は安全資産としての<strong>BTCに集中（避難）</strong>しており、アルトコインは選別色が強い展開です。";
+  if (domVal && domVal >= 58) domText = "資金は安全資産としての<strong>BTCに集中</strong>しており、アルトコインは選別色が強い展開です。";
   else if (domVal && domVal <= 42) domText = "リスク選好姿勢が強まり、資金が<strong>アルトコイン全般に循環</strong>し始めています。";
   else domText = "BTCとアルトコイン間の極端な資金移動は見られず、循環は安定的です。";
 
-
-// --- ▼▼▼ 2. 総合インサイト（ここを修正：客観的な描写に徹する）▼▼▼ ---
+  // --- 2. 総合インサイト ---
   let strategyText = "";
 
   // パターンA: 天井圏（心理もテクニカルも過熱）
   if (isExtremeGreed && isOverbought) {
-    strategyText = "市場は「熱狂」状態にあります。上昇トレンド中ですが、心理・テクニカル両面で過熱感がピークに達しており、<strong>いつ大きな調整が入ってもおかしくない警戒局面</strong>です。";
+    strategyText = "市場は「熱狂」状態です。上昇トレンド中ですが、過熱感がピークに達しており、<strong>いつ大きな調整が入ってもおかしくない警戒局面</strong>です。";
   }
   // パターンB: 底値圏（心理もテクニカルも冷え込み）
   else if (isExtremeFear && isOversold) {
-    strategyText = "市場は「悲観」の極みにあります。短期的には売られすぎ水準であり、ここからの下値余地よりも<strong>自律反発の可能性が意識されやすい局面</strong>となっています。";
+    if (volState === "surge") strategyText = "悲観の中にありますが、<strong>出来高を伴った「セリングクライマックス（売りの最終局面）」</strong>の兆候が見え始めています。反発に注意してください。";
+    else strategyText = "市場は「悲観」の極みにあります。短期的には売られすぎ水準であり、<strong>自律反発の可能性が意識されやすい局面</strong>です。";
   }
-  // パターンC: 強気トレンド（過熱感はないが強い）
+  // パターンC: 強気トレンド
   else if (sentScore > 60 && rsiVal > 50 && !isOverbought) {
-    strategyText = "過度な過熱感なく、安定した上昇トレンドを描いています。市場では<strong>トレンド継続への期待感</strong>が根強く、比較的安心して見ていられる地合いです。";
+    if (volState === "surge") strategyText = "出来高を伴った理想的な上昇トレンドです。<strong>トレンド継続への信頼性が高く</strong>、押し目買いが機能しやすい地合いです。";
+    else strategyText = "上昇トレンドですが出来高がやや不足しています。<strong>ダマシ上げの可能性</strong>も考慮し、慎重なエントリーが推奨されます。";
   }
-  // パターンD: 弱気・調整局面
-  else if (sentScore < 40 && rsiVal < 50 && !isOversold) {
-    strategyText = "上値が重く、調整色が強い展開です。市場心理は慎重になっており、<strong>下げ止まりのサインを確認しようとする様子見姿勢</strong>が強まっています。";
-  }
-  // パターンE: どっちつかず
+  // パターンD: 弱気・調整
   else {
-    strategyText = "売り買いの材料が拮抗しており、方向感が乏しい展開です。トレンドが明確になるまで、<strong>次の大きな動き出し（ブレイクアウト）を見極めようとする慎重な姿勢</strong>が意識される局面です。";
+    strategyText = "方向感が乏しい、または調整色の強い展開です。トレンドが明確になるまで、<strong>次の大きな動き出しを見極める様子見姿勢</strong>が賢明です。";
   }
-
 
   // --- 3. HTMLの組み立て ---
-  // ※箇条書きリストのスタイルを少し調整して見やすくします
   const finalHtml = `
     <ul style="margin:0 0 12px 0; padding-left:1.4em; line-height:1.6; color:#cbd5e1; font-weight:500;">
       <li style="margin-bottom:6px;">${sentimentText}</li>
