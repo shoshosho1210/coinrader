@@ -97,7 +97,7 @@ def run_main():
         f"🔥 トレンド: {', '.join(trend_symbols)}\n"
         f"🚀 急上昇: {top_gainers[0]['symbol'].upper() if top_gainers else '-'}\n\n"
         f"📊 詳細な分析はサイトでチェック\n{site_url}\n"
-        f"#Bitcoin #仮想通貨 #CoinRader"
+        f"#Bitcoin #暗号資産 #CoinRader"
     )
 
     # 3. Discord/記録用：全情報網羅 (full)
