@@ -1033,6 +1033,34 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     border-color: #ffffff; /* ホバー時は白く光る */
     background: #000;
   }
+  /* ▼▼▼ 追加：AI分析ボックスのスタイル ▼▼▼ */
+.ai-insight-box {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9));
+  border: 1px solid rgba(56,189,248,0.2);
+  border-left: 4px solid #38bdf8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.ai-insight-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #7dd3fc; margin-bottom: 8px;
+}
+.ai-badge {
+  font-size: 10px; padding: 2px 6px; border-radius: 4px;
+  background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3);
+}
+.ai-insight-text {
+  font-size: 13px; line-height: 1.7; color: #f1f5f9;
+}
+.ai-insight-text strong {
+  color: #fff; font-weight: 700;
+  background: rgba(255,255,255,0.1); padding: 0 4px; border-radius: 4px;
+}
+.ai-insight-note {
+  margin-top: 8px; font-size: 10px; color: #64748b; text-align: right;
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1092,6 +1120,14 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div>
 <div class="section-title">今日の注目</div>
 <div class="section-sub">市場の空気と、いま注目の銘柄を最短で確認できます。</div>
+</div>
+<div class="ai-insight-box" id="aiInsightBox" style="display:none;">
+  <div class="ai-insight-header">
+    <span style="font-size:16px">🤖</span> <strong>Market AI Insight</strong>
+    <span class="ai-badge">Beta</span>
+  </div>
+  <div class="ai-insight-text" id="aiInsightText">データ収集中...</div>
+  <div class="ai-insight-note">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
 </div>
 <div class="section-actions">
   <button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
@@ -3980,6 +4016,9 @@ function renderAll(){
     try{ renderQuickSummary(); }catch(e){ console.warn("quick summary failed", e); }
     // ★追加：ブラウザのタブタイトルを動的に更新（BTC価格とトレンド）
     updateDynamicTitle();
+    // ▼▼▼ 追加：AI分析を実行 ▼▼▼
+    try { updateAiInsight(); } catch(e){ console.warn("AI insight failed", e); }
+    // ▲▲▲ 追加ここまで ▲▲▲
   }
   // ★追加：タイトル更新関数
   function updateDynamicTitle(){
@@ -4038,7 +4077,59 @@ function renderAll(){
       if (el) el.classList.toggle('refreshing', !!on);
     });
   }
+// ▼▼▼ 追加：市場分析コメント生成AI（ロジック版） ▼▼▼
+function updateAiInsight() {
+  // 必要なデータが揃っているか確認
+  const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
+  const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
+  const domVal = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
+  const hashText = document.getElementById('kpiStripHashSub')?.textContent || "";
+  
+  if (sentScore === null || rsiVal === null) return; // データ不足
 
+  // 1. 市場心理の分析
+  let sentimentText = "";
+  if (sentScore >= 75) sentimentText = "市場は<strong>極度の強欲</strong>状態にあり、過熱感が警戒されます。";
+  else if (sentScore >= 55) sentimentText = "市場心理は<strong>強気（強欲）</strong>に傾いており、活発な取引が見られます。";
+  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、方向感を探る展開です。";
+  else if (sentScore >= 25) sentimentText = "市場には<strong>恐怖</strong>が広がっており、慎重な姿勢が目立ちます。";
+  else sentimentText = "市場は<strong>極度の恐怖</strong>に支配されており、パニック売りに注意が必要です。";
+
+  // 2. テクニカル（RSI）の分析
+  let rsiText = "";
+  if (rsiVal >= 70) rsiText = "BTCのRSIは70を超えており、短期的には<strong>買われすぎ</strong>の水準です。調整（下落）への警戒が必要です。";
+  else if (rsiVal <= 30) rsiText = "BTCのRSIは30を下回っており、短期的には<strong>売られすぎ</strong>の水準です。自律反発の可能性があります。";
+  else if (rsiVal >= 55) rsiText = "RSIは中立圏ですが、やや上昇圧力が強い状態です。";
+  else if (rsiVal <= 45) rsiText = "RSIは中立圏ですが、やや下落圧力が優勢です。";
+  else rsiText = "テクニカル指標（RSI）は中立を示しており、明確な過熱感はありません。";
+
+  // 3. ドミナンスと資金循環
+  let domText = "";
+  if (domVal && domVal >= 60) domText = "資金は<strong>ビットコインに集中</strong>しており、アルトコインには厳しい環境です。";
+  else if (domVal && domVal <= 40) domText = "資金が<strong>アルトコインに循環</strong>し始めており、市場全体の活性化が期待されます。";
+
+  // 4. ハッシュレート（前日比）
+  let hashComment = "";
+  if (hashText.includes("+")) hashComment = "マイニング活動（ハッシュレート）は増加傾向にあり、ネットワークの安全性は堅牢です。";
+  else if (hashText.includes("-")) hashComment = "ハッシュレートはやや調整気味です。";
+
+  // 5. 総合コメントの組み立て
+  const finalHtml = `
+    ${sentimentText}
+    ${rsiText}
+    ${domText}
+    ${hashComment}
+    <br>この状況下では、<strong>${sentScore < 25 || rsiVal < 30 ? "逆張り（買い）の好機" : (sentScore > 75 || rsiVal > 70 ? "利益確定や静観" : "トレンドの発生")}</strong>を待つ戦略が意識されやすい局面です。
+  `;
+
+  // 画面に表示
+  const box = document.getElementById('aiInsightBox');
+  const textEl = document.getElementById('aiInsightText');
+  if (box && textEl) {
+    textEl.innerHTML = finalHtml;
+    box.style.display = 'block';
+  }
+}
 // ▼▼▼ 追加：ハッシュレート取得プログラム（本体） ▼▼▼
   async function loadBtcHashrate() {
     // 無料・登録不要のMempool.space APIを使用
