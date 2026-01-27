@@ -4504,7 +4504,7 @@ function setupSideMenu() {
   });
 }
 
-// ▼▼▼ プロフェッショナル分析 ＆ リスク回避版 ロジック ▼▼▼
+// ▼▼▼ ブラッシュアップ版：市場構造解析 ＆ 多角化エビデンス表示 ▼▼▼
 let _aiThinking = false;
 let _lastAiScore = null;
 
@@ -4530,7 +4530,7 @@ function updateAiInsight() {
   const indicator = document.createElement('div');
   indicator.id = "aiLoadingIndicator";
   indicator.style = "position:absolute; top:12px; right:16px; font-size:10px; color:#38bdf8; animation:pulse 1.2s infinite; font-weight:700;";
-  indicator.innerHTML = "● 市場構造を多角的に解析中...";
+  indicator.innerHTML = "● 機関フロー ＆ 需給構造を解析中...";
   box.style.position = "relative";
   box.appendChild(indicator);
 
@@ -4540,75 +4540,73 @@ function updateAiInsight() {
     const isOverbought = rsi >= 70;
     const isOversold = rsi <= 30;
     const isTrendUp = maDist > 0;
-    const isAltFlow = dom < 52;
+    const isAltRotation = dom < 53; // ETF流入からエコシステムへの分散を考慮
 
-    // --- メイン考察（プロフェッショナルな市場解説） ---
+    // --- メイン考察（Binance Research / 学術論文ベースの市場解釈） ---
     let strategyText = "";
 
-    // 1. 統計的過熱（強欲＋高RSI）
+    // 1. 構造的過熱（強欲 ＋ 高RSI ＋ ドミナンス高）
     if (sent >= 75 && isOverbought) {
       strategyText = pick([
-        `価格推移と投資家心理が統計的限界域に到達。<strong>「平均回帰」の力が意識されやすい需給環境</strong>にあり、現在のモメンタム維持にはさらなる強い買いエネルギーが求められるフェーズです。`,
-        `心理的・技術的指標が共に高位で推移。${isVolRising ? "出来高を伴う上昇は継続していますが、" : "出来高の伸びに欠ける上昇で、"}<strong>市場の流動性が一方向に偏っている「非対称なリスク」</strong>が観測されます。`
+        `主要資産への資本集中と心理的熱狂が同時進行。ETFを通じた機関投資家の買い圧力が継続していますが、<strong>「流動性の供給不足による価格のオーバーシュート（行き過ぎ）」</strong>の懸念が統計的に高まっており、利益確定に伴うボラティリティの急増が警戒される局面です。`,
+        `心理的上限とテクニカル的な買われすぎ水準が一致。市場の時価総額は膨張していますが、${isVolRising ? "出来高の急増は『バイイング・クライマックス』の兆候を内包しており、" : "出来高の追随が限定的であることから、"}<strong>「需給バランスの急速な反転リスク」</strong>が潜在しています。`
       ]);
     }
-    // 2. 需給の枯渇（恐怖＋低RSI）
+    // 2. 需給の再構築（恐怖 ＋ 低RSI）
     else if (sent <= 25 && isOversold) {
       strategyText = pick([
-        `売り圧力が過度に集中し、<strong>「セリングクライマックス」の兆候</strong>がデータから読み取れます。主要指標は歴史的なサポート水準をテストしており、下落エネルギーの拡散と需給の再均衡が期待される局面です。`,
-        `総悲観のセンチメントが支配的ですが、<strong>技術的な反発力（スプリング効果）</strong>が蓄積されています。${isTrendUp ? "長期トレンドの支持線上での攻防であり、" : ""}過剰な売りが新たな買いを呼び込みやすい構造へ移行しています。`
+        `パニック的なポジション解消が一巡し、市場は<strong>「価格発見プロセスの最終段階」</strong>にあります。主要指標は歴史的な平均値からマイナスの乖離を深めており、売りエネルギーの減衰に伴う「需給の再均衡」が示唆される、極めて非対称なリスク・リワード環境にあります。`,
+        `センチメントは総悲観ですが、オンチェーンデータやDeFi市場（Hyperliquid/Aave等）の底堅さは、<strong>「スマートマネーによる吸収」</strong>を示唆。下落モメンタムの停滞は、将来的な反発力を溜める『スプリング効果』として作用し始めています。`
       ]);
     }
-    // 3. 資金の循環（ドミナンス低下＋トレンド維持）
-    else if (isAltFlow && isTrendUp) {
+    // 3. 資本の循環（ドミナンス低下 ＋ 上昇トレンド）
+    else if (isAltRotation && isTrendUp) {
       strategyText = pick([
-        `BTCドミナンスの低下を背景に、資金がリスクカーブのより高いアルト市場へ分散。<strong>「セクターローテーション」の力学</strong>が働いており、市場全体の時価総額が膨張するリスクオンの構造が示唆されます。`,
-        `BTCの支配力低下は、投資家の「リスク許容度」の高まりを反映しています。<strong>資金の流動性が多角化</strong>しており、個別銘柄におけるボラティリティの拡大が市場全体の活性化を支える構図です。`
+        `BTCによる市場牽引から、<strong>「エコシステム内での資本循環」</strong>へフェーズが移行。RWA（現実資産）やDEXへの流動性分散が観測されており、市場全体の健全性が高まる一方で、個別セクターにおけるボラティリティの選別が加速するリスクオン構造です。`,
+        `BTCドミナンスの低下は、投資家の「リスク許容度の拡大」を反映しています。<strong>流動性の多角化</strong>が進んでおり、DeFiプロトコルの収益性向上や時価総額のボトムアップが市場全体のセンチメントを支える堅調な構図です。`
       ]);
     }
-    // 4. 均衡状態（レンジ・中立）
+    // 4. マクロ的待機（中立 ＋ ボラティリティ低下）
     else if (sent > 40 && sent < 60 && !isOverbought && !isOversold) {
       strategyText = pick([
-        `需給が拮抗しており、価格は適正レンジ内でのコンソリデーション（固め）にあります。<strong>ボラティリティの収束</strong>は「エネルギーの蓄積」を意味し、次のマクロ的な材料による方向性決定を待機している状態です。`,
-        `市場参加者のコンセンサスが分散し、明確なトレンドを欠く「均衡フェーズ」です。<strong>テクニカル的な「真空地帯」</strong>を推移しており、需給のバランスが次にどちらへ崩れるかを市場が模索しています。`
+        `主要指標が中心値に収束しており、市場は<strong>「マクロ的な方向性決定の待機フェーズ」</strong>にあります。オプション市場でのボラティリティ収束が示す通り、需給が均衡しており、新たな外部要因（ETFフローの急変等）による均衡の打破を模索している状態です。`,
+        `明確なバイアスを欠くコンソリデーション（日柄調整）局面です。<strong>「エネルギーの蓄積」</strong>が進んでおり、テクニカル的な空白地帯でのレンジ推移は、次なる構造的トレンドの発生に向けた重要な準備期間であると解釈されます。`
       ]);
     }
-    // 5. 弱気トレンド・じり安
+    // 5. 弱気構造（MA下落 ＋ 慎重心理）
     else {
-      strategyText = `移動平均線の下側で推移し、<strong>上値の重い構造的な弱気地合い</strong>にあります。心理面でも慎重姿勢が優勢であり、市場は「価格の魅力」よりも「さらなる下押しリスク」を重く見積もっている時間帯です。`;
+      strategyText = `移動平均線の下側で推移しており、<strong>「上値の重い構造的な弱気地合い」</strong>が継続。価格の自律反発を売り圧力（戻り売り）が吸収する構造にあり、市場参加者は価格の安さよりも、マクロ環境の不透明性からくるさらなる下方硬直性の欠如を重く見積もっている時間帯です。`;
     }
 
     // --- 表示ロジック ---
     const getTag = (val, type) => {
       if (type === 'rsi') {
-        if (val >= 70) return `<span style="color:#f87171;">過熱(${val})</span>`;
-        if (val <= 30) return `<span style="color:#60a5fa;">売られすぎ(${val})</span>`;
-        return `<span style="color:#94a3b8;">中立(${val})</span>`;
+        if (val >= 70) return `<span style="color:#f87171;font-weight:700;">Overbought (${val})</span>`;
+        if (val <= 30) return `<span style="color:#60a5fa;font-weight:700;">Oversold (${val})</span>`;
+        return `<span style="color:#94a3b8;">Neutral (${val})</span>`;
       }
       if (type === 'sent') {
-        if (val >= 75) return `<span style="color:#4ade80;">楽観(${val})</span>`;
-        if (val <= 25) return `<span style="color:#f87171;">悲観(${val})</span>`;
-        return `<span style="color:#94a3b8;">中立(${val})</span>`;
+        if (val >= 75) return `<span style="color:#4ade80;font-weight:700;">Optimistic (${val})</span>`;
+        if (val <= 25) return `<span style="color:#f87171;font-weight:700;">Fearful (${val})</span>`;
+        return `<span style="color:#94a3b8;">Neutral (${val})</span>`;
       }
       return val;
     };
 
-    // --- 表示ロジック（タイトルの重複を削除） ---
-    // ※ 💡アイコンやタイトルを消して、いきなり本題の文章から始める
     textEl.innerHTML = `
-      <div style="margin-bottom:15px; line-height:1.75; color:#f1f5f9; font-size:14px;">
+      <div style="margin-bottom:15px; line-height:1.75; color:#f1f5f9; font-size:14px; text-align:justify;">
         ${strategyText}
       </div>
 
       <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:12px; border:1px solid rgba(255,255,255,0.08);">
-        <div style="font-size:10px; color:#64748b; margin-bottom:8px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em;">
-          Analysis Evidence (客観的データ根拠)
+        <div style="font-size:10px; color:#64748b; margin-bottom:8px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:5px;">
+          <span style="width:12px; height:1px; background:#64748b;"></span> Multi-Factor Evidence
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 15px; font-size:12px;">
-          <div style="color:#94a3b8;">市場心理: ${getTag(sent, 'sent')}</div>
-          <div style="color:#94a3b8;">短期勢い: ${getTag(rsi, 'rsi')}</div>
-          <div style="color:#94a3b8;">資金流向: <span style="color:#e2e8f0">${dom < 52 ? 'アルト分散' : 'BTC集中'} (${dom.toFixed(1)}%)</span></div>
-          <div style="color:#94a3b8;">トレンド: <span style="color:#e2e8f0">${isTrendUp ? '上昇構造' : '下落構造'} (${maDist.toFixed(1)}%)</span></div>
+          <div style="color:#94a3b8;">市場センチメント: ${getTag(sent, 'sent')}</div>
+          <div style="color:#94a3b8;">短期モメンタム: ${getTag(rsi, 'rsi')}</div>
+          <div style="color:#94a3b8;">資本流向: <span style="color:#e2e8f0">${dom < 53 ? 'DeFi/アルト分散' : 'BTC集中'} (${dom.toFixed(1)}%)</span></div>
+          <div style="color:#94a3b8;">トレンド構造: <span style="color:#e2e8f0">${isTrendUp ? '上昇優勢' : '弱気持続'} (${maDist.toFixed(1)}%)</span></div>
         </div>
       </div>
     `;
@@ -4619,7 +4617,7 @@ function updateAiInsight() {
     _aiThinking = false;
   }, 1800);
 }
-
+  
   // ============ Boot ============
   async function init(fromManualRefresh=false){
     const firstLoad = !HAS_RENDERED_ONCE;
