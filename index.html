@@ -4440,7 +4440,7 @@ function setupSideMenu() {
   });
 }
 
-// ▼▼▼ 修正版：AI分析（性格をマイルド・順張り志向に調整） ▼▼▼
+// ▼▼▼ 修正版：AI分析（投資助言を排除した客観的分析モード） ▼▼▼
 let _aiThinking = false;
 
 function updateAiInsight() {
@@ -4470,11 +4470,10 @@ function updateAiInsight() {
     const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
     const domVal = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
 
-    // 出来高分析（判定を緩くする）
+    // 出来高分析
     const volChgText = document.getElementById('kpiSentimentMeta')?.textContent || "";
     let volState = "normal";
     
-    // 前日比 +10%以上なら「強い」、-10%以下なら「弱い」、それ以外は「普通（安定）」
     if (volChgText.includes("出来高Δ") && volChgText.includes("+")) {
       const match = volChgText.match(/出来高Δ \+([0-9.]+)%/);
       if (match && parseFloat(match[1]) >= 10) volState = "strong";
@@ -4494,63 +4493,62 @@ function updateAiInsight() {
     const isOverbought = rsiVal >= 70;
     const isOversold = rsiVal <= 30;
 
-    // --- 各要素の分析 ---
+    // --- 各要素の分析（事実の描写に徹する） ---
 
     // 市場心理
     let sentimentText = "";
-    if (isExtremeGreed) sentimentText = "投資家心理は<strong>極度の強欲</strong>です。FOMO（取り残される恐怖）による買いが過熱気味です。";
-    else if (sentScore >= 55) sentimentText = "市場は<strong>強気（Greed）</strong>ムードです。投資家の意欲は高く、底堅い展開です。";
-    else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>です。過熱感はなく、冷静な売買が行われています。";
-    else if (sentScore > 25) sentimentText = "市場には<strong>警戒感（Fear）</strong>があり、慎重な姿勢が見られます。";
-    else sentimentText = "市場は<strong>極度の恐怖</strong>に支配され、パニック売りのリスクがあります。";
+    if (isExtremeGreed) sentimentText = "投資家心理は<strong>極度の強欲</strong>状態です。FOMO（取り残される恐怖）による買い過熱感が観測されています。";
+    else if (sentScore >= 55) sentimentText = "市場は<strong>強気（Greed）</strong>ムードです。投資家心理は底堅く推移しています。";
+    else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>です。過熱感はなく、冷静な値動きとなっています。";
+    else if (sentScore > 25) sentimentText = "市場には<strong>警戒感（Fear）</strong>があり、慎重な姿勢が支配的です。";
+    else sentimentText = "市場は<strong>極度の恐怖</strong>状態にあり、パニック的な売りが出やすい環境です。";
 
-    // テクニカル (RSI) ※ここをマイルドに修正
+    // テクニカル (RSI)
     let rsiText = "";
     const volNote = (volState === "strong") ? "（出来高増）" : "";
 
     if (isOverbought) {
-      rsiText = `BTC RSIは${Math.round(rsiVal)}付近${volNote}。短期的な<strong>加熱感（買われすぎ）</strong>があり、一旦の調整に注意です。`;
+      rsiText = `BTC RSIは${Math.round(rsiVal)}付近${volNote}。短期的に<strong>買われすぎ</strong>水準に達しており、過去統計的には高値圏とされる領域です。`;
     } else if (isOversold) {
-      rsiText = `BTC RSIは${Math.round(rsiVal)}付近${volNote}。短期的な<strong>売られすぎ</strong>水準で、反発のチャンスを探る局面です。`;
+      rsiText = `BTC RSIは${Math.round(rsiVal)}付近${volNote}。短期的に<strong>売られすぎ</strong>水準に達しており、反発が意識されやすい領域です。`;
     } else if (rsiVal >= 55) {
-      // 修正：普通の状態なら「順調」と言うように変更
-      if (volState === "weak") rsiText = "RSIは上昇傾向ですが、出来高がやや減少しており、上値の重さに注意が必要です。";
-      else rsiText = "RSIは上昇トレンドを維持しており、<strong>買い優勢の安定した推移</strong>です。";
+      if (volState === "weak") rsiText = "RSIは上昇傾向ですが、出来高は減少しており、上値が重くなる可能性があります。";
+      else rsiText = "RSIは上昇トレンドを維持しており、<strong>安定した買い需要</strong>が継続しています。";
     } else if (rsiVal <= 45) {
-      rsiText = "RSIは弱気圏で推移しており、戻り売りが出やすい地合いです。";
+      rsiText = "RSIは弱気圏で推移しており、戻り売り圧力が強い地合いです。";
     } else {
-      rsiText = "RSIは50付近の中立を示しており、上下どちらにも動けるフラットな状態です。";
+      rsiText = "RSIは50付近の中立を示しており、方向感が定まらないフラットな状態です。";
     }
 
     // 資金循環
     let domText = "";
-    if (domVal && domVal >= 58) domText = "資金は<strong>BTCに集中</strong>しており、アルトコインの動きは限定的です。";
-    else if (domVal && domVal <= 42) domText = "リスク選好により、資金が<strong>アルトコインへ循環</strong>しています。";
+    if (domVal && domVal >= 58) domText = "資金は<strong>BTCに集中</strong>しており、アルトコインへの波及は限定的です。";
+    else if (domVal && domVal <= 42) domText = "リスク選好により、資金が<strong>アルトコインへ循環</strong>する傾向が見られます。";
     else domText = "BTCとアルトコインの資金循環は安定的です。";
 
-    // --- 総合インサイト（判定ロジックを追加） ---
+    // --- 総合インサイト（「推奨」ではなく「状況認識」に書き換え） ---
     let strategyText = "";
 
     // 1. 天井圏
     if (isExtremeGreed && isOverbought) {
-      strategyText = "上昇トレンド中ですが、過熱感がピークに達しています。<strong>深追いは避け、利益確定や調整待ちを検討すべき局面</strong>です。";
+      strategyText = "上昇トレンド中ですが、テクニカル指標は高値圏を示唆しています。<strong>相場の過熱感が強く、短期的な調整が入る可能性が高い局面</strong>です。";
     }
     // 2. 底値圏
     else if (isExtremeFear && isOversold) {
-      if (volState === "strong") strategyText = "悲観の中にありますが、出来高を伴った「セリングクライマックス」の可能性があります。<strong>逆張りの買い場を探る好機</strong>かもしれません。";
-      else strategyText = "売られすぎ水準にあり、<strong>自律反発狙いの短期トレード</strong>がワークしやすい局面です。";
+      if (volState === "strong") strategyText = "悲観ムードの中にありますが、出来高を伴った売り一巡（セリングクライマックス）の兆候が見られます。<strong>相場の転換点が意識されやすい局面</strong>です。";
+      else strategyText = "売られすぎ水準に位置しています。<strong>自律反発やショートカバー（買い戻し）が入りやすい需給環境</strong>となっています。";
     }
-    // 3. 安定上昇（ここを追加：中立〜やや強気なら「順張り」推奨）
+    // 3. 安定上昇
     else if (sentScore >= 50 && rsiVal >= 50) {
-      if (volState === "weak") strategyText = "上昇基調ですが勢いは控えめです。急騰は期待しにくいものの、<strong>押し目（下がったところ）を拾っていく戦略</strong>が有効です。";
-      else strategyText = "市場環境は良好です。トレンドは上向きで安定しており、<strong>素直にトレンドについていく（順張り）戦略</strong>が推奨されます。";
+      if (volState === "weak") strategyText = "上昇基調ですが勢いは控えめです。急騰というよりは、<strong>緩やかなトレンド形成が続いている状態</strong>と言えます。";
+      else strategyText = "市場環境は良好です。トレンドは上向きで安定しており、<strong>市場参加者の目線は上方向で一致している</strong>ことが示唆されます。";
     }
     // 4. 調整・弱気
     else {
-      strategyText = "方向感が乏しい、または調整色の強い展開です。トレンドが明確になるまで、<strong>次の大きな動き出しを見極める様子見姿勢</strong>が賢明です。";
+      strategyText = "方向感が乏しい、または調整色の強い展開です。市場では<strong>次の材料や大きな動き出しを待つ動き</strong>が支配的です。";
     }
 
-    // HTML出力
+    // HTML出力（注意書きを強調）
     const finalHtml = `
       <ul style="margin:0 0 12px 0; padding-left:1.4em; line-height:1.6; color:#cbd5e1; font-weight:500;">
         <li style="margin-bottom:6px;">${sentimentText}</li>
@@ -4558,7 +4556,7 @@ function updateAiInsight() {
         <li>${domText}</li>
       </ul>
       <div style="padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); color:#f1f5f9; font-size:13px; line-height:1.7;">
-        <span style="font-size:16px; margin-right:4px;">💡</span><strong style="color:#7dd3fc;">総合インサイト:</strong><br>
+        <span style="font-size:16px; margin-right:4px;">💡</span><strong style="color:#7dd3fc;">市場概観:</strong><br>
         ${strategyText}
       </div>
     `;
