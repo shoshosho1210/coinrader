@@ -1080,8 +1080,9 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 
 .ai-insight-text {
   font-size: 13px; 
-  line-height: 1.75; /* 行間を少し広げて読みやすく */
-  color: #d1d5db;    /* 少しグレー寄りの白 */
+  line-height: 1.75; 
+  color: #d1d5db;
+  min-height: 80px; /* ▼ 追加：最低でもこの高さを確保する */
 }
 
 /* AI文中の強調（strong）タグのデザイン */
@@ -1157,8 +1158,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
 <div class="section-header">
 <div>
-<div class="section-title">今日の注目</div>
-<div class="section-sub">市場の空気と、いま注目の銘柄を最短で確認できます。</div>
+<div class="section-title">⚡️ 市場ハイライト</div>
+<div class="section-sub">時間がない方はここだけチェック。市場の重要変化をAIが要約します。</div>
 </div>
 <div class="section-actions">
   <button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
