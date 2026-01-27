@@ -1111,6 +1111,67 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   text-align: right;
   opacity: 0.8;
 }
+/* ▼▼▼ 追加：時価総額テーブルのデザイン ▼▼▼ */
+.table-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  position: relative;
+  /* 右端にスクロールを促す影 */
+  background: 
+    linear-gradient(to left, rgb(15,23,42) 0%, rgba(15,23,42,0) 100%) 100% 0,
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,0.4), rgba(0,0,0,0)) 100% 0;
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 10px 100%;
+  background-attachment: local, scroll;
+}
+.rank-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  font-size: 13px;
+}
+.rank-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #0f172a;
+  color: #94a3b8;
+  font-weight: 500;
+  text-align: right; /* ヘッダーも右揃え */
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+.rank-table th.th-sym { text-align: left; left: 0; z-index: 11; }
+.rank-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: middle;
+  text-align: right; /* 数字を右揃え！ */
+  font-family: 'Inter', sans-serif;
+  font-feature-settings: "tnum"; /* 数字の幅を揃える */
+  color: #e5e7eb;
+  white-space: nowrap;
+}
+.rank-table td.td-sym {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background: #0f172a;
+  z-index: 5;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+.sym-wrap { display: flex; align-items: center; gap: 8px; }
+.sym-icon { width: 24px; height: 24px; border-radius: 50%; }
+.sym-rank { color: #64748b; font-size: 11px; min-width: 16px; }
+.sym-code { font-weight: 700; font-size: 13px; }
+.text-up { color: #4ade80; }
+.text-down { color: #f87171; }
+/* RSIバッジ */
+.rsi-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; width: 36px; text-align: center; background: rgba(255,255,255,0.05); color: #94a3b8; }
+.rsi-high { background: rgba(239,68,68,0.2); color: #fca5a5; }
+.rsi-low  { background: rgba(59,130,246,0.2); color: #93c5fd; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1361,13 +1422,29 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="section-header">
 <div>
 <div class="section-title">時価総額 TOP20</div>
-<div class="section-sub">時価総額上位20（JPY）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
+<div class="section-sub">時価総額上位20銘柄の市場状況一覧</div>
 </div>
 <div class="section-actions">
 <a class="linkbtn" data-ga="ext_coingecko_home" data-partner="coingecko" data-placement="index_mcap_header" data-pr="0" href="https://www.coingecko.com/ja" rel="noopener" target="_blank">もっと見る</a>
 </div>
 </div>
-<div class="grid" id="grid-mcap"><div class="msg">データ取得中…</div></div>
+
+<div class="table-scroll-container">
+  <table class="rank-table" id="mcapTable">
+    <thead>
+      <tr>
+        <th class="th-sym">銘柄</th>
+        <th class="th-price">現在値 (円)</th>
+        <th class="th-mcap">時価総額</th>
+        <th class="th-chg">前日比</th>
+        <th class="th-rsi">RSI</th>
+        <th class="th-vol">24h出来高</th>
+      </tr>
+    </thead>
+    <tbody id="mcapTableBody">
+      </tbody>
+  </table>
+</div>
 </section>
 <section id="sec-overview">
 <div class="section-header">
@@ -4070,13 +4147,63 @@ function makeLineChart(canvasId, labels, series, opts){
     fillList('summaryVolAltList', getAltVolumeTop5(), 'grid-alt-volume');
   }
 
+function renderRankTable(coins) {
+  const tbody = document.getElementById('mcapTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!coins || !coins.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
+    return;
+  }
+  coins.forEach((c, i) => {
+    const price = yen(c.current_price);
+    const mcap = yenLarge(c.market_cap);
+    const vol = yenLarge(c.total_volume);
+    const chg = c.price_change_percentage_24h;
+    const chgClass = (chg >= 0) ? 'text-up' : 'text-down';
+    const chgStr = (typeof chg === 'number') ? (chg > 0 ? '+' : '') + chg.toFixed(1) + '%' : '-';
+    
+    // RSI計算
+    let rsiVal = null, rsiClass = '';
+    if (c.sparkline_in_7d && c.sparkline_in_7d.price) {
+      const series = computeRSISeries(c.sparkline_in_7d.price);
+      const last = series[series.length - 1];
+      if (last) {
+        rsiVal = Math.round(last);
+        if (rsiVal >= 70) rsiClass = 'rsi-high';
+        else if (rsiVal <= 30) rsiClass = 'rsi-low';
+      }
+    }
+    const rsiHtml = rsiVal ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` : '-';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-sym">
+        <div class="sym-wrap">
+          <span class="sym-rank">${i + 1}</span>
+          <img class="sym-icon" src="${c.image}" loading="lazy" alt="">
+          <span class="sym-code">${c.symbol.toUpperCase()}</span>
+        </div>
+      </td>
+      <td>${price}</td>
+      <td>${mcap}</td>
+      <td class="${chgClass}">${chgStr}</td>
+      <td>${rsiHtml}</td>
+      <td>${vol}</td>
+    `;
+    tr.style.cursor = 'pointer';
+    tr.onclick = () => window.open(coinGeckoUrlFor(c), '_blank');
+    tbody.appendChild(tr);
+  });
+}
+
 function renderAll(){
     clearCharts();
     renderInto('grid-trend', trendingCoins, 'trend', 'trend');
     renderInto('grid-gainers', getGainersTop5(), 'gainers', 'gainers');
     renderInto('grid-volume', getVolumeTop5(), 'volume', 'volume');
     renderInto('grid-alt-volume', getAltVolumeTop5(), 'alt_volume', 'alt_volume');
-    renderInto('grid-mcap', getMarketCapTop20(), 'mcap', 'mcap');
+    renderRankTable(getMarketCapTop20());
     renderOverview();
     try{ renderQuickSummary(); }catch(e){ console.warn("quick summary failed", e); }
     // ★追加：ブラウザのタブタイトルを動的に更新（BTC価格とトレンド）
