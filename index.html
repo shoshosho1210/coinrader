@@ -1326,14 +1326,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     
     <div class="ai-loading-placeholder">
       <div style="display:flex; align-items:center; justify-content:center; gap:10px; height:100px; color:#94a3b8;">
-        <span style="font-size:20px; animation: spin 1s linear infinite;">⏳</span>
-        <span style="animation: pulse 1.5s infinite;">AI分析を準備中...</span>
-      </div>
-
-      <style>
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-      </style>
+          <span style="font-size:20px; animation: spin 1s linear infinite;">⏳</span>
+          <span style="animation: pulse 1.5s infinite;">AI分析を準備中...</span>
+        </div>
+        <style>
+          @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+          @keyframes spin { 100% { transform: rotate(360deg); } }
+        </style>
     </div>
     </div>
   
@@ -4512,7 +4511,7 @@ function updateAiInsight() {
   box.style.display = 'block';
   
   textEl.innerHTML = `
-    <div style="display:flex; align-items:center; justify-content:center; gap:10px; height:80px; color:#94a3b8;">
+    <div style="display:flex; align-items:center; justify-content:center; gap:10px; height:100px; color:#94a3b8;">
       <span style="font-size:20px; animation: spin 1s linear infinite;">⏳</span>
       <span style="animation: pulse 1.5s infinite;">AIが市場データを分析しています...</span>
     </div>
