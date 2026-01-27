@@ -1,354 +1,187 @@
-#!/usr/bin/env python3
-# generate_daily_post.py
-# CoinRader: X投稿用デイリー集計（index_v42.html のランキングルールに合わせる）
-import os
-import datetime as dt
 import requests
-import json
-from pathlib import Path
-from typing import Any
+import datetime
+import math
 
+# ==========================================
+# 1. 除外ロジックの定義 (index27-11.html準拠)
+# ==========================================
 
-
-# --- index.html と同等の出来高(アルト)除外ロジック ---
-EXCLUDE_VOLUME_IDS = {
-    'tether','usd-coin','dai','true-usd','first-digital-usd','ethena-usde',
-    'wrapped-bitcoin','staked-ether',
-    # 追加で除外したい銘柄はここにidを足す
-}
-EXCLUDE_NAME_KEYWORDS = [
-    'usd','us dollar','stable','tether','usd coin',
-    'wrapped','bridged','wormhole','portal',
-    'staked','staking','restaked',
-    'wbtc','weth','steth'
-]
-
-
-def write_daily_snapshot(date_tag: str, snapshot: dict) -> str:
-    """Write data/daily/YYYYMMDD.json for weekly aggregation."""
-    out_dir = Path("data/daily")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / f"{date_tag}.json"
-    out_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
-    return str(out_path)
-def is_excluded_for_alt_volume(coin: dict) -> bool:
-    cid = (coin.get('id') or '').lower()
-    name = (coin.get('name') or '').lower()
-    sym  = (coin.get('symbol') or '').lower()
-    if cid in EXCLUDE_VOLUME_IDS:
-        return True
-    for k in EXCLUDE_NAME_KEYWORDS:
-        if k in name or k in sym:
-            return True
-    return False
-BASE_URL = "https://api.coingecko.com/api/v3"
-
-CG_DEMO_KEY = os.getenv("CG_DEMO_KEY", "").strip()   # Demo API key
-VS = os.getenv("VS_CURRENCY", "jpy")                # indexはjpy想定
-SITE_URL = os.getenv("SITE_URL", "https://coinrader.net/").strip()
-OGP_IMAGE_URL = os.getenv("OGP_IMAGE_URL", "https://coinrader.net/assets/og/ogp.png").strip()
-# shareページ（Xカード展開用）を日付で切って生成する（例: /share/20260124.html）
-SHARE_DIR = os.getenv("SHARE_DIR", "share").strip()
-USE_SHARE_URL_IN_POST = os.getenv("USE_SHARE_URL_IN_POST", "1").strip() not in ("0","false","False")
-
-TIMEOUT = 20
-
-# index_v42.html と同じ：上昇率のノイズ対策（出来高下限を満たす銘柄を優先）
-MIN_GAINERS_24H_VOLUME_JPY = int(os.getenv("MIN_GAINERS_24H_VOLUME_JPY", "500000000"))  # 5億円
-
-# ===== stable / major 判定（index_v42.html と合わせる）=====
+# ステーブルコインの定義 (JS: STABLE_IDS, STABLE_SYMBOLS)
 STABLE_IDS = {
-    "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
-    "frax","pax-dollar","paypal-usd","gemini-dollar","paxos-standard","binance-usd","liquity-usd",
-    "usd1",
-
+    "tether", "usd-coin", "dai", "true-usd", "first-digital-usd", "ethena-usde",
+    "frax", "pax-dollar", "paypal-usd", "gemini-dollar", "paxos-standard", 
+    "binance-usd", "liquity-usd"
 }
-STABLE_SYMBOLS = {"usdt","usdc","dai","tusd","usde","fdusd","pyusd","gusd","usdp","busd","lusd","frax","usd1","bsc-usd"}
+STABLE_SYMBOLS = {
+    "usdt", "usdc", "dai", "tusd", "usde", "fdusd", "pyusd", "gusd", 
+    "usdp", "busd", "lusd", "frax"
+}
 
-def is_stable_coin(c: dict) -> bool:
-    cid = (c.get("id") or "").lower()
-    sym = (c.get("symbol") or "").lower()
-    name = (c.get("name") or "").lower()
-    if cid in STABLE_IDS or sym in STABLE_SYMBOLS:
+# Wrapped / 重複トークンの定義 (JS: SKIP_KEYWORDS)
+SKIP_KEYWORDS = ["wrapped", "staked", "bridged", "token", "wbtc", "weth", "steth"]
+
+def is_stable_coin(coin):
+    """ステーブルコインかどうかを判定"""
+    c_id = coin.get('id', '').lower()
+    c_sym = coin.get('symbol', '').lower()
+    c_name = coin.get('name', '').lower()
+
+    if c_id in STABLE_IDS or c_sym in STABLE_SYMBOLS:
         return True
-    # fallback heuristic（軽め）
-    if ("stable" in name) and (("usd" in name) or ("usd" in sym)):
+    
+    # フォールバック (名前判定)
+    if "stable" in c_name and ("usd" in c_name or "usd" in c_sym):
         return True
+    
     return False
 
-def is_btc_or_eth(c: dict) -> bool:
-    cid = (c.get("id") or "").lower()
-    sym = (c.get("symbol") or "").lower()
-    return cid in ("bitcoin", "ethereum") or sym in ("btc", "eth")
+def is_wrapped_or_duplicate(coin):
+    """Wrappedトークンや重複トークンかどうかを判定"""
+    c_id = coin.get('id', '').lower()
+    c_name = coin.get('name', '').lower()
+    c_sym = coin.get('symbol', '').lower()
 
-def cg_get(path: str, params: dict | None = None) -> Any:
-    url = f"{BASE_URL}{path}"
-    headers = {}
-    if CG_DEMO_KEY:
-        headers["x-cg-demo-api-key"] = CG_DEMO_KEY
-    r = requests.get(url, params=params or {}, headers=headers, timeout=TIMEOUT)
-    r.raise_for_status()
-    return r.json()
+    # BTCとETHそのものは除外しない
+    if c_id in ['bitcoin', 'ethereum']:
+        return False
 
-def safe_sym(name: str, symbol: str) -> str:
-    sym = (symbol or "").upper()
-    if sym and len(sym) <= 10:
-        return sym
-    # まれに symbol が長い/空のとき
-    return (name or "")[:10].upper()
+    # キーワードチェック
+    for k in SKIP_KEYWORDS:
+        if k in c_name or k in c_sym:
+            return True
+            
+    return False
 
-def fmt_rank(items: list[str]) -> str:
-    return " ".join([f"{i+1}.{s}" for i, s in enumerate(items)])
+# ==========================================
+# 2. データ取得・整形処理
+# ==========================================
 
-def build_share_page(date_str: str, site_base: str) -> tuple[str, str]:
-    """share/YYYYMMDD.html を生成し、そのURLとローカルパスを返す。
-    - Xのカードキャッシュ対策として、日付ごとに別URLにする
-    - 画面表示ではトップへリダイレクト（meta refresh）
-    """
-    yyyymmdd = date_str.replace("-", "")
-    site_base = site_base.rstrip("/")
-    share_url = f"{site_base}/{SHARE_DIR}/{yyyymmdd}.html"
-
-    # 画像キャッシュ回避用クエリ（ogp.png自体は同じでOK）
-    ogp_image = OGP_IMAGE_URL
-    if "?" in ogp_image:
-        ogp_image_q = ogp_image + f"&v={yyyymmdd}"
-    else:
-        ogp_image_q = ogp_image + f"?v={yyyymmdd}"
-
-    html = f'''<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CoinRader - 今日の注目 {date_str}</title>
-
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="CoinRader">
-  <meta property="og:title" content="CoinRader - 今日の注目 {date_str}">
-  <meta property="og:description" content="トレンド/上昇率/出来高をひと目で。">
-  <meta property="og:url" content="{share_url}">
-  <meta property="og:image" content="{ogp_image_q}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="CoinRader - 今日の注目 {date_str}">
-  <meta name="twitter:description" content="トレンド/上昇率/出来高をひと目で。">
-  <meta name="twitter:image" content="{ogp_image_q}">
-
-  <meta http-equiv="refresh" content="0;url={site_base}/?v={yyyymmdd}">
-</head>
-<body></body>
-</html>
-'''
-    share_dir = Path(SHARE_DIR)
-    share_dir.mkdir(parents=True, exist_ok=True)
-    out_path = share_dir / f"{yyyymmdd}.html"
-    out_path.write_text(html, encoding="utf-8")
-    return share_url, str(out_path)
-
-def build_gainers_top5(markets_top: list[dict]) -> list[dict]:
-    base = [
-        c for c in markets_top
-        if isinstance(c.get("price_change_percentage_24h"), (int, float))
-        and is_stable_coin(c) is False
-    ]
-
-    primary = [
-        c for c in base
-        if isinstance(c.get("total_volume"), (int, float))
-        and c["total_volume"] >= MIN_GAINERS_24H_VOLUME_JPY
-    ]
-    primary.sort(key=lambda x: x.get("price_change_percentage_24h", 0), reverse=True)
-
-    if len(primary) >= 5:
-        return primary[:5]
-
-    picked = {c.get("id") for c in primary}
-    fallback = [c for c in base if isinstance(c.get("total_volume"), (int, float))]
-    fallback.sort(key=lambda x: x.get("total_volume") or 0, reverse=True)
-
-    for c in fallback:
-        if len(primary) >= 5:
-            break
-        cid = c.get("id")
-        if cid and cid not in picked:
-            primary.append(c)
-            picked.add(cid)
-    return primary[:5]
-
-def build_post():
-    # --- Trending TOP5（indexと同じ /search/trending） ---
-    trending = cg_get("/search/trending")
-    trend_items: list[str] = []
-    for c in (trending.get("coins") or [])[:10]:
-        item = c.get("item") or {}
-        name = item.get("name", "")
-        sym = item.get("symbol", "")
-        if name or sym:
-            trend_items.append(safe_sym(name, sym))
-        if len(trend_items) >= 5:
-            break
-
-    # --- indexの marketsTop（時価総額上位250 / vs=jpy） ---
-    markets_top: list[dict] = cg_get("/coins/markets", {
-        "vs_currency": VS,
+def get_market_data():
+    """CoinGeckoから市場データを取得"""
+    url = "https://api.coingecko.com/api/v3/coins/markets"
+    params = {
+        "vs_currency": "jpy",
         "order": "market_cap_desc",
-        "per_page": 250,
+        "per_page": 250,  # 上位250位まで取得
         "page": 1,
-        "sparkline": "false",                 # 投稿用は不要
-        "price_change_percentage": "24h",
-    }) or []
-
-    # --- 上昇率TOP5（indexの buildGainersTop5 と一致） ---
-    gain_top = build_gainers_top5(markets_top)
-    gain_top5_full = [
-        f"{safe_sym(x.get('name',''), x.get('symbol',''))}({x.get('price_change_percentage_24h', 0):+.1f}%)"
-        for x in gain_top
-    ]
-
-    # --- 出来高TOP5（全体 / アルト）---
-    volume_all = sorted(
-        [c for c in markets_top if isinstance(c.get("total_volume"), (int, float))],
-        key=lambda x: x.get("total_volume") or 0,
-        reverse=True
-    )[:5]
-
-    volume_alt = sorted(
-        [c for c in markets_top
-         if isinstance(c.get("total_volume"), (int, float))
-         and (not is_stable_coin(c))
-         and (not is_btc_or_eth(c))
-         and (not is_excluded_for_alt_volume(c))
-        ],
-        key=lambda x: x.get("total_volume") or 0,
-        reverse=True
-    )[:5]
-
-
-    vol_all_syms = [safe_sym(c.get("name",""), c.get("symbol","")) for c in volume_all]
-    vol_alt_syms = [safe_sym(c.get("name",""), c.get("symbol","")) for c in volume_alt]
-
-    # --- Compose ---
-    jst = dt.timezone(dt.timedelta(hours=9))
-    today = dt.datetime.now(jst).strftime("%Y-%m-%d")
-    share_url, share_path = build_share_page(today, SITE_URL)
-    post_url = share_url if USE_SHARE_URL_IN_POST else SITE_URL
-
-
-    # --- Daily snapshot for weekly report (data/daily/YYYYMMDD.json) ---
-    date_tag = dt.datetime.now(jst).strftime("%Y%m%d")
-
-    # Breadth (top250)
-    pcs = [c.get("price_change_percentage_24h") for c in markets_top
-           if isinstance(c.get("price_change_percentage_24h"), (int, float))]
-    up = sum(1 for x in pcs if x > 0)
-    down = sum(1 for x in pcs if x < 0)
-    avg_chg = (sum(pcs) / len(pcs)) if pcs else None
-    up_ratio = (up / (up + down) * 100.0) if (up + down) > 0 else None
-
-    # BTC/ETH price (JPY)
-    def find_price(sym: str, cid: str):
-        for c in markets_top:
-            if (c.get("id") == cid) or ((c.get("symbol") or "").lower() == sym):
-                p = c.get("current_price")
-                if isinstance(p, (int, float)):
-                    return float(p)
-        return None
-
-    btc_price = find_price("btc", "bitcoin")
-    eth_price = find_price("eth", "ethereum")
-
-    snapshot = {
-        "date": date_tag,
-        "generated_at": dt.datetime.now(jst).isoformat(),
-        "breadth": {"up": up, "down": down, "avgChg": avg_chg, "upRatio": up_ratio},
-        "btc": {"price_jpy": btc_price},
-        "eth": {"price_jpy": eth_price},
-        "trend": [{"symbol": (s.split("(")[-1].replace(")","") if "(" in s else s).upper(), "label": s} for s in trend_items[:5]],
-        "gainers": [
-            {"id": g.get("id"), "symbol": (g.get("symbol") or "").upper(), "name": g.get("name"),
-             "pc24": g.get("price_change_percentage_24h"), "vol_jpy": g.get("total_volume"), "rank": g.get("market_cap_rank")}
-            for g in gain_top[:5]
-        ],
-        "vol_alt": [
-            {"id": v.get("id"), "symbol": (v.get("symbol") or "").upper(), "name": v.get("name"),
-             "pc24": v.get("price_change_percentage_24h"), "vol_jpy": v.get("total_volume"), "rank": v.get("market_cap_rank")}
-            for v in volume_alt[:5]
-        ],
-        "top250": [
-            {"id": c.get("id"), "symbol": (c.get("symbol") or "").upper(), "name": c.get("name"),
-             "rank": c.get("market_cap_rank"), "pc24": c.get("price_change_percentage_24h"),
-             "vol_jpy": c.get("total_volume"), "price_jpy": c.get("current_price"), "mcap_jpy": c.get("market_cap")}
-            for c in markets_top
-        ],
+        "sparkline": "false",
+        "price_change_percentage": "24h"
     }
-    write_daily_snapshot(date_tag, snapshot)
-    full = (
-        f"【今日の注目 {today}】\n"
-        f"トレンド: {fmt_rank(trend_items)}\n"
-        f"上昇率(24h): {fmt_rank(gain_top5_full)}\n"
-        f"出来高(全体): {fmt_rank(vol_all_syms)}\n"
-        f"出来高(アルト): {fmt_rank(vol_alt_syms)}\n"
-        f"→ {post_url}\n"
-        f"#暗号資産 #Crypto #ビットコイン #Bitcoin"
+    
+    try:
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+        return []
+
+def get_trending_coins():
+    """トレンド検索銘柄を取得"""
+    url = "https://api.coingecko.com/api/v3/search/trending"
+    try:
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        data = response.json()
+        # item形式から単純な辞書へ変換
+        return [item['item'] for item in data.get('coins', [])]
+    except Exception as e:
+        print(f"Error fetching trending: {e}")
+        return []
+
+def format_price(price):
+    """価格を日本円形式に整形"""
+    if price is None:
+        return "-"
+    if price >= 1000000:
+        return f"{price/10000:.0f}万"
+    elif price >= 1000:
+        return f"{price:,.0f}"
+    elif price >= 1:
+        return f"{price:.1f}"
+    else:
+        return f"{price:.2f}"
+
+# ==========================================
+# 3. 投稿テキスト生成
+# ==========================================
+
+def generate_post():
+    markets = get_market_data()
+    trending = get_trending_coins()
+    
+    if not markets:
+        return "データの取得に失敗しました。"
+
+    # --- BTC情報の取得 ---
+    btc = next((item for item in markets if item["id"] == "bitcoin"), None)
+    btc_text = ""
+    if btc:
+        price = format_price(btc['current_price'])
+        change = btc.get('price_change_percentage_24h', 0)
+        icon = "📈" if change > 0 else ("📉" if change < 0 else "➡️")
+        sign = "+" if change > 0 else ""
+        btc_text = f"BTC: ¥{price} ({sign}{change:.1f}%) {icon}"
+
+    # --- 上昇率ランキング (Gainers) ---
+    # 条件: 
+    # 1. 24h出来高が一定以上 (例: 5億円 = 500,000,000) -> マイナーすぎるコインを除外
+    # 2. ステーブルコインではない (index27-11.html準拠)
+    # 3. Wrapped/重複ではない (index27-11.html準拠)
+    MIN_VOL_JPY = 500_000_000 
+
+    valid_markets = [
+        c for c in markets 
+        if c.get('price_change_percentage_24h') is not None
+        and c.get('total_volume', 0) >= MIN_VOL_JPY
+        and not is_stable_coin(c)           # ★ここが重要
+        and not is_wrapped_or_duplicate(c)  # ★ここが重要
+    ]
+    
+    # 騰落率でソート
+    top_gainers = sorted(valid_markets, key=lambda x: x['price_change_percentage_24h'], reverse=True)[:3]
+    
+    gainer_text = ""
+    if top_gainers:
+        top = top_gainers[0]
+        change = top['price_change_percentage_24h']
+        gainer_text = f"\n🚀Top: {top['symbol'].upper()} +{change:.1f}%"
+        
+        # 2位、3位も入れたい場合は以下のように拡張可能
+        # for g in top_gainers[1:]:
+        #    gainer_text += f", {g['symbol'].upper()} +{g['price_change_percentage_24h']:.1f}%"
+
+    # --- トレンド ---
+    # トレンドからもStable/Wrappedを除外したほうが綺麗な場合があるが、
+    # APIの順位そのままの方がトレンド性があるため、ここでは上位をそのまま使うことが多い。
+    # ただし、WBTCなどがトレンド入りして邪魔な場合は以下でフィルタ可能。
+    trend_symbols = []
+    for t in trending:
+        # トレンドデータは markets と構造が違うため簡易チェック
+        # t['id'], t['symbol'], t['name'] がある
+        if is_wrapped_or_duplicate(t) or is_stable_coin(t):
+            continue
+        trend_symbols.append(t['symbol'].upper())
+        if len(trend_symbols) >= 3:
+            break
+            
+    trend_text = f"\n🔥Trend: {', '.join(trend_symbols)}" if trend_symbols else ""
+
+    # --- テキスト結合 ---
+    dt_now = datetime.datetime.now()
+    date_str = dt_now.strftime("%m/%d %H:%M")
+    
+    post_text = (
+        f"【市場速報 {date_str}】\n"
+        f"{btc_text}"
+        f"{trend_text}"
+        f"{gainer_text}\n\n"
+        f"詳細・分析はこちら👇\n"
+        f"https://coinrader.net/\n"
+        f"#Bitcoin #仮想通貨 #CoinRader"
     )
-
-    # X向け（見やすさ優先：改行＋絵文字。出来高はアルトを表示）
-    def build_short(n_trend=3, n_up=3, n_vol=3) -> str:
-        up_parts = []
-        for x in gain_top[:n_up]:
-            sym = safe_sym(x.get("name",""), x.get("symbol",""))
-            pct = x.get("price_change_percentage_24h", 0)
-            up_parts.append(f"{sym} {pct:+.1f}%")
-        short = (
-            f"【今日の注目 {today}】\n"
-            f"🔥Trend: {' / '.join(trend_items[:n_trend])}\n"
-            f"🚀Up(24h,出来高≥5億円優先): {' | '.join(up_parts)}\n"
-            f"📊Vol(アルト): {' / '.join(vol_alt_syms[:n_vol])}\n"
-            f"→ {post_url} #暗号資産 #Crypto #ビットコイン #Bitcoin"
-        )
-        return short
-
-    short = build_short()
-
-    # 280字超なら段階的に短縮
-    if len(short) > 280:
-        short = build_short(n_trend=2, n_up=2, n_vol=2)
-    if len(short) > 280:
-        # 最終手段：1行圧縮
-        up2 = " / ".join([
-            f"{safe_sym(x.get('name',''), x.get('symbol',''))}{x.get('price_change_percentage_24h',0):+.1f}%"
-            for x in gain_top[:2]
-        ])
-        short = (
-            f"【今日の注目 {today}】"
-            f" Trend:{'/'.join(trend_items[:2])}"
-            f" | Up:{up2}"
-            f" | Vol:{'/'.join(vol_alt_syms[:2])}"
-            f" → {post_url} #暗号資産 #Crypto #ビットコイン #Bitcoin"
-        )
-        if len(short) > 280:
-            short = short[:277] + "…"
-
-    return full, short, share_url, share_path
+    
+    return post_text
 
 if __name__ == "__main__":
-    full, short, share_url, share_path = build_post()
-
-    with open("daily_post_full.txt", "w", encoding="utf-8") as f:
-        f.write(full)
-
-    with open("daily_post_short.txt", "w", encoding="utf-8") as f:
-        f.write(short)
-
-    with open("daily_share_url.txt", "w", encoding="utf-8") as f:
-        f.write(share_url)
-
-    print(full)
-    print("\n--- short ---\n")
-    print(short)
-    print("\n--- share ---\n")
-    print(share_url)
-    print(f"(generated: {share_path})")
+    print(generate_post())
