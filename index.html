@@ -1097,7 +1097,14 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   font-size: 13px; 
   line-height: 1.75; 
   color: #d1d5db;
-  min-height: 80px; /* ▼ 追加：最低でもこの高さを確保する */
+  
+  /* レイアウト固定：ここが重要 */
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px;     /* min-heightではなくheightで固定 */
+  overflow: hidden;  /* はみ出しによるガタつきを防止 */
 }
 
 /* AI文中の強調（strong）タグのデザイン */
@@ -1323,18 +1330,9 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   </div>
 
   <div class="ai-insight-text" id="aiInsightText">
-    
-    <div class="ai-loading-placeholder">
-      <div style="display:flex; align-items:center; justify-content:center; gap:10px; height:100px; color:#94a3b8;">
-          <span style="font-size:20px; animation: spin 1s linear infinite;">⏳</span>
-          <span style="animation: pulse 1.5s infinite;">AI分析を準備中...</span>
-        </div>
-        <style>
-          @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-          @keyframes spin { 100% { transform: rotate(360deg); } }
-        </style>
-    </div>
-    </div>
+    <span style="font-size:20px; animation: spin 1s linear infinite; margin-right:10px;">⏳</span>
+    <span style="animation: pulse 1.5s infinite; color:#94a3b8;">AI分析を準備中...</span>
+  </div>
   
   <div class="ai-insight-note">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
 </div>
@@ -4510,15 +4508,10 @@ function updateAiInsight() {
   _aiThinking = true;
   box.style.display = 'block';
   
+  /* 「AIが市場データを分析しています」の周辺をこれに書き換え */
   textEl.innerHTML = `
-    <div style="display:flex; align-items:center; justify-content:center; gap:10px; height:100px; color:#94a3b8;">
-      <span style="font-size:20px; animation: spin 1s linear infinite;">⏳</span>
-      <span style="animation: pulse 1.5s infinite;">AIが市場データを分析しています...</span>
-    </div>
-    <style>
-      @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-      @keyframes spin { 100% { transform: rotate(360deg); } }
-    </style>
+    <span style="font-size:20px; animation: spin 1s linear infinite; margin-right:10px;">⏳</span>
+    <span style="animation: pulse 1.5s infinite; color:#94a3b8;">AIが市場データを分析しています...</span>
   `;
 
   // 2. 分析処理（1.8秒後）
