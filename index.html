@@ -1413,69 +1413,83 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 </div>
 <div class="overview is-collapsed" id="overviewWrap">
-<div class="overview-card">
-<div class="donut-wrap"><canvas id="domChart"></canvas></div>
-<div class="dom-metrics" id="domMetrics">-</div>
-<div class="overview-note">BTC / ETH / ステーブル / Others の時価総額構成比（対象: 上位250の合計）</div>
-</div>
-<div class="overview-card">
-<div class="kpi-grid">
-<div class="kpi" id="kpiBreadthCard">
-<div class="kpi-label">上昇 / 下落（24h + 7d推移 / 上位250）</div>
-<div class="kpi-value" id="kpiBreadth">-</div>
-<div class="kpi-meta" id="kpiBreadthNow">-</div>
-<div class="kpi-meta" id="kpiBreadthMoves">-</div>
-<div class="kpi-sub" id="kpiBreadthSub">7日前(0%)基準の累積リターンで判定。7dの上昇数/下落数を表示（青＝上昇、赤＝下落）。※中立は数値のみ。</div>
-<canvas class="kpi-canvas tall" id="breadthLine"></canvas>
-</div>
-<div class="kpi">
-<div class="kpi-label">平均リターン（7d推移 / 上位250）</div>
-<div class="kpi-value" id="kpiAvgChange">-</div>
-<div class="kpi-meta" id="kpiAvgDist">-</div>
-<div class="kpi-sub" id="kpiAvgSub">上位250の各銘柄について、7日前の価格を基準(0%)として現在までの累積リターンを算出し、その平均を表示します。0より上は平均的に上昇、下は下落。</div>
-<canvas class="kpi-canvas" id="avgLine"></canvas>
-</div>
-<div class="kpi">
-<div class="kpi-label">BTC RSI（14 / 7d推移）</div>
-<div class="kpi-value" id="kpiRsi">-</div>
-<div class="kpi-meta" id="kpiRsiMeta">-</div>
-<div class="kpi-sub" id="kpiRsiSub">BTCの1時間足相当のRSI（14）を7日分で算出。30以下=売られすぎ、70以上=買われすぎ。</div>
-<div class="rsi-chart-wrap">
-  <div class="rsi-chart-area">
-    <div class="rsi-th rsi-70" aria-hidden="true"></div>
-    <div class="rsi-th rsi-30" aria-hidden="true"></div>
-    <canvas class="kpi-canvas" id="rsiLine"></canvas>
-  </div>
-</div>
-</div>
-<div class="kpi">
-<div class="kpi-label">CoinRader Sentiment（0-100 / 上位250）</div>
-<div class="kpi-value" id="kpiSentiment">-</div>
-<div class="kpi-meta" id="kpiSentimentMeta">-</div>
-<div class="kpi-sub">上位250の「広がり（上昇比率）」「24h中央値」「出来高変化（直前値との比較）」「BTCドミナンス変化」「BTC RSI」を合成した独自の市場ムード指数です。</div>
-<canvas class="kpi-canvas tiny" id="sentLine"></canvas>
-</div>
-<div class="kpi kpi-stack">
-  <div class="kpi-label">市場規模と売買熱（上位250）</div>
-
-  <div class="kpi-block">
-    <div class="kpi-block-title">市場時価総額（7d）</div>
-    <div class="kpi-value" id="kpiTotalMcap">-</div>
-    <div class="kpi-meta" id="kpiMcap7d">-</div>
-    <canvas class="kpi-canvas" id="mcap7dLine"></canvas>
-    <div class="kpi-sub" style="opacity:.75;margin-top:6px;">推定: 上位250の7日スパークラインから「供給一定」を仮定し、7dの増減（率/差額）を概算。</div>
+  
+  <div class="overview-card">
+    <div style="font-size:13px; font-weight:700; color:#e5e7eb; margin-bottom:8px;">資金シェア (Dominance)</div>
+    <div class="donut-wrap"><canvas id="domChart"></canvas></div>
+    <div class="dom-metrics" id="domMetrics">-</div>
+    <div class="overview-note">市場の資金が「どこに集中しているか」の比率。BTCが高いと守りの相場、ETHやOthersが高いと攻めの相場。</div>
   </div>
 
-  <div class="kpi-divider"></div>
+  <div class="overview-card">
+    <div class="kpi-grid">
+      
+      <div class="kpi" id="kpiBreadthCard">
+        <div class="kpi-label">騰落銘柄数 (7日間累積)</div>
+        <div class="kpi-value" id="kpiBreadth">-</div>
+        <div class="kpi-meta" id="kpiBreadthNow">-</div>
+        <div class="kpi-meta" id="kpiBreadthMoves">-</div>
+        <div class="kpi-sub" id="kpiBreadthSub">過去7日間で「上がった銘柄」と「下がった銘柄」の累積差。市場の地合い（強さ）を示します。</div>
+        <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
+      </div>
 
-  <div class="kpi-block">
-    <div class="kpi-block-title">出来高（24h）</div>
-    <div class="kpi-value" id="kpiTotalVol">-</div>
-    <div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
-    <div class="kpi-sub" style="opacity:.75">注意: 出来高の履歴は /coins/markets では取れないため、現在出来高×(価格比) の簡易推定（目安）。</div>
-    <canvas class="kpi-canvas" id="volLine" style="display:none"></canvas>
+      <div class="kpi">
+        <div class="kpi-label">平均パフォーマンス (7日間)</div>
+        <div class="kpi-value" id="kpiAvgChange">-</div>
+        <div class="kpi-meta" id="kpiAvgDist">-</div>
+        <div class="kpi-sub" id="kpiAvgSub">主要250銘柄の平均的なリターン推移。0%より上なら、適当に買っても利益が出やすい状態です。</div>
+        <canvas class="kpi-canvas" id="avgLine"></canvas>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-label">BTC RSI (過熱感 / 7日間)</div>
+        <div class="kpi-value" id="kpiRsi">-</div>
+        <div class="kpi-meta" id="kpiRsiMeta">-</div>
+        <div class="kpi-sub" id="kpiRsiSub">買われすぎ(70↑)・売られすぎ(30↓)を判断。天井や底打ちのサインとして機能します。</div>
+        <div class="rsi-chart-wrap">
+          <div class="rsi-chart-area">
+            <div class="rsi-th rsi-70" aria-hidden="true"></div>
+            <div class="rsi-th rsi-30" aria-hidden="true"></div>
+            <canvas class="kpi-canvas" id="rsiLine"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-label">市場センチメント (投資家心理)</div>
+        <div class="kpi-value" id="kpiSentiment">-</div>
+        <div class="kpi-meta" id="kpiSentimentMeta">-</div>
+        <div class="kpi-sub">複数の指標から算出した「市場のムード」。数値が高いと楽観(強欲)、低いと悲観(恐怖)を表します。</div>
+        <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
+      </div>
+
+      <div class="kpi kpi-stack">
+        <div class="kpi-label">資金フロー (時価総額 & 出来高)</div>
+
+        <div class="kpi-block">
+          <div class="kpi-block-title">市場時価総額 (Money In/Out)</div>
+          <div class="kpi-value" id="kpiTotalMcap">-</div>
+          <div class="kpi-meta" id="kpiMcap7d">-</div>
+          <canvas class="kpi-canvas" id="mcap7dLine"></canvas>
+          <div class="kpi-sub" style="opacity:.75;margin-top:6px;">市場全体のパイの大きさの推移。</div>
+        </div>
+
+        <div class="kpi-divider"></div>
+
+        <div class="kpi-block">
+          <div class="kpi-block-title">市場出来高 (取引の活発さ)</div>
+          <div class="kpi-value" id="kpiTotalVol">-</div>
+          <div class="kpi-meta" id="kpiAltVolRatio">出来高（アルト）比率: -</div>
+          <div class="kpi-sub" style="opacity:.75">取引が活発かどうかの目安。価格上昇時に出来高も増えていれば本物です。</div>
+          <canvas class="kpi-canvas" id="volLine" style="display:none"></canvas>
+        </div>
+      </div>
+      
+    </div>
   </div>
 </div>
+
+
 <div class="overview-note">※推移グラフは追加APIなしで作るため、上位250の「7日スパークライン」等から概算しています（目安）。</div>
 </div>
 </div>
