@@ -1905,7 +1905,7 @@ function readSnapshot(key){
     const now = Date.now();
     if (now < lastRefreshAt + REFRESH_COOLDOWN_MS){
       tickRefreshButton();
-      setStatus('更新まで少しお待ちください');
+      setStatus('更新待機');
       return;
     }
     setLastAttemptAt();
