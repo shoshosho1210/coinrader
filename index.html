@@ -4577,26 +4577,26 @@ function updateAiInsight() {
     else if (domVal && domVal <= 42) domText = "リスク選好により、資金が<strong>アルトコインへ循環</strong>する傾向が見られます。";
     else domText = "BTCとアルトコインの資金循環は安定的です。";
 
-    // --- 総合インサイト（「推奨」ではなく「状況認識」に書き換え） ---
+    // --- 総合インサイト（客観的な指標解説に徹する） ---
     let strategyText = "";
 
     // 1. 天井圏
     if (isExtremeGreed && isOverbought) {
-      strategyText = "上昇トレンド中ですが、テクニカル指標は高値圏を示唆しています。<strong>相場の過熱感が強く、短期的な調整が入る可能性が高い局面</strong>です。";
+      strategyText = "上昇トレンドを維持していますが、複数の指標で<strong>統計的な過熱感</strong>が観測されています。過去のデータパターンでは、一旦の勢い抑制や調整が入りやすい警戒水準に位置しています。";
     }
     // 2. 底値圏
     else if (isExtremeFear && isOversold) {
-      if (volState === "strong") strategyText = "悲観ムードの中にありますが、出来高を伴った売り一巡（セリングクライマックス）の兆候が見られます。<strong>相場の転換点が意識されやすい局面</strong>です。";
-      else strategyText = "売られすぎ水準に位置しています。<strong>自律反発やショートカバー（買い戻し）が入りやすい需給環境</strong>となっています。";
+      if (volState === "strong") strategyText = "悲観ムードが強いものの、出来高を伴った売り一巡の兆候が確認できます。<strong>下落エネルギーの拡散</strong>が見られ、需給の転換点が意識され始める局面です。";
+      else strategyText = "主要指標が売られすぎ水準に到達しています。<strong>売りの過多による反発力が蓄積</strong>されており、技術的な自律反発が起こりやすい需給環境と言えます。";
     }
     // 3. 安定上昇
     else if (sentScore >= 50 && rsiVal >= 50) {
-      if (volState === "weak") strategyText = "上昇基調ですが勢いは控えめです。急騰というよりは、<strong>緩やかなトレンド形成が続いている状態</strong>と言えます。";
-      else strategyText = "市場環境は良好です。トレンドは上向きで安定しており、<strong>市場参加者の目線は上方向で一致している</strong>ことが示唆されます。";
+      if (volState === "weak") strategyText = "緩やかな上昇基調ですが、出来高の伴わない推移となっています。急激な変動というよりは、<strong>静かなトレンド形成</strong>が継続している状態です。";
+      else strategyText = "市場環境は安定しています。トレンドは上向きで、<strong>市場参加者のコンセンサス（合意）が上方向で一致</strong>していることがデータから示唆されます。";
     }
-    // 4. 調整・弱気
+    // 4. 調整・中立
     else {
-      strategyText = "方向感が乏しい、または調整色の強い展開です。市場では<strong>次の材料や大きな動き出しを待つ動き</strong>が支配的です。";
+      strategyText = "方向感を決定づけるデータが不足しており、需給が拮抗した展開です。市場は<strong>新たな材料による均衡の打破</strong>を待つ、待機的なフェーズにあります。";
     }
 
     // HTML出力（注意書きを強調）
