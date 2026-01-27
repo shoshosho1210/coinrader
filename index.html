@@ -1034,32 +1034,71 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     background: #000;
   }
   /* ▼▼▼ 追加：AI分析ボックスのスタイル ▼▼▼ */
+/* ▼▼▼ 修正版：AI分析ボックスのデザイン（なじませスタイル） ▼▼▼ */
 .ai-insight-box {
-  margin-top: 12px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9));
-  border: 1px solid rgba(56,189,248,0.2);
-  border-left: 4px solid #38bdf8;
+  /* レイアウト調整 */
+  margin: 10px 0 16px; /* 上下の余白 */
+  width: 100%;
+  
+  /* デザイン：他のカードと統一感を出す */
+  background: rgba(255, 255, 255, 0.03); /* 薄い半透明 */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* 細い枠線 */
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 14px 16px;
+  
+  /* 青いアクセントは左端の線ではなく、全体の発光で表現 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px); /* すりガラス効果 */
 }
+
 .ai-insight-header {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px; color: #7dd3fc; margin-bottom: 8px;
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+  margin-bottom: 10px;
+  /* タイトル周りの境界線 */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
 }
+
+.ai-title-label {
+  font-size: 14px; 
+  font-weight: 700; 
+  color: #e5e7eb; /* 白文字 */
+  letter-spacing: .05em;
+}
+
 .ai-badge {
-  font-size: 10px; padding: 2px 6px; border-radius: 4px;
-  background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3);
+  font-size: 10px; 
+  padding: 2px 8px; 
+  border-radius: 99px;
+  background: rgba(56, 189, 248, 0.15); 
+  color: #38bdf8; 
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-weight: 600;
 }
+
 .ai-insight-text {
-  font-size: 13px; line-height: 1.7; color: #f1f5f9;
+  font-size: 13px; 
+  line-height: 1.75; /* 行間を少し広げて読みやすく */
+  color: #d1d5db;    /* 少しグレー寄りの白 */
 }
+
+/* AI文中の強調（strong）タグのデザイン */
 .ai-insight-text strong {
-  color: #fff; font-weight: 700;
-  background: rgba(255,255,255,0.1); padding: 0 4px; border-radius: 4px;
+  color: #7dd3fc; /* 水色で強調 */
+  font-weight: 700;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 0 4px; 
+  border-radius: 4px;
 }
+
 .ai-insight-note {
-  margin-top: 8px; font-size: 10px; color: #64748b; text-align: right;
+  margin-top: 10px; 
+  font-size: 10px; 
+  color: #64748b; 
+  text-align: right;
+  opacity: 0.8;
 }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
@@ -1123,7 +1162,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 <div class="ai-insight-box" id="aiInsightBox" style="display:none;">
   <div class="ai-insight-header">
-    <span style="font-size:16px">🤖</span> <strong>Market AI Insight</strong>
+    <span style="font-size:18px; margin-right:2px;">🤖</span>
+    <span class="ai-title-label">AI Market Insight</span>
     <span class="ai-badge">Beta</span>
   </div>
   <div class="ai-insight-text" id="aiInsightText">データ収集中...</div>
