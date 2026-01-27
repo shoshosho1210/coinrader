@@ -1227,6 +1227,27 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   .sym-wrap { gap: 4px; }
   .sym-icon { width: 20px; height: 20px; }
 }
+/* ▼▼▼ 追加：AIセクションのガタつき防止 ▼▼▼ */
+#aiInsightBox {
+  /* 最初から高さを確保しておく */
+  min-height: 240px; 
+  /* ↑ スマホとPCの中間くらいの高さ。
+     もし余白が大きすぎたら 200px くらいに調整してください */
+  
+  display: block !important; /* 最初から表示状態にする */
+}
+
+/* 読み込み中のプレースホルダー（中央寄せ） */
+.ai-loading-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 60px; /* 上の隙間調整 */
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1294,13 +1315,27 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
 </div>
 </div>
-<div class="ai-insight-box" id="aiInsightBox" style="display:none;">
+<div class="ai-insight-box" id="aiInsightBox">
   <div class="ai-insight-header">
     <span style="font-size:18px; margin-right:2px;">🤖</span>
     <span class="ai-title-label">AI Market Insight</span>
     <span class="ai-badge">Beta</span>
   </div>
-  <div class="ai-insight-text" id="aiInsightText">データ収集中...</div>
+
+  <div class="ai-insight-text" id="aiInsightText">
+    
+    <div class="ai-loading-placeholder">
+      <div style="display:flex; align-items:center; gap:10px; color:#94a3b8; padding: 20px 0;">
+        <span style="font-size:20px; animation: spin 1s linear infinite;">⏳</span>
+        <span style="animation: pulse 1.5s infinite;">AI分析を準備中...</span>
+      </div>
+      <style>
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+      </style>
+    </div>
+    </div>
+  
   <div class="ai-insight-note">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
 </div>
 <div class="summary-kpis" id="summaryKpis">
