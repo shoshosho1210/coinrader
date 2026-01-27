@@ -4625,18 +4625,19 @@ function updateAiInsight() {
       resetSectionErrors();
     } else {
       setRefreshingAll(true);
-      if (!IN_AUTO_REFRESH) setStatus('更新中…');
+      // 「更新中」ではなく、よりポジティブな「同期中」に統一
+      if (!IN_AUTO_REFRESH) setStatus('最新データと同期中…');
     }
 
     try{
-      setStatus('markets取得中…');
+      // 内部的な「〇〇取得中」の小刻みな書き換えを止め、同期中に統一
       await loadMarketsTop250(fromManualRefresh);
 
       // 追加KPI: BTC MAクロス距離
       try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
 
       if (!marketsTop.length){
-        setStatus('marketsが空です');
+        setStatus('接続待機中');
         document.getElementById('grid-mcap').innerHTML = '<div class="msg">データの取得が遅れています。時間をおいて再読み込みしてください。</div>';
         document.getElementById('grid-trend').innerHTML = '<div class="msg">---</div>';
         document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
@@ -4644,7 +4645,6 @@ function updateAiInsight() {
         return;
       }
 
-      setStatus('トレンド取得中…');
       try {
         await loadTrendingTop5(fromManualRefresh);
       } catch (e) {
@@ -4654,15 +4654,16 @@ function updateAiInsight() {
       }
 
       setUpdated();
-      if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新しました' : (SECTION_ERRORS.trend ? '表示準備完了（一部取得失敗）' : '表示準備完了'));
+      // 完了時のメッセージ
+      if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新完了' : (SECTION_ERRORS.trend ? '同期完了（一部待機）' : '最新の状態です'));
+      
       renderAll();
       HAS_RENDERED_ONCE = true;
-
       markRefreshed();
 
     } catch(e){
       console.error('init failed:', e);
-      setStatus('取得が一時的に不安定です');
+      setStatus(ネットワーク混雑中');
 
       // 初回ロード時だけ「---」に置き換える（更新時は直前の表示を維持してチラつきを防ぐ）
       if (firstLoad){
