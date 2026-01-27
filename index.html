@@ -4119,6 +4119,7 @@ function renderAll(){
     });
   }
 // ▼▼▼ 追加：スマホ用サイドメニューの開閉処理 ▼▼▼
+// ▼▼▼ 修正版：スマホ用サイドメニュー（リンククリックで確実に閉じる機能を追加） ▼▼▼
 function setupSideMenu() {
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('sideMenu');
@@ -4127,6 +4128,7 @@ function setupSideMenu() {
   
   if (!btn || !menu || !overlay) return;
 
+  // 開閉の動きを管理する関数
   const toggle = (open) => {
     if (open) {
       menu.classList.add('is-open');
@@ -4136,6 +4138,7 @@ function setupSideMenu() {
       menu.setAttribute('aria-hidden', 'false');
     } else {
       menu.classList.remove('is-open');
+      // ここで確実に黒い背景を消す
       overlay.hidden = true;
       overlay.style.display = 'none';
       btn.setAttribute('aria-expanded', 'false');
@@ -4145,7 +4148,17 @@ function setupSideMenu() {
 
   btn.addEventListener('click', () => toggle(true));
   if (closeBtn) closeBtn.addEventListener('click', () => toggle(false));
+  
+  // 背景クリックで閉じる
   overlay.addEventListener('click', () => toggle(false));
+
+  // ★追加：メニュー内のリンク（始め方など）を押した時も、強制的にメニューを閉じる
+  const links = menu.querySelectorAll('.sideNavLink');
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      toggle(false); // メニューと黒背景をOFFにする
+    });
+  });
 }
 // ▲▲▲ 追加ここまで ▲▲▲
 // ▼▼▼ 修正版：AI分析（箇条書きレイアウト版） ▼▼▼
