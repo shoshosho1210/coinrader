@@ -1159,6 +1159,25 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   color: #e5e7eb;
   white-space: nowrap;
 }
+/* ▼▼▼ 追加：スマホ表示の最適化 ▼▼▼ */
+@media (max-width: 640px) {
+  /* テーブルのセルの左右余白を詰める */
+  .rank-table th, 
+  .rank-table td {
+    padding: 10px 4px; /* 12px -> 4px に短縮 */
+    font-size: 12px;   /* 文字サイズを少し小さく */
+  }
+  
+  /* 銘柄列（左端固定）の幅調整 */
+  .rank-table td.td-sym {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  /* アイコンとランクの隙間調整 */
+  .sym-wrap { gap: 4px; }
+  .sym-icon { width: 20px; height: 20px; }
+}
 
 /* 1列目（銘柄）のデザイン */
 .rank-table td.td-sym {
@@ -1472,11 +1491,9 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     <thead>
       <tr>
         <th class="th-sym">銘柄</th>
-        <th class="th-price">現在値 (円)</th>
-        <th class="th-mcap">時価総額</th>
-        <th class="th-chg">前日比</th>
-        <th class="th-chg">7日比</th><th class="th-rsi">RSI</th>
-        <th class="th-chart">7d推移</th> <th class="th-vol">24h出来高</th>
+        <th class="th-price">現在値</th> <th class="th-chg">前日比</th> <th class="th-chg">7日比</th>  <th class="th-mcap">時価総額</th> <th class="th-rsi">RSI</th>
+        <th class="th-chart">7d推移</th>
+        <th class="th-vol">24h出来高</th>
       </tr>
     </thead>
     <tbody id="mcapTableBody">
@@ -4298,6 +4315,7 @@ function renderRankTable(coins) {
     const rsiHtml = rsiVal ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` : '-';
     const canvasId = `tbl_chart_${c.id}_${i}`;
 
+    // ▼▼▼ 修正版：renderRankTable内の生成ロジック ▼▼▼
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="td-sym">
@@ -4308,9 +4326,7 @@ function renderRankTable(coins) {
         </div>
       </td>
       <td>${price}</td>
-      <td>${mcap}</td>
-      <td class="${chg24Class}">${chg24Str}</td>
-      <td class="${chg7dClass}">${chg7dStr}</td> <td>${rsiHtml}</td>
+      <td class="${chgClass}">${chgStr}</td> <td class="${chg7dClass}">${chg7dStr}</td> <td>${mcap}</td> <td>${rsiHtml}</td>
       <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
       <td>${vol}</td>
     `;
@@ -4567,63 +4583,70 @@ function updateAiInsight() {
 }
 
   // ============ Boot ============
-  async function init(fromManualRefresh=false){
-    const firstLoad = !HAS_RENDERED_ONCE;
-    if (firstLoad) {
-      setLoadingAll();
-      resetSectionErrors();
-    } else {
-      setRefreshingAll(true);
-      if (!IN_AUTO_REFRESH) setStatus('更新中…');
-    }
-
-    try{
-      setStatus('markets取得中…');
-      await loadMarketsTop250(fromManualRefresh);
-
-      // 追加KPI: BTC MAクロス距離
-      try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
-
-      if (!marketsTop.length){
-        setStatus('marketsが空です');
-        document.getElementById('grid-mcap').innerHTML = '<div class="msg">データの取得が遅れています。時間をおいて再読み込みしてください。</div>';
-        document.getElementById('grid-trend').innerHTML = '<div class="msg">---</div>';
-        document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
-        document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
-        return;
-      }
-
-      setStatus('トレンド取得中…');
-      try {
-        await loadTrendingTop5(fromManualRefresh);
-      } catch (e) {
-        console.warn('[trend] fetch failed', e);
-        SECTION_ERRORS.trend = true;
-        trendingCoins = [];
-      }
-
-      setUpdated();
-      if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新しました' : (SECTION_ERRORS.trend ? '表示準備完了（一部取得失敗）' : '表示準備完了'));
-      renderAll();
-      HAS_RENDERED_ONCE = true;
-
-      markRefreshed();
-
-    } catch(e){
-      console.error('init failed:', e);
-      setStatus('取得が一時的に不安定です');
-
-      // 初回ロード時だけ「---」に置き換える（更新時は直前の表示を維持してチラつきを防ぐ）
-      if (firstLoad){
-        document.getElementById('grid-trend').innerHTML = '<div class="msg">データの取得が一時的に不安定です。時間をおいて再読み込みしてください。</div>';
-        document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
-        document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
-        document.getElementById('grid-mcap').innerHTML = '<div class="msg">---</div>';
-      }
-    } finally {
-      if (!firstLoad) setRefreshingAll(false);
-    }
+// ▼▼▼ 修正版：init関数（エラー時のID指定ミスを修正） ▼▼▼
+async function init(fromManualRefresh=false){
+  const firstLoad = !HAS_RENDERED_ONCE;
+  if (firstLoad) {
+    setLoadingAll();
+    resetSectionErrors();
+  } else {
+    setRefreshingAll(true);
+    if (!IN_AUTO_REFRESH) setStatus('更新中…');
   }
+
+  try{
+    setStatus('markets取得中…');
+    await loadMarketsTop250(fromManualRefresh);
+
+    try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
+
+    // hashrateは削除済なので不要
+
+    if (!marketsTop.length){
+      setStatus('marketsが空です');
+      // ▼▼▼ 修正箇所：存在しない grid-mcap を削除し、テーブル本体にメッセージを表示 ▼▼▼
+      const tbody = document.getElementById('mcapTableBody');
+      if(tbody) tbody.innerHTML = '<tr><td colspan="8" style="padding:20px;text-align:center;">データの取得が遅れています。時間をおいて再読み込みしてください。</td></tr>';
+      
+      document.getElementById('grid-trend').innerHTML = '<div class="msg">---</div>';
+      document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
+      document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
+      return;
+    }
+
+    setStatus('トレンド取得中…');
+    try {
+      await loadTrendingTop5(fromManualRefresh);
+    } catch (e) {
+      console.warn('[trend] fetch failed', e);
+      SECTION_ERRORS.trend = true;
+      trendingCoins = [];
+    }
+
+    setUpdated();
+    if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新しました' : (SECTION_ERRORS.trend ? '表示準備完了（一部取得失敗）' : '表示準備完了'));
+    renderAll();
+    HAS_RENDERED_ONCE = true;
+
+    markRefreshed();
+
+  } catch(e){
+    console.error('init failed:', e);
+    setStatus('取得が一時的に不安定です');
+
+    if (firstLoad){
+      document.getElementById('grid-trend').innerHTML = '<div class="msg">データの取得が一時的に不安定です。時間をおいて再読み込みしてください。</div>';
+      document.getElementById('grid-gainers').innerHTML = '<div class="msg">---</div>';
+      document.getElementById('grid-volume').innerHTML = '<div class="msg">---</div>';
+      
+      // ▼▼▼ 修正箇所：ここも grid-mcap を削除してテーブル本体へ ▼▼▼
+      const tbody = document.getElementById('mcapTableBody');
+      if(tbody) tbody.innerHTML = '<tr><td colspan="8" style="padding:20px;text-align:center;">データの取得が一時的に不安定です。<br>（アクセス集中：1分ほど待って更新してください）</td></tr>';
+    }
+  } finally {
+    if (!firstLoad) setRefreshingAll(false);
+  }
+}
 
   // 初回ロード
 
