@@ -4501,32 +4501,37 @@ function setupSideMenu() {
   });
 }
 
-// ▼▼▼ 修正版：ランダム表現対応 AI分析ロジック ▼▼▼
-let _aiThinking = false;
+/* --- 修正版：チラつき防止 AIインサイト --- */
+let _lastAiScore = false;
 
 function updateAiInsight() {
   const box = document.getElementById('aiInsightBox');
   const textEl = document.getElementById('aiInsightText');
   
   if (!box || !textEl || _aiThinking) return;
+  
+  const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
+  const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
+
+  // データがまだ無い場合は待機
+  if (sentScore === null || rsiVal === null) return;
+
+  // 前回のスコアと同じなら、あえて「考え直す」演出はスキップして静かに終了
+  if (_lastAiScore === sentScore + rsiVal) return;
 
   _aiThinking = true;
-  box.style.display = 'block';
-  
-  textEl.innerHTML = `
-    <div style="display:flex; align-items:center; justify-content:center; height:120px; width:100%;">
-      <span style="font-size:20px; animation: spin 1s linear infinite; margin-right:10px;">⏳</span>
-      <span style="animation: pulse 1.5s infinite; color:#94a3b8;">AIが市場データを多角的に分析中...</span>
-    </div>
-  `;
+
+  // 【重要】箱の中身を消さずに、隅っこで「更新中」を出す
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.style = "position:absolute; top:10px; right:15px; font-size:10px; color:#38bdf8; animation:pulse 1s infinite;";
+  loadingIndicator.innerHTML = "● AI再分析中...";
+  box.style.position = "relative";
+  box.appendChild(loadingIndicator);
 
   // 配列からランダムに1つ選ぶヘルパー関数
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
   setTimeout(() => {
-    const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
-    const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
-    const domVal = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
 
     if (sentScore === null || rsiVal === null) {
         textEl.innerHTML = "データの取得を待機しています...";
@@ -4595,6 +4600,8 @@ function updateAiInsight() {
     ]);
 
     // 4. 表示
+    // --- 最終的なテキスト反映 ---
+    // ここで初めて中身を書き換えるので、砂時計で真っ白になる時間が消えます
     textEl.innerHTML = `
       <ul style="margin:0 0 12px 0; padding-left:1.4em; line-height:1.6; color:#cbd5e1; font-weight:500;">
         <li style="margin-bottom:6px;">${sentimentText}</li>
@@ -4605,6 +4612,9 @@ function updateAiInsight() {
         ${strategyText}
       </div>
     `;
+
+    _lastAiScore = sentScore + rsiVal; // 今回のスコアを保存
+    loadingIndicator.remove(); // インジケーターを消す
     _aiThinking = false;
   }, 1800); 
 }
