@@ -1125,12 +1125,15 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   background-size: 40px 100%, 10px 100%;
   background-attachment: local, scroll;
 }
+
 .rank-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+  min-width: 600px; /* スマホで横スクロールさせるための幅確保 */
   font-size: 13px;
 }
+
+/* ヘッダー固定 */
 .rank-table th {
   position: sticky;
   top: 0;
@@ -1138,22 +1141,26 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   background: #0f172a;
   color: #94a3b8;
   font-weight: 500;
-  text-align: right; /* ヘッダーも右揃え */
+  text-align: right;
   padding: 10px 12px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   white-space: nowrap;
 }
 .rank-table th.th-sym { text-align: left; left: 0; z-index: 11; }
+
+/* セル設定 */
 .rank-table td {
   padding: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   vertical-align: middle;
-  text-align: right; /* 数字を右揃え！ */
+  text-align: right;
   font-family: 'Inter', sans-serif;
-  font-feature-settings: "tnum"; /* 数字の幅を揃える */
+  font-feature-settings: "tnum";
   color: #e5e7eb;
   white-space: nowrap;
 }
+
+/* 1列目（銘柄）のデザイン */
 .rank-table td.td-sym {
   text-align: left;
   position: sticky;
@@ -1166,9 +1173,23 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .sym-icon { width: 24px; height: 24px; border-radius: 50%; }
 .sym-rank { color: #64748b; font-size: 11px; min-width: 16px; }
 .sym-code { font-weight: 700; font-size: 13px; }
+
+/* グラフ列のスタイル */
+.rank-table th.th-chart,
+.rank-table td.td-chart {
+  width: 100px;
+  min-width: 100px;
+  padding: 4px 8px;
+}
+.td-chart canvas {
+  width: 100% !important;
+  height: 35px !important;
+  display: block;
+}
+
+/* 色・バッジ */
 .text-up { color: #4ade80; }
 .text-down { color: #f87171; }
-/* RSIバッジ */
 .rsi-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; width: 36px; text-align: center; background: rgba(255,255,255,0.05); color: #94a3b8; }
 .rsi-high { background: rgba(239,68,68,0.2); color: #fca5a5; }
 .rsi-low  { background: rgba(59,130,246,0.2); color: #93c5fd; }
@@ -1438,7 +1459,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
         <th class="th-mcap">時価総額</th>
         <th class="th-chg">前日比</th>
         <th class="th-rsi">RSI</th>
-        <th class="th-vol">24h出来高</th>
+        <th class="th-chart">7d推移</th> <th class="th-vol">24h出来高</th>
       </tr>
     </thead>
     <tbody id="mcapTableBody">
@@ -4147,26 +4168,32 @@ function makeLineChart(canvasId, labels, series, opts){
     fillList('summaryVolAltList', getAltVolumeTop5(), 'grid-alt-volume');
   }
 
+// ▼▼▼ 追加：グラフ付きテーブル描画関数 ▼▼▼
 function renderRankTable(coins) {
   const tbody = document.getElementById('mcapTableBody');
   if (!tbody) return;
   tbody.innerHTML = '';
+
   if (!coins || !coins.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
     return;
   }
+
   coins.forEach((c, i) => {
+    // データ整形
     const price = yen(c.current_price);
     const mcap = yenLarge(c.market_cap);
     const vol = yenLarge(c.total_volume);
     const chg = c.price_change_percentage_24h;
     const chgClass = (chg >= 0) ? 'text-up' : 'text-down';
     const chgStr = (typeof chg === 'number') ? (chg > 0 ? '+' : '') + chg.toFixed(1) + '%' : '-';
-    
+
     // RSI計算
     let rsiVal = null, rsiClass = '';
+    let sparkData = [];
     if (c.sparkline_in_7d && c.sparkline_in_7d.price) {
-      const series = computeRSISeries(c.sparkline_in_7d.price);
+      sparkData = c.sparkline_in_7d.price;
+      const series = computeRSISeries(sparkData);
       const last = series[series.length - 1];
       if (last) {
         rsiVal = Math.round(last);
@@ -4175,6 +4202,9 @@ function renderRankTable(coins) {
       }
     }
     const rsiHtml = rsiVal ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` : '-';
+
+    // グラフ用ID
+    const canvasId = `tbl_chart_${c.id}_${i}`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -4189,11 +4219,17 @@ function renderRankTable(coins) {
       <td>${mcap}</td>
       <td class="${chgClass}">${chgStr}</td>
       <td>${rsiHtml}</td>
+      <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
       <td>${vol}</td>
     `;
     tr.style.cursor = 'pointer';
     tr.onclick = () => window.open(coinGeckoUrlFor(c), '_blank');
     tbody.appendChild(tr);
+
+    // グラフ描画
+    setTimeout(() => {
+      if (sparkData.length > 0) drawSparkline(canvasId, sparkData);
+    }, 0);
   });
 }
 
