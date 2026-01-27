@@ -1468,7 +1468,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
         <th class="th-price">現在値 (円)</th>
         <th class="th-mcap">時価総額</th>
         <th class="th-chg">前日比</th>
-        <th class="th-rsi">RSI</th>
+        <th class="th-chg">7日比</th><th class="th-rsi">RSI</th>
         <th class="th-chart">7d推移</th> <th class="th-vol">24h出来高</th>
       </tr>
     </thead>
@@ -2037,7 +2037,7 @@ const EXCLUDE_MCAP_IDS = new Set([
     + '&order=market_cap_desc'
     + '&per_page=250&page=1'
     + '&sparkline=true'
-    + '&price_change_percentage=24h';
+    + '&price_change_percentage=24h,7d';
 
   // まずキャッシュで即表示（ネット失敗でも「真っ白」を避ける）
   const cached = readCache(LS_KEYS.markets);
@@ -4207,14 +4207,14 @@ function makeLineChart(canvasId, labels, series, opts){
     fillList('summaryVolAltList', getAltVolumeTop5(), 'grid-alt-volume');
   }
 
-// ▼▼▼ 追加：グラフ付きテーブル描画関数 ▼▼▼
+// ▼▼▼ 修正版：7日比（週間変動率）を追加したテーブル描画 ▼▼▼
 function renderRankTable(coins) {
   const tbody = document.getElementById('mcapTableBody');
   if (!tbody) return;
   tbody.innerHTML = '';
 
   if (!coins || !coins.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
     return;
   }
 
@@ -4223,9 +4223,17 @@ function renderRankTable(coins) {
     const price = yen(c.current_price);
     const mcap = yenLarge(c.market_cap);
     const vol = yenLarge(c.total_volume);
-    const chg = c.price_change_percentage_24h;
-    const chgClass = (chg >= 0) ? 'text-up' : 'text-down';
-    const chgStr = (typeof chg === 'number') ? (chg > 0 ? '+' : '') + chg.toFixed(1) + '%' : '-';
+    
+    // 24時間比
+    const chg24 = c.price_change_percentage_24h;
+    const chg24Class = (chg24 >= 0) ? 'text-up' : 'text-down';
+    const chg24Str = (typeof chg24 === 'number') ? (chg24 > 0 ? '+' : '') + chg24.toFixed(1) + '%' : '-';
+
+    // ★追加：7日比
+    // APIから "price_change_percentage_7d_in_currency" という名前でデータが来ます
+    const chg7d = c.price_change_percentage_7d_in_currency;
+    const chg7dClass = (chg7d >= 0) ? 'text-up' : 'text-down';
+    const chg7dStr = (typeof chg7d === 'number') ? (chg7d > 0 ? '+' : '') + chg7d.toFixed(1) + '%' : '-';
 
     // RSI計算
     let rsiVal = null, rsiClass = '';
@@ -4241,8 +4249,6 @@ function renderRankTable(coins) {
       }
     }
     const rsiHtml = rsiVal ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` : '-';
-
-    // グラフ用ID
     const canvasId = `tbl_chart_${c.id}_${i}`;
 
     const tr = document.createElement('tr');
@@ -4256,16 +4262,16 @@ function renderRankTable(coins) {
       </td>
       <td>${price}</td>
       <td>${mcap}</td>
-      <td class="${chgClass}">${chgStr}</td>
-      <td>${rsiHtml}</td>
+      <td class="${chg24Class}">${chg24Str}</td>
+      <td class="${chg7dClass}">${chg7dStr}</td> <td>${rsiHtml}</td>
       <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
       <td>${vol}</td>
     `;
+    
     tr.style.cursor = 'pointer';
     tr.onclick = () => window.open(coinGeckoUrlFor(c), '_blank');
     tbody.appendChild(tr);
 
-    // グラフ描画
     setTimeout(() => {
       if (sparkData.length > 0) drawSparkline(canvasId, sparkData);
     }, 0);
