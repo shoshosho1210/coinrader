@@ -1,7 +1,13 @@
-【今日の注目 2026-01-27】
-トレンド: 1.ULTIMA 2.AXS 3.HYPE 4.RIVER 5.SKR
-上昇率(24h): 1.AXS(+37.7%) 2.KHYPE(+12.5%) 3.DCR(+12.5%) 4.HYPE(+12.4%) 5.RIVER(+11.9%)
-出来高(全体): 1.USDT 2.BTC 3.ETH 4.USDC 5.SOL
-出来高(アルト): 1.SOL 2.XRP 3.BNB 4.DOGE 5.AXS
-→ https://coinrader.net/share/20260127.html
-#暗号資産 #Crypto #ビットコイン #Bitcoin
+【CoinRader 市場分析レポート 01/27 23:42】
+AIが需給構造を解析。現在は「中立〜楽観」の境界。平均回帰性が意識される局面です。
+
+■ ビットコイン相場
+価格: ¥13,624,319
+騰落: -0.24%
+
+■ トレンド・注目銘柄
+Trend: HYPE, XAUT, AXS
+Gain: pippin (+50.4%)
+
+▼ 詳細はこちら
+https://coinrader.net/
