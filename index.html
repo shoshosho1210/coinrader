@@ -903,10 +903,16 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   }
   .meta-val { opacity: 0.9; white-space: nowrap; }
   .meta-badge {
-    display: inline-flex; align-items: center; gap: 3px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
-    padding: 1px 5px; border-radius: 4px;
-    font-size: 10px; white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 2px 6px; /* 少し余白を広げる */
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    color: #cbd5e1; /* 文字色を少し明るく */
   }
   .card {
     cursor: pointer;
@@ -1464,6 +1470,16 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </div>
 <div class="cta-note">※当サイトは一部リンクにアフィリエイト広告を含みます。</div>
 </section>
+
+  <div style="margin: 0 4px 14px; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; font-size: 11px; color: #9ca3af; line-height: 1.5;">
+    <div style="font-weight: 700; color: #cbd5e1; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+      <span>💡</span> カードの見方
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">
+      <div><strong>回転率：</strong> 24h出来高÷時価総額。値が高いほど短期売買が活発。</div>
+      <div><strong>ATH比：</strong> 過去最高値(ATH)からの乖離。マイナスが大きいほど底値圏。</div>
+    </div>
+  </div>
 <section id="sec-trend">
 <div class="section-header">
 <div>
@@ -4098,18 +4114,15 @@ function makeLineChart(canvasId, labels, series, opts){
       let turnoverBadge = '';
       if (typeof coin.total_volume === 'number' && typeof coin.market_cap === 'number' && coin.market_cap > 0) {
         const rate = (coin.total_volume / coin.market_cap) * 100;
-        const icon = rate >= 100 ? '🔥' : '🔄'; 
-        turnoverBadge = `<span class="meta-badge" title="売買回転率">${icon} ${rate.toFixed(1)}%</span>`;
+        // ラベル「回転率」を追加
+        turnoverBadge = `<span class="meta-badge" title="24h出来高÷時価総額：市場の活発さ">回転率 ${rate.toFixed(1)}%</span>`;
       }
 
       let athBadge = '';
       if (typeof coin.ath_change_percentage === 'number') {
         const ath = coin.ath_change_percentage;
-        if (ath > -1.0) {
-          athBadge = `<span class="meta-badge" style="color:#facc15; border-color:rgba(250,204,21,0.3);">🏆 ATH</span>`;
-        } else {
-          athBadge = `<span class="meta-badge" title="ATH比">📉 ${ath.toFixed(1)}%</span>`;
-        }
+        // ラベル「ATH比」を追加
+        athBadge = `<span class="meta-badge" title="過去最高値からの下落率">ATH比 ${ath.toFixed(1)}%</span>`;
       }
 
       let mainMetricHtml = '';
