@@ -4170,55 +4170,82 @@ function setupSideMenu() {
     });
   });
 }
-// ▲▲▲ 追加ここまで ▲▲▲
-// ▼▼▼ 修正版：AI分析（箇条書きレイアウト版） ▼▼▼
+// ▼▼▼ 修正版：AI分析（深掘り＆インサイト強化版） ▼▼▼
 function updateAiInsight() {
   const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
   const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
   const domVal = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
-  const hashText = document.getElementById('kpiStripHashSub')?.textContent || "";
+  // ハッシュレートは相場への直接的影響が遅いため、今回はコメントから除外してスッキリさせる
   
   if (sentScore === null || rsiVal === null) return;
 
-  // 1. 各要素の分析テキスト生成（ロジックは前回と同じ）
+  // Let's define flags for extreme conditions
+  const isExtremeGreed = sentScore >= 75;
+  const isExtremeFear = sentScore <= 25;
+  const isOverbought = rsiVal >= 70;
+  const isOversold = rsiVal <= 30;
+
+  // --- 1. 各要素の分析（より踏み込んだ表現に）---
+
+  // 市場心理 (Sentiment)
   let sentimentText = "";
-  if (sentScore >= 75) sentimentText = "市場は<strong>極度の強欲</strong>状態で、楽観ムードが過熱中。";
-  else if (sentScore >= 55) sentimentText = "市場心理は<strong>強気</strong>に傾き、買い意欲が継続中。";
-  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、方向感を探る展開。";
-  else if (sentScore >= 25) sentimentText = "市場には<strong>恐怖</strong>が広がり、心理が冷え込み中。";
-  else sentimentText = "市場は<strong>極度の恐怖</strong>で、パニック売り心理が優勢。";
+  if (isExtremeGreed) sentimentText = "投資家心理は<strong>極度の強欲</strong>に達し、FOMO（取り残される恐怖）による買いが過熱しています。";
+  else if (sentScore >= 55) sentimentText = "市場は<strong>強気</strong>ムードを維持しており、押し目買い意欲が強い状態です。";
+  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、次の材料待ちとなり方向感が乏しい展開です。";
+  else if (sentScore > 25) sentimentText = "市場には<strong>警戒感（恐怖）</strong>が広がっており、慎重な姿勢が支配的です。";
+  else sentimentText = "市場は<strong>極度の恐怖</strong>に支配され、パニック的な売りが出やすい状態です。";
 
+  // テクニカル (RSI)
   let rsiText = "";
-  if (rsiVal >= 70) rsiText = "BTC RSIは70超え。<strong>高値警戒域</strong>のため急な調整に注意。";
-  else if (rsiVal <= 30) rsiText = "BTC RSIは30割れ。<strong>底値圏</strong>で自律反発の可能性あり。";
-  else if (rsiVal >= 55) rsiText = "RSIは中立圏だが、やや上昇圧力が強い状態。";
-  else if (rsiVal <= 45) rsiText = "RSIは中立圏だが、上値が重く下落圧力が優勢。";
-  else rsiText = "RSIは中立を示しており、過熱感のない推移。";
+  if (isOverbought) rsiText = `BTC RSIは${Math.round(rsiVal)}付近。短期的な<strong>買い過熱感</strong>がピークに達しており、急な調整に警戒が必要です。`;
+  else if (isOversold) rsiText = `BTC RSIは${Math.round(rsiVal)}付近。短期的な<strong>売られすぎ</strong>水準にあり、自律反発の余地が生まれています。`;
+  else if (rsiVal >= 55) rsiText = "RSIは中立圏ですが、上昇圧力がやや優勢な状態を保っています。";
+  else if (rsiVal <= 45) rsiText = "RSIは中立圏ですが、上値が重く、下落圧力がかかりやすい状態です。";
+  else rsiText = "RSIは50付近の中立を示しており、過熱感のない健全な推移です。";
 
+  // 資金循環 (Dominance)
   let domText = "";
-  if (domVal && domVal >= 60) domText = "資金は<strong>BTCに集中</strong>しており、アルトは停滞気味。";
-  else if (domVal && domVal <= 40) domText = "資金が<strong>アルトに循環</strong>し始め、相場の底上げに期待。";
-  else domText = "資金循環は安定的。"; // 追加：条件に当てはまらない場合用
+  if (domVal && domVal >= 58) domText = "資金は安全資産としての<strong>BTCに集中（避難）</strong>しており、アルトコインは選別色が強い展開です。";
+  else if (domVal && domVal <= 42) domText = "リスク選好姿勢が強まり、資金が<strong>アルトコイン全般に循環</strong>し始めています。";
+  else domText = "BTCとアルトコイン間の極端な資金移動は見られず、循環は安定的です。";
 
-  // 2. 総合判断（結論）
+
+  // --- 2. 総合インサイト（💡まとめ部分：複数の指標を組み合わせた解釈）---
   let strategyText = "";
-  if (sentScore < 25 || rsiVal < 30) {
-    strategyText = "売られすぎによる<strong>自律反発</strong>や、<strong>割安感</strong>に着目されやすい局面です。";
-  } else if (sentScore > 75 || rsiVal > 70) {
-    strategyText = "過熱感への<strong>警戒</strong>や、<strong>調整（下落）</strong>を想定した慎重な姿勢が意識されます。";
-  } else {
-    strategyText = "方向感が定まるまで、<strong>トレンドの発生</strong>を待つ展開が予想されます。";
+
+  // パターンA: 天井圏（心理もテクニカルも過熱）
+  if (isExtremeGreed && isOverbought) {
+    strategyText = "市場は「熱狂」状態です。上昇トレンド中ですが、いつ大きな調整が入ってもおかしくありません。<strong>利益確定をこまめに行うか、急落に備えた逆指値の設定</strong>を強く推奨する局面です。";
+  }
+  // パターンB: 底値圏（心理もテクニカルも冷え込み）
+  else if (isExtremeFear && isOversold) {
+    strategyText = "市場は「悲観」の極みです。ここからの突っ込み売りはリスクが高く、むしろ中長期視点での<strong>分割エントリー（拾い場）</strong>を探る好機となる可能性があります。";
+  }
+  // パターンC: 強気トレンド（過熱感はないが強い）
+  else if (sentScore > 60 && rsiVal > 50 && !isOverbought) {
+    strategyText = "過度な過熱感なく、安定した上昇トレンドを描いています。基本は<strong>トレンドフォロー（順張り）</strong>で利益を伸ばしつつ、RSIの過熱感が出てくるのを待つ段階です。";
+  }
+  // パターンD: 弱気・調整局面
+  else if (sentScore < 40 && rsiVal < 50 && !isOversold) {
+    strategyText = "上値が重く、調整色が強い展開です。不用意な買いは避け、<strong>下げ止まりのサイン（RSIの底打ち等）を確認するまで静観</strong>するのが賢明です。";
+  }
+  // パターンE: どっちつかず
+  else {
+    strategyText = "明確なトレンドが出ておらず、方向感が定まっていません。無理にポジションを持たず、<strong>次の大きな動き出し（ブレイクアウト）を待つ</strong>のが得策です。";
   }
 
-  // 3. HTMLの組み立て（リスト化して高さを安定させる）
+
+  // --- 3. HTMLの組み立て ---
+  // ※箇条書きリストのスタイルを少し調整して見やすくします
   const finalHtml = `
-    <ul style="margin:0; padding-left:1.2em; line-height:1.6; color:#d1d5db;">
-      <li>${sentimentText}</li>
-      <li>${rsiText}</li>
+    <ul style="margin:0 0 12px 0; padding-left:1.4em; line-height:1.6; color:#cbd5e1; font-weight:500;">
+      <li style="margin-bottom:6px;">${sentimentText}</li>
+      <li style="margin-bottom:6px;">${rsiText}</li>
       <li>${domText}</li>
     </ul>
-    <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,0.15); color:#f1f5f9;">
-      💡 ${strategyText}
+    <div style="padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); color:#f1f5f9; font-size:13px; line-height:1.7;">
+      <span style="font-size:16px; margin-right:4px;">💡</span><strong style="color:#7dd3fc;">総合インサイト:</strong><br>
+      ${strategyText}
     </div>
   `;
 
@@ -4229,6 +4256,7 @@ function updateAiInsight() {
     box.style.display = 'block';
   }
 }
+
 // ▼▼▼ 追加：ハッシュレート取得プログラム（本体） ▼▼▼
   async function loadBtcHashrate() {
     // 無料・登録不要のMempool.space APIを使用
