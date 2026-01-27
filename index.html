@@ -2346,45 +2346,45 @@ function getMarketCapTop20(){
   }
 
 
-  const EXCLUDE_VOLUME_IDS = new Set([
-    "tether","usd-coin","dai","true-usd","first-digital-usd","ethena-usde",
-    "wrapped-bitcoin","staked-ether"
-  ]);
+// ▼▼▼ 修正版：出来高ランキングのロジック（Wrapped系は共通で除外） ▼▼▼
 
-  const EXCLUDE_NAME_KEYWORDS = [
-    "usd","us dollar","stable","tether","usd coin",
-    "wrapped","bridged","wormhole","portal",
-    "staked","staking","restaked",
-    "wbtc","weth","steth"
-  ];
+// 共通の除外キーワード（Wrappedトークンなど、重複やノイズになるもの）
+const SKIP_KEYWORDS = ["wrapped", "staked", "bridged", "token", "wbtc", "weth", "steth"];
 
-  function isExcludedForAltVolume(c){
-    const id = (c?.id || "").toLowerCase();
-    const name = (c?.name || "").toLowerCase();
-    const sym = (c?.symbol || "").toLowerCase();
-    if (EXCLUDE_VOLUME_IDS.has(id)) return true;
-    return EXCLUDE_NAME_KEYWORDS.some(k => name.includes(k) || sym.includes(k));
-  }
+function isWrappedOrDuplicate(c) {
+  const name = (c.name || '').toLowerCase();
+  const sym = (c.symbol || '').toLowerCase();
+  // BitcoinやEthereumそのものは除外しない
+  if (c.id === 'bitcoin' || c.id === 'ethereum') return false;
+  // キーワードチェック
+  return SKIP_KEYWORDS.some(k => name.includes(k) || sym.includes(k));
+}
 
-  function buildVolumeTop5(){
-    // 全体（BTC/ETH/ステーブル含む）
-    return marketsTop
-      .filter(c => typeof c.total_volume === "number")
-      .slice()
-      .sort((a,b) => b.total_volume - a.total_volume)
-      .slice(0,5);
-  }
+// 1. 全体の出来高 TOP5（ステーブルは含める、Wrappedは除外）
+function buildVolumeTop5(){
+  return marketsTop
+    .filter(c => typeof c.total_volume === "number")
+    // Wrapped系/重複トークンだけは除外（USDT/USDCなどは残る）
+    .filter(c => !isWrappedOrDuplicate(c))
+    .slice()
+    .sort((a,b) => b.total_volume - a.total_volume)
+    .slice(0,5);
+}
 
-  function buildAltVolumeTop5(){
-    // アルト：BTC/ETH/ステーブルを除外
-    return marketsTop
-      .filter(c => typeof c.total_volume === "number")
-      .filter(c => !isStableCoin(c))
-      .filter(c => !isBtcOrEth(c))
-      .slice()
-      .sort((a,b) => b.total_volume - a.total_volume)
-      .slice(0,5);
-  }
+// 2. アルトコインの出来高 TOP5（ステーブル・BTC/ETH・Wrappedをすべて除外）
+function buildAltVolumeTop5(){
+  return marketsTop
+    .filter(c => typeof c.total_volume === "number")
+    // ステーブルコインを除外
+    .filter(c => !isStableCoin(c))
+    // BTCとETHを除外
+    .filter(c => !isBtcOrEth(c))
+    // Wrapped系も除外
+    .filter(c => !isWrappedOrDuplicate(c))
+    .slice()
+    .sort((a,b) => b.total_volume - a.total_volume)
+    .slice(0,5);
+}
 function getGainersTop5(){
   if (marketsTop && marketsTop.length){
     const coins = buildGainersTop5();
