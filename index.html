@@ -4634,6 +4634,7 @@ function updateAiInsight() {
 
     try{
       // 内部的な「〇〇取得中」の小刻みな書き換えを止め、同期中に統一
+      if (firstLoad) setStatus('最新データと同期中…');
       await loadMarketsTop250(fromManualRefresh);
 
       // 追加KPI: BTC MAクロス距離
