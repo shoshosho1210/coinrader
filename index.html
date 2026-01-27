@@ -1195,7 +1195,16 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
   </div>
 </div>
-
+  
+<div class="kpi-tile kpi-hash">
+  <div class="kpi-tile-title">BTC Hashrate (3d avg)</div>
+  <div class="kpi-value-row">
+    <div class="kpi-tile-big" id="kpiStripHashMain">-</div>
+    <div class="kpi-tile-sub inline" id="kpiStripHashSub">-</div>
+  </div>
+  <div class="mini-vis" style="height:22px;"></div>
+</div>
+  
 </div></div></div>
 <div class="summary-lists">
 <div class="summary-card">
@@ -4042,7 +4051,50 @@ function renderAll(){
     });
   }
 
-
+// ▼▼▼ 追加：ハッシュレート取得プログラム（本体） ▼▼▼
+  async function loadBtcHashrate() {
+    // 無料・登録不要のMempool.space APIを使用
+    // 3日間の平均ハッシュレートを取得（1日単位の推移データが返る）
+    const url = 'https://mempool.space/api/v1/mining/hashrate/3d';
+    
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('mempool api error');
+      
+      const data = await res.json();
+      // data format: { hashrates: [ { timestamp, avgHashrate }, ... ], difficulty: ... }
+      
+      if (!data || !Array.isArray(data.hashrates) || !data.hashrates.length) return;
+      
+      // 最新のデータポイントを取得
+      const latest = data.hashrates[data.hashrates.length - 1];
+      const val = latest.avgHashrate; // 単位: H/s
+      
+      // EH/s（エクサハッシュ）に変換（1 EH/s = 10^18 H/s）
+      const ehs = val / 1_000_000_000_000_000_000;
+      
+      // 前日比（1つ前のデータと比較）
+      let changeText = '';
+      if (data.hashrates.length >= 2) {
+        const prev = data.hashrates[data.hashrates.length - 2].avgHashrate;
+        const diff = ((val - prev) / prev) * 100;
+        const sign = diff >= 0 ? '+' : '';
+        changeText = `前日比 ${sign}${diff.toFixed(1)}%`;
+      }
+      
+      // 画面表示
+      const mainEl = document.getElementById('kpiStripHashMain');
+      const subEl = document.getElementById('kpiStripHashSub');
+      
+      if (mainEl) mainEl.textContent = `${ehs.toFixed(0)} EH/s`;
+      if (subEl) subEl.textContent = changeText;
+      
+    } catch (e) {
+      console.warn('Hashrate fetch failed:', e);
+      const mainEl = document.getElementById('kpiStripHashMain');
+      if (mainEl) mainEl.textContent = '-';
+    }
+  }
 
   // ============ Boot ============
   async function init(fromManualRefresh=false){
@@ -4061,6 +4113,9 @@ function renderAll(){
 
       // 追加KPI: BTC MAクロス距離
       try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
+
+      // ▼▼▼ 追加：ハッシュレート取得 ▼▼▼
+      try{ loadBtcHashrate(); }catch(e){}
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
