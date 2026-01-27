@@ -1160,6 +1160,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="section-title">今日の注目</div>
 <div class="section-sub">市場の空気と、いま注目の銘柄を最短で確認できます。</div>
 </div>
+<div class="section-actions">
+  <button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
+    <span style="font-size:11px">𝕏</span> 共有
+  </button>
+  <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
+</div>
+</div>
 <div class="ai-insight-box" id="aiInsightBox" style="display:none;">
   <div class="ai-insight-header">
     <span style="font-size:18px; margin-right:2px;">🤖</span>
@@ -1168,13 +1175,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   </div>
   <div class="ai-insight-text" id="aiInsightText">データ収集中...</div>
   <div class="ai-insight-note">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
-</div>
-<div class="section-actions">
-  <button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
-    <span style="font-size:11px">𝕏</span> 共有
-  </button>
-  <a class="linkbtn" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">市場概況</a>
-</div>
 </div>
 <div class="summary-kpis" id="summaryKpis">
 
