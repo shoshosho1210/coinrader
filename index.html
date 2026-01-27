@@ -4590,9 +4590,10 @@ function updateAiInsight() {
       return val;
     };
 
+    // --- 表示ロジック（タイトルの重複を削除） ---
+    // ※ 💡アイコンやタイトルを消して、いきなり本題の文章から始める
     textEl.innerHTML = `
-      <div style="margin-bottom:15px; line-height:1.75; color:#f1f5f9; font-size:13.5px;">
-        <span style="font-size:16px; margin-right:4px;">🏛</span><strong style="color:#38bdf8;">Market Insight</strong><br>
+      <div style="margin-bottom:15px; line-height:1.75; color:#f1f5f9; font-size:14px;">
         ${strategyText}
       </div>
 
