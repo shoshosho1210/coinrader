@@ -4559,14 +4559,6 @@ function updateAiInsight() {
   }, 1800); // ★ここで待機時間を設定（1800ms = 1.8秒）
 }
 
-  const box = document.getElementById('aiInsightBox');
-  const textEl = document.getElementById('aiInsightText');
-  if (box && textEl) {
-    textEl.innerHTML = finalHtml;
-    box.style.display = 'block';
-  }
-}
-
   // ============ Boot ============
   async function init(fromManualRefresh=false){
     const firstLoad = !HAS_RENDERED_ONCE;
