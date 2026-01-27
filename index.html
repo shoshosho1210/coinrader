@@ -4117,61 +4117,57 @@ function renderAll(){
       if (el) el.classList.toggle('refreshing', !!on);
     });
   }
-// ▼▼▼ 修正版：市場分析コメント生成AI（文言マイルド化） ▼▼▼
+// ▼▼▼ 修正版：AI分析（箇条書きレイアウト版） ▼▼▼
 function updateAiInsight() {
-  // 必要なデータが揃っているか確認
   const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
   const rsiVal = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
   const domVal = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
   const hashText = document.getElementById('kpiStripHashSub')?.textContent || "";
   
-  if (sentScore === null || rsiVal === null) return; // データ不足
+  if (sentScore === null || rsiVal === null) return;
 
-  // 1. 市場心理の分析（言葉を少し落ち着かせる）
+  // 1. 各要素の分析テキスト生成（ロジックは前回と同じ）
   let sentimentText = "";
-  if (sentScore >= 75) sentimentText = "市場は<strong>極度の強欲</strong>状態にあり、楽観ムードが過熱しています。";
-  else if (sentScore >= 55) sentimentText = "市場心理は<strong>強気（強欲）</strong>に傾いており、買い意欲が継続しています。";
-  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、次のトレンドを見極める展開です。";
-  else if (sentScore >= 25) sentimentText = "市場には<strong>恐怖</strong>が広がっており、投資家心理が冷え込んでいます。";
-  else sentimentText = "市場は<strong>極度の恐怖</strong>に支配されており、パニック的な売り心理が働いています。";
+  if (sentScore >= 75) sentimentText = "市場は<strong>極度の強欲</strong>状態で、楽観ムードが過熱中。";
+  else if (sentScore >= 55) sentimentText = "市場心理は<strong>強気</strong>に傾き、買い意欲が継続中。";
+  else if (sentScore >= 45) sentimentText = "市場心理は<strong>中立</strong>で、方向感を探る展開。";
+  else if (sentScore >= 25) sentimentText = "市場には<strong>恐怖</strong>が広がり、心理が冷え込み中。";
+  else sentimentText = "市場は<strong>極度の恐怖</strong>で、パニック売り心理が優勢。";
 
-  // 2. テクニカル（RSI）の分析
   let rsiText = "";
-  if (rsiVal >= 70) rsiText = "BTCのRSIは70を超えており、テクニカル的には<strong>高値警戒域</strong>です。急な調整に注意が必要です。";
-  else if (rsiVal <= 30) rsiText = "BTCのRSIは30を下回っており、テクニカル的には<strong>底値圏</strong>を示唆しています。";
-  else if (rsiVal >= 55) rsiText = "RSIは中立圏ですが、やや上昇圧力が強い状態を維持しています。";
-  else if (rsiVal <= 45) rsiText = "RSIは中立圏ですが、上値が重く、下落圧力が優勢です。";
-  else rsiText = "テクニカル指標（RSI）は中立を示しており、過熱感のない推移です。";
+  if (rsiVal >= 70) rsiText = "BTC RSIは70超え。<strong>高値警戒域</strong>のため急な調整に注意。";
+  else if (rsiVal <= 30) rsiText = "BTC RSIは30割れ。<strong>底値圏</strong>で自律反発の可能性あり。";
+  else if (rsiVal >= 55) rsiText = "RSIは中立圏だが、やや上昇圧力が強い状態。";
+  else if (rsiVal <= 45) rsiText = "RSIは中立圏だが、上値が重く下落圧力が優勢。";
+  else rsiText = "RSIは中立を示しており、過熱感のない推移。";
 
-  // 3. ドミナンスと資金循環
   let domText = "";
-  if (domVal && domVal >= 60) domText = "資金は<strong>ビットコインに集中（避難）</strong>しており、アルトコインの動きは限定的です。";
-  else if (domVal && domVal <= 40) domText = "資金が<strong>アルトコインに循環</strong>し始めており、相場全体の底上げが期待されます。";
+  if (domVal && domVal >= 60) domText = "資金は<strong>BTCに集中</strong>しており、アルトは停滞気味。";
+  else if (domVal && domVal <= 40) domText = "資金が<strong>アルトに循環</strong>し始め、相場の底上げに期待。";
+  else domText = "資金循環は安定的。"; // 追加：条件に当てはまらない場合用
 
-  // 4. ハッシュレート
-  let hashComment = "";
-  if (hashText.includes("+")) hashComment = "マイニング活動は増加傾向にあり、BTCネットワークは堅牢さを保っています。";
-  else if (hashText.includes("-")) hashComment = "ハッシュレートはやや調整気味で推移しています。";
-
-  // 5. 総合コメント（具体的な「売買」を避け、相場環境の説明に徹する）
+  // 2. 総合判断（結論）
   let strategyText = "";
   if (sentScore < 25 || rsiVal < 30) {
-    strategyText = "この状況下では、売られすぎによる<strong>自律反発</strong>や、<strong>割安感</strong>に着目されやすい局面です。";
+    strategyText = "売られすぎによる<strong>自律反発</strong>や、<strong>割安感</strong>に着目されやすい局面です。";
   } else if (sentScore > 75 || rsiVal > 70) {
-    strategyText = "この状況下では、過熱感への<strong>警戒</strong>や、<strong>調整（下落）</strong>を想定した慎重な姿勢が意識されます。";
+    strategyText = "過熱感への<strong>警戒</strong>や、<strong>調整（下落）</strong>を想定した慎重な姿勢が意識されます。";
   } else {
     strategyText = "方向感が定まるまで、<strong>トレンドの発生</strong>を待つ展開が予想されます。";
   }
 
+  // 3. HTMLの組み立て（リスト化して高さを安定させる）
   const finalHtml = `
-    ${sentimentText}
-    ${rsiText}
-    ${domText}
-    ${hashComment}
-    <br>${strategyText}
+    <ul style="margin:0; padding-left:1.2em; line-height:1.6; color:#d1d5db;">
+      <li>${sentimentText}</li>
+      <li>${rsiText}</li>
+      <li>${domText}</li>
+    </ul>
+    <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,0.15); color:#f1f5f9;">
+      💡 ${strategyText}
+    </div>
   `;
 
-  // 画面に表示
   const box = document.getElementById('aiInsightBox');
   const textEl = document.getElementById('aiInsightText');
   if (box && textEl) {
