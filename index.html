@@ -2888,8 +2888,12 @@ if (breadthSub){
     }
 
     // Totals
-    document.getElementById('kpiTotalMcap').textContent = yenLarge(o.totalMcap);
-    document.getElementById('kpiTotalVol').textContent = yenLarge(o.totalVol);
+    // 安全に更新するように変更
+    const elMcap = document.getElementById('kpiTotalMcap');
+    if (elMcap) elMcap.textContent = yenLarge(o.totalMcap);
+
+    const elVol = document.getElementById('kpiTotalVol');
+    if (elVol) elVol.textContent = yenLarge(o.totalVol);
 
     // Market cap 24h change (estimate)
     const mcap24hEl = document.getElementById('kpiMcap7d');
