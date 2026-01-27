@@ -1362,14 +1362,21 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     </div>
   </div>
 
-  <div class="kpi-tile kpi-hash">
-    <div class="kpi-tile-title">BTC Hashrate (3d avg)</div>
-    <div class="kpi-value-row">
-      <div class="kpi-tile-big" id="kpiStripHashMain">-</div>
-      <div class="kpi-tile-sub inline" id="kpiStripHashSub">-</div>
-    </div>
-    <div class="mini-vis" style="height:22px;"></div>
+<div class="kpi-tile kpi-vol">
+  <div class="kpi-tile-title">市場出来高 (24h)</div>
+  <div class="kpi-value-row">
+    <div class="kpi-tile-big" id="kpiStripVolMain">-</div>
+    <div class="kpi-tile-sub inline" id="kpiStripVolSub">-</div>
   </div>
+  <div class="mini-vis" style="margin-top:10px;">
+    <div style="display:flex; height:6px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,0.1);">
+      <div id="miniVolBarBtc" style="background:#facc15; width:0%"></div>
+      <div id="miniVolBarEth" style="background:#60a5fa; width:0%"></div>
+      <div id="miniVolBarOth" style="background:#9ca3af; width:0%"></div>
+    </div>
+    <div class="kpi-bar-caption">BTC / ETH / Others</div>
+  </div>
+</div>
 </div>
   
 </div></div></div>
@@ -3215,6 +3222,46 @@ if (breadthSub){
       // --- Summary (top) KPI tiles ---
       const setSum = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
 
+      // ▼▼▼ 追加：市場出来高＆アルト比率の表示 ▼▼▼
+      (function updateVolTile(){
+        const totalV = o.totalVol || 0;
+  
+        // 1. メイン数値（全体の出来高）
+        const elMain = document.getElementById('kpiStripVolMain');
+        if(elMain) elMain.textContent = yenLarge(totalV);
+
+        // 2. 構成比率の計算
+        const vVals = o.volValues || [0,0,0,0]; // BTC, ETH, Stable, Other
+        const btcV = vVals[0] || 0;
+        const ethV = vVals[1] || 0;
+        // Stableは「その他」に含めるか、除外して考えるかですが、ここでは「Others」に含めます
+        const otherV = (vVals[2] || 0) + (vVals[3] || 0);
+  
+        const btcPct = totalV ? (btcV / totalV) * 100 : 0;
+        const ethPct = totalV ? (ethV / totalV) * 100 : 0;
+        const otherPct = totalV ? (otherV / totalV) * 100 : 0;
+
+        // 3. サブテキスト（アルト比率を表示）
+        // ここでは ETH + Others を「Alt」として扱います
+        const altRatio = ethPct + otherPct;
+        const elSub = document.getElementById('kpiStripVolSub');
+        if(elSub) {
+          elSub.textContent = `Alt比率 ${altRatio.toFixed(1)}%`;
+          // アルト比率が高いときは少し色を変えて強調
+          if(altRatio > 50) elSub.style.color = "#7dd3fc"; // 水色
+          else elSub.style.color = "#cbd5e1"; // 通常色
+        }
+
+        // 4. ミニバーの更新
+        const barBtc = document.getElementById('miniVolBarBtc');
+        const barEth = document.getElementById('miniVolBarEth');
+        const barOth = document.getElementById('miniVolBarOth');
+  
+        if(barBtc) barBtc.style.width = `${btcPct}%`;
+        if(barEth) barEth.style.width = `${ethPct}%`;
+        if(barOth) barOth.style.width = `${otherPct}%`;
+      })();
+      
       // Sentiment
       setSum('sumSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
       setSum('sumSentSub', sentLabel);
@@ -4496,51 +4543,6 @@ function updateAiInsight() {
   }
 }
 
-// ▼▼▼ 追加：ハッシュレート取得プログラム（本体） ▼▼▼
-  async function loadBtcHashrate() {
-    // 無料・登録不要のMempool.space APIを使用
-    // 3日間の平均ハッシュレートを取得（1日単位の推移データが返る）
-    const url = 'https://mempool.space/api/v1/mining/hashrate/3d';
-    
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('mempool api error');
-      
-      const data = await res.json();
-      // data format: { hashrates: [ { timestamp, avgHashrate }, ... ], difficulty: ... }
-      
-      if (!data || !Array.isArray(data.hashrates) || !data.hashrates.length) return;
-      
-      // 最新のデータポイントを取得
-      const latest = data.hashrates[data.hashrates.length - 1];
-      const val = latest.avgHashrate; // 単位: H/s
-      
-      // EH/s（エクサハッシュ）に変換（1 EH/s = 10^18 H/s）
-      const ehs = val / 1_000_000_000_000_000_000;
-      
-      // 前日比（1つ前のデータと比較）
-      let changeText = '';
-      if (data.hashrates.length >= 2) {
-        const prev = data.hashrates[data.hashrates.length - 2].avgHashrate;
-        const diff = ((val - prev) / prev) * 100;
-        const sign = diff >= 0 ? '+' : '';
-        changeText = `前日比 ${sign}${diff.toFixed(1)}%`;
-      }
-      
-      // 画面表示
-      const mainEl = document.getElementById('kpiStripHashMain');
-      const subEl = document.getElementById('kpiStripHashSub');
-      
-      if (mainEl) mainEl.textContent = `${ehs.toFixed(0)} EH/s`;
-      if (subEl) subEl.textContent = changeText;
-      
-    } catch (e) {
-      console.warn('Hashrate fetch failed:', e);
-      const mainEl = document.getElementById('kpiStripHashMain');
-      if (mainEl) mainEl.textContent = '-';
-    }
-  }
-
   // ============ Boot ============
   async function init(fromManualRefresh=false){
     const firstLoad = !HAS_RENDERED_ONCE;
@@ -4558,9 +4560,6 @@ function updateAiInsight() {
 
       // 追加KPI: BTC MAクロス距離
       try{ await loadBtcMaCross(); }catch(e){ window.__btcMaCross = null; }
-
-      // ▼▼▼ 追加：ハッシュレート取得 ▼▼▼
-      try{ loadBtcHashrate(); }catch(e){}
 
       if (!marketsTop.length){
         setStatus('marketsが空です');
