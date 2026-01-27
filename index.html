@@ -4118,6 +4118,36 @@ function renderAll(){
       if (el) el.classList.toggle('refreshing', !!on);
     });
   }
+// ▼▼▼ 追加：スマホ用サイドメニューの開閉処理 ▼▼▼
+function setupSideMenu() {
+  const btn = document.getElementById('menuBtn');
+  const menu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('sideMenuOverlay');
+  const closeBtn = document.getElementById('menuCloseBtn');
+  
+  if (!btn || !menu || !overlay) return;
+
+  const toggle = (open) => {
+    if (open) {
+      menu.classList.add('is-open');
+      overlay.hidden = false;
+      overlay.style.display = 'block';
+      btn.setAttribute('aria-expanded', 'true');
+      menu.setAttribute('aria-hidden', 'false');
+    } else {
+      menu.classList.remove('is-open');
+      overlay.hidden = true;
+      overlay.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  btn.addEventListener('click', () => toggle(true));
+  if (closeBtn) closeBtn.addEventListener('click', () => toggle(false));
+  overlay.addEventListener('click', () => toggle(false));
+}
+// ▲▲▲ 追加ここまで ▲▲▲
 // ▼▼▼ 修正版：AI分析（箇条書きレイアウト版） ▼▼▼
 function updateAiInsight() {
   const sentScore = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
@@ -4327,7 +4357,7 @@ function updateAiInsight() {
   }
   // 初回ロード
   (function boot(){
-    try{ syncHeaderHeight(); setupOverviewToggle(); }catch(_e){}
+    try{ syncHeaderHeight(); setupOverviewToggle(); setupSideMenu(); }catch(_e){}
     tickRefreshButton();
     init(false);
     try{ startUpdatedTicker(); }catch(_e){}
