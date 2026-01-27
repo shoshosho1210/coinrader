@@ -4663,7 +4663,7 @@ function updateAiInsight() {
 
     } catch(e){
       console.error('init failed:', e);
-      setStatus(ネットワーク混雑中');
+      setStatus('ネットワーク混雑中');
 
       // 初回ロード時だけ「---」に置き換える（更新時は直前の表示を維持してチラつきを防ぐ）
       if (firstLoad){
