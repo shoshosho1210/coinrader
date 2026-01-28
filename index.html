@@ -3410,27 +3410,32 @@ if (breadthSub){
           const labS = hist.map((_,i)=>i);
           if (charts['sentLine']) { try { charts['sentLine'].destroy(); } catch(_){} }
           // autoscale for visibility (sparkline)
+          // --- 波形の描画設定の改善 ---
           const valsS = hist.filter(v => v != null && isFinite(v));
           let minS = 0, maxS = 100;
-          if (valsS.length){
-            minS = Math.min(...valsS);
-            maxS = Math.max(...valsS);
-            let pad = 6;
-            const span = (maxS - minS);
-            if (span < 20) pad = Math.max(pad, (20 - span) / 2);
-            minS = Math.max(0, minS - pad);
-            maxS = Math.min(100, maxS + pad);
+          if (valsS.length) {
+              // ズームしすぎないよう、最低でも上下に「15」程度の余白を強制確保
+              minS = Math.max(0, Math.min(...valsS) - 10);
+              maxS = Math.min(100, Math.max(...valsS) + 10);
+    
+              // 範囲が狭すぎる（横ばい）の時はさらに広げる
+              if (maxS - minS < 30) {
+                  let center = (maxS + minS) / 2;
+                  minS = Math.max(0, center - 15);
+                  maxS = Math.min(100, center + 15);
+              }
           }
+
           makeLineChart('sentLine', labS, [{
-            label:'Sent',
-            data: hist,
-            border:'rgba(255,255,255,0.95)',
-            borderWidth:2.8,
-            fill:true,
-            bg:'rgba(255,255,255,0.10)',
-            tension:0.25,
-            pointRadius:0
-          }], {yMin:minS, yMax:maxS, dayGrid:true});
+              label: 'Sentiment',
+              data: hist,
+              borderColor: 'rgba(56, 189, 248, 0.9)', // シアン色に変更
+              borderWidth: 2,
+              fill: true,
+              backgroundColor: 'rgba(56, 189, 248, 0.1)',
+              tension: 0.45, // ★ 0.25 → 0.45 に上げて曲線をより滑らかに
+              pointRadius: 0
+          }], { yMin: minS, yMax: maxS, dayGrid: false });
         }catch(e){ console.warn('sentiment failed', e); }
 
         // Market cap estimate (normalize to last for readability)
