@@ -3398,7 +3398,7 @@ if (breadthSub){
             elM.textContent = parts.join(' / ');
           }
 
-          // history sparkline (store last 120 points)
+// --- 履歴保存とPC視認性の最適化 ---
           const histKey = 'cr_sent_hist';
           const lastTimeKey = 'cr_sent_last_time';
           let hist = [];
@@ -3410,7 +3410,7 @@ if (breadthSub){
 
           if (nowTs - lastTs > 5 * 60 * 1000 || hist.length === 0) {
               hist.push(Number(score));
-              // ★ 保存数を300件（24時間強）に増やし、PCの横長画面でも線を長く見せる
+              // 保存数を300件に維持（PCでの密度を確保）
               if (hist.length > 300) hist = hist.slice(-300);
               localStorage.setItem(histKey, JSON.stringify(hist));
               localStorage.setItem(lastTimeKey, nowTs);
@@ -3418,7 +3418,7 @@ if (breadthSub){
               hist[hist.length - 1] = Number(score);
               localStorage.setItem(histKey, JSON.stringify(hist));
           }
-          // --- センチメント波形：PCでの視認性とズームの最大化 ---
+
           const labS = hist.map((_, i) => i);
           const valsS = hist.filter(v => v != null && isFinite(v));
           let minS = 0, maxS = 100;
@@ -3428,27 +3428,34 @@ if (breadthSub){
               const currentMax = Math.max(...valsS);
               const range = currentMax - currentMin;
 
-              // ★ 強力なズーム：余白を固定せず、現在の振れ幅の50%を上下に確保する
-              // これにより変化が小さくてもPC上で「波」としてハッキリ認識されます
-              const padding = Math.max(2, range * 0.5); 
+              // ★ PCでも「波」を見せるためのダイナミック・ズーム
+              // 余白（padding）を振れ幅の30%まで絞り、最小でも1.5ptに設定してズームを強めます
+              const padding = Math.max(1.5, range * 0.3); 
               minS = Math.max(0, Math.floor(currentMin - padding));
               maxS = Math.min(100, Math.ceil(currentMax + padding));
+
+              // ★ 表示幅が狭すぎる（10pt未満）場合は、強制的に10pt幅に絞ってさらに拡大表示
+              if (maxS - minS < 10) {
+                  let mid = (maxS + minS) / 2;
+                  minS = Math.max(0, mid - 5);
+                  maxS = Math.min(100, mid + 5);
+              }
           }
 
           makeLineChart('sentLine', labS, [{
               label: 'Sentiment',
               data: hist,
-              borderColor: 'rgba(56, 189, 248, 0.95)',
-              borderWidth: 2.2, // 線を少し太く
+              borderColor: 'rgba(56, 189, 248, 0.95)', // シアンを強調
+              borderWidth: 2.2,
               fill: true,
-              backgroundColor: 'rgba(56, 189, 248, 0.15)', // 塗りつぶしを強調
-              tension: 0.45,
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              tension: 0.5, // ★ モバイルの段差を消すため、さらに滑らかに
               pointRadius: 0
           }], { 
               yMin: minS, 
               yMax: maxS, 
-              dayGrid: true, // グリッドを有効化
-              xGridColor: 'rgba(255,255,255,0.12)', // ★ 以前より少し濃くして視認性を回復
+              dayGrid: true, // グリッドを復元
+              xGridColor: 'rgba(255,255,255,0.15)', // グリッドを少し濃くして視認性を向上
               xGridWidth: 1
           });
         }catch(e){ console.warn('sentiment failed', e); }
