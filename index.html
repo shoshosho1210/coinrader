@@ -4499,10 +4499,14 @@ function renderRankTable(coins) {
         else if (rsiVal <= 30) rsiClass = 'rsi-low';
       }
     }
-    const rsiHtml = rsiVal ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` : '-';
+    // バッジのHTML生成
+    const rsiHtml = rsiVal !== null 
+      ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` 
+      : `<span class="rsi-badge">—</span>`;
+
     const canvasId = `tbl_chart_${c.id}_${i}`;
 
-    // ▼▼▼ 修正版：renderRankTable内の生成ロジック ▼▼▼
+    // --- 2. テーブル行（TR）の生成 ---
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="td-sym">
@@ -4513,8 +4517,10 @@ function renderRankTable(coins) {
         </div>
       </td>
       <td>${price}</td>
-      <td class="${chg24Class}">${chg24Str}</td> <td class="${chg7dClass}">${chg7dStr}</td> <td>${mcap}</td> <td>${rsiHtml}</td>
-      <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
+      <td class="${chg24Class}">${chg24Str}</td> 
+      <td class="${chg7dClass}">${chg7dStr}</td> 
+      <td>${mcap}</td> 
+      <td style="text-align:center;">${rsiHtml}</td> <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
       <td>${vol}</td>
     `;
     
