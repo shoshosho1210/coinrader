@@ -1,13 +1,17 @@
 🤖 CoinRader 市場速報 (01/28)
-【分析: 中立】 需給とテクニカルをAI解析
+分析: 中立
 
 🔹 Bitcoin 📉
 価格: ¥1357万
-前日比: -0.8%
-RSI(14): 15.94
+前日比: -0.7%
+RSI(14): 15.96
 心理指数: 29 (Fear)
+
+📈 注目銘柄
+トレンド入り: HYPE, PIPPIN, ASTER
+急上昇銘柄: PIPPIN (66%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260128.html
 
-#CoinRader #暗号資産
+#CoinRader #ビットコイン #暗号資産
