@@ -1476,7 +1476,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     <span style="font-size:18px; margin-right:2px;">🤖</span>
     <span class="ai-title-label">AI Market Insight</span>
     <span class="ai-badge">Beta</span>
-    <span id="aiUpdateTime" style="margin-left: auto; font-size: 10px; color: #38bdf8; font-family: 'Courier New', Courier, monospace; opacity: 0.8; letter-spacing: 1px;"></span>
+    <span id="aiUpdateTime" style="margin-left: auto; font-size: 10px; color: #38bdf8; font-family: monospace; opacity: 0.6; letter-spacing: 1px;">[ STANDBY ]</span>
   </div>
 
 <div class="ai-insight-text" id="aiInsightText">
@@ -4726,6 +4726,7 @@ let _lastAiState = "";
 async function updateAiInsight() {
     const box = document.getElementById('aiInsightBox');
     const textEl = document.getElementById('aiInsightText');
+    const timeEl = document.getElementById('aiUpdateTime'); // ここで取得
     if (!box || !textEl || _aiThinking) return;
 
     const sentTxt = document.getElementById('sumSentMain')?.textContent || "";
@@ -4745,6 +4746,9 @@ async function updateAiInsight() {
 
     _aiThinking = true;
     _lastAiState = currentState;
+
+    // ★ 1. 解析開始と同時に「ANALYZING...」と表示させる
+    if (timeEl) timeEl.textContent = "[ ANALYZING... ]";
 
     // A. 思考中演出
     textEl.innerHTML = `
@@ -4852,9 +4856,9 @@ async function updateAiInsight() {
 
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    const timeEl = document.getElementById('aiUpdateTime');
     if (timeEl) {
         timeEl.textContent = `[ ANALYZED AT ${timeStr} ]`;
+        timeEl.style.opacity = "1"; // 完了したら少し明るくする
     }
     _aiThinking = false;
 }
