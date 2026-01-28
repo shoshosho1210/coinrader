@@ -48,71 +48,72 @@ def format_price(price):
 # ==========================================
 # 3. メイン処理
 # ==========================================
+def get_fear_and_greed_index():
+    """市場の恐怖強欲指数(FGI)を取得"""
+    try:
+        res = requests.get("https://api.alternative.me/fng/", timeout=10)
+        data = res.json()
+        return {"value": int(data['data'][0]['value']), "label": data['data'][0]['value_classification']}
+    except:
+        return {"value": 50, "label": "Neutral"}
+
 def generate_post():
-    # データ取得
-    markets = get_coingecko_data("https://api.coingecko.com/api/v3/coins/markets", 
-                                {"vs_currency": "jpy", "order": "market_cap_desc", "per_page": 250})
+    markets = get_market_data()
+    trending = get_trending_coins()
+    fgi = get_fear_and_greed_index()
     
-    # トレンド取得 (API構造が違うため個別処理)
-    trending_raw = get_coingecko_data("https://api.coingecko.com/api/v3/search/trending", {})
-    trending = [item['item'] for item in trending_raw.get('coins', [])] if trending_raw else []
+    if not markets: return False
 
-    # 取得失敗時のガード
-    if not markets:
-        # 失敗しても空のJSONを作らないと後続のActionが止まるため、エラーメッセージを返す
-        print("❌ データの取得に失敗しました。レート制限の可能性があります。")
-        return False
-
-    # --- データの抽出 ---
+    # --- データの抽出と高度な指標の計算 ---
     btc = next((item for item in markets if item["id"] == "bitcoin"), None)
+    eth = next((item for item in markets if item["id"] == "ethereum"), None)
     
-    MIN_VOL_JPY = 500_000_000 
-    valid_gainers = [
-        c for c in markets 
-        if c.get('price_change_percentage_24h') is not None
-        and (c.get('total_volume') or 0) >= MIN_VOL_JPY
-        and not is_stable_coin(c)
-        and not is_wrapped_or_duplicate(c)
-    ]
-    top_gainers = sorted(valid_gainers, key=lambda x: x['price_change_percentage_24h'], reverse=True)[:1]
-    
-    trend_symbols = []
-    for t in trending:
-        if not (is_wrapped_or_duplicate(t) or is_stable_coin(t)):
-            trend_symbols.append(t['symbol'].upper())
-        if len(trend_symbols) >= 3: break
+    # 市場全体の時価総額（簡易合算）とBTCドミナンス
+    total_mcap = sum(c.get('market_cap', 0) or 0 for c in markets)
+    btc_dominance = (btc['market_cap'] / total_mcap * 100) if btc and total_mcap > 0 else 0
 
-    # --- 日付計算 (JST) ---
+    # 日付計算 (JST)
     jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-    date_str = jst_now.strftime("%m/%d")
     file_date = jst_now.strftime("%Y%m%d")
     display_date = jst_now.strftime("%Y-%m-%d")
 
     # ==========================================
-    # 4. ファイル保存 (data/daily と share/)
+    # 4. ファイル保存処理 (高度分析用JSON構造)
     # ==========================================
-    
-    # --- JSONデータの保存 (軽量化版) ---
+    # 週次レポート作成時に「ここだけ見れば良い」データを作成
+    intelligence_summary = {
+        "date": display_date,
+        "market_sentiment": {
+            "fgi_value": fgi["value"],
+            "fgi_label": fgi["label"],
+            "btc_dominance": round(btc_dominance, 2)
+        },
+        "key_assets": {
+            "btc": {
+                "price": btc["current_price"],
+                "change_24h": round(btc["price_change_percentage_24h"], 2)
+            } if btc else {},
+            "eth": {
+                "price": eth["current_price"],
+                "change_24h": round(eth["price_change_percentage_24h"], 2)
+            } if eth else {}
+        },
+        "weekly_report_hooks": {
+            "top_gainers": sorted(markets, key=lambda x: x.get('price_change_percentage_24h', 0) or 0, reverse=True)[:5],
+            "trending_symbols": [t['symbol'].upper() for t in trending[:5]]
+        }
+    }
+
+    # 全データを統合して保存
+    final_json = {
+        "summary": intelligence_summary, # 週次レポートはこの中身を7日分並べるだけで作れる
+        "raw_data": markets             # 250銘柄の詳細（深掘り用）
+    }
+
     save_dir = "data/daily"
     os.makedirs(save_dir, exist_ok=True)
-    
-    # 必要な項目（キー）だけに絞り込む
-    slim_markets = []
-    for c in markets:
-        slim_markets.append({
-            "id": c.get("id"),
-            "symbol": c.get("symbol"),
-            "name": c.get("name"),
-            "price": c.get("current_price"),
-            "cap": c.get("market_cap"),
-            "vol": c.get("total_volume"),
-            "chg24h": c.get("price_change_percentage_24h")
-        })
-    
-    json_path = f"{save_dir}/{file_date}.json"
-    with open(json_path, "w", encoding="utf-8") as f:
-        # slim_markets を保存するように変更
-        json.dump(slim_markets, f, ensure_ascii=False, indent=2)
+    with open(f"{save_dir}/{file_date}.json", "w", encoding="utf-8") as f:
+        json.dump(final_json, f, ensure_ascii=False, indent=2)
 
     # 2. HTML保存 (削ぎ落としたのは転送専用だからですが、OGPタグはフルセット入れています)
     share_html = f"""<!doctype html>
