@@ -4,87 +4,106 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>お問い合わせ - CoinRader</title>
-  <meta name="description" content="CoinRader（コインレーダー）へのお問い合わせページです。サービスに関するご意見、ご要望、不具合の報告などはこちらからお寄せください。">
+  <meta name="description" content="CoinRader（コインレーダー）へのご意見、ご要望、不具合報告、お仕事のご依頼はこちらから。">
   <link rel="canonical" href="https://coinrader.net/contact">
-<!-- Favicons -->
-<link rel="icon" href="/favicon.ico">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+  
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-TDEBXC7DH6');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
 
-<style>
-  .brandLink{display:inline-block;}
-  .brandLogo{height:28px;width:auto;display:block;}
+  <link rel="stylesheet" href="_page_style.css" />
 
-  /* Header (compact, dashboard-like) */
-  .pageHeader{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:10px 12px; margin:0 0 14px 0;
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:14px;
-    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
-  }
-  .pageHeader-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-  .headerLink{
-    color:#cbd5e1; text-decoration:none; font-size:13px;
-    padding:8px 10px; border-radius:10px;
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.03);
-  }
-  .headerLink:hover{ filter:brightness(1.15); }
-  .headerCta{
-    color:#0b1220; text-decoration:none; font-size:13px; font-weight:700;
-    padding:8px 12px; border-radius:10px;
-    background:linear-gradient(180deg,#60a5fa,#3b82f6);
-    border:1px solid rgba(59,130,246,.45);
-  }
-  .headerCta:hover{ filter:brightness(1.05); }
-  @media (max-width: 520px){
-    .pageHeader{ align-items:flex-start; }
-    .pageHeader-right{ width:100%; justify-content:flex-start; }
-  }
+  <style>
+    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
+    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
+    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; }
+    .text-block { color:#cbd5e1; line-height:1.8; font-size:14px; margin-bottom: 20px; }
+    
+    .btn-contact {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 24px; border-radius: 12px;
+      background: #2563eb; color: #fff; font-weight: 700; text-decoration: none;
+      transition: background 0.2s; border: none; cursor: pointer;
+    }
+    .btn-contact:hover { background: #3b82f6; }
+    
+    .x-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #60a5fa; text-decoration: none; font-weight: 600;
+    }
+    .x-link:hover { text-decoration: underline; }
 
-</style>
+    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
+            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
+            color:#94a3b8; font-size:13px; line-height:1.6; }
 
-<link rel="stylesheet" href="_page_style.css" />
+    .pageHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
+      border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+    }
+    .brandLogo { height:28px; }
+  </style>
 </head>
+
 <body>
   <div class="container">
     <header class="pageHeader" role="banner">
       <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
       </a>
-      <div class="pageHeader-right">
-      </div>
     </header>
+
     <div class="card">
       <h1>お問い合わせ</h1>
-<p>ご意見・ご要望・不具合報告は、以下の方法でご連絡ください。</p>
-<h2>お問い合わせフォーム</h2>
-<p><strong>フォームURLをここに設定してください：</strong><br>
-<a href="https://forms.gle/TwFZdiG7PKmiN8J38" target="_blank" rel="noopener">
-  Googleフォームで問い合わせる
-</a><a href="https://forms.gle/TwFZdiG7PKmiN8J38" target="_blank" rel="noopener">
-  Googleフォームで問い合わせる
-</a>
-<p class="note">返信が必要な場合は、フォーム内に返信先メールアドレスをご記入ください。</p>
-<h2>X（旧Twitter）</h2>
-<p>運営者：CoinRader公式（Xハンドル）</p>
-<p class="note">※DM運用にする場合は、DM受付可否や返信範囲を明記するとトラブルが減ります。</p>
-    </div>
-    <footer class="footer">
-      <div class="links">
+      <p class="lead">当サイトへのご意見、不具合の報告、その他のお問い合わせはこちらから受け付けております。</p>
+
+      <div class="sec">
+        <h2>📝 お問い合わせフォーム</h2>
+        <div class="text-block">
+          以下のGoogleフォームよりメッセージをお送りいただけます。返信が必要な内容については、フォーム内の連絡先項目にご記入をお願いいたします。
+        </div>
+        <div style="margin: 20px 0;">
+          <a class="btn-contact" href="https://forms.gle/TwFZdiG7PKmiN8J38" target="_blank" rel="noopener">
+            Googleフォームを開く
+          </a>
+        </div>
+        <div class="note">
+          ※個人運営のため、全てのお問い合わせへの返信をお約束するものではありません。あらかじめご了承ください。
+        </div>
       </div>
-      <div class="note">© CoinRader</div>
+
+      <div class="sec">
+        <h2>📱 X (旧Twitter)</h2>
+        <div class="text-block">
+          最新の更新情報や市場分析についてはXでも発信しています。軽いご質問やフィードバックなどは、リプライやDMでも受け付けております。
+        </div>
+        <a class="x-link" href="https://x.com/coinrader_net" target="_blank" rel="noopener">
+          <span>CoinRader 公式アカウント (@coinrader_net)</span>
+        </a>
+      </div>
+
+      <div class="sec">
+        <h2>💡 このような時にご連絡ください</h2>
+        <ul class="text-block" style="padding-left: 20px;">
+          <li>サイト内の数値やデータの間違いの指摘</li>
+          <li>表示崩れや機能の不具合報告</li>
+          <li>「こんなデータが見たい」という新機能の要望</li>
+          <li>広告掲載や相互リンクに関するご提案</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      <div class="note">© CoinRader | ユーザーと共に進化するダッシュボード</div>
     </footer>
   </div>
 </body>
