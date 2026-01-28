@@ -3410,32 +3410,44 @@ if (breadthSub){
           const labS = hist.map((_,i)=>i);
           if (charts['sentLine']) { try { charts['sentLine'].destroy(); } catch(_){} }
           // autoscale for visibility (sparkline)
-          // --- 波形の描画設定の改善 ---
+          // --- センチメント波形：PCでの視認性とグリッドの復元 ---
           const valsS = hist.filter(v => v != null && isFinite(v));
           let minS = 0, maxS = 100;
-          if (valsS.length) {
-              // ズームしすぎないよう、最低でも上下に「15」程度の余白を強制確保
-              minS = Math.max(0, Math.min(...valsS) - 10);
-              maxS = Math.min(100, Math.max(...valsS) + 10);
-    
-              // 範囲が狭すぎる（横ばい）の時はさらに広げる
+
+          if (valsS.length > 1) {
+              const currentMin = Math.min(...valsS);
+              const currentMax = Math.max(...valsS);
+              const range = currentMax - currentMin;
+
+              // ★ 変化が小さい時ほどズームして、PCでも「動き」を見せる
+              // 振れ幅が10未満なら上下5ptずつ、それ以上なら10ptずつの余白でタイトに表示
+              const padding = range < 10 ? 5 : 10;
+              minS = Math.max(0, currentMin - padding);
+              maxS = Math.min(100, currentMax + padding);
+
+              // 最低でも上下30pt程度の幅を維持（ズームしすぎてギザギザになるのを防ぐ）
               if (maxS - minS < 30) {
-                  let center = (maxS + minS) / 2;
-                  minS = Math.max(0, center - 15);
-                  maxS = Math.min(100, center + 15);
+                  let mid = (maxS + minS) / 2;
+                  minS = Math.max(0, mid - 15);
+                  maxS = Math.min(100, mid + 15);
               }
           }
 
+          // グラフ描画の実行
           makeLineChart('sentLine', labS, [{
               label: 'Sentiment',
               data: hist,
-              borderColor: 'rgba(56, 189, 248, 0.9)', // シアン色に変更
-              borderWidth: 2,
+              borderColor: 'rgba(56, 189, 248, 0.9)',
+              borderWidth: 2.5, // 線を少し太くしてPCでの存在感を出す
               fill: true,
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
-              tension: 0.45, // ★ 0.25 → 0.45 に上げて曲線をより滑らかに
+              backgroundColor: 'rgba(56, 189, 248, 0.12)', // 塗りつぶしを少し濃く
+              tension: 0.4, // 滑らかさを維持
               pointRadius: 0
-          }], { yMin: minS, yMax: maxS, dayGrid: false });
+          }], { 
+              yMin: minS, 
+              yMax: maxS, 
+              dayGrid: true // ★ 1日おきのグリッド線を復活
+          });
         }catch(e){ console.warn('sentiment failed', e); }
 
         // Market cap estimate (normalize to last for readability)
