@@ -4847,9 +4847,20 @@ function shareMarketStatus() {
     `#CoinRader #ビットコイン #暗号資産`
   ].join('');
 
-  // 4. Xの投稿画面を開く
+  // 4. Xの投稿画面をポップアップウィンドウで開く
+  const width = 600;
+  const height = 400;
+  const left = (window.innerWidth - width) / 2;
+  const top = (window.innerHeight - height) / 2;
+  
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
+  
+  // '_blank' の代わりにウィンドウのサイズと位置を指定
+  window.open(
+    url, 
+    'share_window', 
+    `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+  );
   
   // アナリティクス計測
   if(typeof fireCtaClick === 'function'){
