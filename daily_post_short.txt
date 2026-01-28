@@ -1,11 +1,11 @@
 🤖 CoinRader 市場速報 (01/28)
 【分析: 中立】 多角的な需給解析を更新
 
-🔹 Bitcoin 📈
+🔹 Bitcoin 📉
 価格: ¥1364万
-前日比: +0.0%
+前日比: -0.1%
 
-🔥 トレンド: HYPE, BTC, PUMP
+🔥 トレンド: HYPE, PUMP, PENGU
 🚀 急上昇: PIPPIN
 
 📊 詳細分析はサイトでチェック
