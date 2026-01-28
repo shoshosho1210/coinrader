@@ -4792,52 +4792,70 @@ function updateAiInsight() {
   function closePageModal() {
     document.getElementById('pageModalOverlay').classList.remove('open');
   }
-// ▼▼▼ 追加：市場状況をXでシェアする関数 ▼▼▼
-  function shareMarketStatus() {
-    // 1. BTC情報の取得
-    const btc = marketsTop.find(c => c.id === 'bitcoin');
-    let btcText = '';
-    if (btc) {
-      const p = (btc.current_price / 10000).toFixed(0); // 万単位
-      const chg = btc.price_change_percentage_24h;
-      const icon = chg > 0 ? '📈' : (chg < 0 ? '📉' : '➡️');
-      const sign = chg > 0 ? '+' : '';
-      btcText = `BTC: ¥${p}万 (${sign}${chg.toFixed(1)}%) ${icon}`;
-    }
+// ▼▼▼ 修正版：daily_post_short.txt と同じフォーマットでシェアする関数 ▼▼▼
+function shareMarketStatus() {
+  // 0. 日付情報の取得 (JST)
+  const now = new Date();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const yyyy = now.getFullYear();
+  const dateLabel = `${mm}/${dd}`;
+  const fileDate = `${yyyy}${mm}${dd}`;
 
-    // 2. トレンド銘柄の取得（上位3つ）
-    const trendNames = trendingCoins.slice(0, 3).map(c => c.symbol.toUpperCase());
-    const trendText = trendNames.length ? `\n🔥Trend: ${trendNames.join(', ')}` : '';
+  // 1. BTC情報の取得
+  const btc = marketsTop.find(c => c.id === 'bitcoin');
+  if (!btc) return;
 
-    // 3. 上昇率トップの取得
-    const gainers = getGainersTop5();
-    const topGainer = gainers.length ? gainers[0] : null;
-    let gainerText = '';
-    if (topGainer) {
-      const gSym = topGainer.symbol.toUpperCase();
-      const gPct = topGainer.price_change_percentage_24h.toFixed(1);
-      gainerText = `\n🚀Top: ${gSym} +${gPct}%`;
-    }
+  const chg = btc.price_change_percentage_24h || 0;
+  // Python版と同じ分析ロジック
+  const aiStatusMsg = chg > 3 ? "分析: 楽観" : (chg < -3 ? "分析: 悲観" : "分析: 中立");
+  const icon = chg > 0 ? '📈' : '📉';
+  const sign = chg > 0 ? '+' : '';
 
-    // 4. テキストの組み立て
-    const text = [
-      `【市場速報】`,
-      btcText,
-      trendText,
-      gainerText,
-      `\n#CoinRader #Bitcoin #ビットコイン #暗号資産 `,
-      `https://coinrader.net/` // ←ここにあなたのサイトURL
-    ].join('');
+  // 各種指標を画面上の要素から直接取得（一貫性を保つため）
+  const rsiVal = document.getElementById('sumRsiMain')?.textContent || '-';
+  const fgiVal = document.getElementById('sumSentMain')?.textContent || '-';
+  const fgiLabel = document.getElementById('sumSentSub')?.textContent || '';
 
-    // 5. Xの投稿画面を開く
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-    
-    // アナリティクス計測（もしあれば）
-    if(typeof fireCtaClick === 'function'){
-      fireCtaClick({cta_id:'share_x', placement:'overview', partner:'self', pr:0});
-    }
+  // 2. 注目銘柄の取得
+  const trendNames = trendingCoins.slice(0, 3).map(c => c.symbol.toUpperCase());
+  const trendingStr = trendNames.length ? trendNames.join(', ') : '-';
+
+  const gainers = getGainersTop5();
+  const topGainer = gainers.length ? gainers[0] : null;
+  let gainerText = '-';
+  if (topGainer) {
+    const gSym = topGainer.symbol.toUpperCase();
+    const gPct = Math.round(topGainer.price_change_percentage_24h);
+    gainerText = `${gSym} (${gPct}%↑)`;
   }
+
+  // 3. テキストの組み立て (daily_post_short.txt の最新フォーマットに完全準拠)
+  const text = [
+    `🤖 CoinRader 市場速報 (${dateLabel})\n`,
+    `${aiStatusMsg}\n\n`,
+    `🔹 Bitcoin ${icon}\n`,
+    `価格: ${yenLarge(btc.current_price)}\n`, // yenLargeで「¥1357万」形式にする
+    `前日比: ${sign}${chg.toFixed(1)}%\n`,
+    `RSI(14): ${rsiVal}\n`,
+    `心理指数: ${fgiVal} (${fgiLabel})\n\n`,
+    `📈 注目銘柄\n`,
+    `トレンド入り: ${trendingStr}\n`,
+    `急上昇銘柄: ${gainerText}\n\n`,
+    `📊 詳細分析\n`,
+    `https://coinrader.net/share/${fileDate}.html\n\n`, // 日別URLを動的に生成
+    `#CoinRader #ビットコイン #暗号資産`
+  ].join('');
+
+  // 4. Xの投稿画面を開く
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+  
+  // アナリティクス計測
+  if(typeof fireCtaClick === 'function'){
+    fireCtaClick({cta_id:'share_x', placement:'overview', partner:'self', pr:0});
+  }
+}
 </script>
 </body>
 </html>
