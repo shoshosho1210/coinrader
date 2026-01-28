@@ -2,6 +2,7 @@ import requests
 import datetime
 import os
 import json
+import time
 
 # ==========================================
 # 1. 除外ロジック (ステーブル・Wrapped除外)
@@ -25,10 +26,9 @@ def is_wrapped_or_duplicate(coin):
     return False
 
 # ==========================================
-# 2. データ取得関数 (APIキー対応版)
+# 2. データ取得・分析関数
 # ==========================================
 def get_coingecko_data(url, params):
-    # YAMLで設定した CG_DEMO_KEY を読み込む（GitHub Actions環境用）
     api_key = os.getenv("CG_DEMO_KEY")
     headers = {"x-cg-demo-api-key": api_key} if api_key else {}
     try:
@@ -39,8 +39,32 @@ def get_coingecko_data(url, params):
         print(f"APIエラー: {url} -> {e}")
         return None
 
+def calculate_rsi(coin_id, days=20):
+    """過去の価格データを取得してRSI(14)を計算する"""
+    data = get_coingecko_data(f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart", 
+                              {"vs_currency": "jpy", "days": days, "interval": "daily"})
+    if not data or 'prices' not in data:
+        return None
+    
+    # 終値のリストを作成
+    prices = [p[1] for p in data['prices']]
+    if len(prices) < 15:
+        return None
+
+    # RSI(14)の計算ロジック
+    deltas = [prices[i+1] - prices[i] for i in range(len(prices)-1)]
+    up = [d if d > 0 else 0 for d in deltas[-14:]]
+    down = [-d if d < 0 else 0 for d in deltas[-14:]]
+    
+    avg_up = sum(up) / 14
+    avg_down = sum(down) / 14
+    
+    if avg_down == 0:
+        return 100
+    rs = avg_up / avg_down
+    return round(100 - (100 / (1 + rs)), 2)
+
 def get_fear_and_greed_index():
-    """市場の恐怖強欲指数(FGI)を取得"""
     try:
         res = requests.get("https://api.alternative.me/fng/", timeout=10)
         data = res.json()
@@ -57,35 +81,31 @@ def format_price(price):
 # 3. メイン処理
 # ==========================================
 def generate_post():
-    # A. 市場データ取得 (上位250銘柄)
+    # データの取得
     markets = get_coingecko_data("https://api.coingecko.com/api/v3/coins/markets", 
                                 {"vs_currency": "jpy", "order": "market_cap_desc", "per_page": 250})
-    
-    # B. トレンド取得
     trending_raw = get_coingecko_data("https://api.coingecko.com/api/v3/search/trending", {})
     trending_coins = [item['item'] for item in trending_raw.get('coins', [])] if trending_raw else []
-
-    # C. 恐怖強欲指数取得
     fgi = get_fear_and_greed_index()
 
     if not markets:
         print("❌ 市場データの取得に失敗しました。")
         return False
 
-    # --- 分析ロジック ---
+    # 高度分析用：BTCとETHのRSIを計算
+    btc_rsi = calculate_rsi("bitcoin")
+    eth_rsi = calculate_rsi("ethereum")
+
+    # 指標抽出
     btc = next((item for item in markets if item["id"] == "bitcoin"), None)
-    eth = next((item for item in markets if item["id"] == "ethereum"), None)
-    
-    # ドミナンス計算
     total_mcap = sum(c.get('market_cap', 0) or 0 for c in markets)
     btc_dom = (btc['market_cap'] / total_mcap * 100) if btc and total_mcap > 0 else 0
 
-    # 急上昇 (出来高5億以上から選定)
-    MIN_VOL = 500_000_000
-    valid_gainers = [c for c in markets if (c.get('total_volume') or 0) >= MIN_VOL and not is_stable_coin(c) and not is_wrapped_or_duplicate(c)]
+    # 急上昇 (出来高5億以上から)
+    valid_gainers = [c for c in markets if (c.get('total_volume') or 0) >= 500_000_000 and not is_stable_coin(c) and not is_wrapped_or_duplicate(c)]
     top_gainer = sorted(valid_gainers, key=lambda x: x.get('price_change_percentage_24h', 0) or 0, reverse=True)[:1]
     
-    # トレンドシンボル抽出
+    # トレンドシンボル
     trend_symbols = []
     for t in trending_coins:
         if not (is_wrapped_or_duplicate(t) or is_stable_coin(t)):
@@ -99,15 +119,17 @@ def generate_post():
     date_label = jst_now.strftime("%m/%d")
 
     # ==========================================
-    # 4. ファイル保存 (JSON / HTML)
+    # 4. 高度分析用 JSON 構造の構築
     # ==========================================
-    
-    # 高度分析用サマリー構造
     intelligence_json = {
         "summary": {
             "date": display_date,
             "fgi": fgi,
             "btc_dominance": round(btc_dom, 2),
+            "technical": {
+                "btc_rsi": btc_rsi,
+                "eth_rsi": eth_rsi
+            },
             "top_gainer": {
                 "symbol": top_gainer[0]['symbol'].upper() if top_gainer else "-",
                 "change": round(top_gainer[0]['price_change_percentage_24h'], 2) if top_gainer else 0
@@ -115,7 +137,7 @@ def generate_post():
             "trending": trend_symbols
         },
         "raw_data_count": len(markets),
-        "raw_data": markets # 週次レポートの深掘り用に保持
+        "raw_data": markets 
     }
 
     # JSON保存
@@ -150,13 +172,12 @@ def generate_post():
     
     short_post = (
         f"🤖 CoinRader 市場速報 ({date_label})\n"
-        f"{ai_status} 市場の需給をAI解析\n\n"
+        f"{ai_status} 需給とテクニカルをAI解析\n\n"
         f"🔹 Bitcoin {icon}\n"
         f"価格: ¥{format_price(btc['current_price']) if btc else '-'}\n"
         f"前日比: {'+' if chg > 0 else ''}{chg:.1f}%\n"
+        f"RSI(14): {btc_rsi if btc_rsi else '-'}\n"
         f"心理指数: {fgi['value']} ({fgi['label']})\n\n"
-        f"🔥 トレンド: {', '.join(trend_symbols)}\n"
-        f"🚀 急上昇: {intelligence_json['summary']['top_gainer']['symbol']}\n\n"
         f"📊 詳細分析\nhttps://coinrader.net/share/{file_date}.html\n\n"
         f"#CoinRader #暗号資産"
     )
@@ -170,6 +191,6 @@ def generate_post():
 
 if __name__ == "__main__":
     if generate_post():
-        print("✅ 全ファイルの生成に成功しました")
+        print("✅ RSIを含む高度分析JSONの生成に成功しました")
     else:
         print("❌ プロセス中にエラーが発生しました")
