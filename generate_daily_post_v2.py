@@ -89,11 +89,11 @@ def generate_post():
     display_date = jst_now.strftime("%Y-%m-%d")
 
     # ==========================================
-    # 4. ファイル保存 (assets/data/daily と share/)
+    # 4. ファイル保存 (data/daily と share/)
     # ==========================================
     
     # 1. JSON保存
-    save_dir = "assets/data/daily"
+    save_dir = "data/daily"
     os.makedirs(save_dir, exist_ok=True)
     with open(f"{save_dir}/{file_date}.json", "w", encoding="utf-8") as f:
         json.dump(markets, f, ensure_ascii=False, indent=2)
