@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CoinRaderについて・運営者実績</title>
-  <meta name="description" content="CoinRader（コインレーダー）の運営目的と、データ分析実績（金融データ活用チャレンジ84位）を持つ運営者のプロフィールを紹介します。">
+  <title>CoinRaderについて - 運営方針とプロフィール</title>
+  <meta name="description" content="暗号資産ダッシュボード「CoinRader」の運営目的と、開発者の想いについて。">
   <link rel="canonical" href="https://coinrader.net/about">
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
@@ -20,22 +20,15 @@
   <style>
     .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
     .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
-            background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; margin-bottom: 8px;}
+            background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#94a3b8; margin-bottom: 8px;}
     .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
-    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .sec h2 { margin: 24px 0 12px; font-size: 17px; color: #fff; display: flex; align-items: center; gap: 8px; }
     .profile-card { 
-      background: linear-gradient(145deg, #1e293b, #0f172a); 
-      border: 1px solid rgba(59,130,246,0.2); 
-      border-radius: 16px; padding: 24px; margin: 20px 0;
+      background: rgba(255,255,255,0.02); 
+      border: 1px solid rgba(255,255,255,0.08); 
+      border-radius: 12px; padding: 20px; margin: 20px 0;
     }
-    .achievement-list { list-style: none; padding: 0; }
-    .achievement-list li { 
-      background: rgba(255,255,255,0.03); margin-bottom: 10px; padding: 12px; 
-      border-radius: 8px; border-left: 3px solid #60a5fa; color: #cbd5e1;
-    }
-    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
-            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
-            color:#94a3b8; font-size:13px; line-height:1.6; }
+    .text-block { color:#cbd5e1; line-height:1.8; font-size:14px; margin-bottom: 16px; }
     .pageHeader {
       display:flex; align-items:center; justify-content:space-between;
       padding:12px 16px; border:1px solid rgba(255,255,255,.1);
@@ -54,53 +47,57 @@
     </header>
 
     <div class="card">
-      <span class="pill">コンセプト & ミッション</span>
+      <span class="pill">Site Concept</span>
       <h1>CoinRaderについて</h1>
       <p class="lead">
-        CoinRaderは「暗号資産投資の羅針盤」となるべく誕生しました。<br>
-        複雑な金融統計やAIの力を、全ての個人投資家が直感的に使えるダッシュボードとして提供します。
+        CoinRaderは、日々変化する暗号資産市場を「シンプルに、客観的に」把握するために作られた個人運営のダッシュボードです。
       </p>
 
       <div class="sec">
-        <h2>👤 運営者（アナリスト）情報</h2>
-        <div class="profile-card">
-          <div style="font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 10px;">data_ys</div>
-          <p class="muted" style="margin-bottom: 15px;">
-            個人投資家 / データアナリスト。統計学、Python、機械学習を駆使し、暗号資産相場のボラティリティ予測やセンチメント解析を研究。
-          </p>
-          
-          <ul class="achievement-list">
-            <li><strong>金融庁共催「第3回 金融データ活用チャレンジ」</strong>：84位 / 705人（銅メダル相当の実績）</li>
-            <li><strong>専門領域</strong>：GARCHモデルによるボラティリティ予測、LLMを用いたセンチメントインデックスの構築</li>
-            <li><strong>得意言語</strong>：Python（Polars, PyTorch, PyCaret）</li>
-          </ul>
+        <h2>📊 なぜこのサイトを作ったのか</h2>
+        <div class="text-block">
+          暗号資産の情報は世界中に溢れていますが、その多くは複雑すぎたり、あるいは感情的な煽りが含まれていたりします。<br><br>
+          「もっと静かに、数値データだけを俯瞰できる場所が欲しい」<br>
+          そんな開発者自身の悩みから、このプロジェクトは始まりました。
         </div>
       </div>
 
       <div class="sec">
-        <h2>🤝 3つの運営方針</h2>
+        <h2>🤝 運営の考え方</h2>
         <ul class="list" style="color: #cbd5e1;">
-          <li><strong>データ至上主義</strong>：個人の主観や煽りを排除し、常に客観的な数値・理論に基づいた情報を提示します。</li>
-          <li><strong>透明性の確保</strong>：使用しているデータソースや分析ロジックを可能な限り公開し、情報の健全性を担保します。</li>
-          <li><strong>投資家ファースト</strong>：利用者がリスクを正しく理解し、持続可能な投資を行えるようサポートします。</li>
+          <li><strong>客観的な視点</strong>：主観を入れず、公開されている数値データを整理して表示することに努めます。</li>
+          <li><strong>使いやすさの追求</strong>：複雑な指標も、一目で状況がわかるようなデザインを心がけています。</li>
+          <li><strong>情報の透明性</strong>：利用しているデータソースを明記し、健全な運営を目指します。</li>
         </ul>
       </div>
 
       <div class="sec">
+        <h2>👤 運営者プロフィール</h2>
+        <div class="profile-card">
+          <div style="font-weight: bold; font-size: 16px; color: #fff; margin-bottom: 8px;">CoinRader 管理人</div>
+          <div class="text-block" style="margin-bottom: 0;">
+            データ分析と暗号資産に関心を持つ個人開発者です。最新の技術を学びながら、自分自身が投資判断の参考にするためのツールとして、日々サイトの改善を行っています。
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
         <h2>✉️ お問い合わせ</h2>
-        <p class="text-block" style="color: #cbd5e1;">
-          当サイトの分析データ、掲載内容に関するお問い合わせ、または取材・執筆のご依頼は下記よりお願いいたします。<br><br>
-          <a href="/contact.html" style="color: #60a5fa; text-decoration: none; border-bottom: 1px solid #60a5fa;">→ お問い合わせフォームへ</a>
+        <p class="text-block">
+          不具合の報告や、掲載データに関するご質問、その他のお問い合わせは下記フォームよりお願いいたします。<br><br>
+          <a href="/contact.html" style="color: #60a5fa; text-decoration: none; border-bottom: 1px solid rgba(96, 165, 250, 0.3);">
+            → お問い合わせフォーム
+          </a>
         </p>
       </div>
 
-      <div class="note">
-        当サイトは、ビットコインをはじめとする暗号資産の概況を可視化するツールであり、投資助言は行いません。運営にあたっては、広告掲載等により収益を得ていますが、情報の公平性を最優先としています。詳細は<a href="disclaimer.html" style="color:#60a5fa;">免責事項</a>をご確認ください。
+      <div class="noteBox" style="margin-top:40px;">
+        ※当サイトは個人による研究・開発の一環として運営されています。投資助言を行うものではありませんので、最終的な判断はご自身の責任でお願いいたします。
       </div>
     </div>
 
     <footer class="footer">
-      <div class="note">© CoinRader</div>
+      <div class="note">© CoinRader | 市場を静かに見守るためのツール</div>
     </footer>
   </div>
 </body>
