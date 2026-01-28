@@ -1,278 +1,186 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-CoinRader: 週次レポート（note下書き）を自動生成する。
-
-入力:
-  - data/daily/YYYYMMDD.json (generate_daily_post_v2.py が生成)
-
-出力:
-  - weekly_note_draft.md     (note貼り付け用 下書き)
-  - weekly_summary.txt       (X等の短文告知用)
-  - weekly_share_url.txt     (週次share URL。必要なら別途HTMLも作れる)
-
-※ 週次は「過去7日分（存在する分）」を集計し、数字 + 文章を軽めにまとめる。
-"""
-from __future__ import annotations
 
 import datetime as dt
 import json
 import os
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-
 SITE_URL = os.getenv("SITE_URL", "https://coinrader.net/").rstrip("/") + "/"
+# 直近何日分を集計するか
 DAYS = int(os.getenv("WEEK_DAYS", "7"))
-
 
 def load_snapshots(days: int = DAYS) -> List[Dict[str, Any]]:
     p = Path("data/daily")
     if not p.exists():
         return []
 
+    # 数字8桁.json を取得し、日付順にソート
     files = sorted([x for x in p.glob("*.json") if x.name[:8].isdigit()])
-    # 新しい順に最大days
     files = files[-days:]
+    
     out = []
     for f in files:
         try:
-            out.append(json.loads(f.read_text(encoding="utf-8")))
+            data = json.loads(f.read_text(encoding="utf-8"))
+            out.append(data)
         except Exception:
             continue
-    # 日付順
-    out.sort(key=lambda d: d.get("date", ""))
     return out
-
 
 def pct(x: Optional[float], digits: int = 1) -> str:
-    if x is None:
-        return "—"
-    sign = "+" if x >= 0 else ""
-    return f"{sign}{x:.{digits}f}%"
+    if x is None: return "—"
+    return f"{'+' if x >= 0 else ''}{x:.{digits}f}%"
 
+def compute_weekly_intelligence(snaps: List[Dict[str, Any]]) -> Dict[str, Any]:
+    if not snaps: return {}
 
-def fmt_oku_jpy(x: Optional[float]) -> str:
-    if x is None:
-        return "—"
-    return f"{x/1e8:.1f}億円"
+    # --- 1. 価格変化とリターン ---
+    def get_price(snap, coin_id):
+        # raw_dataから特定のコインを探す
+        coin = next((c for c in snap.get("raw_data", []) if c["id"] == coin_id), None)
+        return coin.get("current_price") if coin else None
 
+    btc_start = get_price(snaps[0], "bitcoin")
+    btc_end = get_price(snaps[-1], "bitcoin")
+    btc_ret = (btc_end / btc_start - 1) * 100 if btc_start and btc_end else None
 
-def date_range_label(snaps: List[Dict[str, Any]]) -> Tuple[str, str, str]:
-    if not snaps:
-        return ("", "", "")
-    s = snaps[0]["date"]
-    e = snaps[-1]["date"]
-    s2 = f"{s[:4]}-{s[4:6]}-{s[6:]}"
-    e2 = f"{e[:4]}-{e[4:6]}-{e[6:]}"
-    tag = snaps[-1]["date"]
-    return s2, e2, tag
+    eth_start = get_price(snaps[0], "ethereum")
+    eth_end = get_price(snaps[-1], "ethereum")
+    eth_ret = (eth_end / eth_start - 1) * 100 if eth_start and eth_end else None
 
+    # --- 2. 指標の推移 (FGI, Dominance, RSI) ---
+    fgi_values = [s["summary"]["sentiment"]["fgi"] for s in snaps if "sentiment" in s["summary"]]
+    dom_values = [s["summary"]["sentiment"]["btc_dominance"] for s in snaps if "sentiment" in s["summary"]]
+    btc_rsi_values = [s["summary"]["technical"]["btc_rsi"] for s in snaps if s["summary"].get("technical") and s["summary"]["technical"]["btc_rsi"]]
 
-def compute_weekly(snaps: List[Dict[str, Any]]) -> Dict[str, Any]:
-    out: Dict[str, Any] = {}
-    if not snaps:
-        return out
-
-    # --- Breadth aggregate ---
-    up_ratios = []
-    avg_chgs = []
-    days_up = 0
-    days_down = 0
+    # --- 3. 市場の幅 (Breadth) の計算 ---
+    # 全銘柄のうち、何割が上昇したかの週間平均
+    breadth_ratios = []
     for s in snaps:
-        b = s.get("breadth", {}) or {}
-        up = b.get("up")
-        down = b.get("down")
-        if isinstance(up, int) and isinstance(down, int):
-            if up >= down:
-                days_up += 1
-            else:
-                days_down += 1
-        ur = b.get("upRatio")
-        ac = b.get("avgChg")
-        if isinstance(ur, (int, float)):
-            up_ratios.append(float(ur))
-        if isinstance(ac, (int, float)):
-            avg_chgs.append(float(ac))
+        raw = s.get("raw_data", [])
+        if not raw: continue
+        ups = len([c for c in raw if (c.get("price_change_percentage_24h") or 0) > 0])
+        breadth_ratios.append(ups / len(raw) * 100)
 
-    out["breadth"] = {
+    # --- 4. トレンド・上昇銘柄の頻出調査 ---
+    trend_counter = Counter()
+    gainer_counter = Counter()
+    for s in snaps:
+        movers = s["summary"].get("top_movers", {})
+        for sym in movers.get("trending", []):
+            trend_counter[sym] += 1
+        top_g = movers.get("top_gainer")
+        if top_g and isinstance(top_g, list) and len(top_g) > 0:
+            gainer_counter[top_g[0]["symbol"].upper()] += 1
+
+    return {
         "days": len(snaps),
-        "days_up": days_up,
-        "days_down": days_down,
-        "avg_up_ratio": (sum(up_ratios) / len(up_ratios)) if up_ratios else None,
-        "avg_avg_chg": (sum(avg_chgs) / len(avg_chgs)) if avg_chgs else None,
+        "btc_ret": btc_ret,
+        "eth_ret": eth_ret,
+        "fgi_avg": sum(fgi_values) / len(fgi_values) if fgi_values else None,
+        "fgi_latest": fgi_values[-1] if fgi_values else None,
+        "dom_avg": sum(dom_values) / len(dom_values) if dom_values else None,
+        "dom_change": (dom_values[-1] - dom_values[0]) if len(dom_values) > 1 else 0,
+        "rsi_latest": btc_rsi_values[-1] if btc_rsi_values else None,
+        "avg_breadth": sum(breadth_ratios) / len(breadth_ratios) if breadth_ratios else None,
+        "trend_top": trend_counter.most_common(5),
+        "gainer_top": gainer_counter.most_common(5)
     }
 
-    # --- BTC/ETH weekly return (using daily price snapshots) ---
-    def weekly_return(sym: str) -> Optional[float]:
-        prices = []
-        for s in snaps:
-            p = (s.get(sym, {}) or {}).get("price_jpy")
-            if isinstance(p, (int, float)) and p > 0:
-                prices.append(float(p))
-        if len(prices) < 2:
-            return None
-        return (prices[-1] / prices[0] - 1.0) * 100.0
+def render_markdown(agg: Dict[str, Any], start_date: str, end_date: str) -> str:
+    # センチメント判定
+    fgi = agg.get("fgi_latest", 50)
+    mood = "極度の恐怖（絶好の仕込み時）" if fgi < 25 else ("恐怖" if fgi < 45 else "強欲（過熱注意）" if fgi > 75 else "中立")
+    
+    dom_direction = "上昇（資金の集中）" if agg.get("dom_change", 0) > 0.5 else ("低下（アルトへの分散）" if agg.get("dom_change", 0) < -0.5 else "横ばい")
 
-    out["btc_ret"] = weekly_return("btc")
-    out["eth_ret"] = weekly_return("eth")
-
-    # --- Trending frequency ---
-    trend_counter = Counter()
-    for s in snaps:
-        for t in (s.get("trend") or [])[:3]:
-            sym = (t.get("symbol") or "").strip()
-            if sym:
-                trend_counter[sym] += 1
-    out["trend_top"] = trend_counter.most_common(10)
-
-    # --- Gainers frequency + max gain observed ---
-    gain_stats: Dict[str, Dict[str, Any]] = defaultdict(lambda: {"count": 0, "max_pc": None})
-    for s in snaps:
-        for g in (s.get("gainers") or [])[:3]:
-            sym = (g.get("symbol") or "").strip()
-            pc = g.get("pc24")
-            if not sym:
-                continue
-            gain_stats[sym]["count"] += 1
-            if isinstance(pc, (int, float)):
-                cur = gain_stats[sym]["max_pc"]
-                if cur is None or pc > cur:
-                    gain_stats[sym]["max_pc"] = float(pc)
-    # sort by count desc, then max_pc desc
-    gain_sorted = sorted(
-        [(k, v["count"], v["max_pc"]) for k, v in gain_stats.items()],
-        key=lambda x: (x[1], x[2] if x[2] is not None else -1e9),
-        reverse=True,
-    )
-    out["gainers_top"] = gain_sorted[:10]
-
-    # --- Alt volume frequency ---
-    vol_counter = Counter()
-    for s in snaps:
-        for v in (s.get("vol_alt") or [])[:3]:
-            sym = (v.get("symbol") or "").strip()
-            if sym:
-                vol_counter[sym] += 1
-    out["vol_top"] = vol_counter.most_common(10)
-
-    return out
-
-
-def render_note(snaps: List[Dict[str, Any]], agg: Dict[str, Any]) -> str:
-    s2, e2, tag = date_range_label(snaps)
-    share_url = f"{SITE_URL}share/{tag}.html" if tag else SITE_URL
-
-    b = agg.get("breadth", {})
-    mood = "上昇優勢" if (b.get("days_up", 0) >= b.get("days_down", 0)) else "下落優勢"
-
-    # A案 見出し構成
     lines = []
-    lines.append(f"# CoinRader 週次レポート（{s2}〜{e2}）")
+    lines.append(f"# CoinRader 週次マーケット・インテリジェンス")
+    lines.append(f"集計期間: {start_date} 〜 {end_date} ({agg['days']}日間)")
     lines.append("")
-    lines.append("## 1. 今週の結論（3行サマリー）")
-    lines.append(f"- 市場ムード：**{mood}**（上昇優勢日 {b.get('days_up',0)} / 下落優勢日 {b.get('days_down',0)}）")
-    lines.append(f"- 上位250の平均変化：**{pct(b.get('avg_avg_chg'),2)}**（日次平均）／ 上昇比率：**{(round(b.get('avg_up_ratio')) if isinstance(b.get('avg_up_ratio'), (int,float)) else '—')}%**（日次平均）")
-    lines.append(f"- BTC/ETH（週次）：BTC **{pct(agg.get('btc_ret'),1)}** / ETH **{pct(agg.get('eth_ret'),1)}**（日次スナップショットから算出）")
+    lines.append("## 1. 週間エグゼクティブ・サマリー")
+    lines.append(f"- **主要資産騰落率:** BTC {pct(agg.get('btc_ret'))} / ETH {pct(agg.get('eth_ret'))}")
+    lines.append(f"- **市場の心理状態:** 指数 {agg.get('fgi_latest')}（{mood}）")
+    lines.append(f"- **資金フロー:** BTCドミナンスは **{dom_direction}** の傾向")
     lines.append("")
-    lines.append("## 2. 週間の値動きまとめ（見方）")
-    lines.append("- CoinRaderの「今日の注目」は *トレンド / 上昇率(24h) / 出来高(アルト)* の3軸で“いま”を拾います。")
-    lines.append("- 週次では、毎日の上位3位を集計して「よく出た銘柄」「急騰の常連」「出来高の主役」を俯瞰します。")
+    lines.append("## 2. 需給・テクニカル分析")
+    lines.append(f"- **BTCドミナンス:** 平均 {agg.get('dom_avg', 0):.2f}%")
+    lines.append(f"- **BTCテクニカル:** RSI(14)は **{agg.get('rsi_latest', '—')}**。")
+    if agg.get('rsi_latest'):
+        status = "売られすぎ（反発警戒）" if agg['rsi_latest'] < 30 else ("買われすぎ（調整警戒）" if agg['rsi_latest'] > 70 else "中立圏内")
+        lines.append(f"  - 現在の価格水準はテクニカル的に「{status}」を示唆しています。")
+    lines.append(f"- **騰落分布:** 週間平均で市場の **{agg.get('avg_breadth', 0):.1f}%** の銘柄が上昇。")
     lines.append("")
-    lines.append("## 3. トレンドの継続と入れ替わり")
-    tt = agg.get("trend_top", [])[:5]
-    if tt:
-        lines.append("今週よくトレンド入りした銘柄（出現回数）")
-        for sym, cnt in tt:
-            lines.append(f"- {sym}：{cnt}日")
+    lines.append("## 3. 今週の注目セクター & 銘柄")
+    lines.append("### 🔥 トレンド頻出（市場の関心）")
+    for sym, cnt in agg.get("trend_top", []):
+        lines.append(f"- **{sym}**: 週内 {cnt}回ランクイン")
+    
+    lines.append("")
+    lines.append("### 🚀 急上昇の常連（強いモメンタム）")
+    if agg.get("gainer_top"):
+        for sym, cnt in agg.get("gainer_top", []):
+            lines.append(f"- **{sym}**: 強い買い需要を確認")
     else:
-        lines.append("（データ不足）")
+        lines.append("- 特筆すべき急騰銘柄なし")
+
     lines.append("")
-    lines.append("## 4. 上昇率(24h)の主役")
-    gt = agg.get("gainers_top", [])[:5]
-    if gt:
-        lines.append("今週よく上昇率TOP3に入った銘柄（出現回数 / 最大上昇）")
-        for sym, cnt, maxpc in gt:
-            lines.append(f"- {sym}：{cnt}日 / 最大 {pct(maxpc,1)}")
+    lines.append("## 4. 総評と来週の展望")
+    if (agg.get("btc_ret") or 0) > 0 and (agg.get("dom_change", 0) < 0):
+        lines.append("今週はBTCが堅調な中でドミナンスが低下しており、典型的な「アルトコインへの資金循環」が見られました。")
+    elif (agg.get("btc_ret") or 0) < 0 and (agg.get("dom_change", 0) > 0):
+        lines.append("全体的にリスクオフの動きが強く、資金がアルトからBTCへ退避する「クオリティへの逃避」が鮮明です。")
     else:
-        lines.append("（データ不足）")
+        lines.append("市場は方向感を模索中ですが、RSIとFGIの乖離を注視する必要があります。")
+
     lines.append("")
-    lines.append("## 5. 出来高(アルト)の主役")
-    vt = agg.get("vol_top", [])[:5]
-    if vt:
-        lines.append("今週よく出来高TOP3に入った銘柄（出現回数）")
-        for sym, cnt in vt:
-            lines.append(f"- {sym}：{cnt}日")
-    else:
-        lines.append("（データ不足）")
-    lines.append("")
-    lines.append("## 6. 来週の監視リスト（最大5）")
-    # シンプルに「トレンド頻出」「上昇頻出」「出来高頻出」を混ぜる
-    watch = []
-    for sym, _ in (tt or []):
-        if sym not in watch:
-            watch.append(sym)
-        if len(watch) >= 5:
-            break
-    for sym, _, _ in (gt or []):
-        if sym not in watch:
-            watch.append(sym)
-        if len(watch) >= 5:
-            break
-    for sym, _ in (vt or []):
-        if sym not in watch:
-            watch.append(sym)
-        if len(watch) >= 5:
-            break
-    if watch:
-        for sym in watch[:5]:
-            lines.append(f"- {sym}：出来高の維持／連騰の継続／トレンドの再浮上を確認")
-    else:
-        lines.append("（データ不足）")
-    lines.append("")
-    lines.append("## 7. 参考リンク")
-    lines.append(f"- 今日の注目（最新）：{share_url}")
-    lines.append(f"- ダッシュボード：{SITE_URL}")
-    lines.append("")
-    lines.append("## 8. 算出ルール（要約）")
-    if snaps:
-        rules = (snaps[-1].get("rules") or {})
-        min_vol = rules.get("min_vol_jpy")
-        if isinstance(min_vol, (int, float)):
-            lines.append(f"- 上昇率(24h)は出来高 **{min_vol/1e8:.1f}億円以上** を優先（不足時は出来高順で補完）")
-        lines.append("- 出来高(アルト)は BTC/ETH とステーブル系を除外")
-        lines.append("- 数値は CoinGecko API の日次スナップショットに基づく（厳密な週次ローソクではありません）")
-    lines.append("")
-    lines.append("----")
-    lines.append("免責：本レポートは情報提供であり、投資助言ではありません。最終判断はご自身でお願いします。")
+    lines.append("---")
+    lines.append(f"📊 詳細分析ダッシュボード: {SITE_URL}")
+    lines.append("※ 本レポートはAIによる自動生成であり、投資助言ではありません。")
 
     return "\n".join(lines)
 
-
-def main() -> None:
+def main():
     snaps = load_snapshots(DAYS)
-    agg = compute_weekly(snaps)
+    if not snaps:
+        print("集計対象のデータが見つかりませんでした。")
+        return
 
-    md = render_note(snaps, agg)
-
-    # Windowsでも開きやすいよう utf-8-sig
-    Path("weekly_note_draft.md").write_text(md, encoding="utf-8-sig")
-
-    s2, e2, tag = date_range_label(snaps)
-    share_url = f"{SITE_URL}share/{tag}.html" if tag else SITE_URL
-    short = (
-        f"【週次レポート {s2}〜{e2}】\n"
-        f"市場ムード: {('上昇優勢' if agg.get('breadth',{}).get('days_up',0)>=agg.get('breadth',{}).get('days_down',0) else '下落優勢')}\n"
-        f"BTC {pct(agg.get('btc_ret'),1)} / ETH {pct(agg.get('eth_ret'),1)}\n"
-        f"→ {share_url}\n"
-        f"#暗号資産"
+    agg = compute_weekly_intelligence(snaps)
+    
+    # 期間ラベル作成
+    start_date = snaps[0]["summary"]["date"]
+    end_date = snaps[-1]["summary"]["date"]
+    
+    md_content = render_markdown(agg, start_date, end_date)
+    
+    # ファイル書き出し
+    with open("weekly_note_draft.md", "w", encoding="utf-8-sig") as f:
+        f.write(md_content)
+    
+    # X告知用
+    short_msg = (
+        f"【週次マーケット分析レポート】\n"
+        f"期間: {start_date}〜{end_date}\n\n"
+        f"市場心理: {agg.get('fgi_latest')} ({mood_label(agg.get('fgi_latest'))})\n"
+        f"BTCドミナンス: {agg.get('dom_avg',0):.1f}%\n"
+        f"注目銘柄: {', '.join([x[0] for x in agg.get('trend_top', [])[:2]])}\n\n"
+        f"📝 続きはサイトの週報をチェック\n{SITE_URL}\n"
+        f"#暗号資産 #CoinRader"
     )
-    Path("weekly_summary.txt").write_text(short, encoding="utf-8-sig")
-    Path("weekly_share_url.txt").write_text(share_url, encoding="utf-8-sig")
+    with open("weekly_summary.txt", "w", encoding="utf-8-sig") as f:
+        f.write(short_msg)
 
-    print("wrote: weekly_note_draft.md / weekly_summary.txt / weekly_share_url.txt")
+    print("✅ 週次レポート(Markdown)と告知用テキストを生成しました。")
 
+def mood_label(fgi):
+    if not fgi: return "中立"
+    if fgi < 30: return "恐怖"
+    if fgi > 70: return "強欲"
+    return "中立"
 
 if __name__ == "__main__":
     main()
