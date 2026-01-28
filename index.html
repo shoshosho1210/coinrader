@@ -1112,23 +1112,16 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     0 10px 25px -5px rgba(0, 0, 0, 0.5),
     0 0 15px 0 rgba(56, 189, 248, 0.12);
   backdrop-filter: blur(12px);
-  /* --- ★ここから追加：文字のブレ・ボヤけ防止 --- */
-  transition: all 0.3s ease;
-  backface-visibility: hidden; /* 裏面描画を無効化して安定させる */
-  transform: translateZ(0);    /* GPUレイヤーを強制的に固定する */
-  -webkit-font-smoothing: subpixel-antialiased; /* 文字のクッキリ感を維持 */
-  /* ------------------------------------------- */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
-/* マウスを乗せた時の演出 */
+/* マウスを乗せた時の演出（KPIタイルと統一） */
 .ai-insight-box:hover {
-  border-color: rgba(56, 189, 248, 0.6);
+  /* 物理的に動かさず、色と光だけを強くする */
+  border-color: rgba(56, 189, 248, 0.6) !important;
   box-shadow: 
-    0 15px 35px -5px rgba(0, 0, 0, 0.6),
+    0 10px 30px -5px rgba(0, 0, 0, 0.6),
     0 0 25px 0 rgba(56, 189, 248, 0.25);
-  background: linear-gradient(165deg, rgba(20, 30, 50, 0.98), rgba(35, 50, 75, 0.9));
-  
-  /* 移動させる際も translateZ(0) を維持してブレを防ぐ */
-  transform: translateY(-2px) translateZ(0); 
+  background: rgba(15, 23, 42, 0.98) !important;
 }
   
 /* 左端のアクセント光（重要度を演出） */
