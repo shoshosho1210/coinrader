@@ -1290,9 +1290,15 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   font-weight: 600;
 }
 /* --- 時価総額テーブル：RSIネオンバッジ（シアン連動版） --- */
+.rank-table th:nth-child(6), 
+.td-rsi {
+  text-align: center !important;
+  vertical-align: middle;
+}
 .rsi-badge {
   display: inline-block;
-  padding: 2px 6px;
+  margin: 0 auto; /* 中央配置を確実にする */
+  padding: 2px 0px;
   border-radius: 6px; /* 少し角を丸めてモダンに */
   font-size: 11px;
   font-weight: 800;   /* 文字を太くして視認性アップ */
@@ -4506,7 +4512,7 @@ function renderRankTable(coins) {
 
     const canvasId = `tbl_chart_${c.id}_${i}`;
 
-    // --- 2. テーブル行（TR）の生成 ---
+    // --- テーブル行（TR）の生成部分 ---
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="td-sym">
@@ -4520,7 +4526,7 @@ function renderRankTable(coins) {
       <td class="${chg24Class}">${chg24Str}</td> 
       <td class="${chg7dClass}">${chg7dStr}</td> 
       <td>${mcap}</td> 
-      <td style="text-align:center;">${rsiHtml}</td> <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
+      <td class="td-rsi">${rsiHtml}</td> <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
       <td>${vol}</td>
     `;
     
