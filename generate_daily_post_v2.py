@@ -64,22 +64,21 @@ def format_price(price):
 # ==========================================
 # 3. メイン処理：投稿テキスト & JSONデータ生成
 # ==========================================
+import requests
+import datetime
+import os
+import json # JSON保存用に追加
+
+# --- (中略：除外ロジック・データ取得関数は変更なし) ---
+# ... (is_stable_coin, is_wrapped_or_duplicate, get_market_data, get_trending_coins, format_price はそのまま) ...
+
 def generate_post():
     markets = get_market_data()
     trending = get_trending_coins()
-    fgi_data = get_fear_and_greed_index()
-    
     if not markets: return "データの取得に失敗しました。"
 
-    # --- A. 市場の柱 (BTC & ETH) ---
     btc = next((item for item in markets if item["id"] == "bitcoin"), None)
-    eth = next((item for item in markets if item["id"] == "ethereum"), None)
     
-    # --- B. 市場の体温 (騰落数) ---
-    up_count = len([c for c in markets if (c.get('price_change_percentage_24h') or 0) > 0])
-    down_count = len([c for c in markets if (c.get('price_change_percentage_24h') or 0) < 0])
-    
-    # --- C. 急上昇銘柄 (上位5位) ---
     MIN_VOL_JPY = 500_000_000 
     valid_gainers = [
         c for c in markets 
@@ -88,7 +87,7 @@ def generate_post():
         and not is_stable_coin(c)
         and not is_wrapped_or_duplicate(c)
     ]
-    top_5_gainers = sorted(valid_gainers, key=lambda x: x['price_change_percentage_24h'], reverse=True)[:5]
+    top_gainers = sorted(valid_gainers, key=lambda x: x['price_change_percentage_24h'], reverse=True)[:1]
     
     trend_symbols = []
     for t in trending:
@@ -96,74 +95,84 @@ def generate_post():
             trend_symbols.append(t['symbol'].upper())
         if len(trend_symbols) >= 3: break
 
-    # --- 日付設定 ---
+    # --- 日本時間(JST)での日付取得 ---
     jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_str = jst_now.strftime("%m/%d")
     file_date = jst_now.strftime("%Y%m%d")
     display_date = jst_now.strftime("%Y-%m-%d")
 
-    # --- 4. 週次レポート用の黄金比JSONを保存 ---
-    daily_json = {
-        "date": display_date,
-        "btc": {
-            "price": btc['current_price'] if btc else 0,
-            "change": btc['price_change_percentage_24h'] if btc else 0
-        },
-        "eth": {
-            "price": eth['current_price'] if eth else 0,
-            "change": eth['price_change_percentage_24h'] if eth else 0
-        },
-        "sentiment": fgi_data,
-        "breadth": {
-            "up": up_count,
-            "down": down_count,
-            "up_ratio": (up_count / len(markets) * 100) if markets else 0
-        },
-        "top_gainers": [
-            {"symbol": c['symbol'].upper(), "change": c['price_change_percentage_24h']}
-            for c in top_5_gainers
-        ],
-        "trending": trend_symbols
-    }
+    # ==========================================
+    # 4. ファイル保存処理 (JSON / HTML / TXT)
+    # ==========================================
+    
+    # --- JSONデータの保存 (追加箇所) ---
+    # GitHub Actionsが期待する data/daily/ フォルダに保存します
+    os.makedirs("data/daily", exist_ok=True)
+    json_path = f"data/daily/{file_date}.json"
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(markets, f, ensure_ascii=False, indent=2)
 
-    base_path = os.path.join("assets", "data", "daily")
-    os.makedirs(base_path, exist_ok=True) 
+    # --- シェア用HTMLの作成 ---
+    share_html = f"""<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CoinRader - 今日の注目 {display_date}</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CoinRader">
+  <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
+  <meta property="og:description" content="トレンド/上昇率/出来高をひと目で。">
+  <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp.png?v={file_date}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CoinRader - 今日の注目 {display_date}">
+  <meta name="twitter:description" content="トレンド/上昇率/出来高をひと目で。">
+  <meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png?v={file_date}">
+  <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
+</head>
+<body></body>
+</html>"""
 
-    file_name = f"{file_date}.json"
-    file_path = os.path.join(base_path, file_name)
+    os.makedirs("share", exist_ok=True)
+    with open(f"share/{file_date}.html", "w", encoding="utf-8") as f:
+        f.write(share_html)
 
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(daily_json, f, ensure_ascii=False, indent=4)
-
-    # --- 5. メッセージの組み立て (速報用) ---
-    btc_chg = daily_json["btc"]["change"]
-    icon = "📈" if btc_chg > 0 else ("📉" if btc_chg < 0 else "➡️")
-    sign = "+" if btc_chg > 0 else ""
-    ai_status = "【分析: 楽観】" if btc_chg > 3 else ("【分析: 悲観】" if btc_chg < -3 else "【分析: 中立】")
+    # --- メッセージの組み立て ---
+    chg = btc.get('price_change_percentage_24h', 0) if btc else 0
+    icon = "📈" if chg > 0 else ("📉" if chg < 0 else "➡️")
+    sign = "+" if chg > 0 else ""
+    ai_status = "【分析: 楽観】" if chg > 3 else ("【分析: 悲観】" if chg < -3 else "【分析: 中立】")
     site_url = f"https://coinrader.net/share/{file_date}.html"
 
     short_post = (
         f"🤖 CoinRader 市場速報 ({date_str})\n"
         f"{ai_status} 多角的な需給解析を更新\n\n"
         f"🔹 Bitcoin {icon}\n"
-        f"価格: ¥{format_price(daily_json['btc']['price'])}\n"
-        f"前日比: {sign}{btc_chg:.1f}%\n\n"
+        f"価格: ¥{format_price(btc['current_price']) if btc else '-'}\n"
+        f"前日比: {sign}{chg:.1f}%\n\n"
         f"🔥 トレンド: {', '.join(trend_symbols)}\n"
-        f"🚀 急上昇: {daily_json['top_gainers'][0]['symbol'] if daily_json['top_gainers'] else '-'}\n\n"
+        f"🚀 急上昇: {top_gainers[0]['symbol'].upper() if top_gainers else '-'}\n\n"
         f"📊 詳細分析はサイトでチェック\n{site_url}\n\n"
         f"#Bitcoin #暗号資産 #CoinRader #BTC"
     )
 
-    # テキスト出力
-    with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
-    with open("daily_post_full.txt", "w", encoding="utf-8") as f: f.write(short_post)
-    
-    # HTML生成 (OGP等)
-    share_html = f"""<!doctype html><html lang="ja"><head><meta charset="utf-8"><title>CoinRader {display_date}</title><meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}"></head><body></body></html>"""
-    os.makedirs("share", exist_ok=True)
-    with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
+    # 各種ファイル出力
+    with open("daily_post_short.txt", "w", encoding="utf-8") as f:
+        f.write(short_post)
+    with open("daily_post_full.txt", "w", encoding="utf-8") as f:
+        f.write(short_post)
+    with open("daily_share_url.txt", "w", encoding="utf-8") as f:
+        f.write(site_url)
+    with open("daily_note_draft.md", "w", encoding="utf-8") as f:
+        f.write(f"# Market Note {display_date}")
 
-    return f"✅ {file_date}.json (黄金比形式) 生成完了"
+    return f"✅ {file_date}.json と {file_date}.html を生成しました"
 
 if __name__ == "__main__":
+    # 既存のロジックが壊れないよう generate_post を呼び出し
+    import sys
+    # get_market_data, etc. は既に定義されている前提
     print(generate_post())
