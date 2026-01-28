@@ -1815,11 +1815,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <div class="kpi-tile-big" id="kpiStripRsiMain">-</div>
 <div class="kpi-tile-sub" id="kpiStripRsiSub">-</div>
 </div>
-<div class="kpi-tile">
-<div class="kpi-tile-title">CoinRader Sentiment（0–100）</div>
-<div class="kpi-tile-big" id="kpiStripSentMain">-</div>
-<div class="kpi-tile-sub" id="kpiStripSentSub">-</div>
-</div>
 </div>
 <div class="overview is-collapsed" id="overviewWrap">
   
@@ -1862,14 +1857,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
             <canvas class="kpi-canvas" id="rsiLine"></canvas>
           </div>
         </div>
-      </div>
-
-      <div class="kpi">
-        <div class="kpi-label">市場センチメント (投資家心理)</div>
-        <div class="kpi-value" id="kpiSentiment">-</div>
-        <div class="kpi-meta" id="kpiSentimentMeta">-</div>
-        <div class="kpi-sub">複数の指標から算出した「市場のムード」。数値が高いと楽観(強欲)、低いと悲観(恐怖)を表します。</div>
-        <canvas class="kpi-canvas tiny" id="sentLine"></canvas>
       </div>
 
       <div class="kpi kpi-stack">
@@ -3397,72 +3384,8 @@ if (breadthSub){
             if (lastRsiVal != null && isFinite(lastRsiVal)) parts.push(`RSI ${lastRsiVal.toFixed(1)}`);
             elM.textContent = parts.join(' / ');
           }
-
-// --- 履歴保存とPC視認性の最適化 ---
           const histKey = 'cr_sent_hist';
           const lastTimeKey = 'cr_sent_last_time';
-          let hist = [];
-          try { hist = JSON.parse(localStorage.getItem(histKey) || '[]'); } catch(_){}
-          if (!Array.isArray(hist)) hist = [];
-
-          const nowTs = Date.now();
-          const lastTs = Number(localStorage.getItem(lastTimeKey) || 0);
-
-          if (nowTs - lastTs > 5 * 60 * 1000 || hist.length === 0) {
-              hist.push(Number(score));
-              // 保存数を300件に維持（PCでの密度を確保）
-              if (hist.length > 300) hist = hist.slice(-300);
-              localStorage.setItem(histKey, JSON.stringify(hist));
-              localStorage.setItem(lastTimeKey, nowTs);
-          } else if (hist.length > 0) {
-              hist[hist.length - 1] = Number(score);
-              localStorage.setItem(histKey, JSON.stringify(hist));
-          }
-
-// --- センチメント波形：スムージング＆安定化ロジック（最終回答） ---
-          const valsS = hist.filter(v => v != null && isFinite(v));
-          
-          // 1. データの平滑化（3点移動平均を適用して階段現象を物理的に消す）
-          const smoothedData = valsS.map((v, i, arr) => {
-              if (i === 0) return v;
-              if (i === 1) return (arr[0] + v) / 2;
-              return (arr[i-2] + arr[i-1] + v) / 3; // 3点の平均をとる
-          });
-
-          let minS = 0, maxS = 100;
-          if (smoothedData.length > 1) {
-              const currentMin = Math.min(...smoothedData);
-              const currentMax = Math.max(...smoothedData);
-              const range = currentMax - currentMin;
-
-              // 2. ズーム倍率の固定（20ポイント幅）
-              // 15でもまだズームが強すぎたため、20ポイントに広げます。
-              // これにより1ptの変動が「目立ちすぎないさざ波」になります。
-              let targetSpan = Math.max(range * 1.5, 20); 
-              let mid = (currentMax + currentMin) / 2;
-              
-              minS = Math.max(0, Math.floor(mid - (targetSpan / 2)));
-              maxS = Math.min(100, Math.ceil(mid + (targetSpan / 2)));
-          }
-
-          // 3. グラフ描画
-          const labS = smoothedData.map((_, i) => i);
-          makeLineChart('sentLine', labS, [{
-              label: 'Sentiment',
-              data: smoothedData,
-              borderColor: 'rgba(56, 189, 248, 0.9)',
-              borderWidth: 2,
-              fill: true,
-              backgroundColor: 'rgba(56, 189, 248, 0.08)',
-              tension: 0.4, // スムージング済みなので標準的な 0.4 で十分滑らかになります
-              pointRadius: 0
-          }], { 
-              yMin: minS, 
-              yMax: maxS, 
-              dayGrid: true, 
-              xGridColor: 'rgba(255,255,255,0.08)', 
-              xGridWidth: 1
-          });
         }catch(e){ console.warn('sentiment failed', e); }
 
         // Market cap estimate (normalize to last for readability)
