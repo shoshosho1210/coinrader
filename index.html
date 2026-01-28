@@ -4599,42 +4599,51 @@ async function typeWriter(el, html, speed = 20) {
     el.classList.remove('typing');
 }
 
-// --- 2. メイン関数: AI分析 ＆ タイピング表示 ---
+// --- 2. メイン関数: AI分析 ＆ 再描画抑止ロジック ---
 let _aiThinking = false;
-let _lastAiScore = null;
+let _lastAiState = ""; // 数値の変化を文字列として保持
 
 async function updateAiInsight() {
     const box = document.getElementById('aiInsightBox');
     const textEl = document.getElementById('aiInsightText');
     if (!box || !textEl || _aiThinking) return;
 
-    // 指標の取得
-    const sent = parseFloat(document.getElementById('sumSentMain')?.textContent) || null;
-    const rsi = parseFloat(document.getElementById('sumRsiMain')?.textContent) || null;
-    const dom = parseFloat(document.getElementById('sumDomMain')?.textContent) || null;
-    const maDist = parseFloat(document.getElementById('sumMaMain')?.textContent) || 0;
-    const volTxt = document.getElementById('kpiStripVolSub')?.textContent || "";
-    const isVolRising = volTxt.includes('+');
+    // 現在の各指標の「文字列」を取得して結合
+    const sentTxt = document.getElementById('sumSentMain')?.textContent || "";
+    const rsiTxt = document.getElementById('sumRsiMain')?.textContent || "";
+    const domTxt = document.getElementById('sumDomMain')?.textContent || "";
+    const maTxt = document.getElementById('sumMaMain')?.textContent || "";
 
-    if (sent === null || rsi === null || dom === null) return;
+    // まだデータが「—」や空の場合は処理をスキップ
+    if (sentTxt.includes('—') || rsiTxt.includes('—') || !sentTxt) return;
 
-    // 数値に変化がない場合は再計算しない
-    const currentTotal = sent + rsi + dom;
-    if (_lastAiScore === currentTotal) return;
+    // 現在の状態をシグネチャ化
+    const currentState = `${sentTxt}|${rsiTxt}|${domTxt}|${maTxt}`;
+
+    // 【重要】前回と1文字も変わっていなければ、ここで終了（再描画しない）
+    if (_lastAiState === currentState) {
+        return; 
+    }
+
+    // 数値化（分析ロジック用）
+    const sent = parseFloat(sentTxt);
+    const rsi = parseFloat(rsiTxt);
+    const dom = parseFloat(domTxt);
+    const maDist = parseFloat(maTxt) || 0;
 
     _aiThinking = true;
+    _lastAiState = currentState; // 状態を記録
 
-    // A. 思考中アニメーションの表示
+    // A. 思考中アニメーション
     textEl.innerHTML = `
       <div class="ai-loading-placeholder" style="display:flex; align-items:center; justify-content:center; height:120px; width:100%;">
         <span style="font-size:20px; animation: spin 1s linear infinite; margin-right:10px;">⏳</span>
         <span style="animation: pulse 1.5s infinite; color:#94a3b8; font-size:13px;">市場構造を多角的に解析中...</span>
       </div>`;
 
-    // 演出用の待ち時間
     await new Promise(r => setTimeout(r, 1500));
 
-    // B. 分析ロジックの実行
+    // B. 分析ロジック
     const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
     const isOverbought = rsi >= 70;
     const isOversold = rsi <= 30;
@@ -4645,31 +4654,31 @@ async function updateAiInsight() {
     if (sent >= 75 && isOverbought) {
         strategyText = pick([
             `価格推移と投資家心理が統計的限界域に到達。<strong>「平均回帰」の力が意識されやすい需給環境</strong>にあり、現在のモメンタム維持にはさらなる強い買いエネルギーが求められるフェーズです。`,
-            `心理的・技術的指標が共に高位で推移。${isVolRising ? "出来高を伴う上昇は継続していますが、" : "出来高の伸びに欠ける上昇で、"}<strong>市場の流動性が一方向に偏っている「非対称なリスク」</strong>が観測されます。`
+            `心理的・技術的指標が共に高位で推移。市場の流動性が一方向に偏っている<strong>「非対称なリスク」</strong>が観測されます。`
         ]);
     } else if (sent <= 25 && isOversold) {
         strategyText = pick([
-            `売り圧力が過度に集中し、<strong>「セリングクライマックス」の兆候</strong>がデータから読み取れます。主要指標は歴史的なサポート水準をテストしており、下落エネルギーの拡散と需給の再均衡が期待される局面です。`,
-            `総悲観のセンチメントが支配的ですが、<strong>技術的な反発力（スプリング効果）</strong>が蓄積されています。過剰な売りが新たな買いを呼び込みやすい構造へ移行しています。`
+            `売り圧力が過度に集中し、<strong>「セリングクライマックス」の兆候</strong>がデータから読み取れます。下落エネルギーの拡散と需給の再均衡が期待される局面です。`,
+            `総悲観のセンチメントが支配的ですが、<strong>技術的な反発力（スプリング効果）</strong>が蓄積されています。`
         ]);
     } else if (isAltRotation && isTrendUp) {
         strategyText = pick([
-            `BTCドミナンスの低下を背景に、資金がリスクカーブのより高いアルト市場へ分散。<strong>「セクターローテーション」の力学</strong>が働いており、市場全体の時価総額が膨張するリスクオンの構造が示唆されます。`,
-            `BTCの支配力低下は、投資家の「リスク許容度」の高まりを反映。<strong>資金の流動性が多角化</strong>しており、個別銘柄におけるボラティリティの拡大が市場全体の活性化を支える構図です。`
+            `BTCドミナンスの低下を背景に、資金がより高いアルト市場へ分散。<strong>「セクターローテーション」の力学</strong>が働いており、リスクオンの構造が示唆されます。`,
+            `BTCの支配力低下は、投資家の「リスク許容度」の高まりを反映。<strong>資金の流動性が多角化</strong>し、市場全体が活性化する構図です。`
         ]);
     } else if (sent > 40 && sent < 60 && !isOverbought && !isOversold) {
         strategyText = pick([
-            `需給が拮抗しており、価格は適正レンジ内でのコンソリデーション（固め）にあります。<strong>ボラティリティの収束</strong>は「エネルギーの蓄積」を意味し、次のマクロ的な材料による方向性決定を待機している状態です。`,
-            `市場参加者のコンセンサスが分散し、明確なトレンドを欠く「均衡フェーズ」です。<strong>テクニカル的な空白地帯</strong>を推移しており、需給のバランスが次にどちらへ崩れるかを市場が模索しています。`
+            `需給が拮抗しており、価格は適正レンジ内でのコンソリデーション（固め）にあります。<strong>ボラティリティの収束</strong>は次なる材料待ちの状態を意味します。`,
+            `市場参加者のコンセンサスが分散し、明確なトレンドを欠く<strong>「均衡フェーズ」</strong>です。需給のバランスが次にどちらへ崩れるかを模索しています。`
         ]);
     } else {
-        strategyText = `移動平均線の下側で推移し、<strong>構造的な弱気地合い</strong>にあります。心理面でも慎重姿勢が優勢であり、市場は「価格の魅力」よりも「さらなる下押しリスク」を重く見積もっている時間帯です。`;
+        strategyText = `移動平均線の下側で推移し、<strong>構造的な弱気地合い</strong>にあります。市場は「価格の魅力」よりも「さらなる下押しリスク」を重く見積もっている時間帯です。`;
     }
 
-    // C. タイピング演出で文章を表示
+    // C. タイピング演出
     await typeWriter(textEl, strategyText, 20);
 
-    // D. エビデンスグリッドの作成（日本語ラベル判定ロジック含む）
+    // D. エビデンス表示
     const getTag = (val, type) => {
         if (type === 'rsi') {
             if (val >= 70) return `<span style="color:#f87171;font-weight:700;">過熱 (${val})</span>`;
@@ -4699,13 +4708,11 @@ async function updateAiInsight() {
 
     textEl.innerHTML += evidenceHtml;
 
-    // エビデンス部分をふわっと表示させる
     setTimeout(() => {
         const grid = textEl.querySelector('.ai-evidence-grid');
         if (grid) grid.style.opacity = '1';
     }, 100);
 
-    _lastAiScore = currentTotal;
     _aiThinking = false;
 }
   
