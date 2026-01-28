@@ -34,27 +34,19 @@ def get_market_data():
         res = requests.get(url, params=params, timeout=30)
         res.raise_for_status()
         return res.json()
-    except: return []
+    except Exception as e:
+        print(f"Market Data取得エラー: {e}")
+        return []
 
 def get_trending_coins():
     url = "https://api.coingecko.com/api/v3/search/trending"
     try:
         res = requests.get(url, timeout=30)
+        res.raise_for_status()
         return [item['item'] for item in res.json().get('coins', [])]
-    except: return []
-
-def get_fear_and_greed_index():
-    """市場の恐怖強欲指数(FGI)を取得する"""
-    try:
-        url = "https://api.alternative.me/fng/"
-        response = requests.get(url, timeout=10)
-        data = response.json()
-        fgi_value = int(data['data'][0]['value'])
-        fgi_class = data['data'][0]['value_classification']
-        return {"value": fgi_value, "label": fgi_class}
     except Exception as e:
-        print(f"FGI取得エラー: {e}")
-        return {"value": 50, "label": "Neutral"}
+        print(f"Trending取得エラー: {e}")
+        return []
 
 def format_price(price):
     if price is None: return "-"
@@ -64,19 +56,15 @@ def format_price(price):
 # ==========================================
 # 3. メイン処理：投稿テキスト & JSONデータ生成
 # ==========================================
-import requests
-import datetime
-import os
-import json # JSON保存用に追加
-
-# --- (中略：除外ロジック・データ取得関数は変更なし) ---
-# ... (is_stable_coin, is_wrapped_or_duplicate, get_market_data, get_trending_coins, format_price はそのまま) ...
-
 def generate_post():
+    # データの取得
     markets = get_market_data()
     trending = get_trending_coins()
-    if not markets: return "データの取得に失敗しました。"
+    
+    if not markets:
+        return "⚠️ データの取得に失敗したため、ファイルは生成されませんでした。"
 
+    # --- データの抽出 ---
     btc = next((item for item in markets if item["id"] == "bitcoin"), None)
     
     MIN_VOL_JPY = 500_000_000 
@@ -95,7 +83,7 @@ def generate_post():
             trend_symbols.append(t['symbol'].upper())
         if len(trend_symbols) >= 3: break
 
-    # --- 日本時間(JST)での日付取得 ---
+    # --- 日本時間(JST)での日付計算 ---
     jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_str = jst_now.strftime("%m/%d")
     file_date = jst_now.strftime("%Y%m%d")
@@ -105,14 +93,13 @@ def generate_post():
     # 4. ファイル保存処理 (JSON / HTML / TXT)
     # ==========================================
     
-    # --- JSONデータの保存 (追加箇所) ---
-    # GitHub Actionsが期待する data/daily/ フォルダに保存します
+    # 1. JSONデータの保存
     os.makedirs("data/daily", exist_ok=True)
     json_path = f"data/daily/{file_date}.json"
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(markets, f, ensure_ascii=False, indent=2)
 
-    # --- シェア用HTMLの作成 ---
+    # 2. シェア用HTMLの作成
     share_html = f"""<!doctype html>
 <html lang="ja">
 <head>
@@ -140,7 +127,7 @@ def generate_post():
     with open(f"share/{file_date}.html", "w", encoding="utf-8") as f:
         f.write(share_html)
 
-    # --- メッセージの組み立て ---
+    # 3. メッセージの組み立て
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
     icon = "📈" if chg > 0 else ("📉" if chg < 0 else "➡️")
     sign = "+" if chg > 0 else ""
@@ -159,7 +146,7 @@ def generate_post():
         f"#Bitcoin #暗号資産 #CoinRader #BTC"
     )
 
-    # 各種ファイル出力
+    # 4. 各種テキスト出力
     with open("daily_post_short.txt", "w", encoding="utf-8") as f:
         f.write(short_post)
     with open("daily_post_full.txt", "w", encoding="utf-8") as f:
@@ -169,10 +156,7 @@ def generate_post():
     with open("daily_note_draft.md", "w", encoding="utf-8") as f:
         f.write(f"# Market Note {display_date}")
 
-    return f"✅ {file_date}.json と {file_date}.html を生成しました"
+    return f"✅ 正常終了: {file_date}.json と {file_date}.html を作成しました"
 
 if __name__ == "__main__":
-    # 既存のロジックが壊れないよう generate_post を呼び出し
-    import sys
-    # get_market_data, etc. は既に定義されている前提
     print(generate_post())
