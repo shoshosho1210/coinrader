@@ -1096,7 +1096,9 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   }
 /* --- AI Insight Box: Cyber & Professional Update --- */
 .ai-insight-box {
-  margin: 12px 0 20px;
+  margin: 10px 0 16px; /* 外側の余白を微減 */
+  padding: 14px 18px;  /* 20px → 14px に圧縮 */
+  min-height: 180px !important; /* 230px → 180px に短縮 */
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -1105,7 +1107,6 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   background: linear-gradient(165deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
   border: 1px solid rgba(56, 189, 248, 0.35); /* 青いネオン枠 */
   border-radius: 16px;
-  padding: 20px;
 
   /* ボックス全体を優しく発光させる */
   box-shadow: 
@@ -1138,10 +1139,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .ai-insight-header {
   display: flex; 
   align-items: center; 
-  gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 10px; /* 16px → 10px に圧縮 */
+  padding-bottom: 8px;
+  gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 10px;
 }
 
 .ai-title-label {
@@ -1165,10 +1166,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 }
 
 .ai-insight-text {
-  font-size: 14.5px; 
-  line-height: 1.85; 
+  font-size: 14px;    /* わずかに小さくして密度を上げる */
+  line-height: 1.7;   /* 行間を少し詰め、垂直方向を節約 */
+  min-height: 100px;  /* 140px → 100px に短縮 */
   color: #e2e8f0;
-  min-height: 140px; /* ガタつき防止の高さ確保 */
   width: 100%;
 }
 
@@ -1183,8 +1184,8 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 }
 
 .ai-insight-note {
-  margin-top: 12px; 
-  font-size: 10px; 
+  margin-top: 8px;    /* 12px → 8px に圧縮 */
+  font-size: 9px;     /* 注釈をより控えめに */
   color: #64748b; 
   text-align: right;
   opacity: 0.8;
@@ -4933,7 +4934,7 @@ async function updateAiInsight() {
     };
 
     const evidenceHtml = `
-      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; margin-top:18px; background:rgba(0,0,0,0.25); border-radius:10px; padding:14px; border:1px solid rgba(255,255,255,0.05);">
+      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; margin-top:12px !important; background:rgba(0,0,0,0.25); border-radius:10px; padding:10px !important; border:1px solid rgba(255,255,255,0.05);">
         <div style="font-size:10px; color:#64748b; margin-bottom:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:6px;">
           <span style="width:12px; height:1px; background:#64748b;"></span> 多角的な分析エビデンス
         </div>
