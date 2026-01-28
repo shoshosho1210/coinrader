@@ -148,8 +148,8 @@ def generate_post():
     }
 
     # データの保存（dataフォルダを作成して保存）
-    os.makedirs("data", exist_ok=True)
-    with open(f"data/{file_date}.json", "w", encoding="utf-8") as f:
+    os.makedirs("assets/data/daily", exist_ok=True) 
+    with open(f"assets/data/daily/{file_date}.json", "w", encoding="utf-8") as f:
         json.dump(daily_json, f, ensure_ascii=False, indent=4)
     # 各種テキストファイル出力
     with open("daily_post_short.txt", "w", encoding="utf-8") as f:
