@@ -4753,7 +4753,7 @@ async function updateAiInsight() {
 
       setUpdated();
       // 完了時のメッセージ
-      if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新完了' : (SECTION_ERRORS.trend ? '同期完了（一部待機）' : '最新の状態'));
+      if (!IN_AUTO_REFRESH) setStatus(fromManualRefresh ? '更新完了' : (SECTION_ERRORS.trend ? '同期完了（一部待機）' : '最新'));
       
       renderAll();
       HAS_RENDERED_ONCE = true;
