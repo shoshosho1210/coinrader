@@ -1,42 +1,42 @@
 {
     "date": "2026-01-28",
     "btc": {
-        "price": 13639535,
-        "change": 0.26182
+        "price": 13640511,
+        "change": 0.24101
     },
     "eth": {
-        "price": 461289,
-        "change": 2.64866
+        "price": 461046,
+        "change": 2.5534
     },
     "sentiment": {
         "value": 29,
         "label": "Fear"
     },
     "breadth": {
-        "up": 122,
-        "down": 127,
-        "up_ratio": 48.8
+        "up": 125,
+        "down": 124,
+        "up_ratio": 50.0
     },
     "top_gainers": [
         {
             "symbol": "PIPPIN",
-            "change": 55.57224
+            "change": 56.52961
         },
         {
             "symbol": "HYPE",
-            "change": 24.69299
+            "change": 24.87495
         },
         {
             "symbol": "PUMP",
-            "change": 19.82427
+            "change": 20.30479
         },
         {
             "symbol": "MON",
-            "change": 15.2742
+            "change": 15.04505
         },
         {
             "symbol": "LIT",
-            "change": 12.8494
+            "change": 13.0858
         }
     ],
     "trending": [
