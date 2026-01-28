@@ -38,13 +38,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # assets以下のすべての変更（新しいJSON含む）を対象にする
+          # assetsフォルダを起点に、その下の階層（data/daily）をすべて追加
           git add assets/ share/ *.txt *.md
           
-          # 変更がある場合のみコミットしてPush
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Save daily market data: $(date +'%Y-%m-%d')"
+            git commit -m "Save daily data to assets/data/daily"
             git push
           else
-            echo "No changes to commit"
+            echo "No changes found."
           fi
