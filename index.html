@@ -1415,6 +1415,68 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   gap: 10px;
   padding-top: 60px; /* 上の隙間調整 */
 }
+/* --- サイバー・ネオン・スピナー演出 --- */
+.cyber-loader {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 外側の回転リング */
+.cyber-loader::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-top: 2px solid #38bdf8;
+  border-bottom: 2px solid #38bdf8;
+  border-radius: 50%;
+  animation: cyber-spin 1s linear infinite;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* 内側の逆回転リング */
+.cyber-loader::after {
+  content: "";
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  border: 2px solid transparent;
+  border-left: 2px solid #38bdf8;
+  border-right: 2px solid #38bdf8;
+  border-radius: 50%;
+  animation: cyber-spin-reverse 1.5s linear infinite;
+  opacity: 0.6;
+}
+
+/* 中央のドット点滅 */
+.cyber-dot {
+  width: 6px;
+  height: 6px;
+  background: #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #38bdf8;
+  animation: cyber-pulse 1s ease-in-out infinite;
+}
+
+@keyframes cyber-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes cyber-spin-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes cyber-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -4760,11 +4822,16 @@ async function updateAiInsight() {
     // ★ 1. 解析開始と同時に「ANALYZING...」と表示させる
     if (timeEl) timeEl.textContent = "[ ANALYZING... ]";
 
-    // A. 思考中演出
+    // A. 思考中演出（砂時計からサイバー・スピナーへ変更）
     textEl.innerHTML = `
-      <div class="ai-loading-placeholder" style="display:flex; align-items:center; justify-content:center; height:120px; width:100%;">
-        <span style="font-size:20px; animation: spin 1s linear infinite; margin-right:10px;">⏳</span>
-        <span style="animation: pulse 1.5s infinite; color:#94a3b8; font-size:13px;">市場構造を多角的に解析中...</span>
+      <div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:160px; width:100%; gap:20px;">
+        <div class="cyber-loader">
+          <div class="cyber-dot"></div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+          <span style="font-family:monospace; color:#38bdf8; font-size:11px; letter-spacing:2px; animation: pulse 1.5s infinite;">SYSTEM.ANALYZING...</span>
+          <span style="color:#64748b; font-size:12px;">ニューラルネットワークが市場構造をスキャン中</span>
+        </div>
       </div>`;
 
     await new Promise(r => setTimeout(r, 1500));
