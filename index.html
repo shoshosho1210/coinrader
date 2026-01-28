@@ -3384,8 +3384,6 @@ if (breadthSub){
             if (lastRsiVal != null && isFinite(lastRsiVal)) parts.push(`RSI ${lastRsiVal.toFixed(1)}`);
             elM.textContent = parts.join(' / ');
           }
-          const histKey = 'cr_sent_hist';
-          const lastTimeKey = 'cr_sent_last_time';
         }catch(e){ console.warn('sentiment failed', e); }
 
         // Market cap estimate (normalize to last for readability)
