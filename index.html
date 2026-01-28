@@ -1112,17 +1112,23 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     0 10px 25px -5px rgba(0, 0, 0, 0.5),
     0 0 15px 0 rgba(56, 189, 248, 0.12);
   backdrop-filter: blur(12px);
-  /* ★追加：滑らかなアニメーション */
+  /* --- ★ここから追加：文字のブレ・ボヤけ防止 --- */
   transition: all 0.3s ease;
+  backface-visibility: hidden; /* 裏面描画を無効化して安定させる */
+  transform: translateZ(0);    /* GPUレイヤーを強制的に固定する */
+  -webkit-font-smoothing: subpixel-antialiased; /* 文字のクッキリ感を維持 */
+  /* ------------------------------------------- */
 }
-/* ★追加：マウスを乗せた時の発光演出 */
+/* マウスを乗せた時の演出 */
 .ai-insight-box:hover {
-  border-color: rgba(56, 189, 248, 0.6); /* 枠を少し明るく */
+  border-color: rgba(56, 189, 248, 0.6);
   box-shadow: 
     0 15px 35px -5px rgba(0, 0, 0, 0.6),
-    0 0 25px 0 rgba(56, 189, 248, 0.25); /* グローを強く */
+    0 0 25px 0 rgba(56, 189, 248, 0.25);
   background: linear-gradient(165deg, rgba(20, 30, 50, 0.98), rgba(35, 50, 75, 0.9));
-  transform: translateY(-1px); /* わずかに浮かせる */
+  
+  /* 移動させる際も translateZ(0) を維持してブレを防ぐ */
+  transform: translateY(-2px) translateZ(0); 
 }
   
 /* 左端のアクセント光（重要度を演出） */
