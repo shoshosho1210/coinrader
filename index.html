@@ -1289,9 +1289,38 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   color: #f87171; /* 下落：赤 */
   font-weight: 600;
 }
-.rsi-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; width: 36px; text-align: center; background: rgba(255,255,255,0.05); color: #94a3b8; }
-.rsi-high { background: rgba(239,68,68,0.2); color: #fca5a5; }
-.rsi-low  { background: rgba(59,130,246,0.2); color: #93c5fd; }
+/* --- 時価総額テーブル：RSIネオンバッジ（シアン連動版） --- */
+.rsi-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px; /* 少し角を丸めてモダンに */
+  font-size: 11px;
+  font-weight: 800;   /* 文字を太くして視認性アップ */
+  width: 38px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.6); /* 背景を深くして発光を際立たせる */
+  color: #64748b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* 過熱 (>70): ネオンレッド */
+.rsi-high {
+  background: rgba(248, 113, 113, 0.15) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(248, 113, 113, 0.4) !important;
+  box-shadow: 0 0 10px rgba(248, 113, 113, 0.2);
+  text-shadow: 0 0 5px rgba(248, 113, 113, 0.4);
+}
+
+/* 売られすぎ (<30): ネオンシアン (AIカラーと完全同期) */
+.rsi-low {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important; /* AIバッジと同じ色 */
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+  text-shadow: 0 0 5px rgba(56, 189, 248, 0.4);
+}
 /* ▼▼▼ 追加：スマホ表示の最適化 ▼▼▼ */
 /* ▼▼▼ 追加：スマホ表示の最適化（統合版） ▼▼▼ */
 @media (max-width: 640px) {
