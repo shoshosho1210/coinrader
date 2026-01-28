@@ -1252,21 +1252,58 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .rsi-high { background: rgba(239,68,68,0.2); color: #fca5a5; }
 .rsi-low  { background: rgba(59,130,246,0.2); color: #93c5fd; }
 /* ▼▼▼ 追加：スマホ表示の最適化 ▼▼▼ */
+/* ▼▼▼ 追加：スマホ表示の最適化（統合版） ▼▼▼ */
 @media (max-width: 640px) {
-  /* テーブルのセルの左右余白を詰める */
+  /* --- 1. 市場ハイライト部分のスマート化 --- */
+  #sec-summary .section-header {
+    flex-direction: row !important;      /* 縦並びを横並びに変更 */
+    align-items: center !important;
+    justify-content: space-between;
+    margin-bottom: 8px;                  /* 余白を詰める */
+    padding: 0 4px;
+  }
+
+  #sec-summary .section-title {
+    font-size: 14px !important;          /* 見出しを小さく */
+    margin: 0 !important;
+    white-space: nowrap;
+  }
+
+  #sec-summary .section-sub {
+    display: none !important;            /* スマホでは説明文を非表示にして高さを節約 */
+  }
+
+  #sec-summary .section-actions {
+    width: auto !important;              /* ボタンエリアを横幅いっぱいにしない */
+    margin-top: 0 !important;
+    display: flex;
+    gap: 6px;
+  }
+
+  #sec-summary .linkbtn {
+    padding: 5px 10px !important;        /* ボタンをコンパクトに */
+    font-size: 11px !important;
+    height: 28px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ai-insight-box {
+    margin-top: 4px !important;          /* ボックス上の余白を最小限に */
+  }
+
+  /* --- 2. 時価総額テーブルの調整 (既存のコード) --- */
   .rank-table th, 
   .rank-table td {
-    padding: 10px 4px; /* 余白を短縮 */
-    font-size: 12px;   /* 文字サイズを少し小さく */
+    padding: 10px 4px;                   /* 余白を短縮 */
+    font-size: 12px;                     /* 文字サイズを少し小さく */
   }
   
-  /* 銘柄列（左端固定）の幅調整 */
   .rank-table td.td-sym {
     padding-left: 8px;
     padding-right: 8px;
   }
   
-  /* アイコンとランクの隙間調整 */
   .sym-wrap { gap: 4px; }
   .sym-icon { width: 20px; height: 20px; }
 }
