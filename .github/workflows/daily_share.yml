@@ -27,22 +27,68 @@ jobs:
           pip install requests
 
       - name: Run script
+        env:
+          CG_DEMO_KEY: ${{ secrets.CG_DEMO_KEY }} # APIキーが必要な場合はここに追加
         run: |
-          # フォルダ作成を data/ に合わせる
           mkdir -p data/daily
           mkdir -p share
           python generate_daily_post_v2.py
+
+      # --- ここから追加：60日経過したファイルの自動削除 ---
+      - name: Prune old files (keep last 60 days)
+        env:
+          KEEP_DAYS: "60"
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import datetime as dt, os, re
+
+          keep = int(os.getenv("KEEP_DAYS", "60"))
+          # 実行時の日付から60日前を計算
+          cutoff = (dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=keep))
+
+          # 削除対象の設定 (フォルダ, 拡張子)
+          targets = [
+              (Path("share"), "*.html"),
+              (Path("data/daily"), "*.json")
+          ]
+
+          removed = 0
+          for folder, pattern in targets:
+              if not folder.exists():
+                  continue
+
+              for p in folder.glob(pattern):
+                  # ファイル名から日付（数字8桁）を探す
+                  m = re.search(r"(\d{8})", p.name)
+                  if not m:
+                      continue
+                  
+                  try:
+                      file_date = dt.datetime.strptime(m.group(1), "%Y%m%d").date()
+                      # 設定日数より古ければ削除
+                      if file_date < cutoff:
+                          p.unlink()
+                          removed += 1
+                          print(f"Deleted old file: {p}")
+                  except Exception as e:
+                      print(f"Error parsing date in {p.name}: {e}")
+
+          print(f"✅ Pruned {removed} file(s) older than {keep} days.")
+          PY
+      # --- ここまで追加 ---
 
       - name: Commit and Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # assets/ ではなく data/ を追加対象にする
+          # 変更（生成および削除）をすべてステージング
           git add data/daily/ share/ *.txt *.md
           
+          # 変更がある場合のみコミット
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Save daily data to data/daily"
+            git commit -m "Update daily data and prune old files (60 days)"
             git push
           else
             echo "No changes found."
