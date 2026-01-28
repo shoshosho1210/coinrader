@@ -3589,7 +3589,7 @@ if (breadthSub){
     if (ma && Number.isFinite(ma.distPct)) {
       const d = ma.distPct;
       const label = ma.label || (d > 0 ? '上' : d < 0 ? '下' : '中立');
-      setSum('sumMaMain', `${d>=0?'+':''}${fmtPct(d, 2)}`);
+      setSum('sumMaMain', fmtPct(d)); // シンプルにこれでOKです
       setSum('sumMaSub', label);
       updateSummaryMaBar(d);
     } else {
