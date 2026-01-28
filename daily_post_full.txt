@@ -1,14 +1,15 @@
 🤖 CoinRader 市場速報 (01/28)
-【分析: 中立】 多角的な需給解析を更新
+【分析: 中立】 市場の需給をAI解析
 
 🔹 Bitcoin 📉
 価格: ¥1364万
-前日比: -0.1%
+前日比: -0.2%
+心理指数: 29 (Fear)
 
-🔥 トレンド: HYPE, PUMP, PENGU
+🔥 トレンド: HYPE, PENGU, PUMP
 🚀 急上昇: PIPPIN
 
-📊 詳細分析はサイトでチェック
+📊 詳細分析
 https://coinrader.net/share/20260128.html
 
-#Bitcoin #暗号資産 #CoinRader #BTC
+#CoinRader #暗号資産
