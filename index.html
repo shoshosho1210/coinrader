@@ -1415,17 +1415,18 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   gap: 10px;
   padding-top: 60px; /* 上の隙間調整 */
 }
-/* --- サイバー・ネオン・スピナー演出 --- */
+/* --- サイバー・ネオン・スピナー（小型・3D版） --- */
 .cyber-loader {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 54px;   /* 80px → 54px に小型化 */
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 200px; /* 立体感を出すための視点 */
 }
 
-/* 外側の回転リング */
+/* 外側のリング：傾きをつけて楕円に見せる */
 .cyber-loader::before {
   content: "";
   position: absolute;
@@ -1435,11 +1436,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   border-top: 2px solid #38bdf8;
   border-bottom: 2px solid #38bdf8;
   border-radius: 50%;
-  animation: cyber-spin 1s linear infinite;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+  /* 傾き（rotateX）を加えて、回転をアニメーション化 */
+  transform: rotateX(60deg) rotateY(10deg);
+  animation: cyber-spin-3d 1.2s linear infinite;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
 
-/* 内側の逆回転リング */
+/* 内側のリング：逆方向の傾き */
 .cyber-loader::after {
   content: "";
   position: absolute;
@@ -1449,33 +1452,19 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   border-left: 2px solid #38bdf8;
   border-right: 2px solid #38bdf8;
   border-radius: 50%;
-  animation: cyber-spin-reverse 1.5s linear infinite;
+  transform: rotateX(60deg) rotateY(-30deg);
+  animation: cyber-spin-3d-reverse 1.8s linear infinite;
   opacity: 0.6;
 }
 
-/* 中央のドット点滅 */
-.cyber-dot {
-  width: 6px;
-  height: 6px;
-  background: #38bdf8;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #38bdf8;
-  animation: cyber-pulse 1s ease-in-out infinite;
+@keyframes cyber-spin-3d {
+  0% { transform: rotateX(60deg) rotateY(10deg) rotateZ(0deg); }
+  100% { transform: rotateX(60deg) rotateY(10deg) rotateZ(360deg); }
 }
 
-@keyframes cyber-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes cyber-spin-reverse {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
-}
-
-@keyframes cyber-pulse {
-  0%, 100% { transform: scale(0.8); opacity: 0.5; }
-  50% { transform: scale(1.2); opacity: 1; }
+@keyframes cyber-spin-3d-reverse {
+  0% { transform: rotateX(60deg) rotateY(-30deg) rotateZ(360deg); }
+  100% { transform: rotateX(60deg) rotateY(-30deg) rotateZ(0deg); }
 }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
@@ -4822,15 +4811,15 @@ async function updateAiInsight() {
     // ★ 1. 解析開始と同時に「ANALYZING...」と表示させる
     if (timeEl) timeEl.textContent = "[ ANALYZING... ]";
 
-    // A. 思考中演出（砂時計からサイバー・スピナーへ変更）
+    // A. 思考中演出（砂時計を完全に排除）
     textEl.innerHTML = `
-      <div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:160px; width:100%; gap:20px;">
+      <div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:140px; width:100%; gap:15px;">
         <div class="cyber-loader">
           <div class="cyber-dot"></div>
         </div>
-        <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-          <span style="font-family:monospace; color:#38bdf8; font-size:11px; letter-spacing:2px; animation: pulse 1.5s infinite;">SYSTEM.ANALYZING...</span>
-          <span style="color:#64748b; font-size:12px;">ニューラルネットワークが市場構造をスキャン中</span>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <span style="font-family:monospace; color:#38bdf8; font-size:10px; opacity:0.9; letter-spacing:2px; animation: pulse 1.5s infinite;">SYSTEM.ANALYZING...</span>
+          <span style="color:#64748b; font-size:11px; font-weight:500;">市場構造をスキャン中</span>
         </div>
       </div>`;
 
