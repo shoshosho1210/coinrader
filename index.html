@@ -3419,7 +3419,7 @@ if (breadthSub){
               localStorage.setItem(histKey, JSON.stringify(hist));
           }
 
-          // --- センチメント波形：視覚的最適化ロジック ---
+          // --- センチメント波形：視覚的最適化（最終安定版） ---
           const labS = hist.map((_, i) => i);
           const valsS = hist.filter(v => v != null && isFinite(v));
           
@@ -3429,13 +3429,14 @@ if (breadthSub){
               const currentMax = Math.max(...valsS);
               const range = currentMax - currentMin;
 
-              // ★ ズームの最適化：上下幅を「5ポイント」以上に固定
-              // これにより、PCでの「トゲ」を抑え、スマホでの「階段」をなだらかな坂にします
-              let targetSpan = Math.max(range * 1.2, 5); 
+              // ★ 解決策：表示幅（Span）を最低でも「15ポイント」に固定します。
+              // 今までの「5」だと1ptの変化が画面の20%を占めてトゲになりますが、
+              // 「15」にすることで、1ptの変化が適切な「さざ波」として表現されます。
+              let targetSpan = Math.max(range * 1.5, 15); 
               let mid = (currentMax + currentMin) / 2;
               
-              minS = Math.max(0, mid - (targetSpan / 2));
-              maxS = Math.min(100, mid + (targetSpan / 2));
+              minS = Math.max(0, Math.floor(mid - (targetSpan / 2)));
+              maxS = Math.min(100, Math.ceil(mid + (targetSpan / 2)));
           }
 
           makeLineChart('sentLine', labS, [{
@@ -3444,11 +3445,9 @@ if (breadthSub){
               borderColor: 'rgba(56, 189, 248, 0.9)',
               borderWidth: 2,
               fill: true,
-              // ★ 塗りつぶしのグラデーション強度を微調整
               backgroundColor: 'rgba(56, 189, 248, 0.08)',
-              // ★ 重要：曲線の補完を最大化 (0.45 → 0.8)
-              // これにより階段状のデータが「自然なうねり」に変換されます
-              tension: 0.8, 
+              // ★ 補完設定：0.4〜0.5が最も自然な曲線を描きます
+              tension: 0.45, 
               pointRadius: 0
           }], { 
               yMin: minS, 
