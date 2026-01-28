@@ -1416,47 +1416,55 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   gap: 10px;
   padding-top: 60px; /* 上の隙間調整 */
 }
-/* --- サイバー・ネオン・スピナー（小型・3D版） --- */
+/* --- サイバー・ネオン・スピナー（中型・3Dバランス版） --- */
 .cyber-loader {
   position: relative;
-  width: 54px;   /* 80px → 54px に小型化 */
-  height: 54px;
+  width: 64px;   /* 50px → 64px にサイズアップ */
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 200px; /* 立体感を出すための視点 */
+  perspective: 250px; /* サイズに合わせて奥行きを微調整 */
 }
 
-/* 外側のリング：傾きをつけて楕円に見せる */
+/* 外側のリング */
 .cyber-loader::before {
   content: "";
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 1.5px solid transparent; /* 線を少し細くして精密感を出す */
-  border-top: 2px solid #38bdf8;
-  border-bottom: 2px solid #38bdf8;
+  border: 2px solid transparent; 
+  border-top: 2.5px solid #38bdf8; /* 線をわずかに太くして存在感を出す */
+  border-bottom: 2.5px solid #38bdf8;
   border-radius: 50%;
   transform: rotateX(65deg) rotateY(15deg);
   animation: cyber-spin-3d 1.2s linear infinite;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
 }
 
-/* 内側のリング：逆方向の傾き */
+/* 内側のリング */
 .cyber-loader::after {
   content: "";
   position: absolute;
-  width: 70%;
-  height: 70%;
-  border: 1px solid transparent;
+  width: 75%; /* 少しだけ内側の比率を上げる */
+  height: 75%;
+  border: 1.5px solid transparent;
   border-left: 2px solid #38bdf8;
   border-right: 2px solid #38bdf8;
   border-radius: 50%;
   transform: rotateX(65deg) rotateY(-35deg);
   animation: cyber-spin-3d-reverse 1.8s linear infinite;
-  opacity: 0.5;
+  opacity: 0.6;
 }
-
+/* 中央のドットを少し強調 */
+.cyber-dot {
+  width: 5px;
+  height: 5px;
+  background: #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #38bdf8;
+  animation: cyber-pulse 1s ease-in-out infinite;
+}
 @keyframes cyber-spin-3d {
   0% { transform: rotateX(60deg) rotateY(10deg) rotateZ(0deg); }
   100% { transform: rotateX(60deg) rotateY(10deg) rotateZ(360deg); }
