@@ -4774,6 +4774,7 @@ async function updateAiInsight() {
         timeEl.textContent = `[ ANALYZED AT ${timeStr} ]`;
         timeEl.style.opacity = "1"; // 完了したら少し明るくする
         return;
+      }
     }
 
     const sent = parseFloat(sentTxt);
