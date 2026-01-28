@@ -164,12 +164,16 @@ def generate_post():
         f.write(share_html)
 
     # ==========================================
-    # 5. SNS投稿テキスト作成
+    # 5. 各種テキスト・レポート出力 (ここから上書き)
     # ==========================================
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
     ai_status = "【分析: 楽観】" if chg > 3 else ("【分析: 悲観】" if chg < -3 else "【分析: 中立】")
     icon = "📈" if chg > 0 else "📉"
     
+    # 実行時刻を秒まで入れることで、Gitに「更新」を認識させる
+    update_time = jst_now.strftime("%H:%M:%S")
+
+    # --- SNS投稿用の短文 ---
     short_post = (
         f"🤖 CoinRader 市場速報 ({date_label})\n"
         f"{ai_status} 需給とテクニカルをAI解析\n\n"
@@ -182,15 +186,42 @@ def generate_post():
         f"#CoinRader #暗号資産"
     )
 
-    with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
-    with open("daily_post_full.txt", "w", encoding="utf-8") as f: f.write(short_post)
-    with open("daily_share_url.txt", "w", encoding="utf-8") as f: f.write(f"https://coinrader.net/share/{file_date}.html")
-    with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(f"# Market Note {display_date}")
+    # --- daily_note_draft.md (高度なレポート下書き) ---
+    note_content = f"""# Market Note {display_date} ({update_time} 更新)
+
+## 📊 今日の主要マーケット指標
+- **BTC価格:** ¥{format_price(btc['current_price']) if btc else '-'} ({'+' if chg > 0 else ''}{chg:.1f}%)
+- **BTC RSI(14):** {btc_rsi if btc_rsi else 'データ収集中'}
+- **心理指数(FGI):** {fgi['value']} ({fgi['label']})
+- **BTCドミナンス:** {round(btc_dom, 2)}%
+
+## 📈 注目銘柄の動向
+- **トレンド入り:** {', '.join(trend_symbols)}
+- **本日の急上昇銘柄:** {intelligence_json['summary']['top_gainer']['symbol']} ({intelligence_json['summary']['top_gainer']['change']}%)
+
+## ✍️ 市場分析メモ
+- 本日の市場センチメントは「{fgi['label']}」となっており、{ai_status}の傾向が見られます。
+- テクニカル的にはBTC RSIが {btc_rsi if btc_rsi else '-'} の水準にあり、{'買われすぎ' if (btc_rsi or 0) > 70 else '売られすぎ' if (btc_rsi or 0) < 30 else '中立圏'} を示唆しています。
+"""
+
+    # ファイルの書き出し
+    with open("daily_post_short.txt", "w", encoding="utf-8") as f:
+        f.write(short_post)
+    
+    with open("daily_post_full.txt", "w", encoding="utf-8") as f:
+        f.write(short_post)
+    
+    with open("daily_share_url.txt", "w", encoding="utf-8") as f:
+        f.write(f"https://coinrader.net/share/{file_date}.html")
+    
+    # 以前の 1行だけの write を、この note_content に差し替え
+    with open("daily_note_draft.md", "w", encoding="utf-8") as f:
+        f.write(note_content)
 
     return True
 
 if __name__ == "__main__":
     if generate_post():
-        print("✅ RSIを含む高度分析JSONの生成に成功しました")
+        print("✅ RSI・詳細レポートを含む全ファイルの生成に成功しました")
     else:
         print("❌ プロセス中にエラーが発生しました")
