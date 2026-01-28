@@ -3419,20 +3419,19 @@ if (breadthSub){
               localStorage.setItem(histKey, JSON.stringify(hist));
           }
 
-          // --- センチメント波形：PCでの「うねり」と段差解消の最終ロジック ---
+          // --- センチメント波形：視覚的最適化ロジック ---
           const labS = hist.map((_, i) => i);
           const valsS = hist.filter(v => v != null && isFinite(v));
+          
           let minS = 0, maxS = 100;
-
           if (valsS.length > 1) {
               const currentMin = Math.min(...valsS);
               const currentMax = Math.max(...valsS);
               const range = currentMax - currentMin;
 
-              // ★ 超攻撃的なズーム設定
-              // 振れ幅がどれだけ小さくても、画面の高さ一杯に波を描くようにします。
-              // 表示する幅を「実際の振れ幅 + わずかなマージン」に固定します。
-              let targetSpan = Math.max(range * 1.1, 4); // 最低でも4ポイント分の幅を確保
+              // ★ ズームの最適化：上下幅を「5ポイント」以上に固定
+              // これにより、PCでの「トゲ」を抑え、スマホでの「階段」をなだらかな坂にします
+              let targetSpan = Math.max(range * 1.2, 5); 
               let mid = (currentMax + currentMin) / 2;
               
               minS = Math.max(0, mid - (targetSpan / 2));
@@ -3442,18 +3441,20 @@ if (breadthSub){
           makeLineChart('sentLine', labS, [{
               label: 'Sentiment',
               data: hist,
-              borderColor: 'rgba(56, 189, 248, 0.95)',
-              borderWidth: 2.2,
+              borderColor: 'rgba(56, 189, 248, 0.9)',
+              borderWidth: 2,
               fill: true,
-              backgroundColor: 'rgba(56, 189, 248, 0.12)',
-              // ★ モバイルの段差を消すため、さらに曲線を滑らかに（0.45 → 0.6）
-              tension: 0.6, 
+              // ★ 塗りつぶしのグラデーション強度を微調整
+              backgroundColor: 'rgba(56, 189, 248, 0.08)',
+              // ★ 重要：曲線の補完を最大化 (0.45 → 0.8)
+              // これにより階段状のデータが「自然なうねり」に変換されます
+              tension: 0.8, 
               pointRadius: 0
           }], { 
               yMin: minS, 
               yMax: maxS, 
               dayGrid: true, 
-              xGridColor: 'rgba(255,255,255,0.12)', 
+              xGridColor: 'rgba(255,255,255,0.08)', 
               xGridWidth: 1
           });
         }catch(e){ console.warn('sentiment failed', e); }
