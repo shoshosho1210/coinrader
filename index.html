@@ -1053,79 +1053,98 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     border-color: #ffffff; /* ホバー時は白く光る */
     background: #000;
   }
-  /* ▼▼▼ 追加：AI分析ボックスのスタイル ▼▼▼ */
-/* ▼▼▼ 修正版：AI分析ボックスのデザイン（なじませスタイル） ▼▼▼ */
+/* --- AI Insight Box: Cyber & Professional Update --- */
 .ai-insight-box {
-  /* レイアウト調整 */
-  margin: 10px 0 16px; /* 上下の余白 */
+  margin: 12px 0 20px;
   width: 100%;
-  
-  /* デザイン：他のカードと統一感を出す */
-  background: rgba(255, 255, 255, 0.03); /* 薄い半透明 */
-  border: 1px solid rgba(255, 255, 255, 0.08); /* 細い枠線 */
-  border-radius: 12px;
-  padding: 14px 16px;
-  
-  /* 青いアクセントは左端の線ではなく、全体の発光で表現 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4px); /* すりガラス効果 */
+  position: relative;
+  overflow: hidden;
+
+  /* 深みのあるグラデーション背景 */
+  background: linear-gradient(165deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+  border: 1px solid rgba(56, 189, 248, 0.35); /* 青いネオン枠 */
+  border-radius: 16px;
+  padding: 20px;
+
+  /* ボックス全体を優しく発光させる */
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.5),
+    0 0 15px 0 rgba(56, 189, 248, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+/* 左端のアクセント光（重要度を演出） */
+.ai-insight-box::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 15%; bottom: 15%;
+  width: 4px;
+  background: linear-gradient(to bottom, #38bdf8, #1e88e5);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
 }
 
 .ai-insight-header {
   display: flex; 
   align-items: center; 
-  gap: 8px;
-  margin-bottom: 10px;
-  /* タイトル周りの境界線 */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
 }
 
 .ai-title-label {
-  font-size: 14px; 
-  font-weight: 700; 
-  color: #e5e7eb; /* 白文字 */
-  letter-spacing: .05em;
+  font-size: 15px; 
+  font-weight: 800; 
+  color: #f8fafc;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
 .ai-badge {
   font-size: 10px; 
-  padding: 2px 8px; 
-  border-radius: 99px;
+  padding: 3px 10px; 
+  border-radius: 6px;
   background: rgba(56, 189, 248, 0.15); 
-  color: #38bdf8; 
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  font-weight: 600;
+  color: #7dd3fc; 
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: pulse 2s infinite; /* 点滅アニメーション */
 }
 
 .ai-insight-text {
-  font-size: 13px; 
-  line-height: 1.75; 
-  color: #d1d5db;
-  /* 最小の高さを確保してガタつきを防ぐが、中身に応じて伸びるようにする */
-  min-height: 120px; 
+  font-size: 14.5px; 
+  line-height: 1.85; 
+  color: #e2e8f0;
+  min-height: 140px; /* ガタつき防止の高さ確保 */
   width: 100%;
 }
 
-/* アニメーションをここに追加（消えていたため） */
-@keyframes spin { 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
-/* AI文中の強調（strong）タグのデザイン */
+/* 分析文中の強調キーワード */
 .ai-insight-text strong {
-  color: #7dd3fc; /* 水色で強調 */
+  color: #38bdf8; 
   font-weight: 700;
-  background: rgba(56, 189, 248, 0.1);
-  padding: 0 4px; 
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.08);
+  padding: 0 4px;
   border-radius: 4px;
 }
 
 .ai-insight-note {
-  margin-top: 10px; 
+  margin-top: 12px; 
   font-size: 10px; 
   color: #64748b; 
   text-align: right;
   opacity: 0.8;
+}
+
+/* アニメーション定義 */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes pulse { 
+  0% { opacity: 0.6; box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.2); } 
+  50% { opacity: 1; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0); } 
+  100% { opacity: 0.6; } 
 }
 /* ▼▼▼ 追加：時価総額テーブルのデザイン ▼▼▼ */
 .table-scroll-container {
