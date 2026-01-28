@@ -1433,14 +1433,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 2px solid transparent;
+  border: 1.5px solid transparent; /* 線を少し細くして精密感を出す */
   border-top: 2px solid #38bdf8;
   border-bottom: 2px solid #38bdf8;
   border-radius: 50%;
-  /* 傾き（rotateX）を加えて、回転をアニメーション化 */
-  transform: rotateX(60deg) rotateY(10deg);
+  transform: rotateX(65deg) rotateY(15deg);
   animation: cyber-spin-3d 1.2s linear infinite;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
 }
 
 /* 内側のリング：逆方向の傾き */
@@ -1449,13 +1448,13 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   position: absolute;
   width: 70%;
   height: 70%;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-left: 2px solid #38bdf8;
   border-right: 2px solid #38bdf8;
   border-radius: 50%;
-  transform: rotateX(60deg) rotateY(-30deg);
+  transform: rotateX(65deg) rotateY(-35deg);
   animation: cyber-spin-3d-reverse 1.8s linear infinite;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 @keyframes cyber-spin-3d {
