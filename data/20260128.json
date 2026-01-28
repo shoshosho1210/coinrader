@@ -1,0 +1,18 @@
+{
+    "date": "2026-01-28",
+    "btc_price": 13623253,
+    "btc_change": 0.19299,
+    "sentiment": {
+        "value": 29,
+        "label": "Fear"
+    },
+    "top_gainer": {
+        "symbol": "PIPPIN",
+        "change": 56.07183
+    },
+    "trending": [
+        "HYPE",
+        "AXS",
+        "XAUT"
+    ]
+}
