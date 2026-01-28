@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>暗号資産投資の始め方 - CoinRader | データ分析から選ぶ取引所ガイド</title>
-  <meta name="description" content="CoinRader（コインレーダー）による暗号資産投資の始め方。データ分析の視点から、2026年現在最も合理的な国内取引所（BITPOINT・FXTF）を厳選して解説します。">
+  <meta name="description" content="CoinRader（コインレーダー）による暗号資産投資の始め方。データ分析の視点から、2026年最新の国内取引所（コインチェック・GMOコイン等）を厳選解説します。">
   <link rel="canonical" href="https://coinrader.net/start">
   
   <meta property="og:site_name" content="CoinRader">
   <meta property="og:title" content="暗号資産投資の始め方 | CoinRader">
-  <meta property="og:description" content="分析者が選ぶ「現物」と「分析トレード」の最適解。最短3ステップで解説。">
+  <meta property="og:description" content="分析者が選ぶ「現物」と「分析トレード」の最適解。損益管理まで網羅した4ステップ。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://coinrader.net/assets/og/ogp.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -32,39 +32,37 @@
     .section { margin-top: 40px; }
     .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin-top:16px; }
     
-    /* 取引所カードのデザイン */
     .xcard { 
       background: linear-gradient(145deg, #111827, #1f2937); 
       border:1px solid rgba(255,255,255,.1); 
       border-radius:16px; padding:24px;
       transition: all 0.2s ease;
+      display: flex; flex-direction: column;
     }
     .xcard:hover { transform: translateY(-4px); border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); }
     .xcard h3 { margin:0 0 8px; font-size:20px; color:#fff; }
     .xcard .badge { font-size: 11px; padding: 3px 10px; border-radius: 4px; background: #2563eb; color: #fff; margin-bottom: 12px; display: inline-block; font-weight: bold;}
     
     .muted { color:#94a3b8; font-size:13px; line-height:1.6; }
-    .list { margin:16px 0; padding-left: 20px; color:#cbd5e1; line-height:1.8; }
-    .btnrow { margin-top:24px; }
+    .list { margin:16px 0; padding-left: 20px; color:#cbd5e1; line-height:1.8; flex-grow: 1; }
+    .btnrow { margin-top:auto; }
     
-    /* リンクボタンを「実行したくなる」デザインへ */
     .btn-primary{
       display:flex; align-items:center; justify-content:center;
       width: 100%; padding:14px; border-radius:12px;
       background:#2563eb; color:#fff; font-weight:800; text-decoration:none;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
       transition: background 0.2s;
     }
     .btn-primary:hover{ background:#3b82f6; }
-    
-    /* 運営者の信頼性ボックス */
+    .btn-secondary { background: #10b981; } /* Cryptact用 */
+    .btn-secondary:hover { background: #059669; }
+
     .expert-box {
       border: 1px solid rgba(96, 165, 250, 0.2);
       background: rgba(59, 130, 246, 0.05);
       padding: 20px; border-radius: 12px; margin: 24px 0;
       display: flex; gap: 15px; align-items: flex-start;
     }
-    .expert-box .icon { font-size: 24px; }
 
     .pageHeader{
       display:flex; align-items:center; justify-content:space-between;
@@ -88,17 +86,17 @@
       <h1>暗号資産投資の始め方</h1>
       
       <p class="lead">
-        CoinRaderは「データで相場を読む」ためのプラットフォームです。<br>
-        この分析を実際の利益に変えるために必要な、信頼できる取引環境の整え方を最短3ステップで解説します。
+        CoinRaderはデータに基づいた投資判断を支援するプラットフォームです。<br>
+        「分析を利益に変える」ために必要な取引環境と、資産を守るためのステップを解説します。
       </p>
 
       <div class="expert-box">
-        <div class="icon">📊</div>
+        <div style="font-size: 24px;">📊</div>
         <div>
           <strong style="color:#60a5fa;">分析者による推薦:</strong><br>
           <span class="muted">
-            運営者は金融庁共催のデータ分析コンペにて上位成績（84位/705人）を収めています。
-            その専門的な視点から、2026年現在の市場環境に最適な2社を厳選しました。
+            運営者は金融庁共催のデータコンペ「金融データ活用チャレンジ」にて上位84位（705人中）を記録。<br>
+            その知見から、信頼性と実用性を兼ね備えたサービスを厳選しています。
           </span>
         </div>
       </div>
@@ -111,38 +109,54 @@
       <hr class="hr" style="margin: 40px 0; opacity: 0.1;">
 
       <div class="section">
-        <h2>ステップ1：投資スタイルで選ぶ「口座開設」</h2>
-        <p class="muted">「守りの現物」と「攻めの分析トレード」。この2つを使い分けるのが合理的です。</p>
+        <h2>ステップ1：スタイルに合う「口座」を持つ</h2>
+        <p class="muted">目的（初心者・コスト・分析）に合わせて最適な窓口を選びましょう。</p>
 
         <div class="cards">
-          <div class="xcard">
-            <span class="badge">現物・長期保有向き</span>
-            <h3>BITPOINT</h3>
-            <div class="muted">SBIグループ運営 / 板取引の手数料が無料</div>
+          <div class="xcard" style="border-top: 4px solid #00d2ff;">
+            <span class="badge">人気No.1・初心者向け</span>
+            <h3>コインチェック</h3>
+            <div class="muted">アプリダウンロード数国内No.1</div>
             <ul class="list">
-              <li><strong>コスト最小化:</strong> 「取引所（板取引）」の手数料が無料。長期投資の天敵であるコストを抑えられます。</li>
-              <li><strong>高い信頼性:</strong> SBIグループの強固な資本力。</li>
-              <li><strong>スムーズな開始:</strong> スマホ本人確認で最短当日から投資が可能。</li>
+              <li>スマホアプリの使いやすさが抜群。</li>
+              <li>マネックスグループの強固な基盤。</li>
+              <li><strong>データ重視:</strong> ユーザー数が多いため、市場の関心度を知る上でも必須。</li>
             </ul>
             <div class="btnrow">
-              <a class="btn-primary" href="ここにBITPOINTのリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_bitpoint_open">
-                BITPOINT 公式サイト
+              <a class="btn-primary" href="ここにコインチェックのURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cc_open">
+                コインチェック 公式サイト
               </a>
             </div>
           </div>
 
-          <div class="xcard">
-            <span class="badge" style="background:#1e40af;">分析・短期トレード向き</span>
-            <h3>FXTF</h3>
-            <div class="muted">国内唯一のMT4対応 / 高度な戦略を実行</div>
+          <div class="xcard" style="border-top: 4px solid #3b82f6;">
+            <span class="badge" style="background:#1e40af;">分析・トレード派</span>
+            <h3>みんなのコイン / FXTF</h3>
+            <div class="muted">レバレッジ取引 / 分析ツール充実</div>
             <ul class="list">
-              <li><strong>分析に特化:</strong> CoinRaderのデータを活かせる高機能ツール「MT4」が利用可能。</li>
-              <li><strong>効率的な運用:</strong> ボラティリティ（価格変動）を狙うレバレッジ取引に対応。</li>
-              <li><strong>限定特典:</strong> 口座開設後の取引でキャッシュバック等の特典が充実。</li>
+              <li><strong>みんなのコイン:</strong> 各種手数料0円でレバレッジ取引。</li>
+              <li><strong>FXTF:</strong> 唯一無二の「MT4」対応。自作指標の検証に。</li>
+              <li>高度な分析を実際の利益に変える「攻め」の口座。</li>
             </ul>
             <div class="btnrow">
-              <a class="btn-primary" href="ここにFXTFのリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_fxtf_open" style="background:#1d4ed8;">
-                FXTF 公式サイト
+              <a class="btn-primary" href="ここにみんなのコインのURL" target="_blank" rel="noopener noreferrer" data-ga="ex_minna_open" style="background:#1d4ed8;">
+                トレード専用口座を開く
+              </a>
+            </div>
+          </div>
+
+          <div class="xcard" style="border-top: 4px solid #64748b;">
+            <span class="badge" style="background:#475569;">信頼・コスト重視</span>
+            <h3>GMOコイン / BITPOINT</h3>
+            <div class="muted">手数料の安さ国内トップクラス</div>
+            <ul class="list">
+              <li><strong>GMOコイン:</strong> 送金手数料無料。オリコン満足度No.1。</li>
+              <li><strong>BITPOINT:</strong> 板取引の手数料が無料。SBIグループ運営。</li>
+              <li>長期保有（ガチホ）で資産を積み上げる「守り」の口座。</li>
+            </ul>
+            <div class="btnrow">
+              <a class="btn-primary" href="ここにGMOコインのURL" target="_blank" rel="noopener noreferrer" style="background:#475569;">
+                詳細を公式サイトで見る
               </a>
             </div>
           </div>
@@ -150,29 +164,39 @@
       </div>
 
       <div class="section">
-        <h2>ステップ2：セキュリティを「物理的」に固める</h2>
+        <h2>ステップ2：セキュリティの徹底</h2>
         <ul class="list">
-          <li><strong>2段階認証（必須）:</strong> 取引所の設定からGoogle Authenticator等を必ず紐付けてください。</li>
-          <li><strong>独自のパスワード:</strong> 銀行やSNSと同じパスワードの使い回しは絶対に避けましょう。</li>
+          <li><strong>2段階認証:</strong> SMSではなくGoogle Authenticator等のアプリを推奨。</li>
+          <li><strong>資産の分散:</strong> 一つの取引所に全財産を置かず、用途別に分けましょう。</li>
         </ul>
       </div>
 
       <div class="section">
-        <h2>ステップ3：データとリアルの「検証」を始める</h2>
-        <p class="muted">まずは数千円〜の少額から、実際の市場の動きを体感しましょう。</p>
-        <ul class="list">
-          <li><strong>BITPOINT</strong>でビットコインの「現物」を購入し、価格変動に慣れる。</li>
-          <li><strong>FXTF</strong>のチャートにCoinRaderの分析結果（ボラティリティ等）を当てはめ、有効性を検証する。</li>
-        </ul>
+        <h2>ステップ4：損益計算・税金対策（必須）</h2>
+        <p class="muted">複数の口座を持つなら、確定申告に向けた自動計算ツールの導入は必須です。</p>
+        <div class="xcard" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.05);">
+            <span class="badge" style="background:#10b981;">分析者の必須ツール</span>
+            <h3>クリプタクト（Cryptact）</h3>
+            <div class="muted">国内利用者数No.1の損益計算サービス</div>
+            <ul class="list">
+              <li>各取引所の履歴をアップロードするだけで損益を自動算出。</li>
+              <li>「今どれくらい利益（含み損）が出ているか」を正確に把握。</li>
+            </ul>
+            <div class="btnrow">
+              <a class="btn-primary btn-secondary" href="ここにクリプタクトのURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cryptact_open">
+                無料で損益計算を始める
+              </a>
+            </div>
+        </div>
       </div>
 
       <div class="noteBox" style="margin-top: 50px;">
-        ※本ページの情報はあくまで参考であり、将来の利益を保証するものではありません。暗号資産投資には元本割れのリスクがあります。最終的な投資判断はご自身の責任で行ってください。
+        ※本ページの内容は投資勧誘を目的としたものではありません。最終的な投資判断はご自身の責任で行ってください。
       </div>
     </div>
 
     <footer class="footer">
-      <div class="note">© CoinRader</div>
+      <div class="note">© CoinRader | Data-Driven Crypto Intelligence</div>
     </footer>
   </div>
 
