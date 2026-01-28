@@ -129,7 +129,27 @@ def generate_post():
         f"📊 詳細分析はサイトでチェック\n{site_url}\n\n"
         f"#Bitcoin #暗号資産 #CoinRader #BTC"
     )
+    
+    # 追加：市場の感情データを取得
+    fgi_data = get_fear_and_greed_index()
 
+    # --- ここがポイント！週次レポート用のデータまとめ ---
+    daily_json = {
+        "date": display_date,
+        "btc_price": btc['current_price'] if btc else 0,
+        "btc_change": chg,
+        "sentiment": fgi_data,  # ← ここに入れます！
+        "top_gainer": {
+            "symbol": top_gainers[0]['symbol'].upper(),
+            "change": top_gainers[0]['price_change_percentage_24h']
+        } if top_gainers else None,
+        "trending": trend_symbols
+    }
+
+    # データの保存（dataフォルダを作成して保存）
+    os.makedirs("data", exist_ok=True)
+    with open(f"data/{file_date}.json", "w", encoding="utf-8") as f:
+        json.dump(daily_json, f, ensure_ascii=False, indent=4)
     # 各種テキストファイル出力
     with open("daily_post_short.txt", "w", encoding="utf-8") as f:
         f.write(short_post)
@@ -144,5 +164,18 @@ def generate_post():
 
     return f"✅ {file_date}.html 生成完了"
 
+def get_fear_and_greed_index():
+    """市場の恐怖強欲指数(FGI)を取得する"""
+    try:
+        url = "https://api.alternative.me/fng/"
+        response = requests.get(url, timeout=10)
+        data = response.json()
+        fgi_value = int(data['data'][0]['value'])
+        fgi_class = data['data'][0]['value_classification']
+        return {"value": fgi_value, "label": fgi_class}
+    except Exception as e:
+        print(f"FGI取得エラー: {e}")
+        return {"value": 50, "label": "Neutral"}
+        
 if __name__ == "__main__":
     print(generate_post())
