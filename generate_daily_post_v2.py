@@ -48,17 +48,15 @@ def format_price(price):
     return f"{price:,.0f}"
 
 # ==========================================
-# 3. 投稿テキスト生成 & ファイル保存
+# 3. 投稿テキスト & シェアHTML生成
 # ==========================================
 def generate_post():
     markets = get_market_data()
     trending = get_trending_coins()
     if not markets: return "データの取得に失敗しました。"
 
-    # --- BTCデータの取得 ---
     btc = next((item for item in markets if item["id"] == "bitcoin"), None)
     
-    # --- 上昇率トップ (None対策済み) ---
     MIN_VOL_JPY = 500_000_000 
     valid_gainers = [
         c for c in markets 
@@ -69,35 +67,57 @@ def generate_post():
     ]
     top_gainers = sorted(valid_gainers, key=lambda x: x['price_change_percentage_24h'], reverse=True)[:1]
     
-    # --- トレンド銘柄 ---
     trend_symbols = []
     for t in trending:
         if not (is_wrapped_or_duplicate(t) or is_stable_coin(t)):
             trend_symbols.append(t['symbol'].upper())
         if len(trend_symbols) >= 3: break
 
-    # --- 日付の取得 ---
-    dt_now = datetime.datetime.now()
-    date_str = dt_now.strftime("%m/%d") # 時間は削除
-    
-    # --- メッセージの組み立て ---
+    # --- 重要：日本時間(JST)での日付取得 ---
+    # GitHub ActionsはUTCなため、9時間加算してJSTにする
+    jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+    date_str = jst_now.strftime("%m/%d")
+    file_date = jst_now.strftime("%Y%m%d")   # 20260128 形式
+    display_date = jst_now.strftime("%Y-%m-%d") # 2026-01-28 形式
+
+    # --- 4. シェア用HTMLの作成 ---
+    share_html = f"""<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CoinRader - 今日の注目 {display_date}</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CoinRader">
+  <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
+  <meta property="og:description" content="トレンド/上昇率/出来高をひと目で。">
+  <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp.png?v={file_date}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CoinRader - 今日の注目 {display_date}">
+  <meta name="twitter:description" content="トレンド/上昇率/出来高をひと目で。">
+  <meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png?v={file_date}">
+  <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
+</head>
+<body></body>
+</html>"""
+
+    # shareフォルダを作成して保存
+    os.makedirs("share", exist_ok=True)
+    with open(f"share/{file_date}.html", "w", encoding="utf-8") as f:
+        f.write(share_html)
+
+    # --- 5. メッセージの組み立て ---
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
     icon = "📈" if chg > 0 else ("📉" if chg < 0 else "➡️")
     sign = "+" if chg > 0 else ""
-    
-    # AI判定ラベル（短くして独自性をキープ）
     ai_status = "【分析: 楽観】" if chg > 3 else ("【分析: 悲観】" if chg < -3 else "【分析: 中立】")
-
-    # --- 日付の取得 ---
-    dt_now = datetime.datetime.now()
-    date_str = dt_now.strftime("%m/%d")
-    file_date = dt_now.strftime("%Y%m%d") # ファイル名用の 20260127 形式
-
-    # --- サイトURLを日別シェアURLに変更 ---
-    # 固定のURLではなく、生成されたHTMLファイルを指すようにします
-    site_url = f"https://coinrader.net/share/{file_date}.html"
     
-    # X用ショートメッセージ (ハッシュタグ変更済み)
+    # リンクを日別HTMLに設定
+    site_url = f"https://coinrader.net/share/{file_date}.html"
+
     short_post = (
         f"🤖 CoinRader 市場速報 ({date_str})\n"
         f"{ai_status} 多角的な需給解析を更新\n\n"
@@ -110,18 +130,19 @@ def generate_post():
         f"#Bitcoin #暗号資産 #CoinRader #BTC"
     )
 
-    # サイトURL
-    site_url = "https://coinrader.net/"
-
-    # ファイル出力
+    # 各種テキストファイル出力
     with open("daily_post_short.txt", "w", encoding="utf-8") as f:
         f.write(short_post)
     with open("daily_post_full.txt", "w", encoding="utf-8") as f:
-        f.write(short_post) # 今回は両方同じ内容に集約
+        f.write(short_post)
     with open("daily_share_url.txt", "w", encoding="utf-8") as f:
         f.write(site_url)
+    
+    # GitHub Actionsのテスト用ダミーファイル
+    with open("daily_note_draft.md", "w", encoding="utf-8") as f:
+        f.write(f"# Market Note {display_date}")
 
-    return "✅ ファイル生成完了"
+    return f"✅ {file_date}.html 生成完了"
 
 if __name__ == "__main__":
     print(generate_post())
