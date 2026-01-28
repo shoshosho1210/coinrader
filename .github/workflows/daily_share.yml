@@ -28,8 +28,8 @@ jobs:
 
       - name: Run script
         run: |
-          # dataとshareフォルダを確実に作成
-          mkdir -p data
+          # フォルダ作成コマンドを修正
+          mkdir -p assets/data/daily
           mkdir -p share
           python generate_daily_post_v2.py
 
@@ -38,12 +38,11 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # 作成された可能性のあるすべてのファイルとフォルダをGitの対象に加える
-          git add data/ share/ *.txt *.md
+          # assetsフォルダの中身をすべて対象にする
+          git add assets/ data/ share/ *.txt *.md
           
-          # 変更（新しくできたJSONなど）がある場合だけコミットして送信
           if ! git diff --cached --exit-code --quiet; then
-            git commit -m "Update daily data and post: $(date +'%Y-%m-%d')"
+            git commit -m "Update daily data: $(date +'%Y-%m-%d')"
             git push
           else
             echo "No changes to commit"
