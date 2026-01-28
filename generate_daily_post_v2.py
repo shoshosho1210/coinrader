@@ -1,6 +1,7 @@
 import requests
 import datetime
 import os
+import json
 
 # ==========================================
 # 1. 除外ロジック (ステーブル・Wrapped除外)
