@@ -163,28 +163,38 @@ def generate_post():
     with open(f"share/{file_date}.html", "w", encoding="utf-8") as f:
         f.write(share_html)
 
-    # ==========================================
-    # 5. 各種テキスト・レポート出力 (ここから上書き)
+  # ==========================================
+    # 5. SNS投稿テキスト & 各種レポート出力
     # ==========================================
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
-    ai_status = "【分析: 楽観】" if chg > 3 else ("【分析: 悲観】" if chg < -3 else "【分析: 中立】")
+    # ステータス文字を簡略化（【】を外す）
+    ai_status_msg = "分析: 楽観" if chg > 3 else ("分析: 悲観" if chg < -3 else "分析: 中立")
     icon = "📈" if chg > 0 else "📉"
     
-    # 実行時刻を秒まで入れることで、Gitに「更新」を認識させる
-    update_time = jst_now.strftime("%H:%M:%S")
-
-    # --- SNS投稿用の短文 ---
+    # 注目銘柄用データの整形
+    trending_str = ", ".join(trend_symbols) if trend_symbols else "-"
+    top_g_sym = intelligence_json['summary']['top_gainer']['symbol']
+    top_g_chg = int(intelligence_json['summary']['top_gainer']['change']) # 整数で丸める
+    
+    # --- short_post (ご要望のフォーマット) ---
     short_post = (
         f"🤖 CoinRader 市場速報 ({date_label})\n"
-        f"{ai_status} 需給とテクニカルをAI解析\n\n"
+        f"{ai_status_msg}\n\n"
         f"🔹 Bitcoin {icon}\n"
         f"価格: ¥{format_price(btc['current_price']) if btc else '-'}\n"
         f"前日比: {'+' if chg > 0 else ''}{chg:.1f}%\n"
         f"RSI(14): {btc_rsi if btc_rsi else '-'}\n"
         f"心理指数: {fgi['value']} ({fgi['label']})\n\n"
-        f"📊 詳細分析\nhttps://coinrader.net/share/{file_date}.html\n\n"
-        f"#CoinRader #暗号資産"
+        f"📈 注目銘柄\n"
+        f"トレンド入り: {trending_str}\n"
+        f"急上昇銘柄: {top_g_sym} ({top_g_chg}%↑)\n\n"
+        f"📊 詳細分析\n"
+        f"https://coinrader.net/share/{file_date}.html\n\n"
+        f"#CoinRader #ビットコイン #暗号資産"
     )
+
+    # 実行時刻を秒まで入れることで、Gitに「更新」を認識させる
+    update_time = jst_now.strftime("%H:%M:%S")
 
     # --- daily_note_draft.md (高度なレポート下書き) ---
     note_content = f"""# Market Note {display_date} ({update_time} 更新)
@@ -196,25 +206,25 @@ def generate_post():
 - **BTCドミナンス:** {round(btc_dom, 2)}%
 
 ## 📈 注目銘柄の動向
-- **トレンド入り:** {', '.join(trend_symbols)}
-- **本日の急上昇銘柄:** {intelligence_json['summary']['top_gainer']['symbol']} ({intelligence_json['summary']['top_gainer']['change']}%)
+- **トレンド入り:** {trending_str}
+- **本日の急上昇銘柄:** {top_g_sym} ({top_g_chg}%↑)
 
 ## ✍️ 市場分析メモ
-- 本日の市場センチメントは「{fgi['label']}」となっており、{ai_status}の傾向が見られます。
+- 本日の市場センチメントは「{fgi['label']}」となっており、{ai_status_msg}の傾向が見られます。
 - テクニカル的にはBTC RSIが {btc_rsi if btc_rsi else '-'} の水準にあり、{'買われすぎ' if (btc_rsi or 0) > 70 else '売られすぎ' if (btc_rsi or 0) < 30 else '中立圏'} を示唆しています。
 """
 
-    # ファイルの書き出し
+    # --- ファイルの書き出し ---
     with open("daily_post_short.txt", "w", encoding="utf-8") as f:
         f.write(short_post)
     
     with open("daily_post_full.txt", "w", encoding="utf-8") as f:
+        # Full版もご要望の short フォーマットをベースに構成
         f.write(short_post)
     
     with open("daily_share_url.txt", "w", encoding="utf-8") as f:
         f.write(f"https://coinrader.net/share/{file_date}.html")
     
-    # 以前の 1行だけの write を、この note_content に差し替え
     with open("daily_note_draft.md", "w", encoding="utf-8") as f:
         f.write(note_content)
 
