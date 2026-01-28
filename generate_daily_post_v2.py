@@ -87,6 +87,15 @@ def generate_post():
     
     # AI判定ラベル（短くして独自性をキープ）
     ai_status = "【分析: 楽観】" if chg > 3 else ("【分析: 悲観】" if chg < -3 else "【分析: 中立】")
+
+    # --- 日付の取得 ---
+    dt_now = datetime.datetime.now()
+    date_str = dt_now.strftime("%m/%d")
+    file_date = dt_now.strftime("%Y%m%d") # ファイル名用の 20260127 形式
+
+    # --- サイトURLを日別シェアURLに変更 ---
+    # 固定のURLではなく、生成されたHTMLファイルを指すようにします
+    site_url = f"https://coinrader.net/share/{file_date}.html"
     
     # X用ショートメッセージ (ハッシュタグ変更済み)
     short_post = (
@@ -97,7 +106,7 @@ def generate_post():
         f"前日比: {sign}{chg:.1f}%\n\n"
         f"🔥 トレンド: {', '.join(trend_symbols)}\n"
         f"🚀 急上昇: {top_gainers[0]['symbol'].upper() if top_gainers else '-'}\n\n"
-        f"📊 詳細分析はサイトでチェック\nhttps://coinrader.net/\n\n"
+        f"📊 詳細分析はサイトでチェック\n{site_url}\n\n"
         f"#Bitcoin #暗号資産 #CoinRader #BTC"
     )
 
