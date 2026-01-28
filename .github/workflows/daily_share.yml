@@ -13,89 +13,38 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.10'
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Generate share + posts
-        env:
-          CG_DEMO_KEY: ${{ secrets.CG_DEMO_KEY }}
-          SITE_URL: "https://coinrader.net/"
+      - name: Run script
         run: |
-          set -eux
-          pwd
-          ls -la
-          mkdir -p data/daily
+          # dataとshareフォルダを確実に作成
+          mkdir -p data
+          mkdir -p share
           python generate_daily_post_v2.py
-          echo "---- after generate ----"
-          ls -la
-          ls -la share || true
-          test -f daily_post_full.txt
-          test -f daily_post_short.txt
-          test -f daily_share_url.txt
-          test -f daily_note_draft.md
 
-      - name: Prune old share pages (keep last 30 days)
-        env:
-          KEEP_DAYS: "30"
+      - name: Commit and Push
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import datetime as dt, os, re
-
-          keep = int(os.getenv("KEEP_DAYS", "30"))
-          cutoff = (dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=keep))
-
-          share = Path("share")
-          if not share.exists():
-            print("share/ not found, skip")
-            raise SystemExit(0)
-
-          removed = 0
-          for p in share.glob("*.html"):
-            m = re.match(r"(\d{8})\.html$", p.name)
-            if not m:
-              continue
-            d = dt.datetime.strptime(m.group(1), "%Y%m%d").date()
-            if d < cutoff:
-              p.unlink()
-              removed += 1
-
-          print(f"Pruned {removed} file(s) older than {keep} days. cutoff={cutoff}")
-          PY
-
-      # 生成物がpushできなくても、まずここで “作れてるか” を確実に確認できる
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: daily-output
-          path: |
-            daily_post_full.txt
-            daily_post_short.txt
-            daily_share_url.txt
-            daily_note_draft.md
-            share/**/*.html
-            data/daily/*.json
-
-      - name: Commit & push if changed
-        run: |
-          set -eux
-          git config user.name "coinrader-bot"
-          git config user.email "coinrader-bot@users.noreply.github.com"
-
-          git add -f share data/daily daily_post_full.txt daily_post_short.txt daily_share_url.txt
-          git add -f daily_note_draft.md
-          git status --porcelain
-
-          git diff --cached --quiet || git commit -m "Daily share page"
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # 作成された可能性のあるすべてのファイルとフォルダをGitの対象に加える
+          git add data/ share/ *.txt *.md
+          
+          # 変更（新しくできたJSONなど）がある場合だけコミットして送信
+          if ! git diff --cached --exit-code --quiet; then
+            git commit -m "Update daily data and post: $(date +'%Y-%m-%d')"
+            git push
+          else
+            echo "No changes to commit"
+          fi
