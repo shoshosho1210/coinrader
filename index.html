@@ -3419,6 +3419,7 @@ if (breadthSub){
               localStorage.setItem(histKey, JSON.stringify(hist));
           }
 
+          // --- センチメント波形：PCでの「うねり」と段差解消の最終ロジック ---
           const labS = hist.map((_, i) => i);
           const valsS = hist.filter(v => v != null && isFinite(v));
           let minS = 0, maxS = 100;
@@ -3428,34 +3429,31 @@ if (breadthSub){
               const currentMax = Math.max(...valsS);
               const range = currentMax - currentMin;
 
-              // ★ PCでも「波」を見せるためのダイナミック・ズーム
-              // 余白（padding）を振れ幅の30%まで絞り、最小でも1.5ptに設定してズームを強めます
-              const padding = Math.max(1.5, range * 0.3); 
-              minS = Math.max(0, Math.floor(currentMin - padding));
-              maxS = Math.min(100, Math.ceil(currentMax + padding));
-
-              // ★ 表示幅が狭すぎる（10pt未満）場合は、強制的に10pt幅に絞ってさらに拡大表示
-              if (maxS - minS < 10) {
-                  let mid = (maxS + minS) / 2;
-                  minS = Math.max(0, mid - 5);
-                  maxS = Math.min(100, mid + 5);
-              }
+              // ★ 超攻撃的なズーム設定
+              // 振れ幅がどれだけ小さくても、画面の高さ一杯に波を描くようにします。
+              // 表示する幅を「実際の振れ幅 + わずかなマージン」に固定します。
+              let targetSpan = Math.max(range * 1.1, 4); // 最低でも4ポイント分の幅を確保
+              let mid = (currentMax + currentMin) / 2;
+              
+              minS = Math.max(0, mid - (targetSpan / 2));
+              maxS = Math.min(100, mid + (targetSpan / 2));
           }
 
           makeLineChart('sentLine', labS, [{
               label: 'Sentiment',
               data: hist,
-              borderColor: 'rgba(56, 189, 248, 0.95)', // シアンを強調
+              borderColor: 'rgba(56, 189, 248, 0.95)',
               borderWidth: 2.2,
               fill: true,
-              backgroundColor: 'rgba(56, 189, 248, 0.15)',
-              tension: 0.5, // ★ モバイルの段差を消すため、さらに滑らかに
+              backgroundColor: 'rgba(56, 189, 248, 0.12)',
+              // ★ モバイルの段差を消すため、さらに曲線を滑らかに（0.45 → 0.6）
+              tension: 0.6, 
               pointRadius: 0
           }], { 
               yMin: minS, 
               yMax: maxS, 
-              dayGrid: true, // グリッドを復元
-              xGridColor: 'rgba(255,255,255,0.15)', // グリッドを少し濃くして視認性を向上
+              dayGrid: true, 
+              xGridColor: 'rgba(255,255,255,0.12)', 
               xGridWidth: 1
           });
         }catch(e){ console.warn('sentiment failed', e); }
