@@ -126,8 +126,13 @@ def generate_post():
         "trending": trend_symbols
     }
 
-    os.makedirs("assets/data/daily", exist_ok=True)
-    with open(f"assets/data/daily/{file_date}.json", "w", encoding="utf-8") as f:
+    base_path = os.path.join("assets", "data", "daily")
+    os.makedirs(base_path, exist_ok=True) 
+
+    file_name = f"{file_date}.json"
+    file_path = os.path.join(base_path, file_name)
+
+    with open(file_path, "w", encoding="utf-8") as f:
         json.dump(daily_json, f, ensure_ascii=False, indent=4)
 
     # --- 5. メッセージの組み立て (速報用) ---
