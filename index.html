@@ -289,12 +289,54 @@
   .sent-gauge-label{ font-size:12px; color: rgba(229,231,235,.75); }
 
 
-  /* --- Market Overview KPI strip (CMC-like quick glance) --- */
-  .overview-kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0 14px;}
-  .kpi-tile{background:#0b1224;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px 12px;}
-  .kpi-tile-title{font-size:11px;color:#9ca3af;letter-spacing:.02em;}
-  .kpi-tile-big{margin-top:6px;font-size:18px;font-weight:800;color:#f9fafb;line-height:1.1;}
-  .kpi-tile-sub{margin-top:4px;font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* --- Market Overview KPI strip (シアン・デザイン・アップデート) --- */
+  .overview-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 12px 0 14px;
+  }
+
+  .kpi-tile {
+    background: rgba(15, 23, 42, 0.7) !important; /* 背景を少し深く */
+    border: 1px solid rgba(56, 189, 248, 0.25) !important; /* 控えめな水色枠 */
+    border-radius: 14px;
+    padding: 10px 12px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ホバー時に発光させる */
+  .kpi-tile:hover {
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+    background: rgba(15, 23, 42, 0.8) !important;
+  }
+
+  .kpi-tile-title {
+    font-size: 11px;
+    color: #94a3b8; /* テキストを少し落ち着かせる */
+    letter-spacing: .02em;
+    font-weight: 600;
+  }
+
+  .kpi-tile-big {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #f8fafc !important; /* 数値は明るく白く */
+    line-height: 1.1;
+  }
+
+  .kpi-tile-sub {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #cbd5e1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .kpi-tile-sub .pos{color:#4ade80;font-weight:700;}
   .kpi-tile-sub .neg{color:#f87171;font-weight:700;}
   
@@ -1263,9 +1305,10 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   }
 
   #sec-summary .section-title {
-    font-size: 14px !important;          /* 見出しを小さく */
-    margin: 0 !important;
-    white-space: nowrap;
+    font-size: 16px !important;
+    color: #38bdf8 !important; /* AIカラーと同じ水色 */
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+    letter-spacing: 0.05em;
   }
 
   #sec-summary .section-sub {
@@ -1384,7 +1427,7 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
 <div class="section-header">
 <div>
-<div class="section-title">⚡️ 市場ハイライト</div>
+<div class="section-title">📊 AIマーケット・インサイト</div>
 </div>
 <div class="section-actions">
   <button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
