@@ -3,36 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>データソース・更新頻度 - CoinRader</title>
-  <meta name="description" content="CoinRader（コインレーダー）が利用しているデータソース、情報の更新頻度、データ欠損時の扱いについて説明します。CoinGecko APIなどの正確なデータ取得に努めています。">
+  <title>データソースと分析ロジック - CoinRader</title>
+  <meta name="description" content="CoinRader（コインレーダー）のデータ透明性。利用しているAPI、AIを用いたセンチメント分析、統計学的なボラティリティ予測の仕組みを公開します。">
   <link rel="canonical" href="https://coinrader.net/data-sources">
-  <!-- Icons -->
-  <link rel="icon" href="/assets/icons/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#0f172a">
-
-  <!-- SEO -->
-  <meta name="description" content="CoinRaderのデータソースと更新頻度、欠損時の扱いについての説明ページです。">
-  <link rel="canonical" href="https://coinrader.net/data-sources.html">
-
-  <!-- Open Graph -->
-  <meta property="og:site_name" content="CoinRader">
-  <meta property="og:title" content="データソース・更新頻度 | CoinRader">
-  <meta property="og:description" content="CoinRaderで利用しているデータソースと更新頻度、欠損時の扱いについて。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://coinrader.net/data-sources">
-  <meta property="og:image" content="https://coinrader.net/assets/og/ogp.png">
-
-  <!-- X (Twitter) -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="データソース・更新頻度 | CoinRader">
-  <meta name="twitter:description" content="CoinRaderで利用しているデータソースと更新頻度、欠損時の扱いについて。">
-  <meta name="twitter:image" content="https://coinrader.net/assets/og/ogp.png">
-
-  <!-- Google tag (gtag.js) -->
+  
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -44,50 +18,24 @@
   <link rel="stylesheet" href="/_page_style.css" />
 
   <style>
-    /* Brand logo (match index/start) */
-    .brandLink{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
-    .brandLogo{ height:28px; width:auto; display:block; }
-
-    /* Ensure this page card is centered like other pages */
-    .card{ max-width: 960px; margin: 0 auto; }
-
-    .lead{ color:#cbd5e1; line-height:1.7; margin: 8px 0 16px; }
-    .sec{ margin-top: 16px; }
-    .sec h2{ margin: 0 0 8px; font-size: 16px; }
-    .list{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.7; }
-    .note{ margin-top: 10px; padding: 10px 12px; border-radius: 12px;
-           background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
-           color:#cbd5e1; font-size:12px; line-height:1.7; }
-
-  /* Header (compact, dashboard-like) */
-  .pageHeader{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:10px 12px; margin:0 0 14px 0;
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:14px;
-    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
-  }
-  .pageHeader-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-  .headerLink{
-    color:#cbd5e1; text-decoration:none; font-size:13px;
-    padding:8px 10px; border-radius:10px;
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.03);
-  }
-  .headerLink:hover{ filter:brightness(1.15); }
-  .headerCta{
-    color:#0b1220; text-decoration:none; font-size:13px; font-weight:700;
-    padding:8px 12px; border-radius:10px;
-    background:linear-gradient(180deg,#60a5fa,#3b82f6);
-    border:1px solid rgba(59,130,246,.45);
-  }
-  .headerCta:hover{ filter:brightness(1.05); }
-  @media (max-width: 520px){
-    .pageHeader{ align-items:flex-start; }
-    .pageHeader-right{ width:100%; justify-content:flex-start; }
-  }
-
-</style>
+    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
+    .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
+            background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; margin-bottom: 8px;}
+    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); pt: 24px; }
+    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; display: flex; align-items: center; gap: 8px;}
+    .list { margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.8; }
+    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
+            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
+            color:#94a3b8; font-size:13px; line-height:1.6; }
+    .logic-card { background: rgba(59, 130, 246, 0.03); border-left: 4px solid #3b82f6; padding: 15px; margin: 10px 0; }
+    
+    .pageHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
+      border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+    }
+    .brandLogo { height:28px; }
+  </style>
 </head>
 
 <body>
@@ -96,69 +44,66 @@
       <a class="brandLink" href="/" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
       </a>
-      <div class="pageHeader-right">
-      </div>
     </header>
+
     <div class="card">
-      <h1>データソース・更新頻度</h1>
-      <p class="lead">CoinRaderで利用しているデータソース、更新の目安、欠損時の扱いをまとめています。</p>
+      <span class="pill">透明性と専門性</span>
+      <h1>データソース・分析ロジック</h1>
+      <p class="lead">CoinRaderは、信頼できる一次データに独自の数学的解析を加えることで、相場の「体温」を可視化しています。</p>
 
       <div class="sec">
-        <h2>データソース</h2>
+        <h2>📊 一次データソース</h2>
         <ul class="list">
-          <li>CoinGecko API（価格、時価総額、出来高、ランキング等）
-  <span style="opacity:.85;">—</span>
-  <a href="https://www.coingecko.com/" target="_blank" rel="noopener"
-     data-ga="ext_coingecko_site"
-     data-placement="data_sources_section_sources"
-     data-partner="coingecko"
-     data-pr="0">公式</a>
-  /
-  <a href="https://docs.coingecko.com/" target="_blank" rel="noopener"
-     data-ga="ext_coingecko_api_docs"
-     data-placement="data_sources_section_sources"
-     data-partner="coingecko"
-     data-pr="0">API Docs</a>
-</li>
-
-        </ul>
-        <div class="note">各データの権利は提供元に帰属します。</div>
-      </div>
-
-      <div class="sec">
-        <h2>ランキングのルール</h2>
-        <ul class="list">
-          <li><b>トレンド</b>：CoinGeckoのトレンド（話題）指標です。価格や出来高の順位ではありません。</li>
-          <li><b>上昇率（24h）</b>：ステーブルコインを除外し、24h出来高5億円以上の銘柄を優先して表示します（不足時は出来高条件なしで補完）。</li>
-          <li><b>出来高（24h）</b>：24時間出来高（JPY換算）で表示します。</li>
-          <li><b>出来高（アルト）</b>：BTC/ETH/ステーブルコインを除外した24時間出来高で表示します。</li>
-          <li><b>時価総額</b>：時価総額（JPY換算）で表示します。</li>
-        </ul>
-        <div class="note">※「ステーブルコイン」判定は提供元データを優先し、取得できない場合は一般的なステーブル（例：USDT/USDC/DAI等）を除外対象として扱うことがあります。</div>
-      </div>
-
-      <div class="sec">
-        <h2>更新頻度</h2>
-        <ul class="list">
-          <li>データは一定間隔で更新されます。ページ上部の「更新」表示をご確認ください。</li>
+          <li><strong>CoinGecko API</strong>：世界最大級の暗号資産データアグリゲーター。価格、時価総額、出来高等の基盤データを取得しています。</li>
+          <li><strong>各取引所パブリックAPI</strong>：板情報やリアルタイムレートの補完に利用しています。</li>
+          <li><strong>公的統計・ニュースフィード</strong>：センチメント分析の入力ソースとして活用しています。</li>
         </ul>
       </div>
 
       <div class="sec">
-        <h2>欠損時の扱い</h2>
+        <h2>🤖 独自分析アルゴリズム</h2>
+        <p class="muted">当サイトでは、金融データ解析の知見（金融データ活用チャレンジ84位/705人）に基づき、以下の加工を行っています。</p>
+        
+        <div class="logic-card">
+          <strong>AIセンチメントインデックス (LLM分析)</strong>
+          <p class="muted">大規模言語モデル（LLM）を用いて、膨大なニュースやSNSから市場心理を判定。単なる単語検索ではなく、文脈から「強気・弱気」をスコア化しています。</p>
+        </div>
+
+        <div class="logic-card">
+          <strong>統計的ボラティリティ予測 (GARCHモデル)</strong>
+          <p class="muted">過去の価格変動の「ムラ」を統計的に解析。将来の変動幅の広がりを予測し、リスク管理の指標として提供しています。</p>
+        </div>
+        <div class="note">※中学生向け解説：GARCH（ガッチ）とは、価格の「荒れ具合」が次にどうなるかを予測する数学の道具です。</div>
+      </div>
+
+      <div class="sec">
+        <h2>⚖️ ランキングの選定基準</h2>
         <ul class="list">
-          <li>API制限、通信障害、提供元の仕様変更等により一時的にデータが取得できない場合があります。</li>
-          <li>その際は「取得できませんでした」等の表示となる場合があります。</li>
+          <li><strong>トレンド</strong>：独自の話題性スコア ＋ CoinGeckoトレンド指標。</li>
+          <li><strong>実質出来高</strong>：洗浄済み出来高（Wash Tradingを除いた推計）を優先。</li>
+          <li><strong>ステーブルコイン除外</strong>：価格変動を追うランキングでは、USDT/USDC等を自動でフィルタリング。</li>
         </ul>
+      </div>
+
+      <div class="sec">
+        <h2>⏱️ 更新頻度とデータ品質</h2>
+        <ul class="list">
+          <li><strong>リアルタイム更新</strong>：主要な市場価格（5分〜15分間隔）。</li>
+          <li><strong>バッチ更新</strong>：AI分析・統計予測（1時間〜24時間間隔）。</li>
+        </ul>
+        <div class="note">
+          APIの制限や通信環境により、一時的にデータが欠損する場合があります。その際は直近の有効な値を保持するか、再取得まで「Pending」と表示されます。
+        </div>
+      </div>
+
+      <div class="noteBox" style="margin-top:40px;">
+        ※CoinRaderは投資助言を行いません。提供されるデータは過去の統計に基づいたものであり、将来の成果を保証するものではありません。
       </div>
     </div>
 
     <footer class="footer">
-      <div class="links">
-      </div>
-      <div class="note">© CoinRader</div>
+      <div class="note">© CoinRader | 科学的アプローチによる市場分析</div>
     </footer>
   </div>
-  <script src="/assets/click_tracker.js" defer></script>
 </body>
 </html>
