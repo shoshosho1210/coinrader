@@ -92,11 +92,27 @@ def generate_post():
     # 4. ファイル保存 (data/daily と share/)
     # ==========================================
     
-    # 1. JSON保存
+    # --- JSONデータの保存 (軽量化版) ---
     save_dir = "data/daily"
     os.makedirs(save_dir, exist_ok=True)
-    with open(f"{save_dir}/{file_date}.json", "w", encoding="utf-8") as f:
-        json.dump(markets, f, ensure_ascii=False, indent=2)
+    
+    # 必要な項目（キー）だけに絞り込む
+    slim_markets = []
+    for c in markets:
+        slim_markets.append({
+            "id": c.get("id"),
+            "symbol": c.get("symbol"),
+            "name": c.get("name"),
+            "price": c.get("current_price"),
+            "cap": c.get("market_cap"),
+            "vol": c.get("total_volume"),
+            "chg24h": c.get("price_change_percentage_24h")
+        })
+    
+    json_path = f"{save_dir}/{file_date}.json"
+    with open(json_path, "w", encoding="utf-8") as f:
+        # slim_markets を保存するように変更
+        json.dump(slim_markets, f, ensure_ascii=False, indent=2)
 
     # 2. HTML保存 (削ぎ落としたのは転送専用だからですが、OGPタグはフルセット入れています)
     share_html = f"""<!doctype html>
