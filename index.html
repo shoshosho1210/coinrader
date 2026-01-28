@@ -3419,35 +3419,42 @@ if (breadthSub){
               localStorage.setItem(histKey, JSON.stringify(hist));
           }
 
-          // --- センチメント波形：視覚的最適化（最終安定版） ---
-          const labS = hist.map((_, i) => i);
+// --- センチメント波形：スムージング＆安定化ロジック（最終回答） ---
           const valsS = hist.filter(v => v != null && isFinite(v));
           
+          // 1. データの平滑化（3点移動平均を適用して階段現象を物理的に消す）
+          const smoothedData = valsS.map((v, i, arr) => {
+              if (i === 0) return v;
+              if (i === 1) return (arr[0] + v) / 2;
+              return (arr[i-2] + arr[i-1] + v) / 3; // 3点の平均をとる
+          });
+
           let minS = 0, maxS = 100;
-          if (valsS.length > 1) {
-              const currentMin = Math.min(...valsS);
-              const currentMax = Math.max(...valsS);
+          if (smoothedData.length > 1) {
+              const currentMin = Math.min(...smoothedData);
+              const currentMax = Math.max(...smoothedData);
               const range = currentMax - currentMin;
 
-              // ★ 解決策：表示幅（Span）を最低でも「15ポイント」に固定します。
-              // 今までの「5」だと1ptの変化が画面の20%を占めてトゲになりますが、
-              // 「15」にすることで、1ptの変化が適切な「さざ波」として表現されます。
-              let targetSpan = Math.max(range * 1.5, 15); 
+              // 2. ズーム倍率の固定（20ポイント幅）
+              // 15でもまだズームが強すぎたため、20ポイントに広げます。
+              // これにより1ptの変動が「目立ちすぎないさざ波」になります。
+              let targetSpan = Math.max(range * 1.5, 20); 
               let mid = (currentMax + currentMin) / 2;
               
               minS = Math.max(0, Math.floor(mid - (targetSpan / 2)));
               maxS = Math.min(100, Math.ceil(mid + (targetSpan / 2)));
           }
 
+          // 3. グラフ描画
+          const labS = smoothedData.map((_, i) => i);
           makeLineChart('sentLine', labS, [{
               label: 'Sentiment',
-              data: hist,
+              data: smoothedData,
               borderColor: 'rgba(56, 189, 248, 0.9)',
               borderWidth: 2,
               fill: true,
               backgroundColor: 'rgba(56, 189, 248, 0.08)',
-              // ★ 補完設定：0.4〜0.5が最も自然な曲線を描きます
-              tension: 0.45, 
+              tension: 0.4, // スムージング済みなので標準的な 0.4 で十分滑らかになります
               pointRadius: 0
           }], { 
               yMin: minS, 
