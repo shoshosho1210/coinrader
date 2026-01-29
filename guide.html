@@ -1,75 +1,98 @@
 <style>
   .guide-wrap { color: #e2e8f0; font-size: 14px; line-height: 1.6; }
-  .guide-hero { padding: 10px 0 20px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 20px; }
-  .guide-hero h1 { font-size: 16px; color: #38bdf8; margin: 0 0 8px; }
+  .guide-header { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .guide-header h1 { font-size: 18px; color: #38bdf8; margin: 0; font-weight: 800; }
   
-  .guide-grid { display: grid; gap: 12px; margin-bottom: 24px; }
-  
-  /* 指標ごとの1行パネル */
-  .guide-item { 
-    display: flex; align-items: center; gap: 14px; 
-    background: rgba(255,255,255,0.03); 
-    padding: 12px 16px; border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.05);
+  .guide-section { margin-bottom: 28px; }
+  .guide-h2 { 
+    font-size: 15px; font-weight: 800; color: #f8fafc; 
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
   }
-  .guide-icon { font-size: 20px; width: 24px; text-align: center; }
-  .guide-info { flex: 1; }
-  .guide-label { display: block; font-weight: 800; font-size: 13px; color: #f8fafc; margin-bottom: 2px; }
-  .guide-desc { display: block; font-size: 12px; color: #94a3b8; }
-  .guide-desc b { color: #38bdf8; }
+  .guide-h2 .step-num { background: #38bdf8; color: #0f172a; padding: 1px 8px; border-radius: 4px; font-size: 11px; }
 
-  /* AIセクションをさらにシンプルに */
-  .guide-ai-box {
-    background: rgba(56, 189, 248, 0.05);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    border-radius: 12px; padding: 16px; margin-top: 20px;
+  /* 箇条書きリストのスタイル */
+  .guide-list { list-style: none; padding: 0; margin: 0; }
+  .guide-list li { 
+    background: rgba(255,255,255,0.02); 
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
   }
-  .guide-ai-title { display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 14px; margin-bottom: 8px; }
+  .guide-list li strong { color: #f8fafc; display: block; margin-bottom: 4px; font-size: 14px; }
+  .guide-list li span { color: #94a3b8; font-size: 13px; display: block; }
+  .guide-list li b { color: #38bdf8; } /* 強調色 */
+
+  /* AI Insight セクション */
+  .guide-ai-panel {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), transparent);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 12px; padding: 16px; margin-top: 24px;
+  }
+  .guide-ai-panel h3 { color: #38bdf8; font-size: 15px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+
+  .guide-footer { margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
 </style>
 
 <div class="guide-wrap">
-  <div class="guide-hero">
-    <h1>相場の「呼吸」を読む 3つの視点</h1>
-    <p style="font-size: 13px; color: #94a3b8; margin: 0;">CoinRaderを使いこなすための、最短チェックリストです。</p>
+  <div class="guide-header">
+    <h1>CoinRader 活用ガイド</h1>
+    <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">3つのステップで相場の「体温」と「流れ」をスキャンします。</p>
   </div>
 
-  <div class="guide-grid">
-    <div class="guide-item">
-      <div class="guide-icon">🍃</div>
-      <div class="guide-info">
-        <span class="guide-label">恐怖指数 / 騰落バランス</span>
-        <span class="guide-desc">みんなが<b>「怖がっているか（20以下）」</b>が最大のチャンス。</span>
-      </div>
-    </div>
-
-    <div class="guide-item">
-      <div class="guide-icon">🌊</div>
-      <div class="guide-info">
-        <span class="guide-label">BTC RSI</span>
-        <span class="guide-desc"><b>「30以下」</b>なら売られすぎ、<b>「70以上」</b>ならのぼせ気味。</span>
-      </div>
-    </div>
-
-    <div class="guide-item">
-      <div class="guide-icon">🏔️</div>
-      <div class="guide-info">
-        <span class="guide-label">ドミナンス / 長期トレンド</span>
-        <span class="guide-desc">資金が<b>「BTC（守り）」</b>か<b>「アルト（攻め）」</b>かを見極める。</span>
-      </div>
-    </div>
+  <div class="guide-section">
+    <div class="guide-h2"><span class="step-num">STEP 1</span> 市場の「心理」をチェック</div>
+    <ul class="guide-list">
+      <li>
+        <strong>🍃 恐怖指数 (Sentiment)</strong>
+        <span>市場が怖がっているか、浮かれているか。<b>20以下（悲観）</b>は買いの好機、<b>80以上（熱狂）</b>は調整に注意。</span>
+      </li>
+      <li>
+        <strong>☀️ 騰落バランス (Breadth)</strong>
+        <span>上昇・下落銘柄の数。<b>「まぶしい陽光（上昇優勢）」</b>なら市場全体に買いが広がっている健全な状態です。</span>
+      </li>
+    </ul>
   </div>
 
-  <div class="guide-ai-box">
-    <div class="guide-ai-title">🤖 AI Market Insight の役割</div>
-    <p style="font-size: 13px; margin: 0; color: #cbd5e1;">
-      人間が感情で判断を誤りやすい場面（例：暴落中の恐怖など）で、AIが<b>「客観的なデータの歪み」</b>を指摘し、冷静な判断をサポートします。
+  <div class="guide-section">
+    <div class="guide-h2"><span class="step-num">STEP 2</span> トレンドの「限界」を見極める</div>
+    <ul class="guide-list">
+      <li>
+        <strong>🌊 BTC RSI (14日)</strong>
+        <span>値動きの勢い。<b>30以下（売られすぎ）</b>なら反発目前、<b>70以上（買われすぎ）</b>なら一服する可能性大。</span>
+      </li>
+      <li>
+        <strong>🌱 長期トレンド (MA距離)</strong>
+        <span>過去の平均とのズレ。<b>「期待の芽生え」</b>は上昇への転換、<b>「力強い潮流」</b>は上昇トレンドの継続を示します。</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-h2"><span class="step-num">STEP 3</span> 資金の「居場所」を特定</div>
+    <ul class="guide-list">
+      <li>
+        <strong>🏔️ ドミナンス (Dominance)</strong>
+        <span>BTCのシェア。<b>比率上昇</b>は守りの相場、<b>比率低下</b>はアルトコインにお金が流れる攻めの相場です。</span>
+      </li>
+      <li>
+        <strong>✨ 注目銘柄リスト</strong>
+        <span>今この瞬間に世界中で検索されたり、取引が急増している「風の吹いている銘柄」をリストアップします。</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="guide-ai-panel">
+    <h3>🤖 AI Market Insight の使いかた</h3>
+    <p style="font-size: 13px; color: #cbd5e1; margin: 0;">
+      AIは上記の指標を秒速で統合分析します。特に<b>「価格は上がっているのにRSIが苦しそう（逆行現象）」</b>など、人間が感情で見落とす「需給の歪み」を鋭く指摘します。AIの「独り言」に次のトレンドのヒントが隠れています。
     </p>
   </div>
 
-  <div style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
-    <p style="font-size: 11px; color: #64748b; line-height: 1.5;">
-      ※ 投資は自己責任で行ってください。<br>
-      データはリアルタイムですが、判断は常に冷静に。
+  <div class="guide-footer">
+    <p style="font-size: 11px; color: #64748b;">
+      ※ 本サイトは情報提供のみを目的としており、投資勧誘ではありません。<br>
+      データに基づきつつ、最終的な判断は常に冷静に行ってください。
     </p>
   </div>
 </div>
