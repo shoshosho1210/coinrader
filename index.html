@@ -479,55 +479,47 @@
 }
 .btn-cta:hover { background:rgba(255,255,255,.10); }
 
-/* --- Premium Footer Style (ここからが新しいデザイン) --- */
+/* --- Premium Footer Style (Compact Version) --- */
 .site-footer {
-    background: rgba(10, 16, 28, 0.6);
-    border-top: 1px solid rgba(56, 189, 248, 0.15);
-    padding: 60px 20px 30px;
-    margin-top: 80px;
+    background: rgba(10, 16, 28, 0.4); /* 背景の透明度を上げてより馴染ませる */
+    border-top: 1px solid rgba(56, 189, 248, 0.1);
+    padding: 32px 20px 20px; /* 60pxから32pxへ大幅縮小 */
+    margin-top: 40px;        /* 80pxから40pxへ縮小 */
 }
 
 .footer-inner {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 40px;
+    grid-template-columns: 1.5fr 1fr 1fr; /* メインカラムを少し狭く */
+    gap: 30px; /* 隙間を詰める */
 }
 
-.footer-logo { height: 28px; margin-bottom: 15px; }
-.footer-tagline { font-size: 12px; color: #94a3b8; line-height: 1.8; }
+.footer-logo { height: 24px; margin-bottom: 10px; } /* ロゴも微小型化 */
+.footer-tagline { font-size: 11px; color: #64748b; line-height: 1.6; }
 
 .footer-title {
-    font-size: 13px;
+    font-size: 12px; /* 13pxから12pxへ */
     font-weight: 800;
     color: #38bdf8;
-    margin-bottom: 20px;
+    margin-bottom: 12px; /* 20pxから12pxへ */
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
 }
 
-.footer-links { list-style: none; padding: 0; margin: 0; }
-.footer-links li { margin-bottom: 12px; }
+.footer-links li { margin-bottom: 8px; } /* 行間を詰める */
 .footer-links a {
-    color: #cbd5e1;
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.2s;
-    /* 下線を消してモダンにする */
+    color: #94a3b8;
+    font-size: 12px; /* 13pxから12pxへ */
     text-decoration: none !important;
 }
 
-.footer-links a:hover { color: #38bdf8; }
-
 .footer-bottom {
     max-width: 1200px;
-    margin: 40px auto 0;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: center;
+    margin: 24px auto 0; /* 40pxから24pxへ */
+    padding-top: 16px;   /* 20pxから16pxへ */
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
-
 .footer-bottom p { font-size: 11px; color: #64748b; }
 
 /* スマホ対応 */
