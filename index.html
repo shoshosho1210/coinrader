@@ -1691,21 +1691,27 @@ section[id] {
   </div>
 
   <div class="kpi-tile kpi-dom">
-    <div class="kpi-tile-title">BTC ドミナンス</div>
+    <div class="kpi-tile-title">資金シェア (BTC Dominance)</div>
     <div class="kpi-with-donut">
       <div class="kpi-text">
-        <div class="kpi-value-row"><div class="kpi-tile-big" id="sumDomMain">-</div><div class="kpi-tile-sub inline" id="sumDomSub">-</div></div>
-      </div>
-      <div aria-hidden="true" class="mini-dom-bar mini-vis" title="BTC/ETH/ステーブル/Others 構成">
-        <div aria-label="Dominance bar" class="mini-dom-track" role="img">
-          <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
-          <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
-          <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
-          <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
-          <div class="mini-dom-tick t50"><span>50</span></div>
-          <div class="mini-dom-tick t60"><span>60</span></div>
+        <div class="kpi-value-row">
+          <div class="kpi-tile-big" id="sumDomMain" style="color: #facc15;">-</div>
+          <div class="kpi-tile-sub inline" id="sumDomSub" style="font-weight: 700;">-</div>
         </div>
-        <div class="kpi-bar-caption">BTC / ETH / ステーブル / その他</div>
+      </div>
+      <div aria-hidden="true" class="mini-dom-bar mini-vis" title="市場の資金構成比率">
+        <div aria-label="Dominance bar" class="mini-dom-track" style="height: 8px; background: rgba(255,255,255,0.05);">
+          <div class="mini-dom-seg btc" id="sumDomSegBtc" style="background: #facc15; transition: width 0.6s ease;"></div>
+          <div class="mini-dom-seg eth" id="sumDomSegEth" style="background: #60a5fa; transition: width 0.6s ease;"></div>
+          <div class="mini-dom-seg stb" id="sumDomSegStb" style="background: #34d399; transition: width 0.6s ease;"></div>
+          <div class="mini-dom-seg oth" id="sumDomSegOth" style="background: #94a3b8; transition: width 0.6s ease;"></div>
+        </div>
+        <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+          <span style="color:#facc15">BTC</span>
+          <span style="color:#60a5fa">ETH</span>
+          <span style="color:#34d399">Stable</span>
+          <span style="color:#94a3b8">Others</span>
+        </div>
       </div>
     </div>
   </div>
@@ -3314,11 +3320,52 @@ function renderOverview(){
         }
     }
 
-    // ドミナンスタイル
+    // ドミナンス タイル
+    const domMainEl = document.getElementById('sumDomMain');
+    const domSubEl = document.getElementById('sumDomSub');
+    
     const totalM = o.totalMcap || 1;
     const btcPct = (o.values && o.values[0]) ? (o.values[0] / totalM * 100) : 0;
-    setSum('sumDomMain', btcPct.toFixed(1) + '%');
-    setSum('sumDomSub', 'BTC');
+
+    if (domMainEl) {
+        let phaseLabel = '';
+        let phaseColor = '#facc15'; // 基本はBTCゴールド
+
+        // 市場フェーズの判定ロジック
+        if (btcPct >= 55) {
+            phaseLabel = '🛡️ 防衛（BTC集中）';
+            phaseColor = '#facc15';
+        } else if (btcPct <= 45) {
+            phaseLabel = '🚀 攻め（アルト熱狂）';
+            phaseColor = '#4ade80';
+        } else if (btcPct <= 50) {
+            phaseLabel = '💎 物色（アルト循環）';
+            phaseColor = '#86efac';
+        } else {
+            phaseLabel = '⚖️ 均衡（BTC主導）';
+            phaseColor = '#cbd5e1';
+        }
+
+        domMainEl.textContent = btcPct.toFixed(1) + '%';
+        // BTC比率が非常に高いときは少し発光させる演出
+        domMainEl.style.textShadow = btcPct >= 55 ? '0 0 10px rgba(250, 204, 21, 0.4)' : 'none';
+
+        if (domSubEl) {
+            domSubEl.textContent = phaseLabel;
+            domSubEl.style.color = phaseColor;
+        }
+
+        // 下部バーの更新（構成比率をすべて反映）
+        const ethPct = (o.values && o.values[1]) ? (o.values[1] / totalM * 100) : 0;
+        const stbPct = (o.values && o.values[2]) ? (o.values[2] / totalM * 100) : 0;
+        const othPct = Math.max(0, 100 - (btcPct + ethPct + stbPct));
+
+        const setSeg = (id, w) => { const el = document.getElementById(id); if (el) el.style.width = w.toFixed(1) + '%'; };
+        setSeg('sumDomSegBtc', btcPct);
+        setSeg('sumDomSegEth', ethPct);
+        setSeg('sumDomSegStb', stbPct);
+        setSeg('sumDomSegOth', othPct);
+    }
 
     // --- 6. 7日間詳細グラフ (seriesLen > 2 の時のみ実行) ---
     try {
