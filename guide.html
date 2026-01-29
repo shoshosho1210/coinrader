@@ -1,77 +1,75 @@
 <style>
-  .guide-wrap { color: #e2e8f0; line-height: 1.8; font-size: 14px; }
-  .guide-intro { margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
-  .guide-section { margin-bottom: 32px; padding-bottom: 8px; }
-  .guide-h2 { color: #38bdf8; font-size: 19px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-  .guide-step { background: #38bdf8; color: #0f172a; padding: 1px 10px; border-radius: 6px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
-  .guide-card { background: rgba(15, 23, 42, 0.5); border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid rgba(56, 189, 248, 0.15); transition: all 0.3s; }
-  .guide-card:hover { border-color: rgba(56, 189, 248, 0.4); background: rgba(15, 23, 42, 0.8); }
-  .guide-kpi-name { color: #f8fafc; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 15px; }
-  .guide-hint { font-size: 13.5px; color: #94a3b8; display: block; }
-  .guide-hint strong { color: #38bdf8; }
-  .guide-routine { border-left: 3px solid #38bdf8; padding: 10px 15px; margin-top: 15px; background: rgba(56, 189, 248, 0.05); font-size: 13px; color: #cbd5e1; border-radius: 0 8px 8px 0; }
-  .guide-routine b { color: #facc15; }
-  .ai-special-card { background: linear-gradient(165deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7)); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 16px; padding: 20px; position: relative; overflow: hidden; }
-  .ai-special-card::before { content: ""; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: #38bdf8; }
+  .guide-wrap { color: #e2e8f0; font-size: 14px; line-height: 1.6; }
+  .guide-hero { padding: 10px 0 20px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 20px; }
+  .guide-hero h1 { font-size: 16px; color: #38bdf8; margin: 0 0 8px; }
+  
+  .guide-grid { display: grid; gap: 12px; margin-bottom: 24px; }
+  
+  /* 指標ごとの1行パネル */
+  .guide-item { 
+    display: flex; align-items: center; gap: 14px; 
+    background: rgba(255,255,255,0.03); 
+    padding: 12px 16px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .guide-icon { font-size: 20px; width: 24px; text-align: center; }
+  .guide-info { flex: 1; }
+  .guide-label { display: block; font-weight: 800; font-size: 13px; color: #f8fafc; margin-bottom: 2px; }
+  .guide-desc { display: block; font-size: 12px; color: #94a3b8; }
+  .guide-desc b { color: #38bdf8; }
+
+  /* AIセクションをさらにシンプルに */
+  .guide-ai-box {
+    background: rgba(56, 189, 248, 0.05);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 12px; padding: 16px; margin-top: 20px;
+  }
+  .guide-ai-title { display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 14px; margin-bottom: 8px; }
 </style>
 
 <div class="guide-wrap">
-  <div class="guide-intro">
-    <p>CoinRaderへようこそ。ここは、膨大な数字の羅列から<b>「相場の呼吸」</b>を読み解くための場所です。マーケットは生き物のように変化します。以下の3ステップで、今の「空気」を正しくスキャンしましょう。</p>
+  <div class="guide-hero">
+    <h1>相場の「呼吸」を読む 3つの視点</h1>
+    <p style="font-size: 13px; color: #94a3b8; margin: 0;">CoinRaderを使いこなすための、最短チェックリストです。</p>
   </div>
 
-  <div class="guide-section">
-    <div class="guide-h2"><span class="guide-step">Step 1</span> 市場の「体温」を感じる</div>
-    <p>まずは、広場に集まった投資家たちが「震えているか」「熱狂しているか」を確認します。個別の価格を見る前に、全体の<b>空気圧</b>を知ることが大切です。</p>
-    
-    <div class="guide-card">
-      <span class="guide-kpi-name">🍃 恐怖指数 (Sentiment)</span>
-      <span class="guide-hint">市場の心理状態です。<b>「強い冷え込み（20以下）」</b>は絶好の好機の可能性を、<b>「強い熱気（80以上）」</b>は過熱による調整の近さを静かに示唆します。</span>
+  <div class="guide-grid">
+    <div class="guide-item">
+      <div class="guide-icon">🍃</div>
+      <div class="guide-info">
+        <span class="guide-label">恐怖指数 / 騰落バランス</span>
+        <span class="guide-desc">みんなが<b>「怖がっているか（20以下）」</b>が最大のチャンス。</span>
+      </div>
     </div>
-    
-    <div class="guide-card">
-      <span class="guide-kpi-name">☀️ 騰落バランス (Breadth)</span>
-      <span class="guide-hint">買いの勢いが市場の隅々まで行き渡っているかを見ます。一部の銘柄だけの独歩高ではなく、<b>「まぶしい陽光」</b>のように全体に買いが広がっているかが健全な上昇の鍵です。</span>
-    </div>
-    
-    <div class="guide-routine">💡 <b>Routine:</b> 指標が青や赤に大きく振れた時こそ、市場が「次の季節」へ移り変わる準備を始めているサインです。</div>
-  </div>
 
-  <div class="guide-section">
-    <div class="guide-h2"><span class="guide-step">Step 2</span> 流れの「限界」を見極める</div>
-    <p>次に、今の波が「岸に打ち付けようとしているのか」「引き潮に向かっているのか」を測ります。</p>
-    
-    <div class="guide-card">
-      <span class="guide-kpi-name">🌊 BTC RSI</span>
-      <span class="guide-hint">「買われすぎ・売られすぎ」を14日間の体温で測ります。<b>「静かな水底（30以下）」</b>は反発のエネルギーを蓄え、<b>「火山の熱気（70以上）」</b>は休息の時間を求めています。</span>
+    <div class="guide-item">
+      <div class="guide-icon">🌊</div>
+      <div class="guide-info">
+        <span class="guide-label">BTC RSI</span>
+        <span class="guide-desc"><b>「30以下」</b>なら売られすぎ、<b>「70以上」</b>ならのぼせ気味。</span>
+      </div>
     </div>
-    
-    <div class="guide-card">
-      <span class="guide-kpi-name">🌱 長期トレンド (MA距離)</span>
-      <span class="guide-hint">50日線と200日線の距離です。<b>「期待の芽生え」</b>は長期的な強気転換を、現在の流れが過去の平均からどれほど離れているかを可視化します。</span>
+
+    <div class="guide-item">
+      <div class="guide-icon">🏔️</div>
+      <div class="guide-info">
+        <span class="guide-label">ドミナンス / 長期トレンド</span>
+        <span class="guide-desc">資金が<b>「BTC（守り）」</b>か<b>「アルト（攻め）」</b>かを見極める。</span>
+      </div>
     </div>
   </div>
 
-  <div class="guide-section">
-    <div class="guide-h2"><span class="guide-step">Step 3</span> 資金の「居場所」を特定する</div>
-    <p>最後に、賢いお金（スマートマネー）が今どこに集まり、どこへ向かおうとしているのかを突き止めます。</p>
-    
-    <div class="guide-card">
-      <span class="guide-kpi-name">🏔️ ドミナンス (Dominance)</span>
-      <span class="guide-hint">ビットコインが主役の<b>「防衛フェーズ」</b>か、アルトコインが彩りを見せる<b>「華やかな活気」</b>か。資金の主戦場を特定することで、選ぶべき銘柄の方向性が見えてきます。</span>
-    </div>
-
-    <div class="guide-card">
-      <span class="guide-kpi-name">✨ トレンド / 出来高TOP5</span>
-      <span class="guide-hint">今この瞬間に「風」が吹いている銘柄のリストです。圧倒的な流動性がある場所には、必ず理由があります。</span>
-    </div>
+  <div class="guide-ai-box">
+    <div class="guide-ai-title">🤖 AI Market Insight の役割</div>
+    <p style="font-size: 13px; margin: 0; color: #cbd5e1;">
+      人間が感情で判断を誤りやすい場面（例：暴落中の恐怖など）で、AIが<b>「客観的なデータの歪み」</b>を指摘し、冷静な判断をサポートします。
+    </p>
   </div>
 
-  <div class="ai-special-card">
-    <div class="guide-h2" style="margin-bottom: 8px;">🤖 AI Market Insightの役割</div>
-    <p style="font-size: 13.5px; color: #e2e8f0;">CoinRaderのAIは、これらすべての指標を統合し、人間が感情で見落としがちな<b>「需給の歪み」</b>を言語化します。</p>
-    <p style="font-size: 13.5px; margin-top: 10px; color: #94a3b8;">価格は上がっているのに「呼吸（RSI）」が苦しそうだったり、誰もが悲観しているのに「底流（資金フロー）」が変わり始めていたり。AIが紡ぐ言葉から、次の大きな潮流を感じ取ってください。</p>
+  <div style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+    <p style="font-size: 11px; color: #64748b; line-height: 1.5;">
+      ※ 投資は自己責任で行ってください。<br>
+      データはリアルタイムですが、判断は常に冷静に。
+    </p>
   </div>
-
-  <p style="font-size: 11px; color: #64748b; text-align: center; margin-top: 30px; letter-spacing: 0.05em;">※ 本ツールは統計データに基づく情報提供を目的としており、投資の成功を保証するものではありません。<br>マーケットの判断は、常にあなた自身の穏やかな心と責任において行ってください。</p>
 </div>
