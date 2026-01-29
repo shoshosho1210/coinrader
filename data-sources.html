@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>データソースと分析ロジック - CoinRader</title>
-  <meta name="description" content="CoinRader（コインレーダー）のデータ透明性。利用しているAPI、AIを用いたセンチメント分析、統計学的なボラティリティ予測の仕組みを公開します。">
+  <meta name="description" content="CoinRader（コインレーダー）のデータ透明性。利用しているAPI、独自の多角的センチメント解析、トレンド構造分析の仕組みを公開します。">
   <link rel="canonical" href="https://coinrader.net/data-sources">
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
@@ -21,13 +21,13 @@
     .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
     .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
             background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; margin-bottom: 8px;}
-    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); pt: 24px; }
+    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
     .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; display: flex; align-items: center; gap: 8px;}
     .list { margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.8; }
     .note { margin-top: 12px; padding: 14px; border-radius: 12px;
             background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
             color:#94a3b8; font-size:13px; line-height:1.6; }
-    .logic-card { background: rgba(59, 130, 246, 0.03); border-left: 4px solid #3b82f6; padding: 15px; margin: 10px 0; }
+    .logic-card { background: rgba(59, 130, 246, 0.03); border-left: 4px solid #3b82f6; padding: 15px; margin: 15px 0; }
     
     .pageHeader {
       display:flex; align-items:center; justify-content:space-between;
@@ -47,62 +47,71 @@
     </header>
 
     <div class="card">
-      <span class="pill">透明性と専門性</span>
+      <span class="pill">透明性と客観性</span>
       <h1>データソース・分析ロジック</h1>
-      <p class="lead">CoinRaderは、信頼できる一次データに独自の数学的解析を加えることで、相場の「体温」を可視化しています。</p>
+      <p class="lead">CoinRaderは、信頼できる一次データに独自の論理的解析を加えることで、相場の「体温」を客観的に可視化しています。</p>
 
       <div class="sec">
         <h2>📊 一次データソース</h2>
         <ul class="list">
-          <li><strong>CoinGecko API</strong>：世界最大級の暗号資産データアグリゲーター。価格、時価総額、出来高等の基盤データを取得しています。</li>
-          <li><strong>各取引所パブリックAPI</strong>：板情報やリアルタイムレートの補完に利用しています。</li>
-          <li><strong>公的統計・ニュースフィード</strong>：センチメント分析の入力ソースとして活用しています。</li>
+          <li><strong>CoinGecko API</strong>：世界最大級のデータアグリゲーター。価格、時価総額、出来高、トレンド等の基盤データを取得しています。</li>
+          <li><strong>Binance API</strong>：世界最大級の取引所から、高精度なOHLC（日足）データを取得し、テクニカル指標の算出に活用しています。</li>
+          <li><strong>Alternative.me</strong>：市場の心理状態を示す「Crypto Fear & Greed Index」のソースとして利用しています。</li>
         </ul>
       </div>
 
       <div class="sec">
         <h2>🤖 独自分析アルゴリズム</h2>
-        <p class="muted">当サイトでは、金融データ解析の知見（金融データ活用チャレンジ84位/705人）に基づき、以下の加工を行っています。</p>
+        <p class="muted">当サイトでは、公開データを単に表示するだけでなく、以下のロジックに基づいた加工・評価を行っています。</p>
         
         <div class="logic-card">
-          <strong>AIセンチメントインデックス (LLM分析)</strong>
-          <p class="muted">大規模言語モデル（LLM）を用いて、膨大なニュースやSNSから市場心理を判定。単なる単語検索ではなく、文脈から「強気・弱気」をスコア化しています。</p>
+          <strong>多角的センチメント解析</strong>
+          <p class="muted">
+            恐怖指数（心理面）、RSI（過熱感）、ドミナンス（資金の偏り）の3要素を統合。現在の市場が「どの程度の熱を帯びているか」を独自のウェイト付けによってスコア化し、相場の全体像を判定しています。
+          </p>
         </div>
 
         <div class="logic-card">
-          <strong>統計的ボラティリティ予測 (GARCHモデル)</strong>
-          <p class="muted">過去の価格変動の「ムラ」を統計的に解析。将来の変動幅の広がりを予測し、リスク管理の指標として提供しています。</p>
+          <strong>トレンド構造分析（MAクロス距離）</strong>
+          <p class="muted">
+            50日および200日の長期移動平均線（SMA）の距離をリアルタイム算出。トレンドの勢いや、反転の予兆を数学的な乖離率（%）として定量的に示唆し、ゴールデンクロス/デッドクロスの接近を可視化します。
+          </p>
         </div>
-        <div class="note">※中学生向け解説：GARCH（ガッチ）とは、価格の「荒れ具合」が次にどうなるかを予測する数学の道具です。</div>
+
+        <div class="logic-card">
+          <strong>自動解析インサイト・エンジン</strong>
+          <p class="muted">
+            複数のテクニカル指標の相関関係を瞬時に判別し、現在の市場構造（レンジ、過熱、弱気など）をテキストで解説。複雑なデータを「読む」時間を短縮し、直感的な状況把握を支援します。
+          </p>
+        </div>
       </div>
 
       <div class="sec">
         <h2>⚖️ ランキングの選定基準</h2>
         <ul class="list">
-          <li><strong>トレンド</strong>：独自の話題性スコア ＋ CoinGeckoトレンド指標。</li>
-          <li><strong>実質出来高</strong>：洗浄済み出来高（Wash Tradingを除いた推計）を優先。</li>
-          <li><strong>ステーブルコイン除外</strong>：価格変動を追うランキングでは、USDT/USDC等を自動でフィルタリング。</li>
+          <li><strong>上昇率ランキング</strong>：市場のノイズを排除するため、ステーブルコインを除外し、かつ一定以上の流動性（出来高）を持つ銘柄を優先して抽出しています。</li>
+          <li><strong>出来高分析（アルト）</strong>：市場全体の支配力を持つBTC、ETH、および価格固定型のステーブルコインを除外。純粋なアルトコイン市場への資金流入を測定します。</li>
         </ul>
       </div>
 
       <div class="sec">
         <h2>⏱️ 更新頻度とデータ品質</h2>
         <ul class="list">
-          <li><strong>リアルタイム更新</strong>：主要な市場価格（5分〜15分間隔）。</li>
-          <li><strong>バッチ更新</strong>：AI分析・統計予測（1時間〜24時間間隔）。</li>
+          <li><strong>市場価格・指標</strong>：約3分〜15分間隔での自動同期。</li>
+          <li><strong>AIインサイト</strong>：市場データの更新に合わせて自動再解析。</li>
         </ul>
         <div class="note">
-          APIの制限や通信環境により、一時的にデータが欠損する場合があります。その際は直近の有効な値を保持するか、再取得まで「Pending」と表示されます。
+          APIの制限や通信環境により、一時的にデータが欠損する場合があります。その際は直近の有効な値を保持するか、再取得まで待機状態となります。
         </div>
       </div>
 
       <div class="noteBox" style="margin-top:40px;">
-        ※CoinRaderは投資助言を行いません。提供されるデータは過去の統計に基づいたものであり、将来の成果を保証するものではありません。
+        ※CoinRaderは投資助言を行いません。提供されるデータは過去の統計に基づいたものであり、将来の成果を保証するものではありません。最終的な投資判断は必ずご自身の責任において行ってください。
       </div>
     </div>
 
-    <footer class="footer">
-      <div class="note">© CoinRader</div>
+    <footer class="footer" style="padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;">
+      <div class="note" style="font-size: 12px; opacity: 0.6;">© 2026 CoinRader | 科学とデータによる暗号資産分析</div>
     </footer>
   </div>
 </body>
