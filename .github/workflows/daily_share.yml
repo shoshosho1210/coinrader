@@ -33,7 +33,7 @@ jobs:
           mkdir -p share
           python generate_daily_post_v2.py
 
-      # --- ここから追加：60日経過したファイルの自動削除 ---
+      # --- 60日経過したファイルの自動削除 ---
       - name: Prune old files (keep last 60 days)
         env:
           KEEP_DAYS: "60"
@@ -78,17 +78,23 @@ jobs:
       # --- ここまで追加 ---
 
       - name: Commit and Push
+        env:
+          # ★修正1：GitHubトークンを環境変数に入れる
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          set -eux
+          # ★修正2：ボット用ユーザー設定（グローバル設定の方が確実）
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # 変更（生成および削除）をすべてステージング
           git add data/daily/ share/ *.txt *.md
           
-          # 変更がある場合のみコミット
+          # 変更がある場合のみコミット＆プッシュ（トークン付きURL）
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Update daily data and prune old files (60 days)"
-            git push
+            git commit -m "Update daily data and prune old files [skip ci]"
+            # ★修正3：トークン付きURLでプッシュ
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
           else
             echo "No changes found."
           fi
