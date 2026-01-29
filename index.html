@@ -1788,6 +1788,64 @@ section[id] {
     font-size: 10px;
     color: #64748b;
 }
+
+/* --- Sticky Navigation: Premium Tab Style --- */
+.sticky-nav {
+    background: rgba(15, 23, 42, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+    padding: 10px 12px !important;
+}
+
+.nav-tab {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px; /* 丸みから角丸ボタンへ */
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* 通常のホバー演出 */
+.nav-tab:hover {
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ★AI解析ボタンの特別スタイル */
+.nav-tab.tab-ai {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+}
+
+.nav-tab.tab-ai:hover {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.nav-tab span {
+    font-size: 13px;
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+}
+
+/* アクティブ感（クリックした瞬間） */
+.nav-tab:active {
+    transform: scale(0.96);
+    opacity: 0.8;
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1818,6 +1876,9 @@ section[id] {
 </header>
 <nav class="sticky-nav" aria-label="クイックアクセス">
   <div class="sticky-nav-inner">
+    <a href="#sec-summary" class="nav-tab tab-ai" onclick="scrollToId('sec-summary'); return false;">
+      <span>🤖</span>解析
+    </a>
     <a href="#sec-trend" class="nav-tab" onclick="scrollToId('sec-trend'); return false;"><span>🔥</span>トレンド</a>
     <a href="#sec-gainers" class="nav-tab" onclick="scrollToId('sec-gainers'); return false;"><span>🚀</span>上昇率</a>
     <a href="#sec-volume" class="nav-tab" onclick="scrollToId('sec-volume'); return false;"><span>📊</span>出来高</a>
