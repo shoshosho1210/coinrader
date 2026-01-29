@@ -1639,20 +1639,24 @@ section[id] {
 <div class="summary-kpis" id="summaryKpis">
 
   <div class="kpi-tile kpi-sent">
-    <div class="kpi-tile-title">恐怖指数（0–100）</div>
-    <div class="kpi-value-row"><div class="kpi-tile-big" id="sumSentMain">-</div><div class="kpi-tile-sub inline" id="sumSentSub">-</div></div>
+    <div class="kpi-tile-title">恐怖指数 (Market Sentiment)</div>
+    <div class="kpi-value-row">
+      <div class="kpi-tile-big" id="sumSentMain" style="transition: color 0.5s ease;">-</div>
+      <div class="kpi-tile-sub inline" id="sumSentSub" style="font-weight: 700;">-</div>
+    </div>
     <div aria-hidden="true" class="mini-vis">
-      <div class="mini-sent-track">
+      <div class="mini-sent-track" style="background: rgba(255,255,255,0.05); height: 8px;">
         <div class="mini-sent-zone fear"></div>
         <div class="mini-sent-zone caution"></div>
         <div class="mini-sent-zone neutral"></div>
         <div class="mini-sent-zone greed"></div>
-        <div class="mini-sent-th t25"></div>
-        <div class="mini-sent-th t50"></div>
-        <div class="mini-sent-th t75"></div>
         <div class="mini-sent-marker" id="sumSentMarker"></div>
       </div>
-      <div class="kpi-bar-caption">恐怖 ← 50 → 強欲</div>
+      <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; padding: 0 2px;">
+        <span>😨 恐怖</span>
+        <span>⚖️ 中立</span>
+        <span>🚀 強欲</span>
+      </div>
     </div>
   </div>
   <div class="kpi-tile kpi-rsi">
@@ -3224,13 +3228,40 @@ function renderOverview(){
       sentLabel = (sentScore >= 80) ? '極度の強欲' : (sentScore >= 60) ? '強欲' : (sentScore >= 40) ? '中立' : (sentScore >= 20) ? '恐怖' : '極度の恐怖';
     } catch(e) { console.warn('Sentiment failed', e); }
 
-    // --- 5. [上部タイルの更新] (これが抜けていました) ---
+    // --- 5. [上部タイルの更新] ---
     const setSum = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = (txt == null) ? '—' : txt; };
     
-    // 恐怖指数タイル
-    setSum('sumSentMain', sentScore ? Math.round(sentScore) : null);
-    setSum('sumSentSub', sentLabel);
-    if (typeof updateSummarySentBar === 'function') updateSummarySentBar(sentScore);
+    // ▼ [ブラッシュアップ版] 恐怖指数タイルの更新ロジック
+    const sentMainEl = document.getElementById('sumSentMain');
+    const sentSubEl = document.getElementById('sumSentSub');
+    if (sentMainEl && sentScore != null) {
+        const s = Math.round(sentScore);
+        let color = '#f8fafc'; // 中立（白）
+        let detailedLabel = '';
+
+        if (s >= 80) { 
+            color = '#4ade80'; detailedLabel = '🔥 総強気（過熱注意）'; 
+        } else if (s >= 60) { 
+            color = '#86efac'; detailedLabel = '😊 楽観（上昇基調）'; 
+        } else if (s >= 40) { 
+            color = '#cbd5e1'; detailedLabel = '⚖️ 中立（均衡）'; 
+        } else if (s >= 20) { 
+            color = '#fca5a5'; detailedLabel = '😨 恐怖（押し目買い検討）'; 
+        } else { 
+            color = '#f87171'; detailedLabel = '🚨 総悲観（パニック）'; 
+        }
+
+        sentMainEl.textContent = s;
+        sentMainEl.style.color = color;
+        if (sentSubEl) {
+            sentSubEl.textContent = detailedLabel;
+            sentSubEl.style.color = color;
+        }
+        if (typeof updateSummarySentBar === 'function') updateSummarySentBar(sentScore);
+    } else {
+        setSum('sumSentMain', null);
+        setSum('sumSentSub', null);
+    }
 
     // RSIタイル
     setSum('sumRsiMain', lastRsiVal ? lastRsiVal.toFixed(0) : null);
