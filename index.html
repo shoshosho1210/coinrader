@@ -3215,11 +3215,35 @@ function renderOverview(){
     if (kpiB) {
         const total = o.up + o.down + (o.flat || 0);
         const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
-        const sign = (o.up - o.down) > 0 ? '上昇優勢' : ((o.up - o.down) < 0 ? '下落優勢' : '均衡');
-        kpiB.innerHTML = `<span style="color:${(o.up >= o.down)? '#4ade80' : '#f87171'}">${sign}</span> <span style="font-size:12px; opacity:0.8;">(上昇銘柄: ${upPct}%)</span>`;
+        
+        // 【ブラッシュアップ版】マイルドな地合い判定
+        let sign = '';
+        if (upPct >= 70) sign = '🚀 全面高の気配';
+        else if (upPct >= 55) sign = '📈 上昇が優勢';
+        else if (upPct <= 30) sign = '🚨 全面安の警戒';
+        else if (upPct <= 45) sign = '📉 下落が優勢';
+        else sign = '⚖️ 方向感を模索中';
+
+        kpiB.innerHTML = `<span style="color:${(o.up >= o.down)? '#4ade80' : '#f87171'}">${sign}</span> <span style="font-size:12px; opacity:0.8;">(上昇率: ${upPct}%)</span>`;
     }
+
     const breadthNowEl = document.getElementById('kpiBreadthNow');
     if (breadthNowEl) breadthNowEl.textContent = `24h: 上昇 ${o.up} / 下落 ${o.down}` + (o.flat ? `（中立 ${o.flat}）` : '');
+
+    // ▼▼▼ ここが「-」を解消する重要な追加コードです ▼▼▼
+    let up10 = 0, down10 = 0;
+    for (const c of (marketsTop || [])){
+        const chg = c?.price_change_percentage_24h;
+        if (typeof chg === 'number' && isFinite(chg)){
+            if (chg >= 10) up10++;
+            if (chg <= -10) down10++;
+        }
+    }
+    const breadthMovesEl = document.getElementById('kpiBreadthMoves');
+    if (breadthMovesEl) {
+        breadthMovesEl.textContent = `活発な値動き(±10%): 📈 ${up10}銘柄 / 📉 ${down10}銘柄`;
+    }
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
     // --- 2. [資金フロー] 更新 ---
     const elMcap = document.getElementById('kpiTotalMcap');
@@ -3228,7 +3252,6 @@ function renderOverview(){
     const elVol = document.getElementById('kpiTotalVol');
     if (elVol) elVol.textContent = yenLarge(o.totalVol);
 
-    // 資金流入・流出の表示（データ未取得時は準備中と出す）
     const mcap24hEl = document.getElementById('kpiMcap7d');
     if (mcap24hEl) {
         if (o.mcap7dPct === null || o.mcap7dPct === 0) {
@@ -3240,22 +3263,16 @@ function renderOverview(){
         }
     }
 
-    // アルト比率の更新（ここで "-" を解消します）
     const elAltRatio = document.getElementById('kpiAltVolRatio');
     if (elAltRatio) {
         const vVals = o.volValues || [0,0,0,0];
         const totalV = o.totalVol || 1;
-        const altVol = (vVals[1] || 0) + (vVals[3] || 0); // ETH + Others
-        const altRatio = (altVol / totalV) * 100;
-        elAltRatio.textContent = `アルト比率: ${altRatio.toFixed(1)}%`;
+        const altVol = (vVals[1] || 0) + (vVals[3] || 0);
+        elAltRatio.textContent = `アルト比率: ${(altVol / totalV * 100).toFixed(1)}%`;
     }
 
-    // 市場回転率
     const elTurnover = document.getElementById('kpiMarketTurnover');
-    if (elTurnover && o.totalMcap > 0) {
-        const turnover = (o.totalVol / o.totalMcap) * 100;
-        elTurnover.textContent = `市場回転率: ${turnover.toFixed(2)}%`;
-    }
+    if (elTurnover && o.totalMcap > 0) elTurnover.textContent = `市場回転率: ${(o.totalVol / o.totalMcap * 100).toFixed(2)}%`;
     // --- 3. [RSI] 計算 & 更新 ---
     try {
       const btc = marketsTop.find(c => c && c.id === 'bitcoin');
