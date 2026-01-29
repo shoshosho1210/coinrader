@@ -2,38 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://coinrader.net/</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://coinrader.net/about</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://coinrader.net/contact</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://coinrader.net/privacy</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://coinrader.net/disclaimer</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://coinrader.net/data-sources</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://coinrader.net/ads-pr</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
@@ -43,7 +43,7 @@
   </url>
   <url>
     <loc>https://coinrader.net/start</loc>
-    <lastmod>2026-01-28</lastmod>
+    <lastmod>2026-01-29</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
