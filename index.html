@@ -1911,12 +1911,14 @@ section[id] {
         <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
       </div>
 
-      <div class="kpi">
-        <div class="kpi-label">平均パフォーマンス (7日間)</div>
+      <div class="kpi" id="kpiAvgPulseCard">
+        <div class="kpi-label">市場の平均期待収益 (7日間騰落率)</div>
         <div class="kpi-value" id="kpiAvgChange">-</div>
-        <div class="kpi-meta" id="kpiAvgDist">-</div>
-        <div class="kpi-sub" id="kpiAvgSub">主要250銘柄の平均的なリターン推移。0%より上なら、適当に買っても利益が出やすい状態です。</div>
-        <canvas class="kpi-canvas" id="avgLine"></canvas>
+        <div class="kpi-meta" id="kpiAvgDist" style="font-weight: 600;">-</div>
+        <div class="kpi-sub" id="kpiAvgSub">上位250銘柄の平均的な騰落状況。0%より上なら「多くの銘柄で含み益」が出やすい、地合いの良い状態を示します。</div>
+        <div style="background: rgba(255,255,255,0.02); border-radius: 8px; padding: 4px; border: 1px solid rgba(255,255,255,0.05); margin-top: 8px;">
+          <canvas class="kpi-canvas" id="avgLine" style="height: 70px !important;"></canvas>
+        </div>
       </div>
 
       <div class="kpi" id="kpiRsiCard">
@@ -3310,52 +3312,56 @@ if (breadthSub){
         const netBreadthArr = upArr.map((up, t) => up - downArr[t]);
         makeBaselineChart('breadthLine', labels, netBreadthArr, { dayGrid: true });
 
-        // Avg return chart
-        makeBaselineChart('avgLine', labels, avgArr, {dayGrid:true});
+// --- 1. 平均騰落率グラフ（0基準で色分け） ---
+        if (avgArr && avgArr.length > 0) {
+            makeBaselineChart('avgLine', labels, avgArr, { 
+                dayGrid: true,
+                aboveColor: 'rgba(74, 222, 128, 0.2)', // 利益圏：緑
+                belowColor: 'rgba(248, 113, 113, 0.2)'  // 損失圏：赤
+            });
+        }
 
-        // テキスト表示の更新
-        lastUp = upArr[upArr.length - 1];
-        lastDown = downArr[downArr.length - 1];
+        // --- 2. テキスト表示の更新（地合い判定） ---
         const lastAvg = avgArr[avgArr.length - 1];
-        const kpiB = document.getElementById('kpiBreadth');
-        if (kpiB) {
-            const total = lastUp + lastDown + (Number(flatArr[flatArr.length - 1]) || 0);
-            const upPct = total ? (lastUp / total * 100).toFixed(1) : 0;
-            const sign = (lastUp - lastDown) > 0 ? '上昇優勢' : ((lastUp - lastDown) < 0 ? '下落優勢' : '均衡');
-            kpiB.textContent = `${sign}（上昇銘柄: ${upPct}%）`;
+        const kpiAvg = document.getElementById('kpiAvgChange');
+        const kpiAvgDist = document.getElementById('kpiAvgDist');
+
+        if (kpiAvg && lastAvg != null) {
+            // 中央値（Median）の計算
+            let med = null;
+            if (lastRets.length) {
+                const s = lastRets.slice().sort((a,b)=>a-b);
+                const mid = Math.floor(s.length/2);
+                med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+            }
+
+            // メイン表示：平均と中央値を併記
+            const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
+            const sign = lastAvg >= 0 ? '+' : '';
+            kpiAvg.innerHTML = `<span style="color:${color}">${sign}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
+
+            // 地合いの言語化判定
+            if (kpiAvgDist) {
+                if (lastAvg >= 5) {
+                    kpiAvgDist.textContent = "🚀 市場全体が「お祭り状態」";
+                    kpiAvgDist.style.color = "#4ade80";
+                } else if (lastAvg >= 0) {
+                    kpiAvgDist.textContent = "📈 多くの銘柄で「含み益」が発生中";
+                    kpiAvgDist.style.color = "#4ade80";
+                } else if (lastAvg >= -5) {
+                    kpiAvgDist.textContent = "📉 市場全体に「含み損」が拡大";
+                    kpiAvgDist.style.color = "#f87171";
+                } else {
+                    kpiAvgDist.textContent = "💀 「総悲観」のパニック売り局面";
+                    kpiAvgDist.style.color = "#f87171";
+                }
+            }
+            
+            // グローバル変数への代入（他機能での利用用）
+            avg7 = lastAvg;
+            med7 = med;
         }
         
-        const kpiAvg = document.getElementById('kpiAvgChange');
-        if (kpiAvg){
-          let med = null;
-          if (lastRets.length){
-            const s = lastRets.slice().sort((a,b)=>a-b);
-            const mid = Math.floor(s.length/2);
-            med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
-          }
-          kpiAvg.textContent = `平均 ${fmtPct(lastAvg)} / 中央値 ${fmtPct(med)}`;
-          const kpiAvgDist = document.getElementById('kpiAvgDist');
-          if (kpiAvgDist){
-            const total = lastRets.length || 0;
-            if (total){
-              let up5 = 0, down5 = 0;
-              for (const v of lastRets){
-                if (typeof v === 'number' && isFinite(v)){
-                  if (v >= 5) up5++;
-                  if (v <= -5) down5++;
-                }
-              }
-              const upPct = up5 / total * 100;
-              const downPct = down5 / total * 100;
-              kpiAvgDist.textContent = `±5%: ↑${up5}（${upPct.toFixed(1)}%） / ↓${down5}（${downPct.toFixed(1)}%）`;
-            } else {
-              kpiAvgDist.textContent = '-';
-            }
-          }
-        avg7 = lastAvg;
-        med7 = med;
-        }
-
         // BTC RSI (14) from BTC sparkline (7d)
         // --- renderOverview関数内のRSI処理をブラッシュアップ ---
         try {
