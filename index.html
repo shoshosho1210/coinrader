@@ -3797,7 +3797,7 @@ function renderOverview(){
         const raw = 0.4 * ((upPctS - 50) / 50) + 0.3 * (o.avgChg / 5) + 0.3 * rsiNorm;
         sentScore = Math.max(0, Math.min(100, 50 + 50 * raw));
     } catch(e) { console.warn('Sentiment failed', e); }
-    sentScore = null;
+    
     // --- 5. [上部タイルの更新] ---
     
     // 5-1. 恐怖指数
