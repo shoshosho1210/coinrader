@@ -1568,24 +1568,33 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* 手動更新ボタンをさらにスマートに */
+/* --- Refresh Button: Compact Style --- */
 #refreshBtn {
-  min-width: 80px;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  background: rgba(56, 189, 248, 0.05);
-  color: #7dd3fc;
-  font-weight: 600;
-  transition: all 0.2s;
+    min-width: 68px !important;    /* 80pxから15%ほどカット */
+    padding: 6px 8px !important;   /* 上下左右の余白をさらに圧縮 */
+    font-size: 11px !important;    /* 12pxから微減してシャープに */
+    font-weight: 700;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    background: rgba(56, 189, 248, 0.08);
+    color: #7dd3fc;
+    border-radius: 6px;            /* 角丸を少し鋭角にして計器感を出す */
+    transition: all 0.2s;
+    white-space: nowrap;           /* 改行を絶対阻止 */
+    letter-spacing: -0.02em;       /* 文字間をわずかに詰めて可読性を維持 */
 }
 
 #refreshBtn:hover:not(:disabled) {
-  background: rgba(56, 189, 248, 0.15);
-  border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
 #refreshBtn:disabled {
-  border-color: rgba(255, 255, 255, 0.05);
-  color: #64748b;
+    min-width: 72px !important;    /* カウントダウン中は文字数が増えるので少しだけ広げる */
+    border-color: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    color: #64748b;
+    opacity: 0.8;
 }
 
 @media (max-width: 640px) {
