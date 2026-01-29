@@ -3210,17 +3210,38 @@ function renderOverview(){
     // --- 2. [資金フロー] 更新 ---
     const elMcap = document.getElementById('kpiTotalMcap');
     if (elMcap) elMcap.textContent = yenLarge(o.totalMcap);
+
     const elVol = document.getElementById('kpiTotalVol');
     if (elVol) elVol.textContent = yenLarge(o.totalVol);
+
+    // 資金流入・流出の表示（データ未取得時は準備中と出す）
     const mcap24hEl = document.getElementById('kpiMcap7d');
     if (mcap24hEl) {
-        const pct = o.mcap7dPct || 0;
-        const sign = pct >= 0 ? '🟢 Inflow' : '🔴 Outflow';
-        mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pct.toFixed(2)}%</span>`;
+        if (o.mcap7dPct === null || o.mcap7dPct === 0) {
+            mcap24hEl.textContent = "分析中...";
+        } else {
+            const pct = o.mcap7dPct;
+            const sign = pct >= 0 ? '🟢 Inflow' : '🔴 Outflow';
+            mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pct.toFixed(2)}%</span>`;
+        }
     }
-    const elTurnover = document.getElementById('kpiMarketTurnover');
-    if (elTurnover && o.totalMcap > 0) elTurnover.textContent = `市場回転率: ${(o.totalVol / o.totalMcap * 100).toFixed(2)}%`;
 
+    // アルト比率の更新（ここで "-" を解消します）
+    const elAltRatio = document.getElementById('kpiAltVolRatio');
+    if (elAltRatio) {
+        const vVals = o.volValues || [0,0,0,0];
+        const totalV = o.totalVol || 1;
+        const altVol = (vVals[1] || 0) + (vVals[3] || 0); // ETH + Others
+        const altRatio = (altVol / totalV) * 100;
+        elAltRatio.textContent = `アルト比率: ${altRatio.toFixed(1)}%`;
+    }
+
+    // 市場回転率
+    const elTurnover = document.getElementById('kpiMarketTurnover');
+    if (elTurnover && o.totalMcap > 0) {
+        const turnover = (o.totalVol / o.totalMcap) * 100;
+        elTurnover.textContent = `市場回転率: ${turnover.toFixed(2)}%`;
+    }
     // --- 3. [RSI] 計算 & 更新 ---
     try {
       const btc = marketsTop.find(c => c && c.id === 'bitcoin');
