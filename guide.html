@@ -32,6 +32,64 @@
   .guide-ai-panel h3 { color: #38bdf8; font-size: 15px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
 
   .guide-footer { margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
+/* --- Final Slim Footer (Consistency) --- */
+.site-footer {
+    background: rgba(10, 16, 28, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px 12px;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.footer-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-logo { height: 16px !important; width: auto; opacity: 0.8; }
+.footer-tagline { font-size: 10.5px; color: #64748b; white-space: nowrap; }
+
+.footer-nav {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.footer-nav a {
+    color: #94a3b8;
+    font-size: 11px;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.footer-nav a:hover { color: #38bdf8; }
+
+.footer-copyright {
+    max-width: 1000px;
+    margin: 10px auto 0;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.02);
+    text-align: center;
+    font-size: 10px;
+    color: #475569;
+}
+
+@media (max-width: 640px) {
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-nav { justify-content: center; }
+}
 </style>
 
 <div class="guide-wrap">
@@ -110,15 +168,32 @@
     </div>
   </div>
 
-  <div class="guide-footer">
-    <p style="font-size: 11px; color: #64748b; line-height: 1.6; text-align: center;">
-      ※ 本サイトは情報提供のみを目的としており、投資勧誘ではありません。<br>
-      データはリアルタイムですが、最終的な判断は常にあなた自身の責任において行ってください。
-    </p>
-    <div style="font-size: 10px; color: #475569; text-align: center; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 20px; letter-spacing: 0.05em;">
-      &copy; 2026 CoinRader. All rights reserved.
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <img alt="CoinRader" class="footer-logo" src="/assets/coinrader_logo_horizontal_075_dark.png"/>
+            <span class="footer-tagline">暗号資産分析ダッシュボード</span>
+        </div>
+
+        <nav class="footer-nav">
+            <a href="/">ホーム</a>
+            <a href="/start.html">始め方</a>
+            <a href="/data-sources.html">データ</a>
+            <a href="/about.html">運営</a>
+            <a href="/contact.html">連絡</a>
+            <a href="/disclaimer.html">免責</a>
+            <a href="/privacy.html">法務</a>
+        </nav>
     </div>
-  </div>
+    
+    <p style="font-size: 10px; color: #475569; text-align: center; margin-top: 15px; line-height: 1.5;">
+      ※本ガイドは情報提供を目的としており、投資を推奨するものではありません。
+    </p>
+
+    <div class="footer-copyright">
+        &copy; 2026 CoinRader. All rights reserved.
+    </div>
+  </footer>
 </div> <style>
   /* AIセクション専用の追加スタイル */
   .guide-ai-panel {
