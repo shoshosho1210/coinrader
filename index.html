@@ -5199,9 +5199,24 @@ async function updateAiInsight() {
     const past7d    = await getHistoricalData(7);
     const past30d   = await getHistoricalData(30);
 
-    // 2. 値の確定
-    const sent = pastToday?.fgi || parseFloat(document.getElementById('sumSentMain')?.textContent) || 0;
-    const rsi  = pastToday?.rsi || parseFloat(document.getElementById('sumRsiMain')?.textContent) || 0;
+    // --- 2. 値の確定（0ではなくnullをデフォルトにする） ---
+    const getVal = (id) => {
+        const el = document.getElementById(id);
+        // "-" や空欄の場合は null を返す
+        if (!el || !el.textContent || el.textContent.includes('—') || el.textContent.includes('-')) return null;
+        const val = parseFloat(el.textContent);
+        return isNaN(val) ? null : val;
+    };
+
+    // JSONを優先、なければ画面の値、それもなければ null
+    const sent = (pastToday && pastToday.fgi !== null) ? pastToday.fgi : getVal('sumSentMain');
+    const rsi  = (pastToday && pastToday.rsi !== null) ? pastToday.rsi : getVal('sumRsiMain');
+    const dom  = (pastToday && pastToday.dom !== null) ? pastToday.dom : getVal('sumDomMain');
+
+    // 長期トレンドの取得
+    const maDist = (pastToday && pastToday.ma !== null && pastToday.ma !== undefined) 
+                ? pastToday.ma 
+                : null;
     const dom  = pastToday?.dom || parseFloat(document.getElementById('sumDomMain')?.textContent) || 0;
     const maDist = (pastToday && pastToday.ma !== null && pastToday.ma !== undefined) 
                    ? pastToday.ma 
