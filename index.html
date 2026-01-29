@@ -1474,6 +1474,68 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   0% { transform: rotateX(60deg) rotateY(-30deg) rotateZ(360deg); }
   100% { transform: rotateX(60deg) rotateY(-30deg) rotateZ(0deg); }
 }
+/* --- スマート・ヘッダー・ステータス --- */
+.hdr-right {
+  gap: 12px;
+  align-items: center;
+}
+
+/* 点滅するステータスランプ */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #94a3b8;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981; /* 正常時：緑 */
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* 同期中（点滅） */
+.status-dot.syncing {
+  background: #38bdf8; /* 同期中：水色 */
+  animation: status-pulse 1.5s infinite;
+}
+
+@keyframes status-pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 手動更新ボタンをさらにスマートに */
+#refreshBtn {
+  min-width: 80px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(56, 189, 248, 0.05);
+  color: #7dd3fc;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+#refreshBtn:hover:not(:disabled) {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+}
+
+#refreshBtn:disabled {
+  border-color: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+}
+
+@media (max-width: 640px) {
+  .miniNote { display: none; } /* スマホでは自動3分を非表示 */
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1490,10 +1552,15 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
 </a>
 </div>
 <div class="hdr-right">
-<div class="statusPill" id="statusPill"><span class="dot"></span><span>接続中</span></div>
-<div class="miniNote" id="miniNote" title="自動更新（約3分ごと）">自動3分</div>
-<div class="updatedPill" id="updatedPill">更新: --</div>
-<button class="btn small" id="refreshBtn" type="button">更新</button>
+  <div class="status-indicator" id="statusContainer">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">最新</span>
+    <span style="opacity: 0.4; margin: 0 2px;">|</span>
+    <span id="updatedTimeText">--</span>
+  </div>
+  
+  <div class="miniNote" id="miniNote" title="自動更新（約3分ごと）">Auto</div>
+  <button class="btn small" id="refreshBtn" type="button">更新</button>
 </div>
 </div>
 </header>
@@ -1908,7 +1975,24 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
   }
 
 
-  function setStatus(text){ document.getElementById('statusPill').textContent = '状態: ' + text; }
+  // 状態表示の更新（ドットの色とテキストを制御）
+  function setStatus(text) {
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    if(!dot || !txt) return;
+
+    if (text.includes('同期中') || text.includes('更新中')) {
+      dot.className = 'status-dot syncing';
+      txt.textContent = '同期中';
+    } else if (text.includes('混み合って') || text.includes('不安定')) {
+      dot.style.background = '#f59e0b'; // 警告：オレンジ
+      txt.textContent = '待機中';
+    } else {
+      dot.className = 'status-dot';
+      dot.style.background = '#10b981'; // 正常：緑
+      txt.textContent = '最新';
+    }
+  }
 
   // --- Updated time pill (stay on page -> time keeps moving) ---
   function formatAgo(ts){
@@ -1921,17 +2005,17 @@ section[id]{ scroll-margin-top: calc(var(--hdr-h) + 16px); }
     return `${Math.floor(d/86400000)}日前`;
   }
 
-  function renderUpdatedPill(){
-    const el = document.getElementById('updatedPill');
+  // 更新時間の表示（「〇〇前」に特化）
+  function renderUpdatedPill() {
+    const el = document.getElementById('updatedTimeText');
     if(!el) return;
     const ts = getLastFetchAt();
-    if(!ts){
-      el.textContent = '更新: --';
+    if(!ts) {
+      el.textContent = '--';
       return;
     }
-    const dt = new Date(ts);
-    const ago = formatAgo(ts);
-    el.textContent = '更新: ' + dt.toLocaleString('ja-JP', { hour12:false }) + (ago ? `（${ago}）` : '');
+    // formatAgo関数は既存のものを利用（「1分前」などの形式を返す）
+    el.textContent = formatAgo(ts);
   }
 
   function setUpdated(){
