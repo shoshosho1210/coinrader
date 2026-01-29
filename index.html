@@ -5218,10 +5218,6 @@ async function updateAiInsight() {
     const maDist = (pastToday && pastToday.ma !== null && pastToday.ma !== undefined) 
                 ? pastToday.ma 
                 : null;
-    const dom  = pastToday?.dom || parseFloat(document.getElementById('sumDomMain')?.textContent) || 0;
-    const maDist = (pastToday && pastToday.ma !== null && pastToday.ma !== undefined) 
-                   ? pastToday.ma 
-                   : null;
 
     // データ待ちガード（主要指標が全部なければ待機）
     if (sent === null && rsi === null) {
