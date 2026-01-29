@@ -3221,42 +3221,38 @@ function renderOverview(){
     msg.style.display = 'none';
 
     if (!marketsTop || !marketsTop.length){
-      msg.className = 'msg err';
-      msg.textContent = '概況データを準備中です。';
-      msg.style.display = 'block';
-      return;
+        msg.className = 'msg err';
+        msg.textContent = '概況データを準備中です。';
+        msg.style.display = 'block';
+        return;
     }
 
     const o = buildOverview();
     const wrap = document.getElementById('overviewWrap');
     const isCollapsed = wrap && wrap.classList.contains('is-collapsed');
 
-    // グローバル変数の準備（AI分析やタイル表示で使用）
-    let sentScore = null, sentLabel = null;
+    // グローバル変数の準備
+    let sentScore = null;
     let lastRsiVal = null;
-    let avg7 = o.avgChg, med7 = o.medianChg;
+    const totalM = o.totalMcap || 1;
 
-    // --- 1. [市場の地合い] 更新 (24hベース即時表示) ---
+    // --- 1. [市場の地合い] 更新 ---
     const kpiB = document.getElementById('kpiBreadth');
     if (kpiB) {
         const total = o.up + o.down + (o.flat || 0);
         const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
-        
-        // 【ブラッシュアップ版】マイルドな地合い判定
         let sign = '';
         if (upPct >= 70) sign = '🚀 全面高の気配';
         else if (upPct >= 55) sign = '📈 上昇が優勢';
         else if (upPct <= 30) sign = '🚨 全面安の警戒';
         else if (upPct <= 45) sign = '📉 下落が優勢';
         else sign = '⚖️ 方向感を模索中';
-
         kpiB.innerHTML = `<span style="color:${(o.up >= o.down)? '#4ade80' : '#f87171'}">${sign}</span> <span style="font-size:12px; opacity:0.8;">(上昇率: ${upPct}%)</span>`;
     }
 
     const breadthNowEl = document.getElementById('kpiBreadthNow');
     if (breadthNowEl) breadthNowEl.textContent = `24h: 上昇 ${o.up} / 下落 ${o.down}` + (o.flat ? `（中立 ${o.flat}）` : '');
 
-    // ▼▼▼ ここが「-」を解消する重要な追加コードです ▼▼▼
     let up10 = 0, down10 = 0;
     for (const c of (marketsTop || [])){
         const chg = c?.price_change_percentage_24h;
@@ -3266,15 +3262,11 @@ function renderOverview(){
         }
     }
     const breadthMovesEl = document.getElementById('kpiBreadthMoves');
-    if (breadthMovesEl) {
-        breadthMovesEl.textContent = `活発な値動き(±10%): 📈 ${up10}銘柄 / 📉 ${down10}銘柄`;
-    }
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+    if (breadthMovesEl) breadthMovesEl.textContent = `活発な値動き(±10%): 📈 ${up10}銘柄 / 📉 ${down10}銘柄`;
 
     // --- 2. [資金フロー] 更新 ---
     const elMcap = document.getElementById('kpiTotalMcap');
     if (elMcap) elMcap.textContent = yenLarge(o.totalMcap);
-
     const elVol = document.getElementById('kpiTotalVol');
     if (elVol) elVol.textContent = yenLarge(o.totalVol);
 
@@ -3299,274 +3291,208 @@ function renderOverview(){
 
     const elTurnover = document.getElementById('kpiMarketTurnover');
     if (elTurnover && o.totalMcap > 0) elTurnover.textContent = `市場回転率: ${(o.totalVol / o.totalMcap * 100).toFixed(2)}%`;
+
     // --- 3. [RSI] 計算 & 更新 ---
     try {
-      const btc = marketsTop.find(c => c && c.id === 'bitcoin');
-      const btcPrices = btc?.sparkline_in_7d?.price;
-      if (btcPrices && btcPrices.length >= 20) {
-        const rsiSeries = computeRSISeries(btcPrices, 14);
-        lastRsiVal = rsiSeries[rsiSeries.length - 1];
-        const rsiEl = document.getElementById('kpiRsi');
-        const rsiMetaEl = document.getElementById('kpiRsiMeta');
-        if (rsiEl && lastRsiVal != null) {
-          let status = '中立', color = '#cbd5e1';
-          if (lastRsiVal >= 70) { status = '🚨 過熱気味'; color = '#f87171'; }
-          else if (lastRsiVal <= 30) { status = '💎 売られすぎ'; color = '#38bdf8'; }
-          rsiEl.innerHTML = `<span style="color:${color}">${lastRsiVal.toFixed(1)}</span> <span style="font-size:12px; opacity:0.8;">(${status})</span>`;
-          if (rsiMetaEl) rsiMetaEl.textContent = lastRsiVal >= 70 ? `ピーク圏推移` : (lastRsiVal <= 30 ? `底打ちサイン` : `過熱まで あと ${(70-lastRsiVal).toFixed(1)}pt`);
+        const btc = marketsTop.find(c => c && c.id === 'bitcoin');
+        const btcPrices = btc?.sparkline_in_7d?.price;
+        if (btcPrices && btcPrices.length >= 20) {
+            const rsiSeries = computeRSISeries(btcPrices, 14);
+            lastRsiVal = rsiSeries[rsiSeries.length - 1];
+            const rsiEl = document.getElementById('kpiRsi');
+            if (rsiEl && lastRsiVal != null) {
+                let status = '中立', color = '#cbd5e1';
+                if (lastRsiVal >= 70) { status = '🚨 過熱気味'; color = '#f87171'; }
+                else if (lastRsiVal <= 30) { status = '💎 売られすぎ'; color = '#38bdf8'; }
+                rsiEl.innerHTML = `<span style="color:${color}">${lastRsiVal.toFixed(1)}</span> <span style="font-size:12px; opacity:0.8;">(${status})</span>`;
+            }
+            makeLineChart('rsiLine', Array.from({length: rsiSeries.length}, (_, i) => i), [{ data: rsiSeries, borderColor: 'rgba(255,255,255,0.9)', borderWidth: 2.5, pointRadius: 0, tension: 0.35, fill: false }], { dayGrid: true, yMin: 0, yMax: 100 });
         }
-        makeLineChart('rsiLine', Array.from({length: rsiSeries.length}, (_, i) => i), [{ data: rsiSeries, borderColor: 'rgba(255,255,255,0.9)', borderWidth: 2.5, pointRadius: 0, tension: 0.35, fill: false }], { dayGrid: true, yMin: 0, yMax: 100 });
-      }
     } catch(e) { console.warn('RSI failed', e); }
 
-    // --- 4. [センチメント/恐怖指数] 計算 ---
+    // --- 4. [センチメント] 計算 ---
     try {
-      const upPctS = (o.up + o.down > 0) ? (o.up / (o.up + o.down)) * 100 : 50;
-      const rsiNorm = lastRsiVal ? (lastRsiVal - 50) / 20 : 0;
-      const raw = 0.4 * ((upPctS - 50) / 50) + 0.3 * (o.avgChg / 5) + 0.3 * rsiNorm;
-      sentScore = Math.max(0, Math.min(100, 50 + 50 * raw));
-      sentLabel = (sentScore >= 80) ? '極度の強欲' : (sentScore >= 60) ? '強欲' : (sentScore >= 40) ? '中立' : (sentScore >= 20) ? '恐怖' : '極度の恐怖';
+        const upPctS = (o.up + o.down > 0) ? (o.up / (o.up + o.down)) * 100 : 50;
+        const rsiNorm = lastRsiVal ? (lastRsiVal - 50) / 20 : 0;
+        const raw = 0.4 * ((upPctS - 50) / 50) + 0.3 * (o.avgChg / 5) + 0.3 * rsiNorm;
+        sentScore = Math.max(0, Math.min(100, 50 + 50 * raw));
     } catch(e) { console.warn('Sentiment failed', e); }
 
     // --- 5. [上部タイルの更新] ---
-    const setSum = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = (txt == null) ? '—' : txt; };
     
-    // ▼ [ブラッシュアップ版] 恐怖指数タイルの更新ロジック
+    // 5-1. 恐怖指数
     const sentMainEl = document.getElementById('sumSentMain');
     const sentSubEl = document.getElementById('sumSentSub');
     if (sentMainEl && sentScore != null) {
         const s = Math.round(sentScore);
-        let color = '#f8fafc'; // 中立（白）
-        let detailedLabel = '';
-
-        if (s >= 80) { 
-            color = '#4ade80'; detailedLabel = '🔥 非常に強い熱気'; 
-        } else if (s >= 60) { 
-            color = '#86efac'; detailedLabel = '🌤️ 活気ある地合い'; 
-        } else if (s >= 40) { 
-            color = '#cbd5e1'; detailedLabel = '🍃 穏やかな凪（なぎ）'; 
-        } else if (s >= 20) { 
-            color = '#fca5a5'; detailedLabel = '☁️ 慎重なムード'; 
-        } else { 
-            color = '#f87171'; detailedLabel = '❄️ 強い冷え込み'; 
-        }
-
+        let color = '#f8fafc', detailedLabel = '';
+        if (s >= 80) { color = '#4ade80'; detailedLabel = '🔥 強い熱気'; }
+        else if (s >= 60) { color = '#86efac'; detailedLabel = '🌤️ 活気ある空'; }
+        else if (s >= 40) { color = '#cbd5e1'; detailedLabel = '🍃 穏やかな凪'; }
+        else if (s >= 20) { color = '#fca5a5'; detailedLabel = '☁️ 慎重ムード'; }
+        else { color = '#f87171'; detailedLabel = '❄️ 強い冷え込み'; }
         sentMainEl.textContent = s;
-        sentMainEl.className = "kpi-main-label"; // CSSを適用
+        sentMainEl.className = "kpi-main-label";
         sentMainEl.style.color = color;
         if (sentSubEl) {
             sentSubEl.textContent = detailedLabel;
-            sentSubEl.className = "kpi-sub-label"; // CSSを適用
+            sentSubEl.className = "kpi-sub-label";
             sentSubEl.style.color = color;
         }
         if (typeof updateSummarySentBar === 'function') updateSummarySentBar(sentScore);
-    } else {
-        setSum('sumSentMain', null);
-        setSum('sumSentSub', null);
     }
 
-    // RSIタイル
+    // 5-2. BTC RSI
     const rsiMainEl = document.getElementById('sumRsiMain');
     const rsiSubEl = document.getElementById('sumRsiSub');
-
     if (rsiMainEl && lastRsiVal != null) {
         const r = Math.round(lastRsiVal);
-        let color = '#cbd5e1'; // 中立（グレー）
-        let statusLabel = '';
-        let glow = 'none';
-
-        // --- RSIの状態判定ロジック（簡潔版） ---
-        if (r >= 70) {
-            color = '#f87171'; statusLabel = '🌋 かなりの熱気';
-            glow = '0 0 12px rgba(248, 113, 113, 0.5)';
-        } else if (r >= 60) {
-            color = '#fca5a5'; statusLabel = '🌡️ 温度上昇中';
-        } else if (r <= 30) {
-            color = '#38bdf8'; statusLabel = '🌊 静かな水底';
-            glow = '0 0 12px rgba(56, 189, 248, 0.6)';
-        } else if (r <= 40) {
-            color = '#7dd3fc'; statusLabel = '💧 少し冷たい空気';
-        } else {
-            color = '#cbd5e1'; statusLabel = '🍃 心地よい凪（なぎ）';
-        }
-
+        let color = '#cbd5e1', statusLabel = '', glow = 'none';
+        if (r >= 70) { color = '#f87171'; statusLabel = '🌋 かなりの熱気'; glow = '0 0 12px rgba(248, 113, 113, 0.5)'; }
+        else if (r >= 60) { color = '#fca5a5'; statusLabel = '🌡️ 温度上昇中'; }
+        else if (r <= 30) { color = '#38bdf8'; statusLabel = '🌊 静かな水底'; glow = '0 0 12px rgba(56, 189, 248, 0.6)'; }
+        else if (r <= 40) { color = '#7dd3fc'; statusLabel = '💧 少し冷たい空気'; }
+        else { color = '#cbd5e1'; statusLabel = '🍃 穏やかな凪'; }
         rsiMainEl.textContent = r;
+        rsiMainEl.className = "kpi-main-label";
         rsiMainEl.style.color = color;
         rsiMainEl.style.textShadow = glow;
-
         if (rsiSubEl) {
             rsiSubEl.textContent = statusLabel;
+            rsiSubEl.className = "kpi-sub-label";
             rsiSubEl.style.color = color;
         }
-
-        // 下部ミニバーのマーカー更新
         if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
     }
 
-    // ---  [騰落バランス] ---
-    const breadthMainEl = document.getElementById('sumBreadthMain');
-    const breadthSubEl = document.getElementById('sumBreadthSub');
-    
-    if (breadthMainEl && (o.up + o.down) > 0) {
-        const total = o.up + o.down;
-        const upPct = (o.up / total) * 100;
-        let color = '#cbd5e1'; // デフォルト：中立
-        let statusLabel = '';
-
-        // --- 騰落バランスの判定ロジック（超簡潔版） ---
-        if (upPct >= 70) {
-            color = '#4ade80'; statusLabel = '☀️ まぶしい光';
-        } else if (upPct >= 55) {
-            color = '#86efac'; statusLabel = '⛅ 明るい兆し';
-        } else if (upPct <= 30) {
-            color = '#f87171'; statusLabel = '🌑 深い影';
-        } else if (upPct <= 45) {
-            color = '#fca5a5'; statusLabel = '🌦️ 雲の変化'; // 「雲行きの変化」を短縮
-        } else {
-            color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空';
+    // 5-3. 騰落バランス
+    const bMainEl = document.getElementById('sumBreadthMain');
+    const bSubEl = document.getElementById('sumBreadthSub');
+    if (bMainEl && (o.up + o.down) > 0) {
+        const upPct = (o.up / (o.up + o.down)) * 100;
+        let color = '#cbd5e1', statusLabel = '';
+        if (upPct >= 70) { color = '#4ade80'; statusLabel = '☀️ まぶしい光'; }
+        else if (upPct >= 55) { color = '#86efac'; statusLabel = '⛅ 明るい兆し'; }
+        else if (upPct <= 30) { color = '#f87171'; statusLabel = '🌑 深い影'; }
+        else if (upPct <= 45) { color = '#fca5a5'; statusLabel = '🌦️ 雲の変化'; }
+        else { color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空'; }
+        bMainEl.innerHTML = `<div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;"><span style="color:#4ade80;">↑${o.up}</span><span style="font-size:12px; opacity:0.3; font-weight:normal; margin:0 2px;">vs</span><span style="color:#f87171;">↓${o.down}</span></div>`;
+        if (bSubEl) {
+            bSubEl.textContent = statusLabel;
+            bSubEl.className = "kpi-sub-label";
+            bSubEl.style.color = color;
         }
-
-        // --- 2. 表示の構築（CSSクラスを適用） ---
-        // 上段：上昇数 vs 下落数
-        breadthMainEl.innerHTML = `
-            <div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;">
-                <span style="color:#4ade80;">↑${o.up}</span>
-                <span style="font-size:12px; opacity:0.3; font-weight:normal; margin:0 2px;">vs</span>
-                <span style="color:#f87171;">↓${o.down}</span>
-            </div>
-        `;
-        
-        // 下段：ステータスラベル
-        if (breadthSubEl) {
-            breadthSubEl.textContent = statusLabel;
-            breadthSubEl.className = "kpi-sub-label"; // CSSクラスを適用
-            breadthSubEl.style.color = color;
-            breadthSubEl.style.display = "block";    // 確実に改行
-        }
-
-        // 下部ミニバーの更新
-        const upSeg = document.getElementById('sumBreadthSegUp');
-        const downSeg = document.getElementById('sumBreadthSegDown');
-        if (upSeg && downSeg) {
-            upSeg.style.width = `${upPct}%`;
-            downSeg.style.width = `${100 - upPct}%`;
-            // 勢いがある方の色を明るくする演出
-            upSeg.style.opacity = upPct >= 50 ? '1' : '0.4';
-            downSeg.style.opacity = upPct < 50 ? '1' : '0.4';
-        }
+        const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
+        if (upSeg && downSeg) { upSeg.style.width = `${upPct}%`; downSeg.style.width = `${100 - upPct}%`; }
     }
 
-    // ドミナンス タイル
-    const domMainEl = document.getElementById('sumDomMain');
-    const domSubEl = document.getElementById('sumDomSub');
-    
-    const totalM = o.totalMcap || 1;
+    // 5-4. ドミナンス
+    const domMainEl = document.getElementById('sumDomMain'), domSubEl = document.getElementById('sumDomSub');
     const btcPct = (o.values && o.values[0]) ? (o.values[0] / totalM * 100) : 0;
-
     if (domMainEl) {
-        let phaseLabel = '';
-        let phaseColor = '#facc15'; // 基本はBTCゴールド
-
-        // --- 1. 判定ロジック（簡潔版） ---
-        if (btcPct >= 55) {
-            phaseLabel = '🏔️ どっしり安定';
-            phaseColor = '#facc15'; // ゴールド
-        } else if (btcPct <= 45) {
-            phaseLabel = '🌈 華やかな活気';
-            phaseColor = '#4ade80'; // エメラルド
-        } else if (btcPct <= 50) {
-            phaseLabel = '✨ 多彩な動き';
-            phaseColor = '#86efac'; // ライトグリーン
-        } else {
-            phaseLabel = '🍃 ほどよいバランス';
-            phaseColor = '#cbd5e1'; // グレー
-        }
-
-        // --- 2. 表示の更新（2段構成） ---
-        // 上段：パーセンテージ
+        let phaseLabel = '', phaseColor = '#facc15';
+        if (btcPct >= 55) { phaseLabel = '🏔️ どっしり安定'; phaseColor = '#facc15'; }
+        else if (btcPct <= 45) { phaseLabel = '🌈 華やかな活気'; phaseColor = '#4ade80'; }
+        else if (btcPct <= 50) { phaseLabel = '✨ 多彩な動き'; phaseColor = '#86efac'; }
+        else { phaseLabel = '🍃 ほどよいバランス'; phaseColor = '#cbd5e1'; }
         domMainEl.textContent = btcPct.toFixed(1) + '%';
-        domMainEl.className = "kpi-main-label"; // CSSクラス適用
-        domMainEl.style.color = phaseColor;    // 数字の色もフェーズに合わせる
-        domMainEl.style.textShadow = btcPct >= 55 ? '0 0 10px rgba(250, 204, 21, 0.4)' : 'none';
-
-        // 下段：ステータスラベル
+        domMainEl.className = "kpi-main-label";
+        domMainEl.style.color = phaseColor;
         if (domSubEl) {
             domSubEl.textContent = phaseLabel;
-            domSubEl.className = "kpi-sub-label"; // CSSクラス適用
+            domSubEl.className = "kpi-sub-label";
             domSubEl.style.color = phaseColor;
-            domSubEl.style.display = "block";    // 確実に改行
-            domSubEl.style.marginTop = "2px";
         }
-    }
-
-        // 下部バーの更新（構成比率をすべて反映）
         const ethPct = (o.values && o.values[1]) ? (o.values[1] / totalM * 100) : 0;
         const stbPct = (o.values && o.values[2]) ? (o.values[2] / totalM * 100) : 0;
         const othPct = Math.max(0, 100 - (btcPct + ethPct + stbPct));
-
-        const setSeg = (id, w) => { const el = document.getElementById(id); if (el) el.style.width = w.toFixed(1) + '%'; };
-        setSeg('sumDomSegBtc', btcPct);
-        setSeg('sumDomSegEth', ethPct);
-        setSeg('sumDomSegStb', stbPct);
-        setSeg('sumDomSegOth', othPct);
+        ['sumDomSegBtc','sumDomSegEth','sumDomSegStb','sumDomSegOth'].forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el) el.style.width = [btcPct, ethPct, stbPct, othPct][i].toFixed(1) + '%';
+        });
     }
 
-    // --- 6. 7日間詳細グラフ (seriesLen > 2 の時のみ実行) ---
+    // 5-5. 市場出来高
+    const vMainEl = document.getElementById('kpiStripVolMain'), vSubEl = document.getElementById('kpiStripVolSub');
+    if (vMainEl) {
+        const totalV = o.totalVol || 0;
+        const vVals = o.volValues || [0,0,0,0];
+        const altRatio = totalV ? ((vVals[1] + (vVals[2]||0) + (vVals[3]||0)) / totalV * 100) : 0;
+        let sLabel = '', sColor = '#cbd5e1', glow = 'none';
+        if (altRatio >= 60) { sLabel = '🌈 彩り豊かな市'; sColor = '#4ade80'; glow = '0 0 10px rgba(74, 222, 128, 0.4)'; }
+        else if (altRatio >= 45) { sLabel = '✨ 市場の熱気'; sColor = '#fb923c'; glow = '0 0 10px rgba(251, 146, 60, 0.4)'; }
+        else if (totalV > 10_000_000_000_000) { sLabel = '⚡️ 轟く奔流'; sColor = '#facc15'; }
+        else if (altRatio <= 30) { sLabel = '🕯️ 静かな灯火'; sColor = '#60a5fa'; }
+        else { sLabel = '🍃 穏やかな風'; sColor = '#cbd5e1'; }
+        vMainEl.textContent = yenLarge(totalV);
+        vMainEl.className = "kpi-main-label";
+        vMainEl.style.color = sColor;
+        vMainEl.style.textShadow = glow;
+        if (vSubEl) { vSubEl.textContent = sLabel; vSubEl.className = "kpi-sub-label"; vSubEl.style.color = sColor; }
+        const bBtc = document.getElementById('miniVolBarBtc'), bEth = document.getElementById('miniVolBarEth'), bOth = document.getElementById('miniVolBarOth');
+        if (bBtc) bBtc.style.width = (totalV ? (vVals[0] / totalV * 100) : 0) + '%';
+        if (bEth) bEth.style.width = (totalV ? (vVals[1] / totalV * 100) : 0) + '%';
+        if (bOth) bOth.style.width = (totalV ? ((vVals[2]+vVals[3]) / totalV * 100) : 0) + '%';
+    }
+
+    // 5-6. 長期トレンド
+    const ma = window.__btcMaCross, maMainEl = document.getElementById('sumMaMain'), maSubEl = document.getElementById('sumMaSub');
+    if (ma && maMainEl) {
+        const d = ma.distPct;
+        let c = '#cbd5e1', sl = '', g = 'none';
+        if (d >= 10) { c = '#34d399'; sl = '🌊 力強い潮流'; }
+        else if (d > 1) { c = '#38bdf8'; sl = '☀️ 順調な上向き'; }
+        else if (d > 0) { c = '#60a5fa'; sl = '🌱 期待の芽生え'; g = '0 0 10px rgba(96, 165, 250, 0.5)'; }
+        else if (d >= -1) { c = '#fb923c'; sl = '☁️ 迷いのある動き'; g = '0 0 10px rgba(251, 146, 60, 0.5)'; }
+        else if (d > -10) { c = '#f87171'; sl = '📉 重たい足取り'; }
+        else { c = '#ef4444'; sl = '❄️ 厳しい冷え込み'; }
+        maMainEl.textContent = (d > 0 ? '+' : '') + d.toFixed(2) + '%';
+        maMainEl.className = "kpi-main-label";
+        maMainEl.style.color = c;
+        maMainEl.style.textShadow = g;
+        if (maSubEl) { maSubEl.textContent = sl; maSubEl.className = "kpi-sub-label"; maSubEl.style.color = c; }
+        if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(d);
+    }
+
+    // --- 6. 7日間詳細グラフ (展開時のみ) ---
     try {
-      const seriesLen = marketsTop[0]?.sparkline_in_7d?.price?.length || 0;
-      if (seriesLen > 2) {
-        const upArr = new Array(seriesLen).fill(0), downArr = new Array(seriesLen).fill(0), avgArr = new Array(seriesLen).fill(0), mcapArr = new Array(seriesLen).fill(0), cntArr = new Array(seriesLen).fill(0), lastRets = [];
-        for (const c of marketsTop){
-          const sp = c?.sparkline_in_7d?.price;
-          if (!sp || sp.length !== seriesLen) continue;
-          const p0 = sp[0], plast = sp[seriesLen-1];
-          if (!(p0>0) || !(plast>0)) continue;
-          const retLast = (plast / p0 - 1) * 100;
-          lastRets.push(retLast);
-          for (let t=0;t<seriesLen;t++){
-            const pt = sp[t]; if (!(pt>0)) continue;
-            const ret = (pt/p0 - 1) * 100;
-            if (ret > 0) upArr[t] += 1; else if (ret < 0) downArr[t] += 1;
-            avgArr[t] += ret; cntArr[t] += 1;
-            if (c.market_cap > 0) mcapArr[t] += c.market_cap * (pt/plast);
-          }
-        }
-        for (let t=0;t<seriesLen;t++){ if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t]; }
-        const labels = Array.from({length: seriesLen}, (_,i)=>i);
-        
-        makeBaselineChart('breadthLine', labels, upArr.map((up, t) => up - downArr[t]), { dayGrid: true });
-        makeBaselineChart('avgLine', labels, avgArr, { dayGrid: true, aboveColor: 'rgba(74, 222, 128, 0.2)', belowColor: 'rgba(248, 113, 113, 0.2)' });
-        makeNormalizedLine('mcap7dLine', labels, mcapArr, { dayGrid: true });
-
-        // --- 平均・中央値の更新（マイルド＆情緒版） ---
-        const lastAvg = avgArr[avgArr.length - 1];
-        const elAvg = document.getElementById('kpiAvgChange'), elDist = document.getElementById('kpiAvgDist');
-
-        if (elAvg && lastAvg != null) {
-            // 中央値の計算
-            const s = lastRets.sort((a,b)=>a-b), mid = Math.floor(s.length/2), med = (s.length % 2) ? s[mid] : (s[mid-1]+s[mid])/2;
-            const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
-            
-            // メイン表示
-            elAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
-
-            // 地合いの言語化
-            if (elDist) {
-                let statusText = '';
-                if (lastAvg >= 5) {
-                    statusText = "🌸 満開の勢い（全体がプラス圏）";
-                } else if (lastAvg >= 0) {
-                    statusText = "🌤️ 心地よい日差し（緩やかな利益）";
-                } else if (lastAvg >= -5) {
-                    statusText = "🌧️ しとしと雨（含み損の広がり）";
-                } else {
-                    statusText = "⛈️ 本格的な嵐（厳しい調整局面）";
+        const seriesLen = marketsTop[0]?.sparkline_in_7d?.price?.length || 0;
+        if (seriesLen > 2) {
+            const upArr = new Array(seriesLen).fill(0), downArr = new Array(seriesLen).fill(0), avgArr = new Array(seriesLen).fill(0), mcapArr = new Array(seriesLen).fill(0), cntArr = new Array(seriesLen).fill(0), lastRets = [];
+            for (const c of marketsTop){
+                const sp = c?.sparkline_in_7d?.price;
+                if (!sp || sp.length !== seriesLen) continue;
+                const p0 = sp[0], plast = sp[seriesLen-1];
+                if (!(p0>0) || !(plast>0)) continue;
+                const retLast = (plast / p0 - 1) * 100;
+                lastRets.push(retLast);
+                for (let t=0;t<seriesLen;t++){
+                    const pt = sp[t]; if (!(pt>0)) continue;
+                    const ret = (pt/p0 - 1) * 100;
+                    if (ret > 0) upArr[t] += 1; else if (ret < 0) downArr[t] += 1;
+                    avgArr[t] += ret; cntArr[t] += 1;
+                    if (c.market_cap > 0) mcapArr[t] += c.market_cap * (pt/plast);
                 }
-                elDist.textContent = statusText;
-                elDist.style.color = color;
+            }
+            for (let t=0;t<seriesLen;t++){ if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t]; }
+            const l = Array.from({length: seriesLen}, (_,i)=>i);
+            makeBaselineChart('breadthLine', l, upArr.map((up, t) => up - downArr[t]), { dayGrid: true });
+            makeBaselineChart('avgLine', l, avgArr, { dayGrid: true, aboveColor: 'rgba(74, 222, 128, 0.2)', belowColor: 'rgba(248, 113, 113, 0.2)' });
+            makeNormalizedLine('mcap7dLine', l, mcapArr, { dayGrid: true });
+
+            const lastAvg = avgArr[avgArr.length - 1];
+            const elAvg = document.getElementById('kpiAvgChange'), elDist = document.getElementById('kpiAvgDist');
+            if (elAvg && lastAvg != null) {
+                const s = lastRets.sort((a,b)=>a-b), mid = Math.floor(s.length/2), med = (s.length % 2) ? s[mid] : (s[mid-1]+s[mid])/2;
+                const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
+                elAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
+                if (elDist) {
+                    let st = '';
+                    if (lastAvg >= 5) st = "🌸 満開の勢い"; else if (lastAvg >= 0) st = "🌤️ 心地よい日差し"; else if (lastAvg >= -5) st = "🌧️ しとしと雨"; else st = "⛈️ 本格的な嵐";
+                    elDist.textContent = st; elDist.style.color = color;
+                }
             }
         }
-      }
     } catch(e) { console.warn('Series failed', e); }
 
     // ドミナンス詳細
@@ -3583,111 +3509,9 @@ function renderOverview(){
         listEl.innerHTML = domLabels.map((lab, i) => `<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cbd5e1;"><span style="width: 8px; height: 8px; border-radius: 2px; background: ${colors[i]};"></span><span style="flex: 1;">${lab}</span><span style="font-weight: 700; color: #fff;">${(domValues[i]/totalM*100).toFixed(1)}%</span></div>`).join('');
     }
 
-    // --- 5. [上部タイルの更新：市場出来高] ---
-    (function updateVolTile(){
-        const totalV = o.totalVol || 0;
-        const elMain = document.getElementById('kpiStripVolMain');
-        const elSub = document.getElementById('kpiStripVolSub');
-        
-        if (!elMain) return;
-
-        // 1. メイン数値の表示
-        elMain.textContent = yenLarge(totalV);
-
-        // 2. 構成比率とアルト比率の計算
-        const vVals = o.volValues || [0,0,0,0]; // BTC, ETH, Stable, Other
-        const btcV = vVals[0] || 0;
-        const ethV = vVals[1] || 0;
-        const otherV = (vVals[2] || 0) + (vVals[3] || 0);
-        
-        const altRatio = totalV ? ((ethV + otherV) / totalV * 100) : 0;
-        
-        // --- 市場の「活気」判定ロジック（簡潔版） ---
-        let statusLabel = '';
-        let statusColor = '#cbd5e1';
-        let glow = 'none';
-
-        if (altRatio >= 60) {
-            statusLabel = '🌈 色彩豊かな市場';
-            statusColor = '#4ade80';
-            glow = '0 0 10px rgba(74, 222, 128, 0.4)';
-        } else if (altRatio >= 45) {
-            statusLabel = '✨ 市場のぬくもり';
-            statusColor = '#fb923c';
-            glow = '0 0 10px rgba(251, 146, 60, 0.4)';
-        } else if (totalV > 10_000_000_000_000) { 
-            statusLabel = '⚡️ 轟く奔流（ほんりゅう）';
-            statusColor = '#facc15';
-        } else if (altRatio <= 30) {
-            statusLabel = '🕯️ 静かな灯火（ともしび）';
-            statusColor = '#60a5fa';
-        } else {
-            statusLabel = '🍃 穏やかな風';
-            statusColor = '#cbd5e1';
-        }
-
-        elMain.style.color = statusColor;
-        elMain.style.textShadow = glow;
-
-        if (elSub) {
-            elSub.textContent = statusLabel;
-            elSub.style.color = statusColor;
-        }
-
-        // 4. ミニバーの更新
-        const barBtc = document.getElementById('miniVolBarBtc');
-        const barEth = document.getElementById('miniVolBarEth');
-        const barOth = document.getElementById('miniVolBarOth');
-        if (barBtc) barBtc.style.width = (totalV ? (btcV / totalV * 100) : 0) + '%';
-        if (barEth) barEth.style.width = (totalV ? (ethV / totalV * 100) : 0) + '%';
-        if (barOth) barOth.style.width = (totalV ? (otherV / totalV * 100) : 0) + '%';
-    })();
-
-    // --- 5. [上部タイルの更新：MAクロス距離] ---
-    const ma = window.__btcMaCross;
-    const maMainEl = document.getElementById('sumMaMain');
-    const maSubEl = document.getElementById('sumMaSub');
-
-    if (ma && maMainEl) {
-        const d = ma.distPct;
-        let color = '#cbd5e1'; 
-        let statusLabel = '';
-        let glow = 'none';
-
-        // --- トレンド・クロス判定ロジック（簡潔版） ---
-        if (d >= 10) {
-            color = '#34d399'; statusLabel = '🌊 力強い潮流';
-        } else if (d > 1) {
-            color = '#38bdf8'; statusLabel = '☀️ 順調な上向き';
-        } else if (d > 0) {
-            color = '#60a5fa'; statusLabel = '🌱 期待の芽生え';
-            glow = '0 0 10px rgba(96, 165, 250, 0.5)';
-        } else if (d >= -1) {
-            color = '#fb923c'; statusLabel = '☁️ 迷いのある動き';
-            glow = '0 0 10px rgba(251, 146, 60, 0.5)';
-        } else if (d > -10) {
-            color = '#f87171'; statusLabel = '📉 重たい足取り';
-        } else {
-            color = '#ef4444'; statusLabel = '❄️ 厳しい冷え込み';
-        }
-
-        // プラスなら「+」記号を付ける
-        maMainEl.textContent = (d > 0 ? '+' : '') + d.toFixed(2) + '%';
-        maMainEl.style.color = color;
-        maMainEl.style.textShadow = glow;
-
-        if (maSubEl) {
-            maSubEl.textContent = statusLabel;
-            maSubEl.style.color = color;
-        }
-
-        // 下部ミニバーのマーカー更新
-        if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(d);
-    }
-
     if (isCollapsed) return;
     setTimeout(() => { ['breadthLine','avgLine','rsiLine','mcap7dLine'].forEach(id => { try { if (charts[id]) charts[id].resize(); } catch(_){} }); }, 50);
-  }
+}
 // ============ Charts / Rendering ============
   const charts = {};
   const __sparklineAttempts = new Map(); // canvasId -> attempts
