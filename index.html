@@ -3740,10 +3740,10 @@ function renderOverview(){
             const rsiEl = document.getElementById('kpiRsi');
             if (rsiEl && lastRsiVal != null) {
                 let status = '中立', color = '#cbd5e1';
-                if (lastRsiVal >= 70) { status = '🚨 過熱（天井圏）'; color = '#f87171'; }
-                else if (lastRsiVal <= 30) { status = '💎 売られすぎ（底値圏）'; color = '#38bdf8'; }
-                else if (lastRsiVal >= 60) { status = '🌡️ やや過熱気味'; color = '#fca5a5'; }
-                else if (lastRsiVal <= 40) { status = '💧 やや安値圏'; color = '#7dd3fc'; }
+                if (lastRsiVal >= 70) { status = '⚠️ 買われすぎ圏'; color = '#f87171'; }
+                else if (lastRsiVal <= 30) { status = '⚠️ 売られすぎ圏'; color = '#38bdf8'; }
+                else if (lastRsiVal >= 60) { status = '↗️ やや過熱'; color = '#fca5a5'; }
+                else if (lastRsiVal <= 40) { status = '💧 ↘️ やや低水準'; color = '#7dd3fc'; }
 
                 // 1. 上段（大きな数字）を更新
                 rsiEl.style.color = color;
