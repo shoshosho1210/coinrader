@@ -341,15 +341,48 @@
   .kpi-tile-sub .neg{color:#f87171;font-weight:700;}
   
   /* Summary KPI compact rows */
-  .summary-kpis .kpi-tile{ padding:9px 12px; }
-  .summary-kpis .kpi-value-row{ display:flex; align-items:baseline; gap:10px; margin-top:6px; flex-wrap:wrap; }
+  /* タイル全体の余白調整 */
+  .summary-kpis .kpi-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 12px 8px !important;
+  }
+  /* 概要タイルのレイアウトを縦並び・中央揃えに強制 */
+  .summary-kpis .kpi-value-row {
+    display: flex !important;
+    flex-direction: column !important; /* 縦に並べる */
+    align-items: center !important;    /* 左右中央 */
+    justify-content: center !important;
+    gap: 4px !important;               /* 数字と文字の隙間 */
+    margin-top: 10px !important;
+    min-height: 54px;                  /* 高さを確保してガタつき防止 */
+  }
   /* Keep value row on one line for some KPI tiles */
   .summary-kpis .kpi-tile.kpi-avg250 .kpi-value-row{ flex-wrap:nowrap; }
   .summary-kpis .kpi-tile.kpi-breadth .kpi-value-row{ flex-wrap:nowrap; }
   .summary-kpis .kpi-tile.kpi-dom .kpi-value-row{ flex-wrap:nowrap; }
   .summary-kpis .kpi-tile.kpi-dom #sumDomSub{ white-space:nowrap; font-size:12px; opacity:.95; }
-  .summary-kpis .kpi-tile-big{ margin-top:0; }
-  .summary-kpis .kpi-tile-sub.inline{ margin-top:0; font-size:12px; color:#cbd5e1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* メインの大きな数字 */
+  .summary-kpis .kpi-tile-big {
+    font-size: 26px !important;        /* 数字をより大きく強調 */
+    font-weight: 800;
+    line-height: 1;
+    margin: 0 !important;
+  }
+  /* 2段構成（縦並び）に最適化 */
+  .summary-kpis .kpi-tile-sub.inline {
+    display: block;            /* 確実に改行させる */
+    margin-top: 4px;           /* 数字との隙間を少し作る */
+    font-size: 11px;           /* 読みやすいサイズに微調整 */
+    color: #cbd5e1;
+    white-space: nowrap;       /* 勝手に折り返さない */
+    overflow: visible;         /* ellipsis(...)を解除して文字を見せる */
+    text-overflow: clip;       /* 切れる場合はバッサリ切る（基本切れないはず） */
+    opacity: 0.9;
+  }
   
   .kpi-bar-caption{margin-top:6px;font-size:10px;line-height:1.2;text-align:center;color:rgba(229,231,235,0.60);min-height:12px;letter-spacing:.2px;user-select:none;}
 .summary-kpis .mini-vis{ margin-top:6px; }
