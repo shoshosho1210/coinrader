@@ -3385,15 +3385,15 @@ function renderOverview(){
         let color = '#cbd5e1'; // デフォルト：中立
         let statusLabel = '';
 
-        // --- 騰落バランスの判定ロジック（簡潔版） ---
+        // --- 騰落バランスの判定ロジック（超簡潔版） ---
         if (upPct >= 70) {
-            color = '#4ade80'; statusLabel = '☀️ まぶしい陽光';
+            color = '#4ade80'; statusLabel = '☀️ まぶしい光';
         } else if (upPct >= 55) {
             color = '#86efac'; statusLabel = '⛅ 明るい兆し';
         } else if (upPct <= 30) {
             color = '#f87171'; statusLabel = '🌑 深い影';
         } else if (upPct <= 45) {
-            color = '#fca5a5'; statusLabel = '🌦️ 雲行きの変化';
+            color = '#fca5a5'; statusLabel = '🌦️ 雲の変化'; // 「雲行きの変化」を短縮
         } else {
             color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空';
         }
