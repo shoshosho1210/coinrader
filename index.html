@@ -3777,11 +3777,11 @@ function renderOverview(){
     if (sentMainEl && sentScore != null) {
         const s = Math.round(sentScore);
         let color = '#f8fafc', detailedLabel = '';
-        if (s >= 80) { color = '#4ade80'; detailedLabel = '🔥 強い熱気'; }
-        else if (s >= 60) { color = '#86efac'; detailedLabel = '🌤️ 活気ある空'; }
-        else if (s >= 40) { color = '#cbd5e1'; detailedLabel = '🍃 穏やかな凪'; }
-        else if (s >= 20) { color = '#fca5a5'; detailedLabel = '☁️ 慎重ムード'; }
-        else { color = '#f87171'; detailedLabel = '❄️ 強い冷え込み'; }
+        if (s >= 80) { color = '#4ade80'; detailedLabel = '📈 楽観的な市場'; }
+        else if (s >= 60) { color = '#86efac'; detailedLabel = '☀️ やや前向き'; }
+        else if (s >= 40) { color = '#cbd5e1'; detailedLabel = '→ 中立的'; }
+        else if (s >= 20) { color = '#fca5a5'; detailedLabel = '⚠️ やや警戒感'; }
+        else { color = '#f87171'; detailedLabel = '📉 慎重な市場'; }
         sentMainEl.textContent = s;
         sentMainEl.className = "kpi-main-label";
         sentMainEl.style.color = color;
@@ -3799,11 +3799,11 @@ function renderOverview(){
     if (rsiMainEl && lastRsiVal != null) {
         const r = Math.round(lastRsiVal);
         let color = '#cbd5e1', statusLabel = '', glow = 'none';
-        if (r >= 70) { color = '#f87171'; statusLabel = '🌋 かなりの熱気'; glow = '0 0 12px rgba(248, 113, 113, 0.5)'; }
-        else if (r >= 60) { color = '#fca5a5'; statusLabel = '🌡️ 温度上昇中'; }
-        else if (r <= 30) { color = '#38bdf8'; statusLabel = '🌊 静かな水底'; glow = '0 0 12px rgba(56, 189, 248, 0.6)'; }
-        else if (r <= 40) { color = '#7dd3fc'; statusLabel = '💧 少し冷たい空気'; }
-        else { color = '#cbd5e1'; statusLabel = '🍃 穏やかな凪'; }
+        if (r >= 70) { color = '#f87171'; statusLabel = '📊 買われすぎ圏'; glow = '0 0 12px rgba(248, 113, 113, 0.5)'; }
+        else if (r >= 60) { color = '#fca5a5'; statusLabel = '↗️ 上昇継続中'; }
+        else if (r <= 30) { color = '#38bdf8'; statusLabel = '📉 売られすぎ圏'; glow = '0 0 12px rgba(56, 189, 248, 0.6)'; }
+        else if (r <= 40) { color = '#7dd3fc'; statusLabel = '↘️ 下落継続中'; }
+        else { color = '#cbd5e1'; statusLabel = '→ 中立レンジ'; }
         rsiMainEl.textContent = r;
         rsiMainEl.className = "kpi-main-label";
         rsiMainEl.style.color = color;
@@ -3824,25 +3824,24 @@ function renderOverview(){
         let color = '#cbd5e1', statusLabel = '';
 
         if (upPct >= 70) { 
-            color = '#4ade80'; 
-            statusLabel = '☀️ 全面高（健全な上昇）'; 
+          color = '#4ade80'; 
+          statusLabel = '📊 広範な上昇'; 
         }
         else if (upPct >= 55) { 
-            color = '#86efac'; 
-            statusLabel = '⛅ 買い優勢（良好な地合い）'; 
+          color = '#86efac'; 
+          statusLabel = '↗️ 上昇銘柄優勢'; 
         }
         else if (upPct <= 30) { 
-            color = '#f87171'; 
-            // 「パニック」を「強い冷え込み」や「売り圧力が極大」に変更
-            statusLabel = '🌑 全面安（強い冷え込み）'; 
+          color = '#f87171'; 
+          statusLabel = '📉 広範な下落'; 
         }
         else if (upPct <= 45) { 
-            color = '#fca5a5'; 
-            statusLabel = '🌧️ 売り優勢（冴えない地合い）'; 
+          color = '#fca5a5'; 
+          statusLabel = '↘️ 下落銘柄優勢'; 
         }
         else { 
-            color = '#cbd5e1'; 
-            statusLabel = '☁️ 拮抗（迷いのある地合い）'; 
+          color = '#cbd5e1'; 
+          statusLabel = '⚖️ 均衡状態'; 
         }
 
         // メイン表示とミニバーの更新（ここから下は変更なし）
@@ -3871,10 +3870,10 @@ function renderOverview(){
     const btcPct = (o.values && o.values[0]) ? (o.values[0] / totalM * 100) : 0;
     if (domMainEl) {
         let phaseLabel = '', phaseColor = '#facc15';
-        if (btcPct >= 55) { phaseLabel = '🏔️ どっしり安定'; phaseColor = '#facc15'; }
-        else if (btcPct <= 45) { phaseLabel = '🌈 華やかな活気'; phaseColor = '#4ade80'; }
-        else if (btcPct <= 50) { phaseLabel = '✨ 多彩な動き'; phaseColor = '#86efac'; }
-        else { phaseLabel = '🍃 ほどよいバランス'; phaseColor = '#cbd5e1'; }
+        if (btcPct >= 55) { phaseLabel = '🔷 BTC集中'; phaseColor = '#facc15'; }
+        else if (btcPct <= 45) { phaseLabel = '🌐 アルト分散'; phaseColor = '#4ade80'; }
+        else if (btcPct <= 50) { phaseLabel = '💫 アルト優勢'; phaseColor = '#86efac'; }
+        else { phaseLabel = '⚖️ バランス型'; phaseColor = '#cbd5e1'; }
         domMainEl.textContent = btcPct.toFixed(1) + '%';
         domMainEl.className = "kpi-main-label";
         domMainEl.style.color = phaseColor;
@@ -3903,25 +3902,25 @@ function renderOverview(){
         let sLabel = '', sColor = '#cbd5e1', glow = 'none';
 
         if (altRatio >= 60) { 
-            sLabel = '✨ アルト熱狂（攻め）'; 
+            sLabel = '🌐 アルト中心の出来高'; 
             sColor = '#4ade80'; // 活発な緑
             glow = '0 0 10px rgba(74, 222, 128, 0.4)'; 
         }
         else if (altRatio >= 45) { 
-            sLabel = '🌈 資金分散（活発）'; 
+            sLabel = '💫 分散的な取引'; 
             sColor = '#7dd3fc'; // 明るい水色
         }
         else if (totalV > 15_000_000_000_000) { 
-            sLabel = '⚡️ 巨大な流動性'; // 比率に関わらず出来高が凄まじい時
+            sLabel = '📊 高水準の流動性'; // 比率に関わらず出来高が凄まじい時
             sColor = '#facc15'; 
             glow = '0 0 12px rgba(250, 204, 21, 0.5)';
         }
         else if (altRatio <= 30) { 
-            sLabel = '🏔️ BTC集中（防衛）'; 
+            sLabel = '🔷 BTC中心の出来高'; 
             sColor = '#94a3b8'; // 落ち着いたグレー
         }
         else { 
-            sLabel = '🍃 穏やかな流動性'; 
+            sLabel = '→ 標準的な流動性'; 
             sColor = '#cbd5e1'; 
         }
 
@@ -3948,12 +3947,12 @@ function renderOverview(){
     if (ma && maMainEl) {
         const d = ma.distPct;
         let c = '#cbd5e1', sl = '', g = 'none';
-        if (d >= 10) { c = '#34d399'; sl = '🌊 力強い潮流'; }
-        else if (d > 1) { c = '#38bdf8'; sl = '☀️ 順調な上向き'; }
-        else if (d > 0) { c = '#60a5fa'; sl = '🌱 期待の芽生え'; g = '0 0 10px rgba(96, 165, 250, 0.5)'; }
-        else if (d >= -1) { c = '#fb923c'; sl = '☁️ 迷いのある動き'; g = '0 0 10px rgba(251, 146, 60, 0.5)'; }
-        else if (d > -10) { c = '#f87171'; sl = '📉 重たい足取り'; }
-        else { c = '#ef4444'; sl = '❄️ 厳しい冷え込み'; }
+        if (d >= 10) { c = '#34d399'; sl = '📈 強い上昇トレンド'; }
+        else if (d > 1) { c = '#38bdf8'; sl = '📈 強い上昇トレンド'; }
+        else if (d > 0) { c = '#60a5fa'; sl = '✓ 上向き推移'; g = '0 0 10px rgba(96, 165, 250, 0.5)'; }
+        else if (d >= -1) { c = '#fb923c'; sl = '→ 横ばい傾向'; g = '0 0 10px rgba(251, 146, 60, 0.5)'; }
+        else if (d > -10) { c = '#f87171'; sl = '↘️ 下降トレンド'; }
+        else { c = '#ef4444'; sl = '📉 強い下降トレンド'; }
         maMainEl.textContent = (d > 0 ? '+' : '') + d.toFixed(2) + '%';
         maMainEl.className = "kpi-main-label";
         maMainEl.style.color = c;
