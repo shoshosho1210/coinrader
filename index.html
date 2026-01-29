@@ -3150,13 +3150,11 @@ function getAltVolumeTop5(){
     });
   }
 
-  function renderOverview(){
+function renderOverview(){
     const msg = document.getElementById('overviewMsg');
     msg.style.display = 'none';
 
-    // reset mini series cache each run
-    summaryAvgSeries = null;
-
+    // データの準備ができていない場合は中断
     if (!marketsTop || !marketsTop.length){
       msg.className = 'msg err';
       msg.textContent = '概況データを準備中です。';
@@ -3165,202 +3163,120 @@ function getAltVolumeTop5(){
     }
 
     const o = buildOverview();
+    const wrap = document.getElementById('overviewWrap');
+    const isCollapsed = wrap && wrap.classList.contains('is-collapsed');
 
-    // --- 【追加】地合い（騰落バランス）の即時更新 ---
+    // --------------------------------------------------
+    // 【Step 1】 24hデータで即座に数字を出す（待機時間をゼロに）
+    // --------------------------------------------------
+
+    // 1. 市場の地合い（騰落バランス）
     const kpiB = document.getElementById('kpiBreadth');
     if (kpiB) {
         const total = o.up + o.down + (o.flat || 0);
         const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
         const sign = (o.up - o.down) > 0 ? '上昇優勢' : ((o.up - o.down) < 0 ? '下落優勢' : '均衡');
-        // 大きな数字に色をつけて即座に表示
         kpiB.innerHTML = `<span style="color:${(o.up >= o.down)? '#4ade80' : '#f87171'}">${sign}</span> <span style="font-size:12px; opacity:0.8;">(上昇銘柄: ${upPct}%)</span>`;
     }
-    
-    const wrap = document.getElementById('overviewWrap');
-    const isCollapsed = wrap && wrap.classList.contains('is-collapsed');
 
-    let lastUp = null, lastDown = null;
-    let avg7 = null, med7 = null;
-    let sentScore = null, sentLabel = null;
-    let lastRsiVal = null;
-
-    // Breadth
-    const denom = (o.up + o.down + o.flat) || 1;
-    const upPct = (o.up / denom) * 100;
-    const flatPct = (o.flat / denom) * 100;
-    const downPct = (o.down / denom) * 100;
-
-    
-const breadthNowEl = document.getElementById('kpiBreadthNow');
-if (breadthNowEl){
-  // 24h snapshot (from /coins/markets price_change_percentage_24h)
-  breadthNowEl.textContent = `24h: 上昇 ${o.up} / 下落 ${o.down}` + (o.flat ? `（中立 ${o.flat}）` : '');
-}
-
-// Strong movers (24h)
-let up10 = 0, down10 = 0;
-for (const c of (marketsTop || [])){
-  const chg = c && c.price_change_percentage_24h;
-  if (typeof chg === 'number' && isFinite(chg)){
-    if (chg >= 10) up10++;
-    if (chg <= -10) down10++;
-  }
-}
-const breadthMovesEl = document.getElementById('kpiBreadthMoves');
-if (breadthMovesEl){
-  breadthMovesEl.textContent = `強い動き(24h): +10%≥ ${up10} / -10%≤ ${down10}`;
-}
-
-    
-const breadthSub = document.getElementById('kpiBreadthSub');
-if (breadthSub){
-  const baseTxt = `対象: 上位250（取得 ${o.n}）のうち、24h騰落率が取得できた ${o.chgN} 銘柄を集計`;
-  breadthSub.setAttribute('data-base', baseTxt); // for debug / future use
-}
-
-    const barUp = document.getElementById('barUp');
-    const barFlat = document.getElementById('barFlat');
-    const barDown = document.getElementById('barDown');
-    if (barUp) barUp.style.width = `${upPct}%`;
-    if (barFlat) barFlat.style.width = `${flatPct}%`;
-    if (barDown) barDown.style.width = `${downPct}%`;
-
-    // Average change
-    const avgEl = document.getElementById('kpiAvgChange');
-    if (avgEl){
-      avgEl.textContent = `平均 ${fmtPct(o.avgChg)} / 中央値 ${fmtPct(o.medianChg)}`;
-    }
-    const avgFill = document.getElementById('avgFill');
-    if (avgFill){
-      const maxRange = 5; // ±5% を目安に可視化（超過はクリップ）
-      const v = (typeof o.avgChg === 'number' && isFinite(o.avgChg)) ? o.avgChg : 0;
-      const w = Math.min(Math.abs(v), maxRange) / maxRange * 50; // 0..50
-      if (v >= 0){
-        avgFill.className = 'centerfill pos';
-        avgFill.style.left = '50%';
-        avgFill.style.width = `${w}%`;
-      } else {
-        avgFill.className = 'centerfill neg';
-        avgFill.style.left = `${50 - w}%`;
-        avgFill.style.width = `${w}%`;
-      }
+    const breadthNowEl = document.getElementById('kpiBreadthNow');
+    if (breadthNowEl) {
+        breadthNowEl.textContent = `24h: 上昇 ${o.up} / 下落 ${o.down}` + (o.flat ? `（中立 ${o.flat}）` : '');
     }
 
-    // 資金フロー（市場規模 & 流動性）の更新ロジック ---
-
-    // 1. 合計時価総額と出来高の基本表示
+    // 2. 資金フロー (時価総額 & 出来高)
     const elMcap = document.getElementById('kpiTotalMcap');
     if (elMcap) elMcap.textContent = yenLarge(o.totalMcap);
 
     const elVol = document.getElementById('kpiTotalVol');
     if (elVol) elVol.textContent = yenLarge(o.totalVol);
 
-    // 2. 時価総額の変動と流入・流出ラベル
     const mcap24hEl = document.getElementById('kpiMcap7d');
     if (mcap24hEl) {
-        const pct = o.mcap7dPct; // 数値
+        const pct = o.mcap7dPct || 0;
         const sign = pct >= 0 ? '🟢 Inflow' : '🔴 Outflow';
         const pctStr = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
         mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pctStr}</span>`;
     }
 
-    // 3. 市場の流動性指標（アルト比率と回転率）
-    const totalV = (o.volValues || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
-    // エスプリの効いたアルト比率計算：(ETH + Others) / Total
-    const altVol = (o.volValues[1] || 0) + (o.volValues[3] || 0);
-    const altRatio = (altVol / totalV) * 100;
-    
-    const elAltRatio = document.getElementById('kpiAltVolRatio');
-    if (elAltRatio) {
-        elAltRatio.textContent = `アルト比率: ${isFinite(altRatio) ? altRatio.toFixed(1) : '-'}%`;
-    }
-
-    // 市場全体の回転率（Turnover）: 24h出来高 ÷ 時価総額
     const elTurnover = document.getElementById('kpiMarketTurnover');
     if (elTurnover && o.totalMcap > 0) {
         const turnover = (o.totalVol / o.totalMcap) * 100;
         elTurnover.textContent = `市場回転率: ${turnover.toFixed(2)}%`;
     }
 
-    // 4. 時価総額の推移グラフ描画（既存のmakeNormalizedLineを使用）
-    try {
-        if (mcapArr && mcapArr.length >= 3) {
-            makeNormalizedLine('mcap7dLine', labels, mcapArr, { dayGrid: true });
-        }
-    } catch(e) { console.warn('Mcap line failed', e); }
+    // 3. 平均期待収益（24h暫定）
+    const avgEl = document.getElementById('kpiAvgChange');
+    if (avgEl) {
+        const color = o.avgChg >= 0 ? '#4ade80' : '#f87171';
+        avgEl.innerHTML = `<span style="color:${color}">${o.avgChg >= 0 ? '+' : ''}${o.avgChg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(24h平均)</span>`;
+    }
 
-    // ---- Overview line series (API追加なし: sparkline_in_7d から算出) ----
+    // --------------------------------------------------
+    // 【Step 2】 7日間の詳細データ(スパークライン)を処理してグラフ化
+    // --------------------------------------------------
+    let lastRsiVal = null;
+    let avg7 = null, med7 = null;
+
     try {
-      const seriesLen = (marketsTop && marketsTop[0] && marketsTop[0].sparkline_in_7d && marketsTop[0].sparkline_in_7d.price) ? marketsTop[0].sparkline_in_7d.price.length : 0;
+      const seriesLen = (marketsTop[0]?.sparkline_in_7d?.price) ? marketsTop[0].sparkline_in_7d.price.length : 0;
       if (seriesLen > 2) {
         const upArr = new Array(seriesLen).fill(0);
         const downArr = new Array(seriesLen).fill(0);
-        const flatArr = new Array(seriesLen).fill(0);
         const avgArr = new Array(seriesLen).fill(0);
         const mcapArr = new Array(seriesLen).fill(0);
-        const volArr = new Array(seriesLen).fill(0);
         const cntArr = new Array(seriesLen).fill(0);
-        const lastRets = []; // latest-point 7d returns for median
+        const lastRets = [];
 
-        for (let i=0;i<marketsTop.length;i++){
-          const c = marketsTop[i];
-          const sp = c && c.sparkline_in_7d && c.sparkline_in_7d.price;
+        for (const c of marketsTop){
+          const sp = c?.sparkline_in_7d?.price;
           if (!sp || sp.length !== seriesLen) continue;
           const p0 = sp[0];
           const plast = sp[seriesLen-1];
           if (!(p0>0) || !(plast>0)) continue;
-          const mcNow = (typeof c.market_cap === 'number' && isFinite(c.market_cap)) ? c.market_cap : 0;
-          const volNow = (typeof c.total_volume === 'number' && isFinite(c.total_volume)) ? c.total_volume : 0;
-
-          // latest 7d return for median (from first available price to latest)
+          
           const retLast = (plast / p0 - 1) * 100;
           if (isFinite(retLast)) lastRets.push(retLast);
+          
+          const mcNow = c.market_cap || 0;
           for (let t=0;t<seriesLen;t++){
             const pt = sp[t];
             if (!(pt>0)) continue;
             const ret = (pt/p0 - 1) * 100;
-            if (ret > 0) upArr[t] += 1;
-            else if (ret < 0) downArr[t] += 1;
-            else flatArr[t] += 1;
+            if (ret > 0) upArr[t] += 1; else if (ret < 0) downArr[t] += 1;
             avgArr[t] += ret;
             cntArr[t] += 1;
-            // 推定: supply一定近似
             if (mcNow>0) mcapArr[t] += mcNow * (pt/plast);
-            if (volNow>0) volArr[t] += volNow * (pt/plast);
           }
         }
-        for (let t=0;t<seriesLen;t++){
-          if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t];
-        }
-        summaryAvgSeries = avgArr.slice();
-        // Labels: just indexes (Chart.js will hide axis anyway)
+        for (let t=0;t<seriesLen;t++){ if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t]; }
         const labels = Array.from({length: seriesLen}, (_,i)=>i);
 
-// --- 騰落数(Breadth)を1本の「地合いライン」に統合 ---
+        // --- チャート描画（データが揃ったここで実行！） ---
         const netBreadthArr = upArr.map((up, t) => up - downArr[t]);
         makeBaselineChart('breadthLine', labels, netBreadthArr, { dayGrid: true });
 
-        // --- 平均騰落率グラフ（利益/損失で色分け） ---
-        if (avgArr && avgArr.length > 0) {
-            makeBaselineChart('avgLine', labels, avgArr, { 
-                dayGrid: true,
-                aboveColor: 'rgba(74, 222, 128, 0.2)',
-                belowColor: 'rgba(248, 113, 113, 0.2)'
-            });
-        }
+        makeBaselineChart('avgLine', labels, avgArr, { 
+            dayGrid: true,
+            aboveColor: 'rgba(74, 222, 128, 0.2)',
+            belowColor: 'rgba(248, 113, 113, 0.2)'
+        });
 
-        // ここで詳細なテキスト判定（中央値や市場の勢い）を上書きする
+        makeNormalizedLine('mcap7dLine', labels, mcapArr, { dayGrid: true });
+
+        // --- 7dリッチ分析テキストへの更新 ---
         const lastAvg = avgArr[avgArr.length - 1];
         const kpiAvg = document.getElementById('kpiAvgChange');
         const kpiAvgDist = document.getElementById('kpiAvgDist');
-
         if (kpiAvg && lastAvg != null) {
-            // ...（中央値の計算などのロジック）...
-            // 平均期待収益のテキストを更新（Step 2で詳細化）
+            let med = 0;
+            if (lastRets.length) {
+                const s = lastRets.slice().sort((a,b)=>a-b);
+                const mid = Math.floor(s.length/2);
+                med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+            }
             const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
-            kpiAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(7d平均)</span>`;
-            
-            // 地合い判定（🚀お祭り状態、📉含み損拡大など）を更新
+            kpiAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
             if (kpiAvgDist) {
                 if (lastAvg >= 5) kpiAvgDist.textContent = "🚀 市場全体が「お祭り状態」";
                 else if (lastAvg >= 0) kpiAvgDist.textContent = "📈 多くの銘柄で「含み益」が発生中";
@@ -3368,413 +3284,51 @@ if (breadthSub){
                 else kpiAvgDist.textContent = "💀 「総悲観」のパニック売り局面";
                 kpiAvgDist.style.color = color;
             }
+            avg7 = lastAvg; med7 = med;
         }
-
-            // メイン表示：平均と中央値を併記
-            const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
-            const sign = lastAvg >= 0 ? '+' : '';
-            kpiAvg.innerHTML = `<span style="color:${color}">${sign}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
-
-            // 地合いの言語化判定
-            if (kpiAvgDist) {
-                if (lastAvg >= 5) {
-                    kpiAvgDist.textContent = "🚀 市場全体が「お祭り状態」";
-                    kpiAvgDist.style.color = "#4ade80";
-                } else if (lastAvg >= 0) {
-                    kpiAvgDist.textContent = "📈 多くの銘柄で「含み益」が発生中";
-                    kpiAvgDist.style.color = "#4ade80";
-                } else if (lastAvg >= -5) {
-                    kpiAvgDist.textContent = "📉 市場全体に「含み損」が拡大";
-                    kpiAvgDist.style.color = "#f87171";
-                } else {
-                    kpiAvgDist.textContent = "💀 「総悲観」のパニック売り局面";
-                    kpiAvgDist.style.color = "#f87171";
-                }
-            }
-            
-            // グローバル変数への代入（他機能での利用用）
-            avg7 = lastAvg;
-            med7 = med;
-        }
-        
-        // BTC RSI (14) from BTC sparkline (7d)
-        // --- renderOverview関数内のRSI処理をブラッシュアップ ---
-        try {
-            const btc = marketsTop.find(c => c && c.id === 'bitcoin');
-            const btcPrices = btc && btc.sparkline_in_7d && Array.isArray(btc.sparkline_in_7d.price) ? btc.sparkline_in_7d.price : null;
-            if (btcPrices && btcPrices.length >= 20) {
-                const rsiSeries = computeRSISeries(btcPrices, 14);
-                const last = rsiSeries[rsiSeries.length - 1];
-                lastRsiVal = last;
-
-                const rsiEl = document.getElementById('kpiRsi');
-                const rsiMetaEl = document.getElementById('kpiRsiMeta');
-
-                if (rsiEl && last != null && isFinite(last)) {
-                    let status = '中立';
-                    let color = '#cbd5e1';
-                    if (last >= 70) { status = '🚨 過熱気味'; color = '#f87171'; }
-                    else if (last <= 30) { status = '💎 売られすぎ'; color = '#38bdf8'; }
-            
-                    rsiEl.innerHTML = `<span style="color:${color}">${last.toFixed(1)}</span> <span style="font-size:12px; opacity:0.8;">(${status})</span>`;
-            
-                    // メタ情報の分かりやすさ改善
-                    const toUp = Math.max(0, 70 - last).toFixed(1);
-                    const toDown = Math.max(0, last - 30).toFixed(1);
-                    if (last >= 70) rsiMetaEl.textContent = `ピーク圏での推移（30まで ${toDown}pt）`;
-                    else if (last <= 30) rsiMetaEl.textContent = `底打ちサイン点灯中（70まで ${toUp}pt）`;
-                    else rsiMetaEl.textContent = `過熱まで あと ${toUp}pt / 底打ちまで あと ${toDown}pt`;
-            
-                    rsiMetaEl.style.color = color;
-                }
-
-                const rsiLabels = Array.from({length: rsiSeries.length}, (_, i) => i);
-                makeLineChart('rsiLine', rsiLabels, [
-                    {
-                        label: 'RSI',
-                        data: rsiSeries,
-                        borderColor: (last >= 70 || last <= 30) ? color : 'rgba(255,255,255,0.9)',
-                        borderWidth: 2.5,
-                        pointRadius: 0,
-                        tension: 0.35,
-                        fill: false
-                    }
-                ], { dayGrid: true, yMin: 0, yMax: 100 });
-            }
-        } catch(e) { console.warn('RSI failed', e); }
-
-        // CoinRader Sentiment (0-100) — top250ベース
-        try{
-          const denomS = (Number(lastUp)||0) + (Number(lastDown)||0);
-          const upPctS = denomS ? ((Number(lastUp)||0)/denomS)*100 : 0;
-
-          // 24h change median (top250)
-          const pct24 = marketsTop.map(c => (c && typeof c.price_change_percentage_24h === 'number' && isFinite(c.price_change_percentage_24h)) ? c.price_change_percentage_24h : null)
-                                .filter(v => v != null);
-          let med24 = null;
-          if (pct24.length){
-            const s = pct24.slice().sort((a,b)=>a-b);
-            const mid = Math.floor(s.length/2);
-            med24 = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
-          }
-
-          // Total volume change vs previous refresh (localStorage)
-          const volNow = marketsTop.reduce((acc,c)=> acc + (Number.isFinite(c && c.total_volume)? c.total_volume : 0), 0);
-          const keyVol = 'cr_prev_total_vol';
-          const keyVolTs = 'cr_prev_total_vol_ts';
-          const prevVol = Number(localStorage.getItem(keyVol));
-          const prevVolTs = Number(localStorage.getItem(keyVolTs));
-          let volChgPct = null;
-          if (prevVol && isFinite(prevVol) && prevVol > 0 && prevVolTs && (Date.now() - prevVolTs) < (12*60*60*1000)){
-            volChgPct = (volNow/prevVol - 1) * 100;
-          }
-          localStorage.setItem(keyVol, String(volNow));
-          localStorage.setItem(keyVolTs, String(Date.now()));
-
-          // BTC dominance delta (percentage point) vs previous refresh
-          const totalM = (o.values||[]).reduce((a,b)=>a + (Number.isFinite(+b)? +b : 0), 0);
-          const btcM = (o.values && o.values.length) ? (Number.isFinite(+o.values[0]) ? +o.values[0] : 0) : 0;
-          const btcDom = totalM > 0 ? (btcM/totalM) * 100 : null;
-          const keyDom = 'cr_prev_btc_dom';
-          const prevDom = Number(localStorage.getItem(keyDom));
-          let domDelta = null;
-          if (btcDom != null && isFinite(btcDom) && prevDom && isFinite(prevDom)){
-            domDelta = btcDom - prevDom;
-          }
-          if (btcDom != null && isFinite(btcDom)) localStorage.setItem(keyDom, String(btcDom));
-
-          // Normalize helpers
-          const clamp = (x,min,max)=> Math.max(min, Math.min(max, x));
-          const normBreadth = clamp((upPctS - 50) / 50, -1, 1);             // breadth (0-100%)
-          const normMed24   = (med24 == null) ? 0 : clamp(med24 / 10, -1, 1); // median24h (+/-10%)
-          const normVol     = (volChgPct == null) ? 0 : clamp(volChgPct / 20, -1, 1); // volΔ (+/-20%)
-          const normDom     = (domDelta == null) ? 0 : clamp((-domDelta) / 2, -1, 1);  // dom↓ => risk-on
-          const normRsi     = (lastRsiVal == null || !isFinite(lastRsiVal)) ? 0 : clamp((lastRsiVal - 50) / 20, -1, 1);
-
-          const raw = 0.30*normBreadth + 0.25*normMed24 + 0.20*normVol + 0.10*normDom + 0.15*normRsi;
-          const score = clamp(50 + 50*raw, 0, 100);
-
-          const label = (score>=81) ? '極度の強欲' : (score>=61) ? '強欲' : (score>=41) ? '中立' : (score>=21) ? '恐怖' : '極度の恐怖';
-          sentScore = score;
-          sentLabel = label;
-
-          const elS = document.getElementById('kpiSentiment');
-          if (elS) elS.textContent = `${score.toFixed(0)}（${label}）`;
-
-          // gauge needle + small label
-          // gauge removed in MarketOverview
-
-          const elM = document.getElementById('kpiSentimentMeta');
-          if (elM){
-            const parts = [];
-            parts.push(`上昇率 ${upPctS.toFixed(1)}%`);
-            if (med24 != null && isFinite(med24)) parts.push(`24h中央値 ${med24.toFixed(2)}%`);
-            if (volChgPct != null && isFinite(volChgPct)) parts.push(`出来高Δ ${volChgPct.toFixed(1)}%`);
-            if (domDelta != null && isFinite(domDelta)) parts.push(`BTC Dom Δ ${domDelta.toFixed(2)}pt`);
-            if (lastRsiVal != null && isFinite(lastRsiVal)) parts.push(`RSI ${lastRsiVal.toFixed(1)}`);
-            elM.textContent = parts.join(' / ');
-          }
-        }catch(e){ console.warn('sentiment failed', e); }
-
-        // Market cap estimate (normalize to last for readability)
-        makeNormalizedLine('mcapLine', labels, mcapArr, {dayGrid:true});
-
-        // Market cap 7d spark (use full 7d from sparkline)
-        try {
-          if (mcapArr && mcapArr.length >= 3) {
-            makeNormalizedLine('mcap7dLine', labels, mcapArr, {dayGrid:true});
-          }
-        } catch(_){}
-
-        // Volume estimate (normalize)
-        makeNormalizedLine('volLine', labels, volArr, {dayGrid:true});
       }
-    } catch(e) { console.warn('overview series failed', e); }
+    } catch(e) { console.warn('Overview series failed', e); }
 
-    // ドミナンス（資金シェア）の更新ロジック ---
-    const domLabels = o.labels || [];
-    const domValues = o.values || [];
+    // RSI処理
+    try {
+      const btc = marketsTop.find(c => c && c.id === 'bitcoin');
+      const btcPrices = btc?.sparkline_in_7d?.price;
+      if (btcPrices && btcPrices.length >= 20) {
+        const rsiSeries = computeRSISeries(btcPrices, 14);
+        const last = rsiSeries[rsiSeries.length - 1];
+        lastRsiVal = last;
+        const rsiEl = document.getElementById('kpiRsi');
+        const rsiMetaEl = document.getElementById('kpiRsiMeta');
+        if (rsiEl && last != null) {
+          let status = '中立', color = '#cbd5e1';
+          if (last >= 70) { status = '🚨 過熱気味'; color = '#f87171'; }
+          else if (last <= 30) { status = '💎 売られすぎ'; color = '#38bdf8'; }
+          rsiEl.innerHTML = `<span style="color:${color}">${last.toFixed(1)}</span> <span style="font-size:12px; opacity:0.8;">(${status})</span>`;
+          const toUp = Math.max(0, 70 - last).toFixed(1), toDown = Math.max(0, last - 30).toFixed(1);
+          if (rsiMetaEl) rsiMetaEl.textContent = last >= 70 ? `ピーク圏での推移（30まで ${toDown}pt）` : (last <= 30 ? `底打ちサイン点灯中（70まで ${toUp}pt）` : `過熱まで あと ${toUp}pt / 底打ちまで あと ${toDown}pt`);
+        }
+        makeLineChart('rsiLine', Array.from({length: rsiSeries.length}, (_, i) => i), [{ data: rsiSeries, borderColor: 'rgba(255,255,255,0.9)', borderWidth: 2.5, pointRadius: 0, tension: 0.35, fill: false }], { dayGrid: true, yMin: 0, yMax: 100 });
+      }
+    } catch(e) { console.warn('RSI failed', e); }
+
+    // ドミナンス
+    const domLabels = o.labels || [], domValues = o.values || [];
     drawDonut('domChart', domLabels, domValues);
-
-    const listEl = document.getElementById('domMetricsList');
-    const phaseEl = document.getElementById('domPhaseLabel');
-    const mainPctEl = document.getElementById('domMainPct');
-    const centerValEl = document.getElementById('domCenterVal');
-    const noteEl = document.getElementById('domNote');
-
+    const listEl = document.getElementById('domMetricsList'), phaseEl = document.getElementById('domPhaseLabel'), mainPctEl = document.getElementById('domMainPct'), centerValEl = document.getElementById('domCenterVal'), noteEl = document.getElementById('domNote');
     if (listEl && domValues.length > 0) {
         const total = domValues.reduce((a, b) => a + (Number(b) || 0), 0);
         const btcPct = total ? (domValues[0] / total * 100) : 0;
-        
-        // メイン数値と中央値の更新
         if (mainPctEl) mainPctEl.textContent = `${btcPct.toFixed(1)}%`;
         if (centerValEl) centerValEl.textContent = `${btcPct.toFixed(1)}%`;
-
-        // 市場フェーズの判定と注釈の更新
-        if (btcPct > 55) {
-            phaseEl.textContent = "🛡️ BTC独歩高（守りの相場）";
-            phaseEl.style.color = "#facc15";
-            noteEl.textContent = "資金がBTCに還流中。アルトコインには厳しい時期ですが、市場全体の底堅さは増しています。";
-        } else if (btcPct < 45) {
-            phaseEl.textContent = "🚀 アルトシーズン（攻めの相場）";
-            phaseEl.style.color = "#4ade80";
-            noteEl.textContent = "資金がアルトコインへ飛散中。ハイリスク・ハイリターンな銘柄が動きやすい活発な局面です。";
-        } else {
-            phaseEl.textContent = "⚖️ 市場転換・均衡フェーズ";
-            phaseEl.style.color = "#38bdf8";
-            noteEl.textContent = "資金の行き先を模索中。BTCのドミナンスがどちらに抜けるかで次のトレンドが決まります。";
-        }
-
-        // 凡例リストの生成
+        if (btcPct > 55) { phaseEl.textContent = "🛡️ BTC独歩高（守りの相場）"; phaseEl.style.color = "#facc15"; noteEl.textContent = "資金がBTCに還流中。アルト市場には厳しい時期です。"; }
+        else if (btcPct < 45) { phaseEl.textContent = "🚀 アルトシーズン（攻めの相場）"; phaseEl.style.color = "#4ade80"; noteEl.textContent = "資金がアルトへ飛散中。活発な局面です。"; }
+        else { phaseEl.textContent = "⚖️ 市場転換・均衡フェーズ"; phaseEl.style.color = "#38bdf8"; noteEl.textContent = "資金の行き先を模索中。"; }
         const colors = ['#facc15', '#60a5fa', '#34d399', '#94a3b8'];
-        listEl.innerHTML = domLabels.map((lab, i) => {
-            const val = domValues[i] || 0;
-            const pct = total ? (val / total * 100).toFixed(1) : 0;
-            return `
-                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cbd5e1;">
-                    <span style="width: 8px; height: 8px; border-radius: 2px; background: ${colors[i] || '#eee'};"></span>
-                    <span style="flex: 1;">${lab}</span>
-                    <span style="font-weight: 700; color: #fff;">${pct}%</span>
-                </div>
-            `;
-        }).join('');
+        listEl.innerHTML = domLabels.map((lab, i) => `<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cbd5e1;"><span style="width: 8px; height: 8px; border-radius: 2px; background: ${colors[i]};"></span><span style="flex: 1;">${lab}</span><span style="font-weight: 700; color: #fff;">${(domValues[i]/total*100).toFixed(1)}%</span></div>`).join('');
     }
 
-    // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
-
-    // --- KPI strip (collapsed view) ---
-    (function updateOverviewStrip(){
-      const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
-      // 時価総額
-      set('kpiStripMcapMain', formatJPY(o.totalMcap));
-      const mcapPct = (o.mcap7dPct==null) ? null : ((o.mcap7dPct>=0?'+':'') + o.mcap7dPct.toFixed(2) + '%');
-      const mcapAbs = (o.mcap7dDelta==null) ? null : formatJPY(o.mcap7dDelta);
-      set('kpiStripMcapSub', (mcapPct && mcapAbs) ? `24h ${mcapPct} (${mcapAbs})` : (mcapPct||mcapAbs));
-
-      // Dominance
-      const domBTC = (o.values && o.values.length) ? (o.values[0]/o.totalMcap*100) : null;
-      const domETH = (o.values && o.values.length>1) ? (o.values[1]/o.totalMcap*100) : null;
-      const domSTB = (o.values && o.values.length>2) ? (o.values[2]/o.totalMcap*100) : null;
-      const domOTH = (o.values && o.values.length>3) ? (o.values[3]/o.totalMcap*100) : null;
-      set('kpiStripDomMain', domBTC==null ? null : `${domBTC.toFixed(1)}%`);
-      const domSubParts = [];
-      if(domETH!=null) domSubParts.push(`ETH ${domETH.toFixed(1)}%`);
-      if(domSTB!=null) domSubParts.push(`ステーブル ${domSTB.toFixed(1)}%`);
-      if(domOTH!=null) domSubParts.push(`Others ${domOTH.toFixed(1)}%`);
-      set('kpiStripDomSub', domSubParts.length? domSubParts.join(' / ') : null);
-
-      // Breadth
-      set('kpiStripBreadthMain', (lastUp!=null && lastDown!=null) ? `上昇 ${lastUp} / 下落 ${lastDown}` : null);
-      const upRate = (lastUp!=null && lastDown!=null && (lastUp+lastDown)>0) ? (lastUp/(lastUp+lastDown)*100) : null;
-      set('kpiStripBreadthSub', upRate==null ? null : `上昇率 ${upRate.toFixed(1)}%`);
-
-      // Avg/Median 7d
-      set('kpiStripAvgMain', avg7==null ? null : `平均 ${avg7.toFixed(2)}%`);
-      set('kpiStripAvgSub',  med7==null ? null : `中央値 ${med7.toFixed(2)}%`);
-
-      // RSI
-      const rsiMain = (typeof lastRsiVal==='number' && isFinite(lastRsiVal)) ? lastRsiVal.toFixed(1) : null;
-      set('kpiStripRsiMain', rsiMain);
-      // rsi label is already rendered in the full view; keep strip short
-      set('kpiStripRsiSub', rsiMain==null ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立')));
-
-      // Sentiment
-      set('kpiStripSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
-      set('kpiStripSentSub', sentLabel);
-
-      // --- Summary (top) KPI tiles ---
-      const setSum = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = (txt==null||txt==='') ? '—' : String(txt); };
-
-      // ▼▼▼ 追加：市場出来高＆アルト比率の表示 ▼▼▼
-      (function updateVolTile(){
-        const totalV = o.totalVol || 0;
-  
-        // 1. メイン数値（全体の出来高）
-        const elMain = document.getElementById('kpiStripVolMain');
-        if(elMain) elMain.textContent = yenLarge(totalV);
-
-        // 2. 構成比率の計算
-        const vVals = o.volValues || [0,0,0,0]; // BTC, ETH, Stable, Other
-        const btcV = vVals[0] || 0;
-        const ethV = vVals[1] || 0;
-        // Stableは「その他」に含めるか、除外して考えるかですが、ここでは「Others」に含めます
-        const otherV = (vVals[2] || 0) + (vVals[3] || 0);
-  
-        const btcPct = totalV ? (btcV / totalV) * 100 : 0;
-        const ethPct = totalV ? (ethV / totalV) * 100 : 0;
-        const otherPct = totalV ? (otherV / totalV) * 100 : 0;
-
-        // 3. サブテキスト（アルト比率を表示）
-        // ここでは ETH + Others を「Alt」として扱います
-        const altRatio = ethPct + otherPct;
-        const elSub = document.getElementById('kpiStripVolSub');
-        if(elSub) {
-          elSub.textContent = `Alt比率 ${altRatio.toFixed(1)}%`;
-          // アルト比率が高いときは少し色を変えて強調
-          if(altRatio > 50) elSub.style.color = "#7dd3fc"; // 水色
-          else elSub.style.color = "#cbd5e1"; // 通常色
-        }
-
-        // 4. ミニバーの更新
-        const barBtc = document.getElementById('miniVolBarBtc');
-        const barEth = document.getElementById('miniVolBarEth');
-        const barOth = document.getElementById('miniVolBarOth');
-  
-        if(barBtc) barBtc.style.width = `${btcPct}%`;
-        if(barEth) barEth.style.width = `${ethPct}%`;
-        if(barOth) barOth.style.width = `${otherPct}%`;
-      })();
-      
-      // Sentiment
-      setSum('sumSentMain', (sentScore==null) ? null : String(Math.round(sentScore)));
-      setSum('sumSentSub', sentLabel);
-
-      // RSI
-      const rsiTag = (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : (lastRsiVal>=70 ? '買われすぎ' : (lastRsiVal<=30 ? '売られすぎ' : '中立'));
-      setSum('sumRsiMain', (lastRsiVal==null || !isFinite(lastRsiVal)) ? null : String(Math.round(lastRsiVal)));
-      setSum('sumRsiSub', rsiTag);
-
-      // Dominance (BTC)
-      const totalMc = (o && typeof o.totalMcap==='number' && isFinite(o.totalMcap) && o.totalMcap>0) ? o.totalMcap : null;
-      const v0 = (o && o.values && o.values.length>0 && isFinite(o.values[0])) ? o.values[0] : null; // BTC cap
-      const v1 = (o && o.values && o.values.length>1 && isFinite(o.values[1])) ? o.values[1] : null; // ETH cap
-      const v2 = (o && o.values && o.values.length>2 && isFinite(o.values[2])) ? o.values[2] : null; // stable cap
-      const domB = (totalMc && v0!=null) ? (v0/totalMc*100) : null;
-      const domE = (totalMc && v1!=null) ? (v1/totalMc*100) : null;
-      const domS = (totalMc && v2!=null) ? (v2/totalMc*100) : null;
-      setSum('sumDomMain', (domB==null) ? null : (domB.toFixed(1) + '%'));
-      const domSub = (domE==null && domS==null) ? null : ((domE==null?'':('ETH ' + domE.toFixed(1) + '%')) + (domE!=null && domS!=null ? ' / ' : '') + (domS==null?'':('Stbl ' + domS.toFixed(1) + '%')));
-      setSum('sumDomSub', domSub);
-
-      // Avg 24h (Top250)
-      const avg24 = (o && typeof o.avgChg==='number' && isFinite(o.avgChg)) ? o.avgChg : null;
-      const med24 = (o && typeof o.medianChg==='number' && isFinite(o.medianChg)) ? o.medianChg : null;
-      const fmt2 = (n)=> (n==null) ? '—' : ((n>=0?'+':'') + n.toFixed(2) + '%');
-      setSum('sumAvg24Main', fmt2(avg24));
-      setSum('sumAvg24Sub', '平均');
-
-      // Avg marker (range -5%..+5%)
-      (function(){
-        const mEl = document.getElementById('sumAvgMarker');
-        if(!mEl) return;
-        if(avg24==null || !isFinite(avg24)) { mEl.style.left='50%'; return; }
-        const v = Math.max(-5, Math.min(5, avg24));
-        const pct = ((v + 5) / 10) * 100;
-        mEl.style.left = pct + '%';
-      })();
-
-      // Breadth (24h up/down counts, Top250)
-      (function(){
-        const up = (o && typeof o.up==='number' && isFinite(o.up)) ? o.up : null;
-        const down = (o && typeof o.down==='number' && isFinite(o.down)) ? o.down : null;
-        const flat = (o && typeof o.flat==='number' && isFinite(o.flat)) ? o.flat : null;
-        const total = (up!=null && down!=null) ? (up + down) : null;
-
-        const mainEl = document.getElementById('sumBreadthMain');
-        const subEl = document.getElementById('sumBreadthSub');
-        if (mainEl){
-          if (up==null || down==null) mainEl.textContent = '—';
-          else mainEl.textContent = `↑${up} ↓${down}`;
-        }
-        if (subEl){
-          if (up==null || down==null) subEl.textContent = '—';
-          else {
-            const total2 = up + down;
-            const upPct = total2>0 ? Math.round((up/total2)*100) : 50;
-            subEl.textContent = (up>=down) ? `上昇優勢 ${upPct}%` : `下落優勢 ${100-upPct}%`;
-          }
-        }
-
-
-        const upSeg = document.getElementById('sumBreadthSegUp');
-        const downSeg = document.getElementById('sumBreadthSegDown');
-        if (upSeg && downSeg){
-          if (total && total > 0){
-            const upPct = (up / total) * 100;
-            const downPct = 100 - upPct;
-            upSeg.style.width = `${upPct}%`;
-            downSeg.style.width = `${downPct}%`;
-            upSeg.style.opacity = '1';
-            downSeg.style.opacity = '1';
-          } else {
-            upSeg.style.width = '50%';
-            downSeg.style.width = '50%';
-            upSeg.style.opacity = '0.35';
-            downSeg.style.opacity = '0.35';
-          }
-        }
-      })();
-
-
-      // BTC MA cross distance (SMA50 / SMA200)
-    const ma = window.__btcMaCross || null;
-    if (ma && Number.isFinite(ma.distPct)) {
-      const d = ma.distPct;
-      const label = ma.label || (d > 0 ? '上' : d < 0 ? '下' : '中立');
-      setSum('sumMaMain', fmtPct(d)); // シンプルにこれでOKです
-      setSum('sumMaSub', label);
-      updateSummaryMaBar(d);
-    } else {
-      setSum('sumMaMain', '—');
-      setSum('sumMaSub', '—');
-      updateSummaryMaBar(null);
-    }
-
-    // Mini visuals
-    updateSummarySentBar(sentScore);
-    updateSummaryRsiBar(lastRsiVal);
-    updateSummaryDomBar([domBTC, domETH, domSTB, domOTH]);
-
-    })();
-
-    // 折りたたみ時はKPI stripだけ更新して終了（チャートの幅0問題を避ける）
     if (isCollapsed) return;
-    setTimeout(() => {
-      ['breadthLine','avgLine','rsiLine','sentLine','mcapLine','mcap7dLine','volLine'].forEach(id => {
-        try { if (charts[id] && typeof charts[id].resize === 'function') charts[id].resize(); } catch(_){}
-      });
-    }, 0);
-
+    setTimeout(() => { ['breadthLine','avgLine','rsiLine','mcap7dLine'].forEach(id => { try { if (charts[id]) charts[id].resize(); } catch(_){} }); }, 50);
   }
 
 // ============ Charts / Rendering ============
