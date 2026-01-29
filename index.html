@@ -5235,7 +5235,7 @@ async function updateAiInsight() {
     }
 
     if (noteEl) noteEl.style.opacity = "0";
-    textEl.innerHTML = `<div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px; width:100%;"><div class="cyber-loader"><div class="cyber-dot"></div></div><span style="font-family:monospace; color:#38bdf8; font-size:10px; margin-top:12px; letter-spacing:2px; animation: pulse 1.5s infinite;">MARKET.SCANNING...</span></div>`;
+    textEl.innerHTML = `<div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px; width:100%;"><div class="cyber-loader"><div class="cyber-dot"></div></div><span style="font-family:monospace; color:#38bdf8; font-size:10px; margin-top:12px; letter-spacing:2px; animation: pulse 1.5s infinite;">MARKET.SCANNING...</span></div>`;
 
     await new Promise(r => setTimeout(r, 1200));
 
