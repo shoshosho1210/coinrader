@@ -1634,7 +1634,7 @@ section[id] {
   </div>
 </div>
   
-  <div class="ai-insight-note">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
+  <div class="ai-insight-note" id="aiInsightNote" style="opacity: 0; transition: opacity 0.5s ease;">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
 </div>
 <div class="summary-kpis" id="summaryKpis">
 
@@ -4845,6 +4845,7 @@ async function updateAiInsight() {
     const box = document.getElementById('aiInsightBox');
     const textEl = document.getElementById('aiInsightText');
     const timeEl = document.getElementById('aiUpdateTime'); // ここで取得
+    const noteEl = document.getElementById('aiInsightNote'); // ★追加
     if (!box || !textEl || _aiThinking) return;
 
     const sentTxt = document.getElementById('sumSentMain')?.textContent || "";
@@ -4877,6 +4878,7 @@ async function updateAiInsight() {
     _lastAiState = currentState;
 
     // ★ 1. 解析開始と同時に「ANALYZING...」と表示させる
+    if (noteEl) noteEl.style.opacity = "0";
     if (timeEl) timeEl.textContent = "[ ANALYZING... ]";
 
     // A. 思考中演出（砂時計を完全に排除）
@@ -4980,6 +4982,9 @@ async function updateAiInsight() {
     const finalHtml = (comparisonText ? comparisonText + "<br><br>" : "") + strategyText;
     await typeWriter(textEl, finalHtml, 20);
 
+    // ★ 2. 解析完了：エビデンスと一緒に注釈をふわっと表示させる
+    if (noteEl) noteEl.style.opacity = "0.8";
+  
     // E. エビデンス表示
     const getTag = (val, type) => {
         if (type === 'rsi') {
