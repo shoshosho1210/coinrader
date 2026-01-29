@@ -3467,7 +3467,7 @@ function renderOverview(){
         let phaseLabel = '';
         let phaseColor = '#facc15'; // 基本はBTCゴールド
 
-        // --- 市場フェーズの判定ロジック（簡潔版） ---
+        // --- 1. 判定ロジック（簡潔版） ---
         if (btcPct >= 55) {
             phaseLabel = '🏔️ どっしり安定';
             phaseColor = '#facc15'; // ゴールド
@@ -3482,14 +3482,22 @@ function renderOverview(){
             phaseColor = '#cbd5e1'; // グレー
         }
 
+        // --- 2. 表示の更新（2段構成） ---
+        // 上段：パーセンテージ
         domMainEl.textContent = btcPct.toFixed(1) + '%';
-        // BTC比率が非常に高いときは少し発光させる演出
+        domMainEl.className = "kpi-main-label"; // CSSクラス適用
+        domMainEl.style.color = phaseColor;    // 数字の色もフェーズに合わせる
         domMainEl.style.textShadow = btcPct >= 55 ? '0 0 10px rgba(250, 204, 21, 0.4)' : 'none';
 
+        // 下段：ステータスラベル
         if (domSubEl) {
             domSubEl.textContent = phaseLabel;
+            domSubEl.className = "kpi-sub-label"; // CSSクラス適用
             domSubEl.style.color = phaseColor;
+            domSubEl.style.display = "block";    // 確実に改行
+            domSubEl.style.marginTop = "2px";
         }
+    }
 
         // 下部バーの更新（構成比率をすべて反映）
         const ethPct = (o.values && o.values[1]) ? (o.values[1] / totalM * 100) : 0;
