@@ -5331,7 +5331,7 @@ async function updateAiInsight() {
 
     // E. 解説文をタイピング実行
     const finalHtml = (comparisonText ? comparisonText + "<br><br>" : "") + strategyText;
-    await typeWriter(textEl, finalHtml, 20);
+    await typeWriter(textEl, (comparisonText ? comparisonText + "<br><br>" : "") + strategyText, 20);
 
     // --- F. 履歴テーブル (evidenceHtml) の定義と追加 ---
     const getMaText = (val) => (val === null || val === undefined || isNaN(val)) ? '—' : (val >= 0 ? '+' : '') + Number(val).toFixed(1) + '%';
