@@ -1721,21 +1721,26 @@ section[id] {
   </div>
 
   <div class="kpi-tile kpi-ma">
-    <div class="kpi-tile-title">BTC MAクロス距離（50/200）</div>
-    <div class="kpi-value-row"><div class="kpi-tile-big" id="sumMaMain">-</div><div class="kpi-tile-sub inline" id="sumMaSub">-</div></div>
-    <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離（%）。0に近いほどクロスが近い。左=下(マイナス) / 右=上(プラス)。">
-      <div class="mini-ma-track">
+    <div class="kpi-tile-title">長期トレンド (50/200日 MA距離)</div>
+    <div class="kpi-value-row">
+      <div class="kpi-tile-big" id="sumMaMain" style="transition: all 0.5s ease;">-</div>
+      <div class="kpi-tile-sub inline" id="sumMaSub" style="font-weight: 700;">-</div>
+    </div>
+    <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離率。0%でクロスが発生。">
+      <div class="mini-ma-track" style="height: 8px; background: rgba(255,255,255,0.05); position: relative; overflow: visible;">
         <div class="mini-ma-zone dc-strong"></div>
         <div class="mini-ma-zone dc-weak"></div>
         <div class="mini-ma-zone gc-weak"></div>
         <div class="mini-ma-zone gc-strong"></div>
-        <div class="mini-ma-center"></div>
+        <div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.4); z-index: 1;"></div>
         <div class="mini-ma-marker" id="sumMaMarker"></div>
       </div>
-      <div class="mini-ma-label kpi-bar-caption">下 ← 0 → 上</div>
+      <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+        <span>デッドクロス側</span>
+        <span>ゴールデンクロス側</span>
+      </div>
     </div>
   </div>
-
 <div class="kpi-tile kpi-vol">
   <div class="kpi-tile-title">市場出来高 (24h)</div>
   <div class="kpi-value-row">
@@ -3314,7 +3319,7 @@ function renderOverview(){
         if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
     }
 
-    // --- 5. [上部タイルの更新：騰落バランス] ---
+    // ---  [騰落バランス] ---
     const breadthMainEl = document.getElementById('sumBreadthMain');
     const breadthSubEl = document.getElementById('sumBreadthSub');
     
@@ -3474,12 +3479,46 @@ function renderOverview(){
         ['miniVolBarBtc','miniVolBarEth','miniVolBarOth'].forEach((id,i) => { const el=document.getElementById(id); if(el) el.style.width = (totalV ? (vVals[i]/totalV*100) : 0) + '%'; });
     })();
 
-    // 最後にMAクロス情報を同期（BTC MAは別の非同期関数 loadBtcMaCross で取得済み）
+    // --- 5. [上部タイルの更新：MAクロス距離] ---
     const ma = window.__btcMaCross;
-    if (ma) {
-        setSum('sumMaMain', fmtPct(ma.distPct));
-        setSum('sumMaSub', ma.label);
-        if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(ma.distPct);
+    const maMainEl = document.getElementById('sumMaMain');
+    const maSubEl = document.getElementById('sumMaSub');
+
+    if (ma && maMainEl) {
+        const d = ma.distPct;
+        let color = '#cbd5e1'; 
+        let statusLabel = '';
+        let glow = 'none';
+
+        // トレンド・クロス判定ロジック
+        if (d >= 10) {
+            color = '#34d399'; statusLabel = '🚀 強気トレンド（継続）';
+        } else if (d > 1) {
+            color = '#38bdf8'; statusLabel = '📈 ゴールデンクロス継続';
+        } else if (d > 0) {
+            color = '#60a5fa'; statusLabel = '✨ GC接近・期待';
+            glow = '0 0 10px rgba(96, 165, 250, 0.5)';
+        } else if (d >= -1) {
+            color = '#fb923c'; statusLabel = '⚠️ DC接近・警戒';
+            glow = '0 0 10px rgba(251, 146, 60, 0.5)';
+        } else if (d > -10) {
+            color = '#f87171'; statusLabel = '📉 デッドクロス継続';
+        } else {
+            color = '#ef4444'; statusLabel = '💀 弱気停滞（DC継続）';
+        }
+
+        // プラスなら「+」記号を付ける
+        maMainEl.textContent = (d > 0 ? '+' : '') + d.toFixed(2) + '%';
+        maMainEl.style.color = color;
+        maMainEl.style.textShadow = glow;
+
+        if (maSubEl) {
+            maSubEl.textContent = statusLabel;
+            maSubEl.style.color = color;
+        }
+
+        // 下部ミニバーのマーカー更新
+        if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(d);
     }
 
     if (isCollapsed) return;
