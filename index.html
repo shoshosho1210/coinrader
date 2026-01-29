@@ -1741,21 +1741,25 @@ section[id] {
       </div>
     </div>
   </div>
+  
 <div class="kpi-tile kpi-vol">
-  <div class="kpi-tile-title">市場出来高 (24h)</div>
+  <div class="kpi-tile-title">市場エネルギー (24h 出来高)</div>
   <div class="kpi-value-row">
-    <div class="kpi-tile-big" id="kpiStripVolMain">-</div>
-    <div class="kpi-tile-sub inline" id="kpiStripVolSub">-</div>
+    <div class="kpi-tile-big" id="kpiStripVolMain" style="transition: all 0.5s ease;">-</div>
+    <div class="kpi-tile-sub inline" id="kpiStripVolSub" style="font-weight: 700;">-</div>
   </div>
-  <div class="mini-vis" style="margin-top:10px;">
-    <div style="display:flex; height:6px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,0.1);">
-      <div id="miniVolBarBtc" style="background:#facc15; width:0%"></div>
-      <div id="miniVolBarEth" style="background:#60a5fa; width:0%"></div>
-      <div id="miniVolBarOth" style="background:#9ca3af; width:0%"></div>
+  <div aria-hidden="true" class="mini-vis" style="margin-top:10px;">
+    <div style="display:flex; height:8px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05);">
+      <div id="miniVolBarBtc" style="background:#facc15; width:0%; transition: width 0.6s ease;"></div>
+      <div id="miniVolBarEth" style="background:#60a5fa; width:0%; transition: width 0.6s ease;"></div>
+      <div id="miniVolBarOth" style="background:#94a3b8; width:0%; transition: width 0.6s ease;"></div>
     </div>
-    <div class="kpi-bar-caption">BTC / ETH / Others</div>
+    <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+      <span style="color:#facc15">BTC</span>
+      <span style="color:#60a5fa">ETH</span>
+      <span style="color:#94a3b8">Alt / Others</span>
+    </div>
   </div>
-</div>
 </div>
   
 </div></div></div>
@@ -3467,16 +3471,64 @@ function renderOverview(){
         listEl.innerHTML = domLabels.map((lab, i) => `<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cbd5e1;"><span style="width: 8px; height: 8px; border-radius: 2px; background: ${colors[i]};"></span><span style="flex: 1;">${lab}</span><span style="font-weight: 700; color: #fff;">${(domValues[i]/totalM*100).toFixed(1)}%</span></div>`).join('');
     }
 
-    // 市場出来高（トップタイル用）
+    // --- 5. [上部タイルの更新：市場出来高] ---
     (function updateVolTile(){
         const totalV = o.totalVol || 0;
         const elMain = document.getElementById('kpiStripVolMain');
-        if(elMain) elMain.textContent = yenLarge(totalV);
-        const vVals = o.volValues || [0,0,0,0];
-        const altRatio = totalV ? ((vVals[1] + vVals[3]) / totalV * 100) : 0;
         const elSub = document.getElementById('kpiStripVolSub');
-        if(elSub) elSub.textContent = `Alt比率 ${altRatio.toFixed(1)}%`;
-        ['miniVolBarBtc','miniVolBarEth','miniVolBarOth'].forEach((id,i) => { const el=document.getElementById(id); if(el) el.style.width = (totalV ? (vVals[i]/totalV*100) : 0) + '%'; });
+        
+        if (!elMain) return;
+
+        // 1. メイン数値の表示
+        elMain.textContent = yenLarge(totalV);
+
+        // 2. 構成比率とアルト比率の計算
+        const vVals = o.volValues || [0,0,0,0]; // BTC, ETH, Stable, Other
+        const btcV = vVals[0] || 0;
+        const ethV = vVals[1] || 0;
+        const otherV = (vVals[2] || 0) + (vVals[3] || 0);
+        
+        const altRatio = totalV ? ((ethV + otherV) / totalV * 100) : 0;
+        
+        // 3. 市場の「活気」判定ロジック
+        let statusLabel = '';
+        let statusColor = '#cbd5e1';
+        let glow = 'none';
+
+        if (altRatio >= 60) {
+            statusLabel = '🚀 アルト熱狂（リスクオン）';
+            statusColor = '#4ade80'; // グリーン
+            glow = '0 0 10px rgba(74, 222, 128, 0.4)';
+        } else if (altRatio >= 45) {
+            statusLabel = '🔥 活況（循環物色）';
+            statusColor = '#fb923c'; // オレンジ
+            glow = '0 0 10px rgba(251, 146, 60, 0.4)';
+        } else if (totalV > 10_000_000_000_000) { // 10兆円超えなど
+            statusLabel = '⚡ 巨額取引（BTC主導）';
+            statusColor = '#facc15'; // ゴールド
+        } else if (altRatio <= 30) {
+            statusLabel = '🛡️ 防衛（BTC集中）';
+            statusColor = '#60a5fa'; // ブルー
+        } else {
+            statusLabel = '⚖️ 均衡（安定推移）';
+            statusColor = '#cbd5e1';
+        }
+
+        elMain.style.color = statusColor;
+        elMain.style.textShadow = glow;
+
+        if (elSub) {
+            elSub.textContent = statusLabel;
+            elSub.style.color = statusColor;
+        }
+
+        // 4. ミニバーの更新
+        const barBtc = document.getElementById('miniVolBarBtc');
+        const barEth = document.getElementById('miniVolBarEth');
+        const barOth = document.getElementById('miniVolBarOth');
+        if (barBtc) barBtc.style.width = (totalV ? (btcV / totalV * 100) : 0) + '%';
+        if (barEth) barEth.style.width = (totalV ? (ethV / totalV * 100) : 0) + '%';
+        if (barOth) barOth.style.width = (totalV ? (otherV / totalV * 100) : 0) + '%';
     })();
 
     // --- 5. [上部タイルの更新：MAクロス距離] ---
