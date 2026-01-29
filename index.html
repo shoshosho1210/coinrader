@@ -2282,18 +2282,6 @@ body {
 </div> 
 </div></div></div>
 
-<div class="section-title" style="margin: 24px 4px 10px; font-size: 14px;">🕰️ ヒストリカル・スナップショット</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 24px;">
-    <div class="summary-card" style="padding: 10px; text-align: center;">
-        <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">1 WEEK AGO</div>
-        <div id="snap7dVal" style="font-weight: 800; color: #cbd5e1;">-</div>
-    </div>
-    <div class="summary-card" style="padding: 10px; text-align: center;">
-        <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">1 MONTH AGO</div>
-        <div id="snap30dVal" style="font-weight: 800; color: #cbd5e1;">-</div>
-    </div>
-</div>
-
 <div class="summary-lists">
 <div class="summary-card">
 <div class="summary-card-title">🔥 トレンド TOP5</div>
@@ -5390,11 +5378,6 @@ async function updateAiInsight() {
         });
         document.getElementById('aiHistoricalTable').style.display = 'block';
     }
-
-    // 案3：スナップショットへの反映（RSIを例に）
-    if (past7d) document.getElementById('snap7dVal').textContent = `RSI: ${Math.round(past7d.rsi)}`;
-    if (past30d) document.getElementById('snap30dVal').textContent = `RSI: ${Math.round(past30d.rsi)}`;
-    // ==========================================
 
     // E. 解析完了後の表示（注釈・エビデンス）
     if (noteEl) noteEl.style.opacity = "0.8";
