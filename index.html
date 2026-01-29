@@ -5200,18 +5200,19 @@ async function updateAiInsight() {
     const past30d   = await getHistoricalData(30);
 
     // --- 2. 値の確定（0ではなくnullをデフォルトにする） ---
+    // ★修正点1：0ではなくnullを返すヘルパー関数
     const getVal = (id) => {
         const el = document.getElementById(id);
-        // "-" や空欄の場合は null を返す
         if (!el || !el.textContent || el.textContent.includes('—') || el.textContent.includes('-')) return null;
         const val = parseFloat(el.textContent);
         return isNaN(val) ? null : val;
     };
 
     // JSONを優先、なければ画面の値、それもなければ null
-    const sent = (pastToday && pastToday.fgi !== null) ? pastToday.fgi : getVal('sumSentMain');
-    const rsi  = (pastToday && pastToday.rsi !== null) ? pastToday.rsi : getVal('sumRsiMain');
-    const dom  = (pastToday && pastToday.dom !== null) ? pastToday.dom : getVal('sumDomMain');
+    // ★修正点2：画面のKPI値を最優先（なければJSON、それもなければnull）
+    const sent = getVal('sumSentMain') ?? (pastToday?.fgi ?? null);
+    const rsi  = getVal('sumRsiMain') ?? (pastToday?.rsi ?? null);
+    const dom  = getVal('sumDomMain') ?? (pastToday?.dom ?? null);
 
     // 長期トレンドの取得
     const maDist = (pastToday && pastToday.ma !== null && pastToday.ma !== undefined) 
@@ -5222,6 +5223,11 @@ async function updateAiInsight() {
                    ? pastToday.ma 
                    : null;
 
+    // データ待ちガード（主要指標が全部なければ待機）
+    if (sent === null && rsi === null) {
+        if (timeEl) { timeEl.textContent = "[ DATA.WAITING ]"; timeEl.style.opacity = "0.5"; }
+        return; 
+    }
     // --- 【重要】「データ未着」の時だけは "-" に戻すが、それ以外は即座に同期 ---
     const maMainEl = document.getElementById('sumMaMain');
     const maSubEl = document.getElementById('sumMaSub');
@@ -5335,22 +5341,27 @@ async function updateAiInsight() {
         return '#e2e8f0';
     };
 
+    // ★修正点3：ここで表示用の変数を新しく作る
+    const sentDisplay = (sent !== null) ? sent : "—";
+    const rsiDisplay = (rsi !== null) ? Math.round(rsi) : "—";
+    const domDisplay = (dom !== null) ? dom.toFixed(1) + '%' : "—";
+  
     const evidenceHtml = `
       <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; overflow-x: auto; padding: 6px 10px !important; margin-top: 8px !important; border: 1px solid rgba(56, 189, 248, 0.12); border-radius: 8px;">
         <table style="width: 100%; font-size: 10px; border-collapse: collapse; min-width: 250px; table-layout: fixed; line-height: 1.05;">
           <thead>
             <tr style="color: #475569; border-bottom: 1px solid rgba(255,255,255,0.04);">
               <th style="text-align: left; padding: 2px 0; width: 34%;">指標</th>
-              <th style="text-align: right; padding: 2px 2px; color: #38bdf8;">今</th>
-              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">昨日</th>
-              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">7日前</th>
-              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">1か月前</th>
+              <th style="text-align: right; padding: 2px 2px; color: #38bdf8;">NOW</th>
+              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">-1D</th>
+              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">-7D</th>
+              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">-30D</th>
             </tr>
           </thead>
           <tbody style="color: #cbd5e1;">
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">心理 (FGI)</td><td style="text-align: right; color: ${getCls(sent, 'sent')}; font-weight: 800;">${sent}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.fgi || '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.fgi || '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.fgi || '—'}</td></tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">勢い (RSI)</td><td style="text-align: right; color: ${getCls(rsi, 'rsi')}; font-weight: 800;">${Math.round(rsi)}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.rsi ? Math.round(pastYest.rsi) : '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.rsi ? Math.round(past7d.rsi) : '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.rsi ? Math.round(past30d.rsi) : '—'}</td></tr>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">資金 (DOM)</td><td style="text-align: right; color: #e2e8f0; font-weight: 800;">${dom.toFixed(1)}%</td><td style="text-align: right; opacity: 0.4;">${pastYest?.dom ? pastYest.dom.toFixed(1) + '%' : '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.dom ? past7d.dom.toFixed(1) + '%' : '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.dom ? past30d.dom.toFixed(1) + '%' : '—'}</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">心理 (FGI)</td><td style="text-align: right; color: ${getCls(sent, 'sent')}; font-weight: 800;">${sentDisplay}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.fgi || '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.fgi || '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.fgi || '—'}</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">勢い (RSI)</td><td style="text-align: right; color: ${getCls(rsi, 'rsi')}; font-weight: 800;">${rsiDisplay}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.rsi ? Math.round(pastYest.rsi) : '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.rsi ? Math.round(past7d.rsi) : '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.rsi ? Math.round(past30d.rsi) : '—'}</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">資金 (DOM)</td><td style="text-align: right; color: #e2e8f0; font-weight: 800;">${domDisplay}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.dom ? pastYest.dom.toFixed(1) + '%' : '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.dom ? past7d.dom.toFixed(1) + '%' : '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.dom ? past30d.dom.toFixed(1) + '%' : '—'}</td></tr>
             <tr><td style="padding: 4px 0; color: #94a3b8;">構造 (MA)</td><td style="text-align: right; color: #e2e8f0; font-weight: 800;">${getMaText(maDist)}</td><td style="text-align: right; opacity: 0.4;">${getMaText(pastYest?.ma)}</td><td style="text-align: right; opacity: 0.4;">${getMaText(past7d?.ma)}</td><td style="text-align: right; opacity: 0.4;">${getMaText(past30d?.ma)}</td></tr>
           </tbody>
         </table>
