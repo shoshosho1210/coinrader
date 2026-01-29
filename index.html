@@ -3978,8 +3978,8 @@ function renderOverview(){
     const ma = window.__btcMaCross, maMainEl = document.getElementById('sumMaMain'), maSubEl = document.getElementById('sumMaSub');
     if (maMainEl) {
         // ここで数値を入れず、プレースホルダーにする
-        maMainEl.textContent = "同期中...";
         maMainEl.style.fontSize = "14px"; // 文字を少し小さくして収める
+        maMainEl.textContent = "-";
         if (maSubEl) maSubEl.textContent = "JSONデータ読込中";
     }
 
