@@ -148,7 +148,7 @@ def generate_post():
             "btc_dominance": round(btc_dom, 2),
             "technical": {
                 "btc_rsi": btc_rsi,
-                "eth_rsi": eth_rsi
+                "eth_rsi": eth_rsi,
                 "btc_ma_distance": btc_ma_dist # ★ここに追加
             },
             "top_gainer": {
