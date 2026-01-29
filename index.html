@@ -3811,17 +3811,17 @@ function renderOverview(){
 
 
 
-// スパークライン描画（グラデーション・高級感版）
-function drawSparkline(canvasId, data){
+// スパークライン描画（サイバー・スムース・安定版）
+function drawSparkline(canvasId, data) {
   const canvas = document.getElementById(canvasId);
-  if(!canvas) return;
+  if (!canvas) return;
 
-  // レイアウト未完了(サイズ0)の場合はリトライ
+  // レイアウト未完了(サイズ0)の場合はリトライ（既存の安定化ロジックを継承）
   const w = canvas.clientWidth || canvas.width;
   const h = canvas.clientHeight || canvas.height;
-  if(!w || !h){
+  if (!w || !h) {
     const n = (__sparklineAttempts.get(canvasId) || 0) + 1;
-    if(n <= 8){
+    if (n <= 8) {
       __sparklineAttempts.set(canvasId, n);
       requestAnimationFrame(() => drawSparkline(canvasId, data));
     }
@@ -3834,30 +3834,28 @@ function drawSparkline(canvasId, data){
   const finite = cleaned.filter(v => v !== null);
 
   const ctx = canvas.getContext("2d");
-  // 既存の描画をクリア
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if(finite.length < 2) return;
+  if (finite.length < 2) return;
 
-  const base = finite[0];                 // ベースライン（始値）
-  const enableFill = finite.length >= 10; // 点数が少なすぎる時は線だけにする
+  const base = finite[0];
+  const last = finite[finite.length - 1];
+  const isUp = last >= base;
 
-  // ★グラデーションの作成（ここがポイント）
-  // 上昇用（青）
-  const gradUp = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradUp.addColorStop(0, 'rgba(30, 136, 229, 0.4)');  // 上部: 少し濃い青
-  gradUp.addColorStop(1, 'rgba(30, 136, 229, 0.0)');  // 下部: 透明
+  // テーマカラー設定（シアン vs コーラル）
+  const themeColor = isUp ? 'rgba(56, 189, 248, 1)' : 'rgba(248, 113, 113, 1)';
+  const fillGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  
+  if (isUp) {
+    fillGradient.addColorStop(0, 'rgba(56, 189, 248, 0.2)');
+    fillGradient.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+  } else {
+    fillGradient.addColorStop(0, 'rgba(248, 113, 113, 0.05)');
+    fillGradient.addColorStop(1, 'rgba(248, 113, 113, 0.25)');
+  }
 
-// ▼ 修正箇所：下落用（赤）
-  // 変更前：上（濃い）→ 下（透明）
-  // 変更後：上（透明）→ 下（濃い）
-  // これにより、暴落してグラフが下に行くほど「血が濃くなる（赤色がはっきりする）」ようになります。
-  const gradDown = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradDown.addColorStop(0, 'rgba(211, 47, 47, 0.05)'); // 上（開始点付近）は薄く
-  gradDown.addColorStop(1, 'rgba(211, 47, 47, 0.5)');  // 下（暴落の底）は濃く
-
-  try{
-    if(charts[canvasId]) charts[canvasId].destroy();
+  try {
+    if (charts[canvasId]) charts[canvasId].destroy();
 
     charts[canvasId] = new Chart(ctx, {
       type: "line",
@@ -3865,41 +3863,38 @@ function drawSparkline(canvasId, data){
         labels: cleaned.map((_, i) => i),
         datasets: [{
           data: cleaned,
-          // 線自体の色（少し明るくして視認性を高める）
-          borderColor: "rgba(255,255,255, 0.9)", 
-          borderWidth: 1.5,
+          borderColor: themeColor,
+          borderWidth: 2,
           pointRadius: 0,
-          // 曲線にして滑らかさを出す（0:カクカク ～ 1:グニャグニャ）
-          tension: 0.2, 
-
-          // ★グラデーションを適用
-          fill: enableFill ? {
-            target: { value: base },
-            above: gradUp,   // 始値より上なら青グラデ
-            below: gradDown  // 始値より下なら赤グラデ
-          } : false,
-
-          backgroundColor: "rgba(0,0,0,0)",
+          tension: 0.45, // 滑らかな曲線
+          fill: true,
+          backgroundColor: fillGradient,
           spanGaps: true
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: false, // パフォーマンス優先
-        plugins: { legend: { display:false }, tooltip: { enabled:false } },
-        scales: { x: { display:false }, y: { display:false } },
+        animation: { duration: 1000, easing: 'easeOutQuart' }, // ライブ感のあるアニメーション
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { 
+          x: { display: false }, 
+          y: { 
+            display: false, 
+            grace: '10%' // 上下の張り付き防止
+          } 
+        },
         elements: {
           line: {
-            borderJoinStyle: 'round', // 線の継ぎ目を丸くする
-            capBezierPoints: true
+            borderCapStyle: 'round',
+            borderJoinStyle: 'round'
           }
         }
       }
     });
-  }catch(err){
+  } catch (err) {
     console.warn("sparkline render failed:", canvasId, err);
-    try{ if(charts[canvasId]) charts[canvasId].destroy(); }catch{}
+    try { if (charts[canvasId]) charts[canvasId].destroy(); } catch {}
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 }
