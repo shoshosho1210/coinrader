@@ -2,9 +2,8 @@ name: Weekly Market Intelligence
 
 on:
   schedule:
-    # 毎週月曜日 22:00 UTC = 翌火曜日 07:00 JST
-    # または、月曜の朝に欲しい場合は 日曜 21:00 UTC = 月曜 06:00 JST
-    # ここでは「月曜の朝7時（JST）」に設定します（日曜 22:00 UTC）
+    # 毎週日曜日 22:00 UTC = 月曜日 07:00 JST
+    # これで「先週（月〜日）のデータ」が揃った状態でレポートが出せます
     - cron: "0 22 * * 0"
   workflow_dispatch:
 
@@ -18,6 +17,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # 過去のJSONを読み込むため、履歴を取得する必要があるか確認
+          # ファイルが存在していれば fetch-depth: 1 でも動きますが、念のため安全策で
           fetch-depth: 0
 
       - name: Set up Python
@@ -36,10 +37,12 @@ jobs:
           WEEK_DAYS: "7"
         run: |
           set -eux
-          # 前のステップで作成した generate_weekly_note.py を実行
+          # データフォルダがあるか確認（初回などエラー回避）
+          ls -R data/daily || echo "No data directory found yet"
+          
           python generate_weekly_note.py
           
-          # 生成されたファイルの存在確認
+          # 生成確認
           test -f weekly_note_draft.md
           test -f weekly_summary.txt
 
@@ -49,11 +52,12 @@ jobs:
           git config user.name "coinrader-bot"
           git config user.email "coinrader-bot@users.noreply.github.com"
 
-          # レポートの下書きと告知用テキストを保存
+          # 生成物のみをadd
           git add weekly_note_draft.md weekly_summary.txt
           
-          if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Update Weekly Intelligence Report Draft"
+          # 変更がある場合のみコミット
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Weekly Intelligence Report Draft [skip ci]"
             git push
           else
             echo "No changes to commit."
