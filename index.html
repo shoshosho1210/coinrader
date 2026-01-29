@@ -3775,7 +3775,7 @@ function renderOverview(){
                 if (lastRsiVal >= 70) { status = '⚠️ 買われすぎ圏'; color = '#f87171'; }
                 else if (lastRsiVal <= 30) { status = '⚠️ 売られすぎ圏'; color = '#38bdf8'; }
                 else if (lastRsiVal >= 60) { status = '↗️ やや過熱'; color = '#fca5a5'; }
-                else if (lastRsiVal <= 40) { status = '💧 ↘️ やや低水準'; color = '#7dd3fc'; }
+                else if (lastRsiVal <= 40) { status = '↘️ やや低水準'; color = '#7dd3fc'; }
 
                 // 1. 上段（大きな数字）を更新
                 rsiEl.style.color = color;
