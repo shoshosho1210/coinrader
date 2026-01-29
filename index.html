@@ -1121,26 +1121,33 @@
     border-color: #ffffff; /* ホバー時は白く光る */
     background: #000;
   }
-/* --- AI Insight Box: Cyber & Professional Update --- */
+/* --- AI Insight Box: プレミアム・サイバーアップデート --- */
 .ai-insight-box {
-  margin: 10px 0 16px; /* 外側の余白を微減 */
-  padding: 14px 18px;  /* 20px → 14px に圧縮 */
-  min-height: 260px !important; /* 230px → 180px に短縮 */
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+    margin: 10px 0 16px;
+    padding: 16px 20px;
+    min-height: 240px !important;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
 
-  /* 深みのあるグラデーション背景 */
-  background: linear-gradient(165deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
-  border: 1px solid rgba(56, 189, 248, 0.35); /* 青いネオン枠 */
-  border-radius: 16px;
+    /* より深く、透明感のある背景 */
+    background: linear-gradient(165deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.9));
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 16px;
 
-  /* ボックス全体を優しく発光させる */
-  box-shadow: 
-    0 10px 25px -5px rgba(0, 0, 0, 0.5),
-    0 0 15px 0 rgba(56, 189, 248, 0.12);
-  backdrop-filter: blur(12px);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    /* 発光感の強化 */
+    box-shadow: 
+        0 10px 30px -10px rgba(0, 0, 0, 0.7),
+        inset 0 0 20px rgba(56, 189, 248, 0.05);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+.ai-evidence-grid {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 12px !important;
+    border: 1px dashed rgba(56, 189, 248, 0.2) !important;
+    padding: 14px !important;
+    margin-top: 16px !important;
 }
 /* マウスを乗せた時の演出（KPIタイルと統一） */
 .ai-insight-box:hover {
@@ -1151,16 +1158,32 @@
     0 0 25px 0 rgba(56, 189, 248, 0.25);
   background: rgba(15, 23, 42, 0.98) !important;
 }
-  
-/* 左端のアクセント光（重要度を演出） */
+/* ★追加：スキャンライン演出（分析してる感を出す） */
+.ai-insight-box::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
+    animation: ai-scan 4s linear infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+@keyframes ai-scan {
+    0% { top: 0; opacity: 0; }
+    5% { opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+/* 左端のアクセント（シアンの光棒） */
 .ai-insight-box::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 15%; bottom: 15%;
-  width: 4px;
-  background: linear-gradient(to bottom, #38bdf8, #1e88e5);
-  border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    content: "";
+    position: absolute;
+    left: 0; top: 10%; bottom: 10%;
+    width: 3px;
+    background: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+    border-radius: 0 4px 4px 0;
+    z-index: 2;
 }
 
 .ai-insight-header {
@@ -4843,15 +4866,15 @@ async function updateAiInsight() {
     };
 
     const evidenceHtml = `
-      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; margin-top:12px !important; background:rgba(0,0,0,0.25); border-radius:10px; padding:10px !important; border:1px solid rgba(255,255,255,0.05);">
-        <div style="font-size:10px; color:#64748b; margin-bottom:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:6px;">
-          <span style="width:12px; height:1px; background:#64748b;"></span> 多角的な分析エビデンス
+      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease;">
+        <div style="font-size:10px; color:#64748b; margin-bottom:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:6px;">
+          <span style="width:12px; height:1px; background:#38bdf8; box-shadow: 0 0 8px rgba(56,189,248,0.4);"></span> 多角的な分析エビデンス
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 15px; font-size:12px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; font-size:12px;">
           <div style="color:#94a3b8;">投資家心理: ${getTag(sent, 'sent')}</div>
           <div style="color:#94a3b8;">短期勢い: ${getTag(rsi, 'rsi')}</div>
           <div style="color:#94a3b8;">資金の偏り: <span style="color:#e2e8f0">${dom < 53 ? 'アルト分散' : 'BTC集中'} (${dom.toFixed(1)}%)</span></div>
-          <div style="color:#94a3b8;">トレンド構造: <span style="color:#e2e8f0">${maDist.toFixed(1)}%</span></div>
+          <div style="color:#94a3b8;">トレンド構造: <span style="color:#e2e8f0">${(maDist >= 0 ? '+' : '') + maDist.toFixed(1)}%</span></div>
         </div>
       </div>`;
 
