@@ -3791,12 +3791,7 @@ function renderOverview(){
     } catch(e) { console.warn('RSI failed', e); }
 
     // --- 4. [センチメント] 計算 ---
-    try {
-        const upPctS = (o.up + o.down > 0) ? (o.up / (o.up + o.down)) * 100 : 50;
-        const rsiNorm = lastRsiVal ? (lastRsiVal - 50) / 20 : 0;
-        const raw = 0.4 * ((upPctS - 50) / 50) + 0.3 * (o.avgChg / 5) + 0.3 * rsiNorm;
-        sentScore = Math.max(0, Math.min(100, 50 + 50 * raw));
-    } catch(e) { console.warn('Sentiment failed', e); }
+    sentScore = null;
     
     // --- 5. [上部タイルの更新] ---
     
