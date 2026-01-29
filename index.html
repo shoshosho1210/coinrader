@@ -3330,19 +3330,19 @@ function renderOverview(){
         let statusLabel = '';
         let glow = 'none';
 
-        // RSIの状態判定ロジック
+        // --- RSIの状態判定ロジック（マイルド＆体感版） ---
         if (r >= 70) {
-            color = '#f87171'; statusLabel = '🚨 過熱（天井警戒）';
+            color = '#f87171'; statusLabel = '🌋 かなりの熱気（のぼせ気味）';
             glow = '0 0 12px rgba(248, 113, 113, 0.5)';
         } else if (r >= 60) {
-            color = '#fca5a5'; statusLabel = '📈 強含み（買われすぎ注意）';
+            color = '#fca5a5'; statusLabel = '🌡️ 温度上昇中（にぎやかな気配）';
         } else if (r <= 30) {
-            color = '#38bdf8'; statusLabel = '💎 底値圏（絶好の買い場）';
+            color = '#38bdf8'; statusLabel = '🌊 静かな水底（エネルギー蓄積中）';
             glow = '0 0 12px rgba(56, 189, 248, 0.6)';
         } else if (r <= 40) {
-            color = '#7dd3fc'; statusLabel = '📉 弱含み（押し目検討）';
+            color = '#7dd3fc'; statusLabel = '💧 少し冷たい空気（深呼吸の時間）';
         } else {
-            color = '#cbd5e1'; statusLabel = '⚖️ 中立（安定）';
+            color = '#cbd5e1'; statusLabel = '🍃 心地よい凪（平常運転）';
         }
 
         rsiMainEl.textContent = r;
