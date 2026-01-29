@@ -3995,7 +3995,7 @@ function renderOverview(){
                 elAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
                 if (elDist) {
                     let st = '';
-                    if (lastAvg >= 5) st = "🌸 満開の勢い"; else if (lastAvg >= 0) st = "🌤️ 心地よい日差し"; else if (lastAvg >= -5) st = "🌧️ しとしと雨"; else st = "⛈️ 本格的な嵐";
+                    if (lastAvg >= 5) st = "📈 好調な推移"; ; else if (lastAvg >= 0) st = "↗️ プラス圏推移"; else if (lastAvg >= -5) st = "↘️ マイナス圏推移"; else st = "📉 軟調な推移";
                     elDist.textContent = st; elDist.style.color = color;
                 }
             }
