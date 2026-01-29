@@ -2003,7 +2003,39 @@ body {
     color: #64748b !important;
     opacity: 0.8;
 }
-  
+/* KPIタイル内の履歴データ：控えめだが必要な時に読めるデザイン */
+.kpi-hist-row {
+    display: flex;
+    justify-content: space-around; /* 左右に均等配置 */
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.kpi-hist-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.kpi-hist-label {
+    font-size: 9px !important;
+    color: #64748b !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.kpi-hist-val {
+    font-size: 11px !important;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+/* 変化の矢印 */
+.hist-up { color: #4ade80; margin-right: 2px; }
+.hist-down { color: #f87171; margin-right: 2px; }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -2106,6 +2138,21 @@ body {
   </div>
 </div>
   
+<div id="aiHistoricalTable" style="margin-top: 15px; display: none;">
+    <table style="width: 100%; font-size: 11px; border-collapse: collapse; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden;">
+        <thead>
+            <tr style="color: #38bdf8; border-bottom: 1px solid rgba(56, 189, 248, 0.2);">
+                <th style="padding: 8px; text-align: left;">期間</th>
+                <th style="padding: 8px; text-align: right;">心理(FGI)</th>
+                <th style="padding: 8px; text-align: right;">勢い(RSI)</th>
+                <th style="padding: 8px; text-align: right;">支配(DOM)</th>
+            </tr>
+        </thead>
+        <tbody id="aiHistTableBody" style="color: #94a3b8;">
+            </tbody>
+    </table>
+</div>
+
   <div class="ai-insight-note" id="aiInsightNote" style="opacity: 0; transition: opacity 0.5s ease;">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
 </div>
 <div class="summary-kpis" id="summaryKpis">
@@ -2232,9 +2279,21 @@ body {
       <span style="color:#94a3b8">Alt / Others</span>
     </div>
   </div>
-</div>
-  
+</div> 
 </div></div></div>
+
+<div class="section-title" style="margin: 24px 4px 10px; font-size: 14px;">🕰️ ヒストリカル・スナップショット</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 24px;">
+    <div class="summary-card" style="padding: 10px; text-align: center;">
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">1 WEEK AGO</div>
+        <div id="snap7dVal" style="font-weight: 800; color: #cbd5e1;">-</div>
+    </div>
+    <div class="summary-card" style="padding: 10px; text-align: center;">
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">1 MONTH AGO</div>
+        <div id="snap30dVal" style="font-weight: 800; color: #cbd5e1;">-</div>
+    </div>
+</div>
+
 <div class="summary-lists">
 <div class="summary-card">
 <div class="summary-card-title">🔥 トレンド TOP5</div>
@@ -5232,7 +5291,11 @@ async function updateAiInsight() {
     await new Promise(r => setTimeout(r, 1500));
 
     // --- B. 過去比較データの取得 ---
-    const past = await getHistoricalData(7);
+    const pastYest = await getHistoricalData(1);  // 追加
+    const past7d   = await getHistoricalData(7);  // 既存
+    const past30d  = await getHistoricalData(30); // 追加
+    
+    const past = past7d; // 既存の comparisonText ロジックが動くように代入
     let comparisonText = "";
 
     if (past) {
@@ -5300,6 +5363,38 @@ async function updateAiInsight() {
     // D. タイピング演出の実行
     const finalHtml = (comparisonText ? comparisonText + "<br><br>" : "") + strategyText;
     await typeWriter(textEl, finalHtml, 20);
+
+    // ==========================================
+    // ★ここから追加：案2（テーブル）と案3（スナップショット）の反映
+    // ==========================================
+    const tableBody = document.getElementById('aiHistTableBody');
+    if (tableBody) {
+        tableBody.innerHTML = ''; // クリア
+        const historyData = [
+            { label: '昨日', data: pastYest },
+            { label: '7日前', data: past7d },
+            { label: '30日前', data: past30d }
+        ];
+
+        historyData.forEach(item => {
+            if (item.data) {
+                const row = `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                        <td style="padding: 6px 8px;">${item.label}</td>
+                        <td style="padding: 6px 8px; text-align: right;">${item.data.fgi || '-'}</td>
+                        <td style="padding: 6px 8px; text-align: right;">${Math.round(item.data.rsi) || '-'}</td>
+                        <td style="padding: 6px 8px; text-align: right;">${item.data.dom ? item.data.dom.toFixed(1) : '-'}%</td>
+                    </tr>`;
+                tableBody.innerHTML += row;
+            }
+        });
+        document.getElementById('aiHistoricalTable').style.display = 'block';
+    }
+
+    // 案3：スナップショットへの反映（RSIを例に）
+    if (past7d) document.getElementById('snap7dVal').textContent = `RSI: ${Math.round(past7d.rsi)}`;
+    if (past30d) document.getElementById('snap30dVal').textContent = `RSI: ${Math.round(past30d.rsi)}`;
+    // ==========================================
 
     // E. 解析完了後の表示（注釈・エビデンス）
     if (noteEl) noteEl.style.opacity = "0.8";
