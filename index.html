@@ -5209,13 +5209,9 @@ async function updateAiInsight() {
         return; 
     }
 
-    const currentState = `${sent}|${rsi}|${dom}|${maDist}`;
-    if (_last_ai_state === currentState) return;
-
-    _ai_thinking = true;
-    _last_ai_state = currentState;
-
-    // --- 【表示同期】ロードアニメの前にタイルの数字をJSONの値に書き換え ---
+    // --- 【最重要：ここが修正ポイント】 ---
+    // 「以前と同じ状態か」をチェックする *前に*、タイルの数値を同期させる。
+    // これにより、3分更新でリセットされた "-" を確実に最新値で上書きできます。
     const maMainEl = document.getElementById('sumMaMain');
     const maSubEl = document.getElementById('sumMaSub');
     if (maMainEl && maDist !== null && !isNaN(maDist)) {
@@ -5223,13 +5219,19 @@ async function updateAiInsight() {
         maMainEl.style.fontSize = ""; 
         let c = '#cbd5e1', sl = '';
         if (maDist >= 1) { c = '#38bdf8'; sl = '📈 上昇トレンド'; }
-        else if (maDist > 0) { c = '#60a5fa'; sl = '↗️ 上向き推移'; }
+        else if (maDist > 0) { c = '#60a5fa'; sl = '✓ 上向き推移'; }
         else if (maDist >= -1) { c = '#fb923c'; sl = '→ 横ばい傾向'; }
         else { c = '#f87171'; sl = '↘️ 下落トレンド'; }
         maMainEl.style.color = c;
         if (maSubEl) { maSubEl.textContent = sl; maSubEl.style.color = c; }
         if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(maDist);
     }
+  
+    const currentState = `${sent}|${rsi}|${dom}|${maDist}`;
+    if (_last_ai_state === currentState) return;
+
+    _ai_thinking = true;
+    _last_ai_state = currentState;
 
     if (noteEl) noteEl.style.opacity = "0";
     // --- 4. 思考中演出 ---
