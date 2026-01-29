@@ -1660,6 +1660,91 @@ section[id] {
 .rank-table td.td-sym {
     z-index: 2; /* 既存の設定を維持 */
 }
+
+/* --- TOP5 Lists: Intelligence Style (最終決定版) --- */
+/* カードの外枠：既存の summary-card をサイバー風に上書き */
+.summary-card {
+    background: linear-gradient(165deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.7)) !important;
+    border: 1px solid rgba(56, 189, 248, 0.15) !important;
+    border-radius: 14px;
+    padding: 16px !important;
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    border-color: rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 8px 25px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* カードのタイトル */
+.summary-card-title {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #38bdf8 !important; 
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 10px;
+    margin-bottom: 12px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* JavaScriptで生成する一行（アイテム）のデザイン */
+.top5-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.top5-item:hover {
+    background: rgba(56, 189, 248, 0.08);
+}
+
+/* 順位の丸いバッジ */
+.top5-rank {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    font-size: 10px;
+    font-weight: 900;
+    border-radius: 50%; 
+    margin-right: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    flex-shrink: 0;
+}
+
+/* 銘柄名 */
+.top5-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+
+/* 右側の数値エリア */
+.top5-val {
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* 色の定義 */
+.val-up { color: #4ade80; }
+.val-vol { color: #38bdf8; }
+
+/* 既存の箇条書きスタイルをリセット */
+.summary-ol { list-style: none !important; padding: 0 !important; margin: 0 !important; }
+  
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -4406,66 +4491,73 @@ function makeLineChart(canvasId, labels, series, opts){
       setTimeout(()=>{ try{ card.classList.remove('flash'); }catch(_e){} }, 1300);
     }
 
-    function fillList(listId, coins, gridId){
+      function fillList(listId, coins, gridId) {
       const ol = document.getElementById(listId);
       if (!ol) return;
       ol.innerHTML = '';
 
-      if (!coins || !coins.length){
-        const li = document.createElement('li');
-        li.className = 'summary-li muted';
-        li.textContent = '—';
-        ol.appendChild(li);
+      if (!coins || !coins.length) {
+        ol.innerHTML = '<div style="padding:10px; opacity:0.5; font-size:12px;">データ取得中…</div>';
         return;
       }
 
-      coins.slice(0,5).forEach((coin, idx)=>{
-        const li = document.createElement('li');
-        li.className = 'summary-li clickable';
+      coins.slice(0, 5).forEach((coin, idx) => {
+        // コンテナ作成
+        const item = document.createElement('div');
+        item.className = 'top5-item';
 
-        const left = document.createElement('span');
-        left.className = 'summary-left';
-
-        const r = document.createElement('span');
-        r.className = 'summary-rank';
-        r.textContent = rankIcon(idx);
-
-        const sym = document.createElement('span');
-        sym.className = 'summary-symbol';
-        sym.textContent = safeTxt((coin.symbol || '').toUpperCase() || coin.name || coin.id);
-
-        left.appendChild(r);
-        left.appendChild(sym);
-
-        const wrap = document.createElement('span');
-        wrap.className = 'summary-right-wrap';
-
-        const pct = document.createElement('span');
+        // 判定
         const chg = coin.price_change_percentage_24h;
-        pct.className = 'summary-right ' + ((typeof chg === 'number') ? (chg>=0?'positive':'negative') : '');
-        pct.textContent = pctText(chg);
+        const isUp = typeof chg === 'number' && chg >= 0;
+        
+        // 1. ランク
+        const rank = document.createElement('div');
+        rank.className = 'top5-rank';
+        rank.textContent = idx + 1;
+
+        // 2. 銘柄名
+        const name = document.createElement('div');
+        name.className = 'top5-name';
+        name.textContent = (coin.symbol || '').toUpperCase();
+
+        // 3. 数値・アクション
+        const rightWrap = document.createElement('div');
+        rightWrap.className = 'summary-right-wrap';
+
+        const val = document.createElement('div');
+        // 数値の色分け（上昇率か出来高かでクラスを変える）
+        const isGainSection = (listId === 'summaryUpList');
+        val.className = 'top5-val ' + (isGainSection ? (isUp ? 'val-up' : 'negative') : 'val-vol');
+        
+        if (isGainSection) {
+            val.textContent = (isUp ? '+' : '') + (chg ? chg.toFixed(1) : '0') + '%';
+        } else if (listId === 'summaryVolAltList') {
+            val.textContent = yenLarge(coin.total_volume);
+        } else {
+            // トレンドの場合は24h比を表示
+            val.textContent = (isUp ? '+' : '') + (chg ? chg.toFixed(1) : '0') + '%';
+        }
 
         const ext = document.createElement('span');
         ext.className = 'summary-ext';
-        ext.title = 'CoinGeckoで開く';
         ext.textContent = '↗';
-        ext.onclick = (ev)=>{
+        ext.onclick = (ev) => {
           ev.stopPropagation();
           openCoinGecko(coin);
         };
 
-        wrap.appendChild(pct);
-        wrap.appendChild(ext);
+        rightWrap.appendChild(val);
+        rightWrap.appendChild(ext);
 
-        li.appendChild(left);
-        li.appendChild(wrap);
+        // 合体
+        item.appendChild(rank);
+        item.appendChild(name);
+        item.appendChild(rightWrap);
 
-        // main click: scroll to the detailed section/card (keep user on site)
-        li.onclick = ()=>{
-          scrollToCoin(gridId, coin);
-        };
+        // クリックイベント（カードへスクロール）
+        item.onclick = () => scrollToCoin(gridId, coin);
 
-        ol.appendChild(li);
+        ol.appendChild(item);
       });
     }
 
