@@ -5423,9 +5423,9 @@ async function updateAiInsight() {
             <tr>
               <td style="padding: 4px 0; color: #94a3b8;">長期トレンド</td>
               <td style="text-align: right; padding: 4px 2px; color: #e2e8f0; font-weight: 800;">${(h.now.ma >= 0 ? '+' : '') + h.now.ma.toFixed(1)}%</td>
-              <td style="text-align: right; padding: 4px 2px; opacity: 0.4;">—</td>
-              <td style="text-align: right; padding: 4px 2px; opacity: 0.4;">—</td>
-              <td style="text-align: right; padding: 4px 2px; opacity: 0.4;">—</td>
+              <td style="text-align: right; padding: 4px 2px; opacity: 0.4;">${h.yest.ma !== undefined && h.yest.ma !== null ? (h.yest.ma >= 0 ? '+' : '') + h.yest.ma.toFixed(1) + '%' : '—'}</td>
+              <td style="text-align: right; padding: 4px 2px; opacity: 0.4;">${h.d7.ma !== undefined && h.d7.ma !== null ? (h.d7.ma >= 0 ? '+' : '') + h.d7.ma.toFixed(1) + '%' : '—'}</td>
+              <td style="text-align: right; padding: 4px 2px; opacity: 0.4;">${h.d30.ma !== undefined && h.d30.ma !== null ? (h.d30.ma >= 0 ? '+' : '') + h.d30.ma.toFixed(1) + '%' : '—'}</td>
             </tr>
           </tbody>
         </table>
