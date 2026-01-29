@@ -1744,7 +1744,50 @@ section[id] {
 
 /* 既存の箇条書きスタイルをリセット */
 .summary-ol { list-style: none !important; padding: 0 !important; margin: 0 !important; }
-  
+
+/* --- System Data Reference (指標解説) --- */
+.data-reference-bar {
+    margin: 0 4px 18px;
+    padding: 12px 16px;
+    background: rgba(15, 23, 42, 0.4); /* 背景をさらに透過させ馴染ませる */
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-left: 3px solid #38bdf8; /* 左端にアクセント線 */
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #94a3b8;
+}
+
+.ref-title {
+    font-weight: 800;
+    color: #38bdf8; /* テーマカラー */
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.ref-item strong {
+    color: #e2e8f0;
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.ref-footer {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 10px;
+    color: #64748b;
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -2000,19 +2043,25 @@ section[id] {
 </div>
 <div class="cta-note">※当サイトは広告収益により運営されています（景品表示法に基づくPR表記）。</div>
 </section>
+<div class="data-reference-bar">
+    <div class="ref-title">
+        <span>📡</span> System Data Specification
+    </div>
+    <div class="ref-grid">
+        <div class="ref-item">
+            <strong>回転率 (Turnover):</strong> 
+            24h出来高÷時価総額。市場の「呼吸の速さ」を示し、値が高いほど短期的な売買が活発な状態です。
+        </div>
+        <div class="ref-item">
+            <strong>ATH比 (ATH Dist):</strong> 
+            最高値からの乖離。市場の「体温の余白」を示し、乖離が大きいほど長期的な底値圏の可能性があります。
+        </div>
+    </div>
+    <div class="ref-footer">
+        ※ データ欠損がある銘柄は自動的に計算から除外されます。投資の最終決定はご自身の判断で行ってください。
+    </div>
+</div>
 
-  <div style="margin: 0 4px 14px; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; font-size: 11px; color: #9ca3af; line-height: 1.5;">
-    <div style="font-weight: 700; color: #cbd5e1; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-      <span>💡</span> 指標の解説：回転率・ATH比
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;">
-      <div><strong>回転率：</strong> 24h出来高÷時価総額。値が高いほど短期売買が活発。</div>
-      <div><strong>ATH比：</strong> 過去最高値(ATH)からの乖離。マイナスが大きいほど底値圏。</div>
-    </div>
-    <div style="margin-top: 6px; font-size: 10px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px;">
-      ※上場直後の銘柄や、APIの提供データに欠損がある場合は表示されません。
-    </div>
-  </div>
 <section id="sec-trend">
 <div class="section-header">
 <div>
