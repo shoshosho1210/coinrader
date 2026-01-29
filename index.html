@@ -1638,34 +1638,27 @@ section[id] {
     white-space: nowrap;    /* 改行させない */
     letter-spacing: -0.2px; /* 少し文字間を詰めて入りやすくする */
 }
-/* 時価総額テーブルの行をAIボックス風にアップデート */
-.rank-table tbody tr {
-    transition: all 0.2s ease;
+/* 時価総額テーブル：全列・全セルの同期ホバー設定 */
+.rank-table tbody tr, 
+.rank-table tbody tr td {
+    /* 変化のタイミングを完全に一致させる */
+    transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-/* 行全体と、固定列（td-sym）の両方の背景を変える */
-.rank-table tbody tr:hover,
-.rank-table tbody tr:hover td.td-sym {
-    background: rgba(56, 189, 248, 0.06) !important; /* AIボックスと同系統の淡い青 */
+/* 行にマウスが乗った時、通常の列と固定列(td-sym)の両方を同時に変色 */
+.rank-table tbody tr:hover td {
+    background-color: rgba(56, 189, 248, 0.08) !important;
 }
 
+/* 左端のアクセント線（行全体に対して適用） */
 .rank-table tbody tr:hover {
-    box-shadow: inset 4px 0 0 #38bdf8; /* 左端に鋭いアクセント線 */
+    box-shadow: inset 4px 0 0 #38bdf8;
+    background-color: rgba(56, 189, 248, 0.08) !important;
 }
 
-/* RSIバッジの質感をさらに向上 */
-.rsi-badge {
-    letter-spacing: 0.05em;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* 上昇・下落の文字をより「発光」させて読みやすく */
-.rank-table td.text-up {
-    text-shadow: 0 0 8px rgba(74, 222, 128, 0.2);
-}
-.rank-table td.text-down {
-    text-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
+/* 念のため、固定列の背景が勝たないように調整 */
+.rank-table td.td-sym {
+    z-index: 2; /* 既存の設定を維持 */
 }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
