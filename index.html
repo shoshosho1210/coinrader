@@ -1543,6 +1543,14 @@ section[id] {
     scroll-margin-top: calc(var(--hdr-h) + 45px) !important;
   }
 }
+/* guide.html の style 内に追加 */
+.guide-step {
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.3); /* ステップラベルを光らせる */
+}
+.guide-card:hover {
+  border-color: rgba(56, 189, 248, 0.4); /* ホバー時に少し青く光る */
+  background: rgba(255, 255, 255, 0.02);
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -1619,6 +1627,12 @@ section[id] {
     <span style="font-size:18px; margin-right:2px;">🤖</span>
     <span class="ai-title-label">AI Market Insight</span>
     <span class="ai-badge">Beta</span>
+    <button onclick="openPageModal('guide.html', '📖 CoinRader 活用ガイド');" 
+          style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); color:#38bdf8; font-size:10px; border-radius:4px; padding:2px 8px; cursor:pointer; margin-left:10px; font-weight:700; transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(56,189,248,0.2)'" 
+          onmouseout="this.style.background='rgba(56,189,248,0.1)'">
+    活用ガイド
+  </button>
     <span id="aiUpdateTime" style="margin-left: auto; font-size: 10px; color: #38bdf8; font-family: monospace; opacity: 0.6; letter-spacing: 1px;">[ STANDBY ]</span>
   </div>
 
