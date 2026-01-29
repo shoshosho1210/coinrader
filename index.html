@@ -479,11 +479,11 @@
 }
 .btn-cta:hover { background:rgba(255,255,255,.10); }
 
-/* --- Ultra Slim & Robust Footer --- */
+/* --- Ultra Compact Line Footer --- */
 .site-footer {
-    background: rgba(10, 16, 28, 0.3);
+    background: rgba(10, 16, 28, 0.4);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 24px 20px; /* さらに上下を詰めました */
+    padding: 16px 20px; /* 極限まで上下を詰めました */
     margin-top: 30px;
 }
 
@@ -491,58 +491,52 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between; /* 左右に振り分け */
-    align-items: flex-start;
-    flex-wrap: wrap; /* スマホで自動折り返し */
-    gap: 24px;
+    justify-content: space-between;
+    align-items: center; /* 縦中央揃え */
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-/* 左側：ブランドエリア */
-.footer-col-main {
-    flex: 1 1 300px; /* 最低300px確保 */
-}
-.footer-logo { height: 22px; margin-bottom: 8px; opacity: 0.8; }
-.footer-tagline { font-size: 11px; color: #64748b; line-height: 1.5; margin: 0; }
-
-/* 右側：リンクエリア（重なり防止にFlexを使用） */
-.footer-nav-wrap {
+.footer-brand {
     display: flex;
-    gap: 40px; /* 列同士の距離を固定 */
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-logo { height: 18px; opacity: 0.8; }
+.footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
+
+.footer-nav {
+    display: flex;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
-.footer-col {
-    min-width: fit-content; /* 文字の長さに合わせる */
-}
-
-.footer-title {
-    font-size: 11px;
-    font-weight: 800;
-    color: #38bdf8;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.footer-links { list-style: none; padding: 0; margin: 0; }
-.footer-links li { margin-bottom: 6px; } /* 行間をさらに詰めました */
-.footer-links a {
+.footer-nav a {
     color: #94a3b8;
-    font-size: 12px;
+    font-size: 11.5px;
     text-decoration: none !important;
+    white-space: nowrap;
     transition: color 0.2s;
-    white-space: nowrap; /* 勝手な改行を防ぐ */
 }
-.footer-links a:hover { color: #38bdf8; }
 
-.footer-bottom {
-    width: 100%;
-    margin-top: 20px;
-    padding-top: 12px;
+.footer-nav a:hover { color: #38bdf8; }
+
+.footer-copyright {
+    max-width: 1200px;
+    margin: 12px auto 0;
+    padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.02);
     text-align: center;
+    font-size: 10px;
+    color: #475569;
 }
-.footer-bottom p { font-size: 10px; color: #475569; margin: 0; }
+
+/* スマホ表示：中央寄せの2段に */
+@media (max-width: 768px) {
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-nav { justify-content: center; gap: 10px 15px; }
+}
 
 /* スマホ表示の最適化 */
 @media (max-width: 640px) {
@@ -5633,33 +5627,23 @@ function shareMarketStatus() {
 </script>
 <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-col-main">
+        <div class="footer-brand">
             <img alt="CoinRader" class="footer-logo" src="/assets/coinrader_logo_horizontal_075_dark.png"/>
-            <p class="footer-tagline">科学とデータによる客観的な<br>暗号資産分析ダッシュボード</p>
+            <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
         </div>
 
-        <div class="footer-col">
-            <div class="footer-title">分析・ガイド</div>
-            <ul class="footer-links">
-                <li><a href="#" onclick="openPageModal('guide.html', '📖 CoinRader 活用ガイド'); return false;">活用ガイド</a></li>
-                <li><a href="#" onclick="openPageModal('start.html', '🔰 暗号資産の始め方'); return false;">暗号資産の始め方</a></li>
-                <li><a href="#" onclick="openPageModal('data-sources.html', '📊 データソース'); return false;">データソース</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-col">
-            <div class="footer-title">運営・法務</div>
-            <ul class="footer-links">
-                <li><a href="#" onclick="openPageModal('about.html', 'ℹ️ 運営者情報'); return false;">運営者情報</a></li>
-                <li><a href="#" onclick="openPageModal('contact.html', '📩 お問い合わせ'); return false;">お問い合わせ</a></li>
-                <li><a href="#" onclick="openPageModal('disclaimer.html', '⚠️ 免責事項'); return false;">免責事項</a></li>
-                <li><a href="#" onclick="openPageModal('privacy.html', '🔒 プライバシーポリシー'); return false;">プライバシーポリシー</a></li>
-            </ul>
-        </div>
+        <nav class="footer-nav">
+            <a href="#" onclick="openPageModal('guide.html', '📖 活用ガイド'); return false;">活用ガイド</a>
+            <a href="#" onclick="openPageModal('start.html', '🔰 始め方'); return false;">始め方</a>
+            <a href="#" onclick="openPageModal('data-sources.html', '📊 データ'); return false;">データ</a>
+            <a href="#" onclick="openPageModal('about.html', 'ℹ️ 運営'); return false;">運営</a>
+            <a href="#" onclick="openPageModal('contact.html', '📩 連絡'); return false;">連絡</a>
+            <a href="#" onclick="openPageModal('disclaimer.html', '⚠️ 免責'); return false;">免責</a>
+            <a href="#" onclick="openPageModal('privacy.html', '🔒 法務'); return false;">法務</a>
+        </nav>
     </div>
-    
-    <div class="footer-bottom">
-        <p>&copy; 2026 CoinRader. All rights reserved.</p>
+    <div class="footer-copyright">
+        &copy; 2026 CoinRader. All rights reserved.
     </div>
 </footer>
 </body>
