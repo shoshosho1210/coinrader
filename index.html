@@ -3577,21 +3577,21 @@ function renderOverview(){
         let statusLabel = '';
         let glow = 'none';
 
-        // トレンド・クロス判定ロジック
+        // --- トレンド・クロス判定ロジック（マイルド版） ---
         if (d >= 10) {
-            color = '#34d399'; statusLabel = '🚀 強気トレンド（継続）';
+            color = '#34d399'; statusLabel = '🌊 力強い上昇の流れ';
         } else if (d > 1) {
-            color = '#38bdf8'; statusLabel = '📈 ゴールデンクロス継続';
+            color = '#38bdf8'; statusLabel = '☀️ 順調な上向き傾向';
         } else if (d > 0) {
-            color = '#60a5fa'; statusLabel = '✨ GC接近・期待';
+            color = '#60a5fa'; statusLabel = '🌱 期待の芽生え（GC接近）';
             glow = '0 0 10px rgba(96, 165, 250, 0.5)';
         } else if (d >= -1) {
-            color = '#fb923c'; statusLabel = '⚠️ DC接近・警戒';
+            color = '#fb923c'; statusLabel = '☁️ 迷いのある動き（慎重）';
             glow = '0 0 10px rgba(251, 146, 60, 0.5)';
         } else if (d > -10) {
-            color = '#f87171'; statusLabel = '📉 デッドクロス継続';
+            color = '#f87171'; statusLabel = '📉 重たさが続く足取り';
         } else {
-            color = '#ef4444'; statusLabel = '💀 弱気停滞（DC継続）';
+            color = '#ef4444'; statusLabel = '❄️ 厳しい冷え込みの状態';
         }
 
         // プラスなら「+」記号を付ける
