@@ -3594,9 +3594,22 @@ function renderOverview(){
             const rsiEl = document.getElementById('kpiRsi');
             if (rsiEl && lastRsiVal != null) {
                 let status = '中立', color = '#cbd5e1';
-                if (lastRsiVal >= 70) { status = '🚨 過熱気味'; color = '#f87171'; }
-                else if (lastRsiVal <= 30) { status = '💎 売られすぎ'; color = '#38bdf8'; }
-                rsiEl.innerHTML = `<span style="color:${color}">${lastRsiVal.toFixed(1)}</span> <span style="font-size:12px; opacity:0.8;">(${status})</span>`;
+                if (lastRsiVal >= 70) { status = '🚨 過熱（天井圏）'; color = '#f87171'; }
+                else if (lastRsiVal <= 30) { status = '💎 売られすぎ（底値圏）'; color = '#38bdf8'; }
+                else if (lastRsiVal >= 60) { status = '🌡️ やや過熱気味'; color = '#fca5a5'; }
+                else if (lastRsiVal <= 40) { status = '💧 やや安値圏'; color = '#7dd3fc'; }
+
+                // 1. 上段（大きな数字）を更新
+                rsiEl.style.color = color;
+                rsiEl.textContent = lastRsiVal.toFixed(1);
+
+                // 2. 下段（ステータス：以前 "-" が出ていた場所）を更新
+                const metaEl = document.getElementById('kpiRsiMeta');
+                if (metaEl) {
+                    metaEl.textContent = status;
+                    metaEl.style.color = color;
+                    metaEl.style.opacity = "0.9";
+                }
             }
             makeLineChart('rsiLine', Array.from({length: rsiSeries.length}, (_, i) => i), [{ data: rsiSeries, borderColor: 'rgba(255,255,255,0.9)', borderWidth: 2.5, pointRadius: 0, tension: 0.35, fill: false }], { dayGrid: true, yMin: 0, yMax: 100 });
         }
