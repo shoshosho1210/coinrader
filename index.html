@@ -1892,11 +1892,29 @@ section[id] {
 </div>
 <div class="overview is-collapsed" id="overviewWrap">
   
-  <div class="overview-card">
-    <div style="font-size:13px; font-weight:700; color:#e5e7eb; margin-bottom:8px;">資金シェア (Dominance)</div>
-    <div class="donut-wrap"><canvas id="domChart"></canvas></div>
-    <div class="dom-metrics" id="domMetrics">-</div>
-    <div class="overview-note">市場の資金が「どこに集中しているか」の比率。BTCが高いと守りの相場、ETHやOthersが高いと攻めの相場。</div>
+  <div class="overview-card" id="domCard">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+      <div>
+        <div style="font-size:13px; font-weight:700; color:#e5e7eb;">市場の資金シェア (Dominance)</div>
+        <div id="domPhaseLabel" style="font-size: 11px; margin-top: 4px; font-weight: 600;">-</div>
+      </div>
+      <div id="domMainPct" style="font-size: 20px; font-weight: 800; color: #facc15;">-</div>
+    </div>
+
+    <div class="donut-wrap" style="position: relative;">
+      <canvas id="domChart"></canvas>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+        <div style="font-size: 10px; color: #94a3b8;">BTC</div>
+        <div id="domCenterVal" style="font-size: 14px; font-weight: 700; color: #fff;">-</div>
+      </div>
+    </div>
+
+    <div class="dom-metrics-list" id="domMetricsList" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      </div>
+
+    <div class="overview-note" id="domNote" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+      資金がビットコインに集中しているか、アルトコインへ分散しているかを示します。
+    </div>
   </div>
 
   <div class="overview-card">
@@ -3496,22 +3514,54 @@ if (breadthSub){
       }
     } catch(e) { console.warn('overview series failed', e); }
 
-    drawDonut('domChart', o.labels, o.values);
-    // Dominance text (BTC/ETH/ステーブル/Others)
-    try{
-      const domEl = document.getElementById('domMetrics');
-      if(domEl){
-        const total = (o.values||[]).reduce((a,b)=>a + (Number.isFinite(+b)? +b : 0), 0);
-        if(total > 0){
-          domEl.textContent = (o.labels||[]).map((lab,i)=>{
-            const v = Number.isFinite(+o.values[i]) ? +o.values[i] : 0;
-            return `${lab} ${(v/total*100).toFixed(1)}%`;
-          }).join(' / ');
-        }else{
-          domEl.textContent = '-';
+    // ドミナンス（資金シェア）の更新ロジック ---
+    const domLabels = o.labels || [];
+    const domValues = o.values || [];
+    drawDonut('domChart', domLabels, domValues);
+
+    const listEl = document.getElementById('domMetricsList');
+    const phaseEl = document.getElementById('domPhaseLabel');
+    const mainPctEl = document.getElementById('domMainPct');
+    const centerValEl = document.getElementById('domCenterVal');
+    const noteEl = document.getElementById('domNote');
+
+    if (listEl && domValues.length > 0) {
+        const total = domValues.reduce((a, b) => a + (Number(b) || 0), 0);
+        const btcPct = total ? (domValues[0] / total * 100) : 0;
+        
+        // メイン数値と中央値の更新
+        if (mainPctEl) mainPctEl.textContent = `${btcPct.toFixed(1)}%`;
+        if (centerValEl) centerValEl.textContent = `${btcPct.toFixed(1)}%`;
+
+        // 市場フェーズの判定と注釈の更新
+        if (btcPct > 55) {
+            phaseEl.textContent = "🛡️ BTC独歩高（守りの相場）";
+            phaseEl.style.color = "#facc15";
+            noteEl.textContent = "資金がBTCに還流中。アルトコインには厳しい時期ですが、市場全体の底堅さは増しています。";
+        } else if (btcPct < 45) {
+            phaseEl.textContent = "🚀 アルトシーズン（攻めの相場）";
+            phaseEl.style.color = "#4ade80";
+            noteEl.textContent = "資金がアルトコインへ飛散中。ハイリスク・ハイリターンな銘柄が動きやすい活発な局面です。";
+        } else {
+            phaseEl.textContent = "⚖️ 市場転換・均衡フェーズ";
+            phaseEl.style.color = "#38bdf8";
+            noteEl.textContent = "資金の行き先を模索中。BTCのドミナンスがどちらに抜けるかで次のトレンドが決まります。";
         }
-      }
-    }catch(_){}
+
+        // 凡例リストの生成
+        const colors = ['#facc15', '#60a5fa', '#34d399', '#94a3b8'];
+        listEl.innerHTML = domLabels.map((lab, i) => {
+            const val = domValues[i] || 0;
+            const pct = total ? (val / total * 100).toFixed(1) : 0;
+            return `
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cbd5e1;">
+                    <span style="width: 8px; height: 8px; border-radius: 2px; background: ${colors[i] || '#eee'};"></span>
+                    <span style="flex: 1;">${lab}</span>
+                    <span style="font-weight: 700; color: #fff;">${pct}%</span>
+                </div>
+            `;
+        }).join('');
+    }
 
     // 見えない状態で初期描画されると幅0でチャートが潰れることがあるため、次のtickでリサイズ
 
