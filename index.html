@@ -1932,15 +1932,28 @@ section[id] {
         </div>
       </div>
 
-      <div class="kpi kpi-stack">
-        <div class="kpi-label">資金フロー (時価総額 & 出来高)</div>
+      <div class="kpi kpi-stack" id="kpiFlowCard">
+        <div class="kpi-label">資金フロー（市場規模 & 流動性）</div>
 
-        <div class="kpi-block">
-          <div class="kpi-block-title">市場時価総額 (Money In/Out)</div>
-          <div class="kpi-value" id="kpiTotalMcap">-</div>
-          <div class="kpi-meta" id="kpiMcap7d">-</div>
-          <canvas class="kpi-canvas" id="mcap7dLine"></canvas>
-          <div class="kpi-sub" style="opacity:.75;margin-top:6px;">市場全体のパイの大きさの推移。</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+          <div class="kpi-block">
+            <div class="kpi-block-title" style="font-size: 11px; color: #94a3b8;">合計時価総額 (Market Cap)</div>
+            <div class="kpi-value" id="kpiTotalMcap" style="font-size: 18px;">-</div>
+            <div class="kpi-meta" id="kpiMcap7d" style="font-size: 11px;">-</div>
+          </div>
+          <div class="kpi-block">
+            <div class="kpi-block-title" style="font-size: 11px; color: #94a3b8;">24h 出来高 (Volume)</div>
+            <div class="kpi-value" id="kpiTotalVol" style="font-size: 18px;">-</div>
+            <div class="kpi-meta" id="kpiAltVolRatio" style="font-size: 11px;">-</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <canvas class="kpi-canvas" id="mcap7dLine" style="height: 60px !important;"></canvas>
+          <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+            <div class="kpi-sub" style="opacity:.75; font-size: 10px;">市場全体の「パイ」の推移</div>
+            <div id="kpiMarketTurnover" style="font-size: 10px; color: #38bdf8; font-weight: bold;">-</div>
+          </div>
         </div>
       </div>
       
@@ -3203,47 +3216,48 @@ if (breadthSub){
       }
     }
 
-    // Totals
-    // 安全に更新するように変更
+    // 資金フロー（市場規模 & 流動性）の更新ロジック ---
+
+    // 1. 合計時価総額と出来高の基本表示
     const elMcap = document.getElementById('kpiTotalMcap');
     if (elMcap) elMcap.textContent = yenLarge(o.totalMcap);
 
     const elVol = document.getElementById('kpiTotalVol');
     if (elVol) elVol.textContent = yenLarge(o.totalVol);
 
-    // Market cap 24h change (estimate)
+    // 2. 時価総額の変動と流入・流出ラベル
     const mcap24hEl = document.getElementById('kpiMcap7d');
-    if (mcap24hEl){
-      const pct = fmtPct(o.mcap7dPct);
-      // ▼ 修正後：符号をつけて yenLarge で丸める
-      const dVal = o.mcap7dDelta;
-      const absVal = Math.abs(dVal);
-      // yenLargeは絶対値で計算して「¥〇〇兆」を返すため、手動で符号をつける
-      const delta = (dVal >= 0 ? '+' : '-') + yenLarge(absVal);
-      mcap24hEl.textContent = `${pct}（${delta}）`;
+    if (mcap24hEl) {
+        const pct = o.mcap7dPct; // 数値
+        const sign = pct >= 0 ? '🟢 Inflow' : '🔴 Outflow';
+        const pctStr = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+        mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pctStr}</span>`;
     }
 
-    // Composition bars (market cap)
-    const totalM = (o.values || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
-    const mPct = (o.values || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalM)*100);
-    const setW = (id, w) => { const el = document.getElementById(id); if (el) el.style.width = `${w}%`; };
-    setW('mcapSegBtc', mPct[0] || 0);
-    setW('mcapSegEth', mPct[1] || 0);
-    setW('mcapSegStable', mPct[2] || 0);
-    setW('mcapSegOther', mPct[3] || 0);
-
-    // Composition bars (volume)
+    // 3. 市場の流動性指標（アルト比率と回転率）
     const totalV = (o.volValues || []).reduce((a,b)=>a+((typeof b==='number'&&isFinite(b))?b:0), 0) || 1;
-    const vPct = (o.volValues || []).map(v => (((typeof v==='number'&&isFinite(v))?v:0)/totalV)*100);
-    const altRatio = ((((o.volValues || [])[3] || 0) * 1) / totalV) * 100;
+    // エスプリの効いたアルト比率計算：(ETH + Others) / Total
+    const altVol = (o.volValues[1] || 0) + (o.volValues[3] || 0);
+    const altRatio = (altVol / totalV) * 100;
+    
     const elAltRatio = document.getElementById('kpiAltVolRatio');
-    if (elAltRatio) elAltRatio.textContent = `出来高（アルト）比率: ${isFinite(altRatio) ? altRatio.toFixed(1) : '-'}%`;
-    setW('volSegBtc', vPct[0] || 0);
-    setW('volSegEth', vPct[1] || 0);
-    setW('volSegStable', vPct[2] || 0);
-    setW('volSegOther', vPct[3] || 0);
+    if (elAltRatio) {
+        elAltRatio.textContent = `アルト比率: ${isFinite(altRatio) ? altRatio.toFixed(1) : '-'}%`;
+    }
 
+    // 市場全体の回転率（Turnover）: 24h出来高 ÷ 時価総額
+    const elTurnover = document.getElementById('kpiMarketTurnover');
+    if (elTurnover && o.totalMcap > 0) {
+        const turnover = (o.totalVol / o.totalMcap) * 100;
+        elTurnover.textContent = `市場回転率: ${turnover.toFixed(2)}%`;
+    }
 
+    // 4. 時価総額の推移グラフ描画（既存のmakeNormalizedLineを使用）
+    try {
+        if (mcapArr && mcapArr.length >= 3) {
+            makeNormalizedLine('mcap7dLine', labels, mcapArr, { dayGrid: true });
+        }
+    } catch(e) { console.warn('Mcap line failed', e); }
 
     // ---- Overview line series (API追加なし: sparkline_in_7d から算出) ----
     try {
