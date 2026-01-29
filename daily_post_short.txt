@@ -2,14 +2,14 @@
 分析: 悲観
 
 🔹 Bitcoin 📉
-価格: ¥1283万
-前日比: -6.3%
-RSI(14): 14.61
+価格: ¥1290万
+前日比: -5.6%
+RSI(14): 14.91
 心理指数: 26 (Fear)
 
 📈 注目銘柄
-トレンド入り: BIRB, HYPE, BTC
-急上昇銘柄: SENT (31%↑)
+トレンド入り: BIRB, BTC, HYPE
+急上昇銘柄: SENT (33%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260130.html
