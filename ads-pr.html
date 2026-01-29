@@ -3,185 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>広告・PR表記 - CoinRader</title>
-  <meta name="description" content="CoinRader（コインレーダー）の広告・PR表記に関するページです。当サイトにおけるアフィリエイト広告の掲載方針や提携先取引所について公開しています。">
+  <title>広告掲載方針および提携事業者目録 - CoinRader</title>
+  <meta name="description" content="CoinRader（コインレーダー）の広告掲載に関する方針と、提携している暗号資産交換業者等の一覧を公開しています。">
   <link rel="canonical" href="https://coinrader.net/ads-pr">
-<!-- Favicons -->
-<link rel="icon" href="/favicon.ico">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-TDEBXC7DH6');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
 
-<style>
-  .brandLink{display:inline-block;}
-  .brandLogo{height:28px;width:auto;display:block;}
+  <link rel="stylesheet" href="/_page_style.css" />
 
-  .aff-cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:12px;
-    margin-top:12px;
-    align-items:stretch; /* 追加：カードの高さを揃える */
-  }
+  <style>
+    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 14px; }
+    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
+    .sec h2 { margin: 24px 0 12px; font-size: 17px; color: #fff; }
+    .partner-list { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .partner-list th, .partner-list td { 
+      text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; font-size: 13px;
+    }
+    .partner-list th { color: #94a3b8; font-weight: 600; background: rgba(255,255,255,0.02); }
+    
+    .guide-box {
+      background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2);
+      padding: 16px; border-radius: 12px; margin: 24px 0;
+    }
 
-  .aff-card{
-    padding:12px;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:12px;
-    background:rgba(255,255,255,.03);
-
-    display:flex;            /* 追加 */
-    flex-direction:column;   /* 追加 */
-    height:100%;             /* 追加 */
-  }
-
-  .aff-card h3{margin:0 0 6px 0;font-size:15px}
-
-  .aff-card .btn{
-    margin-top:auto;         /* 追加：ボタンを下揃え */
-    align-self:flex-start;   /* 任意：ボタンを伸ばさない */
-  }
-  .aff-actions{display:flex;gap:8px;flex-wrap:wrap}
-
-  /* Header (compact, dashboard-like) */
-  .pageHeader{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:10px 12px; margin:0 0 14px 0;
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:14px;
-    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
-  }
-  .pageHeader-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-  .headerLink{
-    color:#cbd5e1; text-decoration:none; font-size:13px;
-    padding:8px 10px; border-radius:10px;
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.03);
-  }
-  .headerLink:hover{ filter:brightness(1.15); }
-  .headerCta{
-    color:#0b1220; text-decoration:none; font-size:13px; font-weight:700;
-    padding:8px 12px; border-radius:10px;
-    background:linear-gradient(180deg,#60a5fa,#3b82f6);
-    border:1px solid rgba(59,130,246,.45);
-  }
-  .headerCta:hover{ filter:brightness(1.05); }
-  @media (max-width: 520px){
-    .pageHeader{ align-items:flex-start; }
-    .pageHeader-right{ width:100%; justify-content:flex-start; }
-  }
-
-</style>
-
-
-<link rel="stylesheet" href="_page_style.css" />
+    .pageHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+    }
+    .brandLogo { height:26px; }
+  </style>
 </head>
+
 <body>
   <div class="container">
     <header class="pageHeader" role="banner">
-      <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
-        <img class="brandLogo" src="assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
+      <a class="brandLink" href="/" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="/assets/coinrader_logo_horizontal_075_dark.png" alt="CoinRader">
       </a>
-      <div class="pageHeader-right">
-      </div>
     </header>
+
     <div class="card">
-      <h1>広告・PR表記</h1>
-<p>当サイトでは、第三者配信の広告サービスやアフィリエイトプログラムを利用し、広告・紹介料を得る場合があります。</p>
-<h2>広告表示について</h2>
-<ul>
-<li>広告であることが分かるよう、必要に応じて「広告」「PR」等の表記を行います。</li>
-<li>広告の有無や提携関係が、ランキングの算出ロジックやデータ表示そのものへ影響を与えることはありません（当サイトが明示的に別途記載する場合を除く）。</li>
-</ul>
-<h2>アフィリエイトリンクについて</h2>
-<ul>
-<li>当サイト内のリンクにはアフィリエイトリンクが含まれる場合があります。</li>
-<li>リンク先でのサービス申込・購入等は利用者ご自身の判断と責任で行ってください。</li>
-<li>当サイトは、リンク先事業者との取引に関するトラブル等について責任を負いません。</li>
-</ul>
-    </div>
-    <hr style="margin:16px 0; border:0; border-top:1px solid rgba(255,255,255,.12);">
-
-    <h2>おすすめ取引所（用途別）</h2>
-    <p style="color:rgba(229,231,235,.85); font-size:14px;">
-     口座開設リンクは以下にまとめています（外部サイトへ移動します）。
-    </p>
-
-    <div class="aff-card">
-      <h3>初心者向け</h3>
-      <p style="color:rgba(229,231,235,.8); font-size:13px;">
-        初心者でも迷いにくいUI。まず現物から始めたい人向け。<br>
-        はじめの手順をシンプルにまとめています。
+      <h1>広告掲載方針・提携事業者</h1>
+      <p class="lead">
+        CoinRader（以下「当サイト」）は、情報の健全性と透明性を確保するため、景品表示法（ステマ規制）に基づき、以下の通り広告掲載の方針および提携事業者の一覧を公開しています。
       </p>
 
-      <div class="aff-actions">
-        <a class="btn primary"
-           href="/go/coincheck"
-           target="_blank" rel="noopener"
-           data-aff="coincheck" data-place="adspr_coincheck">
-          公式サイト
-        </a>
+      <div class="sec">
+        <h2>📢 広告掲載の方針</h2>
+        <p class="muted" style="font-size: 13px; line-height: 1.7;">
+          当サイトは、アフィリエイトプログラム（成果報酬型広告）を利用しており、紹介しているサービスで口座開設や取引が行われた場合、提携先から報酬を得ることがあります。ただし、この報酬の有無がランキングの算出やデータ分析の結果を歪めることは一切ありません。常に客観的なデータに基づく情報提供を最優先としています。
+        </p>
+      </div>
 
-        <a class="btn"
-          href="/go-pr/coincheck"
-           target="_blank" rel="noopener"
-           data-aff="coincheck" data-place="adspr_coincheck" data-pr="1">
-          キャンペーン（PR）
+      <div class="sec">
+        <h2>🤝 提携事業者目録</h2>
+        <p class="muted" style="font-size: 13px;">当サイトが提携・広告掲載を行っている事業者は以下の通りです。</p>
+        <table class="partner-list">
+          <thead>
+            <tr>
+              <th>サービス名</th>
+              <th>運営会社</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>コインチェック</td><td>コインチェック株式会社</td></tr>
+            <tr><td>GMOコイン</td><td>GMOコイン株式会社</td></tr>
+            <tr><td>みんなのコイン</td><td>トレイダーズ証券株式会社</td></tr>
+            <tr><td>FXTF Crypto</td><td>ゴールデンウェイ・ジャパン株式会社</td></tr>
+            <tr><td>BITPOINT</td><td>株式会社ビットポイントジャパン</td></tr>
+            <tr><td>クリプタクト</td><td>株式会社クリプタクト</td></tr>
+            <tr><td>bitFlyer</td><td>株式会社bitFlyer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="guide-box">
+        <strong style="color:#60a5fa; font-size:14px;">各取引所の特徴を比較したい方へ</strong><br>
+        <p class="muted" style="font-size: 13px; margin: 8px 0 12px;">
+          投資スタイルに合わせた口座の選び方や、最新のキャンペーン情報は以下のガイドページをご覧ください。
+        </p>
+        <a href="/start.html" style="color: #fff; background: #2563eb; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: bold; display: inline-block;">
+          🔰 暗号資産投資の始め方ガイドへ
         </a>
       </div>
+
     </div>
 
-    <div class="aff-card">
-      <h3>トレーダー向け</h3>
-      <p style="color:rgba(229,231,235,.8); font-size:13px;">国内大手の安心感。BTC中心で堅実に使いたい人向け。</p>
-
-      <div class="aff-actions">
-        <a class="btn primary"
-           href="/go/bitflyer"
-           target="_blank" rel="noopener"
-           data-aff="bitflyer" data-place="adspr_bitflyer">
-          公式サイト
-        </a>
-
-      </div>
-    </div>
-
-    <div class="aff-card">
-      <h3>アルト銘柄重視</h3>
-      <p style="color:rgba(229,231,235,.8); font-size:13px;">銀行系の安心感。資産運用の延長で使いたい人向け。</p>
-
-      <div class="aff-actions">
-        <a class="btn primary"
-           href="/go/sbi"
-           target="_blank" rel="noopener"
-           data-aff="sbi" data-place="adspr_sbi">
-          公式サイト
-        </a>
-
-        <a class="btn"
-           href="/go-pr/sbi"
-           target="_blank" rel="noopener"
-           data-aff="sbi" data-place="adspr_sbi" data-pr="1">
-          キャンペーン（PR）
-        </a>
-      </div>
-    </div>
-
-    <footer class="footer">
-      <div class="links">
-      </div>
-      <div class="note">© CoinRader</div>
+    <footer class="footer" style="padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;">
+      <div class="note" style="font-size: 12px; opacity: 0.6;">© 2026 CoinRader | 科学とデータによる暗号資産分析</div>
     </footer>
   </div>
-  <script src="/assets/click_tracker.js" defer></script>
 </body>
 </html>
