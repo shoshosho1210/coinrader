@@ -3974,10 +3974,12 @@ function renderOverview(){
     // 5-6. 長期トレンド
     const ma = window.__btcMaCross, maMainEl = document.getElementById('sumMaMain'), maSubEl = document.getElementById('sumMaSub');
     if (maMainEl) {
-        // ここで数値を入れず、プレースホルダーにする
-        maMainEl.style.fontSize = "14px"; // 文字を少し小さくして収める
-        maMainEl.textContent = "-";
-        if (maSubEl) maSubEl.textContent = "-";
+        // もし既に数値（%）が入っている場合は、上書きせずに保持する。
+        // まだ何も入っていない（初期状態）の時だけ "-" を入れる。
+        if (!maMainEl.textContent.includes('%')) {
+            maMainEl.textContent = "-";
+            if (maSubEl) maSubEl.textContent = "-";
+        }
     }
 
     // --- 6. 7日間詳細グラフ (展開時のみ) ---
@@ -5190,43 +5192,46 @@ async function updateAiInsight() {
     
     if (!box || !textEl || _ai_thinking) return;
 
-    // 1. JSONからデータを一括取得（表示ズレ防止のため冒頭で実行）
+    // 1. JSONデータを取得（ここが「正解」のデータ）
     const pastToday = await getHistoricalData(0); 
+    // ... (過去データの取得はそのまま) ...
     const pastYest  = await getHistoricalData(1);
     const past7d    = await getHistoricalData(7);
     const past30d   = await getHistoricalData(30);
 
+    // 2. 値の確定
     const sent = pastToday?.fgi || parseFloat(document.getElementById('sumSentMain')?.textContent) || 0;
     const rsi  = pastToday?.rsi || parseFloat(document.getElementById('sumRsiMain')?.textContent) || 0;
     const dom  = pastToday?.dom || parseFloat(document.getElementById('sumDomMain')?.textContent) || 0;
     const maDist = (pastToday && pastToday.ma !== null && pastToday.ma !== undefined) 
                    ? pastToday.ma 
-                   : parseFloat(document.getElementById('sumMaMain')?.textContent);
+                   : null;
 
-    // 同期ガード
-    if (isNaN(sent) || sent === 0 || document.getElementById('sumSentMain')?.textContent.includes('—')) {
-        if (timeEl) { timeEl.textContent = "[ DATA.WAITING ]"; timeEl.style.opacity = "0.5"; }
-        return; 
-    }
-
-    // --- 【最重要：ここが修正ポイント】 ---
-    // 「以前と同じ状態か」をチェックする *前に*、タイルの数値を同期させる。
-    // これにより、3分更新でリセットされた "-" を確実に最新値で上書きできます。
+    // --- 【重要】「データ未着」の時だけは "-" に戻すが、それ以外は即座に同期 ---
     const maMainEl = document.getElementById('sumMaMain');
     const maSubEl = document.getElementById('sumMaSub');
-    if (maMainEl && maDist !== null && !isNaN(maDist)) {
-        maMainEl.textContent = (maDist >= 0 ? '+' : '') + maDist.toFixed(2) + '%';
-        maMainEl.style.fontSize = ""; 
-        let c = '#cbd5e1', sl = '';
-        if (maDist >= 1) { c = '#38bdf8'; sl = '📈 上昇トレンド'; }
-        else if (maDist > 0) { c = '#60a5fa'; sl = '✓ 上向き推移'; }
-        else if (maDist >= -1) { c = '#fb923c'; sl = '→ 横ばい傾向'; }
-        else { c = '#f87171'; sl = '↘️ 下落トレンド'; }
-        maMainEl.style.color = c;
-        if (maSubEl) { maSubEl.textContent = sl; maSubEl.style.color = c; }
-        if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(maDist);
+
+    if (maMainEl) {
+        if (maDist !== null) {
+            // JSONの値（CoinGecko基準）でタイルを更新
+            maMainEl.textContent = (maDist >= 0 ? '+' : '') + maDist.toFixed(2) + '%';
+            maMainEl.style.fontSize = ""; 
+            // ... (色の設定ロジックをここに書く) ...
+            let c = '#cbd5e1', sl = '';
+            if (maDist >= 1) { c = '#38bdf8'; sl = '📈 上昇トレンド'; }
+            else if (maDist > 0) { c = '#60a5fa'; sl = '✓ 上向き推移'; }
+            else if (maDist >= -1) { c = '#fb923c'; sl = '→ 横ばい傾向'; }
+            else { c = '#f87171'; sl = '↘️ 下落トレンド'; }
+            maMainEl.style.color = c;
+            if (maSubEl) { maSubEl.textContent = sl; maSubEl.style.color = c; }
+            if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(maDist);
+        } else if (!maMainEl.textContent.includes('%')) {
+            // JSONが取れず、かつ画面にも数値がない場合のみ "-"
+            maMainEl.textContent = "-";
+        }
     }
-  
+
+    // 3. 【スキップ判定】数値の同期が終わった後に、AI解説文の書き換えを飛ばすか決める
     const currentState = `${sent}|${rsi}|${dom}|${maDist}`;
     if (_last_ai_state === currentState) return;
 
