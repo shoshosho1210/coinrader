@@ -3539,27 +3539,27 @@ function renderOverview(){
         
         const altRatio = totalV ? ((ethV + otherV) / totalV * 100) : 0;
         
-        // 3. 市場の「活気」判定ロジック
+        // --- 市場の「活気」判定ロジック（マイルド＆生命力版） ---
         let statusLabel = '';
         let statusColor = '#cbd5e1';
         let glow = 'none';
 
         if (altRatio >= 60) {
-            statusLabel = '🚀 アルト熱狂（リスクオン）';
-            statusColor = '#4ade80'; // グリーン
+            statusLabel = '🌈 色彩豊かな市場（アルト賑わい）';
+            statusColor = '#4ade80'; // エメラルド
             glow = '0 0 10px rgba(74, 222, 128, 0.4)';
         } else if (altRatio >= 45) {
-            statusLabel = '🔥 活況（循環物色）';
+            statusLabel = '✨ 市場のぬくもり（活発な取引）';
             statusColor = '#fb923c'; // オレンジ
             glow = '0 0 10px rgba(251, 146, 60, 0.4)';
-        } else if (totalV > 10_000_000_000_000) { // 10兆円超えなど
-            statusLabel = '⚡ 巨額取引（BTC主導）';
+        } else if (totalV > 10_000_000_000_000) { 
+            statusLabel = '⚡️ 轟く奔流（BTC巨大流動性）';
             statusColor = '#facc15'; // ゴールド
         } else if (altRatio <= 30) {
-            statusLabel = '🛡️ 防衛（BTC集中）';
+            statusLabel = '🕯️ 静かな灯火（BTCへ集中）';
             statusColor = '#60a5fa'; // ブルー
         } else {
-            statusLabel = '⚖️ 均衡（安定推移）';
+            statusLabel = '🍃 穏やかな風（安定した取引）';
             statusColor = '#cbd5e1';
         }
 
