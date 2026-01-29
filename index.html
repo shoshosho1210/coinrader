@@ -1660,18 +1660,22 @@ section[id] {
     </div>
   </div>
   <div class="kpi-tile kpi-rsi">
-    <div class="kpi-tile-title">BTC RSI（14）</div>
-    <div class="kpi-value-row"><div class="kpi-tile-big" id="sumRsiMain">-</div><div class="kpi-tile-sub inline" id="sumRsiSub">-</div></div>
+    <div class="kpi-tile-title">BTC RSI (相対力指数 / 14日)</div>
+    <div class="kpi-value-row">
+      <div class="kpi-tile-big" id="sumRsiMain" style="transition: all 0.5s ease;">-</div>
+      <div class="kpi-tile-sub inline" id="sumRsiSub" style="font-weight: 700;">-</div>
+    </div>
     <div aria-hidden="true" class="mini-vis">
-      <div class="mini-rsi-track">
+      <div class="mini-rsi-track" style="height: 8px; background: rgba(255,255,255,0.05);">
         <div class="mini-rsi-zone low"></div>
         <div class="mini-rsi-zone mid"></div>
         <div class="mini-rsi-zone high"></div>
-        <div class="mini-rsi-th t30"></div>
-        <div class="mini-rsi-th t70"></div>
         <div class="mini-rsi-marker" id="sumRsiMarker"></div>
       </div>
-      <div class="kpi-bar-caption">売られすぎ ← 50 → 買われすぎ</div>
+      <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+        <span>売られすぎ(30)</span>
+        <span>買われすぎ(70)</span>
+      </div>
     </div>
   </div>
 
@@ -3273,9 +3277,42 @@ function renderOverview(){
     }
 
     // RSIタイル
-    setSum('sumRsiMain', lastRsiVal ? lastRsiVal.toFixed(0) : null);
-    setSum('sumRsiSub', lastRsiVal >= 70 ? '過熱' : (lastRsiVal <= 30 ? '売られすぎ' : '中立'));
-    if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
+    const rsiMainEl = document.getElementById('sumRsiMain');
+    const rsiSubEl = document.getElementById('sumRsiSub');
+
+    if (rsiMainEl && lastRsiVal != null) {
+        const r = Math.round(lastRsiVal);
+        let color = '#cbd5e1'; // 中立（グレー）
+        let statusLabel = '';
+        let glow = 'none';
+
+        // RSIの状態判定ロジック
+        if (r >= 70) {
+            color = '#f87171'; statusLabel = '🚨 過熱（天井警戒）';
+            glow = '0 0 12px rgba(248, 113, 113, 0.5)';
+        } else if (r >= 60) {
+            color = '#fca5a5'; statusLabel = '📈 強含み（買われすぎ注意）';
+        } else if (r <= 30) {
+            color = '#38bdf8'; statusLabel = '💎 底値圏（絶好の買い場）';
+            glow = '0 0 12px rgba(56, 189, 248, 0.6)';
+        } else if (r <= 40) {
+            color = '#7dd3fc'; statusLabel = '📉 弱含み（押し目検討）';
+        } else {
+            color = '#cbd5e1'; statusLabel = '⚖️ 中立（安定）';
+        }
+
+        rsiMainEl.textContent = r;
+        rsiMainEl.style.color = color;
+        rsiMainEl.style.textShadow = glow;
+
+        if (rsiSubEl) {
+            rsiSubEl.textContent = statusLabel;
+            rsiSubEl.style.color = color;
+        }
+
+        // 下部ミニバーのマーカー更新
+        if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
+    }
 
     // --- 5. [上部タイルの更新：騰落バランス] ---
     const breadthMainEl = document.getElementById('sumBreadthMain');
