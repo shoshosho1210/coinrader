@@ -5136,11 +5136,11 @@ async function typeWriter(el, html, speed = 20) {
     el.classList.remove('typing');
 }
 
-// --- 1.5 過去の分析データを安全に取得する関数 (新旧形式対応) ---
+// --- 1.5 過去の分析データを安全に取得する関数 (404エラー対策版) ---
 async function getHistoricalData(daysAgo = 7) {
     const now = new Date();
     
-    // 日付フォーマット関数（内部用）
+    // 日付フォーマット関数
     const formatDate = (d) => {
         const y = d.getFullYear();
         const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -5157,23 +5157,30 @@ async function getHistoricalData(daysAgo = 7) {
     
     for (const dateStr of filenames) {
         try {
-            // キャッシュ対策としてクエリパラメータ(?v=...)を付与
+            // キャッシュ対策パラメータ付きでリクエスト
             const res = await fetch(`data/daily/${dateStr}.json?v=${Date.now()}`);
-            if (res.ok) {
-                const json = await res.json();
-                const s = json.summary || {}; 
-                const tech = s.technical || {}; 
-              
-                return {
-                    date: s.date || json.date || dateStr,
-                    fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
-                    dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
-                    rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
-                    ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
-                };
+            
+            // ★修正点：ステータスがOK(200番台)でない場合は、HTMLを解析せずにスキップする
+            if (!res.ok) {
+                // ファイルがないのは正常なので、警告を出さずに次の候補へ
+                continue;
             }
+
+            // ここまで来たらJSONであることが確定しているので安全にパース
+            const json = await res.json();
+            const s = json.summary || {}; 
+            const tech = s.technical || {}; 
+            
+            return {
+                date: s.date || json.date || dateStr,
+                fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
+                dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
+                rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
+                ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
+            };
         } catch (e) { 
-            console.warn(`Fetch failed for ${dateStr}:`, e);
+            // JSONパースエラーなどが万一起きた場合も、静かに無視する
+            // console.warn(`Skipping data for ${dateStr}:`, e); // ログがうるさい場合はコメントアウト可
             continue; 
         }
     }
