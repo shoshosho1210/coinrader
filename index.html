@@ -1858,6 +1858,98 @@ section[id] {
     transform: scale(0.96);
     opacity: 0.8;
 }
+
+/* ============================================================
+   Typography Hierarchy: プロ仕様の視覚階層アップデート
+   ============================================================ */
+
+/* 1. 全体のベース（読みやすさの基準） */
+body {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+
+/* 2. セクション・カードのタイトル（力強く、でも太すぎない） */
+.section-title, .summary-card-title {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.05em;
+}
+
+/* 3. メインKPI（最重要数字：RSIや恐怖指数など） */
+.kpi-main-label, .kpi-tile-big, .sent-gauge-score {
+    font-size: 30px !important; 
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.02em;
+}
+
+/* 4. KPIタイルの補足ラベル・注釈 */
+.kpi-sub-label, .kpi-tile-title, .kpi-bar-caption, .miniNote {
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    opacity: 0.8;
+}
+
+/* 5. AI Market Insight（レポートとしての読みやすさ） */
+.ai-title-label {
+    font-size: 14px !important;
+    font-weight: 800;
+}
+
+.ai-insight-text {
+    font-size: 14.5px !important; 
+    line-height: 1.85 !important; /* 行間を広げて「解析レポート」の質感を出す */
+}
+
+/* 6. グリッドカード（銘柄情報の密度と強調） */
+.coin-name {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+}
+
+.coin-symbol {
+    font-size: 11px !important;
+    opacity: 0.7;
+}
+
+.price {
+    font-size: 16px !important; 
+    font-weight: 800 !important;
+    font-family: 'Inter', sans-serif;
+}
+
+.change {
+    font-size: 12px !important;
+    font-weight: 600;
+}
+
+/* 7. 時価総額テーブル（プロ仕様の密度） */
+.rank-table {
+    font-size: 13px !important;
+}
+
+.rank-table th {
+    font-size: 11px !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b !important;
+}
+
+/* 8. 極小注釈・フッター（ノイズを極限までカット） */
+.section-sub, 
+.ai-insight-note, 
+.ref-footer, 
+.footer-note, 
+.cta-note,
+.overview-note {
+    font-size: 10.5px !important;
+    line-height: 1.5 !important;
+    color: #64748b !important;
+    opacity: 0.8;
+}
+  
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
