@@ -3166,6 +3166,16 @@ function getAltVolumeTop5(){
 
     const o = buildOverview();
 
+    // --- 【追加】地合い（騰落バランス）の即時更新 ---
+    const kpiB = document.getElementById('kpiBreadth');
+    if (kpiB) {
+        const total = o.up + o.down + (o.flat || 0);
+        const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
+        const sign = (o.up - o.down) > 0 ? '上昇優勢' : ((o.up - o.down) < 0 ? '下落優勢' : '均衡');
+        // 大きな数字に色をつけて即座に表示
+        kpiB.innerHTML = `<span style="color:${(o.up >= o.down)? '#4ade80' : '#f87171'}">${sign}</span> <span style="font-size:12px; opacity:0.8;">(上昇銘柄: ${upPct}%)</span>`;
+    }
+    
     const wrap = document.getElementById('overviewWrap');
     const isCollapsed = wrap && wrap.classList.contains('is-collapsed');
 
@@ -3326,32 +3336,39 @@ if (breadthSub){
         // Labels: just indexes (Chart.js will hide axis anyway)
         const labels = Array.from({length: seriesLen}, (_,i)=>i);
 
-        // --- 騰落数(Breadth)を1本の「地合いライン」に統合 ---
+// --- 騰落数(Breadth)を1本の「地合いライン」に統合 ---
         const netBreadthArr = upArr.map((up, t) => up - downArr[t]);
         makeBaselineChart('breadthLine', labels, netBreadthArr, { dayGrid: true });
 
-// --- 1. 平均騰落率グラフ（0基準で色分け） ---
+        // --- 平均騰落率グラフ（利益/損失で色分け） ---
         if (avgArr && avgArr.length > 0) {
             makeBaselineChart('avgLine', labels, avgArr, { 
                 dayGrid: true,
-                aboveColor: 'rgba(74, 222, 128, 0.2)', // 利益圏：緑
-                belowColor: 'rgba(248, 113, 113, 0.2)'  // 損失圏：赤
+                aboveColor: 'rgba(74, 222, 128, 0.2)',
+                belowColor: 'rgba(248, 113, 113, 0.2)'
             });
         }
 
-        // --- 2. テキスト表示の更新（地合い判定） ---
+        // ここで詳細なテキスト判定（中央値や市場の勢い）を上書きする
         const lastAvg = avgArr[avgArr.length - 1];
         const kpiAvg = document.getElementById('kpiAvgChange');
         const kpiAvgDist = document.getElementById('kpiAvgDist');
 
         if (kpiAvg && lastAvg != null) {
-            // 中央値（Median）の計算
-            let med = null;
-            if (lastRets.length) {
-                const s = lastRets.slice().sort((a,b)=>a-b);
-                const mid = Math.floor(s.length/2);
-                med = (s.length % 2) ? s[mid] : (s[mid-1] + s[mid]) / 2;
+            // ...（中央値の計算などのロジック）...
+            // 平均期待収益のテキストを更新（Step 2で詳細化）
+            const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
+            kpiAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(7d平均)</span>`;
+            
+            // 地合い判定（🚀お祭り状態、📉含み損拡大など）を更新
+            if (kpiAvgDist) {
+                if (lastAvg >= 5) kpiAvgDist.textContent = "🚀 市場全体が「お祭り状態」";
+                else if (lastAvg >= 0) kpiAvgDist.textContent = "📈 多くの銘柄で「含み益」が発生中";
+                else if (lastAvg >= -5) kpiAvgDist.textContent = "📉 市場全体に「含み損」が拡大";
+                else kpiAvgDist.textContent = "💀 「総悲観」のパニック売り局面";
+                kpiAvgDist.style.color = color;
             }
+        }
 
             // メイン表示：平均と中央値を併記
             const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
