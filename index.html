@@ -5240,6 +5240,25 @@ async function updateAiInsight() {
 
     await new Promise(r => setTimeout(r, 1200));
 
+    // --- B. 過去比較データの取得 ---
+    const past = await getHistoricalData(7);
+    let comparisonText = "";
+
+    if (past) {
+        if (past.fgi !== null) {
+            const fgiDiff = sent - past.fgi;
+            if (fgiDiff >= 15) comparisonText += `数日前（${past.date}）に比べ<strong>市場心理が大きく好転</strong>しています。`;
+            else if (fgiDiff <= -15) comparisonText += `直近と比較して<strong>警戒感が強まって</strong>います。`;
+        }
+        if (past.dom !== null) {
+            const domDiff = dom - past.dom;
+            if (domDiff < -0.8) comparisonText += `BTCドミナンスの低下により、資金が<strong>アルト銘柄へ分散する傾向</strong>が見られます。`;
+        }
+        if (rsi && past.rsi !== null) {
+            const rsiDiff = rsi - past.rsi;
+            if (Math.abs(rsiDiff) > 20) comparisonText += `RSIの急変により、短期的な<strong>需給の転換点</strong>を迎えています。`;
+        }
+    }
     // --- C. 分析ロジック (数値に基づいた判定) ---
     const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
     const isExtremeGreed = sent >= 80;
