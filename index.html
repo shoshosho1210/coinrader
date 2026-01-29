@@ -5186,10 +5186,6 @@ async function getHistoricalData(daysAgo = 7) {
 let _ai_thinking = false; // 変数名の重複を避けるため _ai_thinking に統一
 let _last_ai_state = ""; 
 
-// --- 2. メイン関数: AI分析 ＆ 再描画抑止 ＆ 過去比較ロジック (完全版) ---
-let _ai_thinking = false;
-let _last_ai_state = ""; 
-
 async function updateAiInsight() {
     const box = document.getElementById('aiInsightBox');
     const textEl = document.getElementById('aiInsightText');
