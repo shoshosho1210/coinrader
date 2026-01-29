@@ -1,15 +1,15 @@
 🤖 CoinRader 市場速報 (01/29)
 分析: 中立
 
-🔹 Bitcoin 📈
-価格: ¥1366万
-前日比: +0.6%
-RSI(14): 18.11
-心理指数: 29 (Fear)
+🔹 Bitcoin 📉
+価格: ¥1347万
+前日比: -2.1%
+RSI(14): 18.08
+心理指数: 26 (Fear)
 
 📈 注目銘柄
-トレンド入り: BIRB, HYPE, XAUT
-急上昇銘柄: KITE (16%↑)
+トレンド入り: BIRB, IRYS, GWEI
+急上昇銘柄: SENT (38%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260129.html
