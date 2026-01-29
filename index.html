@@ -3412,19 +3412,19 @@ function renderOverview(){
         let phaseLabel = '';
         let phaseColor = '#facc15'; // 基本はBTCゴールド
 
-        // 市場フェーズの判定ロジック
+        // --- 市場フェーズの判定ロジック（マイルド＆直感版） ---
         if (btcPct >= 55) {
-            phaseLabel = '🛡️ 防衛（BTC集中）';
-            phaseColor = '#facc15';
+            phaseLabel = '🏔️ どっしり安定（BTC主導）';
+            phaseColor = '#facc15'; // ゴールド
         } else if (btcPct <= 45) {
-            phaseLabel = '🚀 攻め（アルト熱狂）';
-            phaseColor = '#4ade80';
+            phaseLabel = '🌈 華やかな活気（アルト賑わい）';
+            phaseColor = '#4ade80'; // エメラルド
         } else if (btcPct <= 50) {
-            phaseLabel = '💎 物色（アルト循環）';
-            phaseColor = '#86efac';
+            phaseLabel = '✨ 多彩な動き（銘柄物色中）';
+            phaseColor = '#86efac'; // ライトグリーン
         } else {
-            phaseLabel = '⚖️ 均衡（BTC主導）';
-            phaseColor = '#cbd5e1';
+            phaseLabel = '🍃 ほどよいバランス';
+            phaseColor = '#cbd5e1'; // グレー
         }
 
         domMainEl.textContent = btcPct.toFixed(1) + '%';
