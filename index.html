@@ -5364,10 +5364,9 @@ async function updateAiInsight() {
         document.getElementById('aiHistoricalTable').style.display = 'block';
     }
 
-    // E. 解析完了後の表示（統合型タイムマシン・エビデンス）
+    // E. 解析完了後の表示（統合型：極限コンパクト版）
     if (noteEl) noteEl.style.opacity = "0.8";
 
-    // 取得した過去データの整理（セクションBで定義した変数を使用）
     const h = {
         now:  { fgi: sent, rsi: rsi, dom: dom, ma: maDist },
         yest: pastYest || {},
@@ -5375,7 +5374,6 @@ async function updateAiInsight() {
         d30:  past30d || {}
     };
 
-    // 現在値のカラー判定ロジック（旧 getTag をシンプルに統合）
     const getCls = (val, type) => {
         if (type === 'rsi') return val >= 70 ? '#f87171' : (val <= 30 ? '#38bdf8' : '#94a3b8');
         if (type === 'sent') return val >= 75 ? '#4ade80' : (val <= 25 ? '#f87171' : '#94a3b8');
@@ -5383,49 +5381,49 @@ async function updateAiInsight() {
     };
 
     const evidenceHtml = `
-      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; overflow-x: auto; padding: 12px 14px !important;">
-        <div style="font-size:10px; color:#64748b; margin-bottom:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:6px;">
-          <span style="width:12px; height:1px; background:#38bdf8; box-shadow: 0 0 8px rgba(56,189,248,0.4);"></span> 
-          多角的な時系列エビデンス (Comparative Analysis)
+      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; overflow-x: auto; padding: 8px 12px !important; margin-top: 10px !important;">
+        <div style="font-size:9px; color:#64748b; margin-bottom:6px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; display:flex; align-items:center; gap:6px;">
+          <span style="width:10px; height:1px; background:#38bdf8; opacity:0.6;"></span> 
+          時系列分析エビデンス
         </div>
-        <table style="width: 100%; font-size: 11px; border-collapse: collapse; min-width: 310px; table-layout: fixed;">
+        <table style="width: 100%; font-size: 10.5px; border-collapse: collapse; min-width: 280px; table-layout: fixed;">
           <thead>
             <tr style="color: #64748b; border-bottom: 1px solid rgba(255,255,255,0.05);">
-              <th style="text-align: left; padding: 4px 0; width: 34%;">指標項目</th>
-              <th style="text-align: right; padding: 4px 4px; color: #38bdf8;">現在</th>
-              <th style="text-align: right; padding: 4px 4px; font-weight: normal; opacity: 0.6;">昨日</th>
-              <th style="text-align: right; padding: 4px 4px; font-weight: normal; opacity: 0.6;">7日前</th>
-              <th style="text-align: right; padding: 4px 4px; font-weight: normal; opacity: 0.6;">30日前</th>
+              <th style="text-align: left; padding: 2px 0; width: 34%;">指標</th>
+              <th style="text-align: right; padding: 2px 4px; color: #38bdf8;">現在</th>
+              <th style="text-align: right; padding: 2px 4px; font-weight: normal; opacity: 0.5;">昨日</th>
+              <th style="text-align: right; padding: 2px 4px; font-weight: normal; opacity: 0.5;">7日前</th>
+              <th style="text-align: right; padding: 2px 4px; font-weight: normal; opacity: 0.5;">30日前</th>
             </tr>
           </thead>
           <tbody style="color: #cbd5e1;">
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);">
-              <td style="padding: 10px 0; color: #94a3b8;">投資家心理</td>
-              <td style="text-align: right; padding: 10px 4px; color: ${getCls(h.now.fgi, 'sent')}; font-weight: 800;">${h.now.fgi}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.yest.fgi || '—'}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.d7.fgi || '—'}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.d30.fgi || '—'}</td>
+              <td style="padding: 5px 0; color: #94a3b8;">投資家心理</td>
+              <td style="text-align: right; padding: 5px 4px; color: ${getCls(h.now.fgi, 'sent')}; font-weight: 800;">${h.now.fgi}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.yest.fgi || '—'}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.d7.fgi || '—'}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.d30.fgi || '—'}</td>
             </tr>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);">
-              <td style="padding: 10px 0; color: #94a3b8;">短期勢い(RSI)</td>
-              <td style="text-align: right; padding: 10px 4px; color: ${getCls(h.now.rsi, 'rsi')}; font-weight: 800;">${Math.round(h.now.rsi)}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.yest.rsi ? Math.round(h.yest.rsi) : '—'}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.d7.rsi ? Math.round(h.d7.rsi) : '—'}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.d30.rsi ? Math.round(h.d30.rsi) : '—'}</td>
+              <td style="padding: 5px 0; color: #94a3b8;">短期勢い(RSI)</td>
+              <td style="text-align: right; padding: 5px 4px; color: ${getCls(h.now.rsi, 'rsi')}; font-weight: 800;">${Math.round(h.now.rsi)}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.yest.rsi ? Math.round(h.yest.rsi) : '—'}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.d7.rsi ? Math.round(h.d7.rsi) : '—'}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.d30.rsi ? Math.round(h.d30.rsi) : '—'}</td>
             </tr>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);">
-              <td style="padding: 10px 0; color: #94a3b8;">資金シェア(DOM)</td>
-              <td style="text-align: right; padding: 10px 4px; color: #e2e8f0; font-weight: 800;">${h.now.dom.toFixed(1)}%</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.yest.dom ? h.yest.dom.toFixed(1) + '%' : '—'}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.d7.dom ? h.d7.dom.toFixed(1) + '%' : '—'}</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">${h.d30.dom ? h.d30.dom.toFixed(1) + '%' : '—'}</td>
+              <td style="padding: 5px 0; color: #94a3b8;">支配率(DOM)</td>
+              <td style="text-align: right; padding: 5px 4px; color: #e2e8f0; font-weight: 800;">${h.now.dom.toFixed(1)}%</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.yest.dom ? h.yest.dom.toFixed(1) + '%' : '—'}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.d7.dom ? h.d7.dom.toFixed(1) + '%' : '—'}</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">${h.d30.dom ? h.d30.dom.toFixed(1) + '%' : '—'}</td>
             </tr>
             <tr>
-              <td style="padding: 10px 0; color: #94a3b8;">トレンド構造(MA)</td>
-              <td style="text-align: right; padding: 10px 4px; color: #e2e8f0; font-weight: 800;">${(h.now.ma >= 0 ? '+' : '') + h.now.ma.toFixed(1)}%</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">—</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">—</td>
-              <td style="text-align: right; padding: 10px 4px; opacity: 0.6;">—</td>
+              <td style="padding: 5px 0; color: #94a3b8;">MA乖離</td>
+              <td style="text-align: right; padding: 5px 4px; color: #e2e8f0; font-weight: 800;">${(h.now.ma >= 0 ? '+' : '') + h.now.ma.toFixed(1)}%</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">—</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">—</td>
+              <td style="text-align: right; padding: 5px 4px; opacity: 0.5;">—</td>
             </tr>
           </tbody>
         </table>
