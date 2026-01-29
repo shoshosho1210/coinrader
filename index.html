@@ -5177,6 +5177,7 @@ async function getHistoricalData(daysAgo = 7) {
                     fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
                     dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
                     rsi: (s.technical && s.technical.btc_rsi) ? s.technical.btc_rsi : null
+                    ma: (s.technical && s.technical.btc_ma_distance !== undefined) ? s.technical.btc_ma_distance : null
                 };
             }
         } catch (e) { continue; }
