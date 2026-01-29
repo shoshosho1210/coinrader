@@ -3297,15 +3297,15 @@ function renderOverview(){
         let detailedLabel = '';
 
         if (s >= 80) { 
-            color = '#4ade80'; detailedLabel = '🔥 総強気（過熱注意）'; 
+            color = '#4ade80'; detailedLabel = '✨ かなりの熱気（過熱に注意）'; 
         } else if (s >= 60) { 
-            color = '#86efac'; detailedLabel = '😊 楽観（上昇基調）'; 
+            color = '#86efac'; detailedLabel = '🌤️ 活気が出ています（上昇傾向）'; 
         } else if (s >= 40) { 
-            color = '#cbd5e1'; detailedLabel = '⚖️ 中立（均衡）'; 
+            color = '#cbd5e1'; detailedLabel = '🍃 穏やかな地合い（安定）'; 
         } else if (s >= 20) { 
-            color = '#fca5a5'; detailedLabel = '😨 恐怖（押し目買い検討）'; 
+            color = '#fca5a5'; detailedLabel = '☁️ 少し慎重なムード（様子見）'; 
         } else { 
-            color = '#f87171'; detailedLabel = '🚨 総悲観（パニック）'; 
+            color = '#f87171'; detailedLabel = '❄️ 冷え込みが強まっています'; 
         }
 
         sentMainEl.textContent = s;
