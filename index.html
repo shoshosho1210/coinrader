@@ -3981,38 +3981,122 @@ function renderOverview(){
     try {
         const seriesLen = marketsTop[0]?.sparkline_in_7d?.price?.length || 0;
         if (seriesLen > 2) {
-            const upArr = new Array(seriesLen).fill(0), downArr = new Array(seriesLen).fill(0), avgArr = new Array(seriesLen).fill(0), mcapArr = new Array(seriesLen).fill(0), cntArr = new Array(seriesLen).fill(0), lastRets = [];
+            // 配列初期化
+            const upArr = new Array(seriesLen).fill(0);
+            const downArr = new Array(seriesLen).fill(0);
+            const avgArr = new Array(seriesLen).fill(0);
+            const cntArr = new Array(seriesLen).fill(0);
+            
+            // ★資金フロー比較用：BTCとAltの配列を分ける
+            const btcMcapArr = new Array(seriesLen).fill(0);
+            const altMcapArr = new Array(seriesLen).fill(0);
+
+            const lastRets = [];
+
             for (const c of marketsTop){
                 const sp = c?.sparkline_in_7d?.price;
                 if (!sp || sp.length !== seriesLen) continue;
-                const p0 = sp[0], plast = sp[seriesLen-1];
+                
+                const p0 = sp[0];
+                const plast = sp[seriesLen-1];
                 if (!(p0>0) || !(plast>0)) continue;
+
                 const retLast = (plast / p0 - 1) * 100;
                 lastRets.push(retLast);
-                for (let t=0;t<seriesLen;t++){
-                    const pt = sp[t]; if (!(pt>0)) continue;
+
+                // アルトコイン判定（BTC以外 かつ ステーブル以外）
+                // ※ isStableCoin関数が定義されている前提
+                const isBtc = (c.id === 'bitcoin');
+                const isAlt = !isBtc && !isStableCoin(c);
+
+                for (let t=0; t<seriesLen; t++){
+                    const pt = sp[t]; 
+                    if (!(pt>0)) continue;
+                    
+                    // --- 平均期待収益用 ---
                     const ret = (pt/p0 - 1) * 100;
                     if (ret > 0) upArr[t] += 1; else if (ret < 0) downArr[t] += 1;
-                    avgArr[t] += ret; cntArr[t] += 1;
-                    if (c.market_cap > 0) mcapArr[t] += c.market_cap * (pt/plast);
+                    avgArr[t] += ret; 
+                    cntArr[t] += 1;
+
+                    // --- 資金フロー用 (時価総額推移の逆算) ---
+                    if (c.market_cap > 0) {
+                        const estMcap = c.market_cap * (pt / plast);
+                        if (isBtc) {
+                            btcMcapArr[t] += estMcap;
+                        } else if (isAlt) {
+                            altMcapArr[t] += estMcap;
+                        }
+                    }
                 }
             }
-            for (let t=0;t<seriesLen;t++){ if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t]; }
-            const l = Array.from({length: seriesLen}, (_,i)=>i);
-            makeBaselineChart('breadthLine', l, upArr.map((up, t) => up - downArr[t]), { dayGrid: true });
-            makeBaselineChart('avgLine', l, avgArr, { dayGrid: true, aboveColor: 'rgba(74, 222, 128, 0.2)', belowColor: 'rgba(248, 113, 113, 0.2)' });
-            makeNormalizedLine('mcap7dLine', l, mcapArr, { dayGrid: true });
 
+            // 平均の計算
+            for (let t=0; t<seriesLen; t++){ 
+                if (cntArr[t]>0) avgArr[t] = avgArr[t] / cntArr[t]; 
+            }
+            
+            const l = Array.from({length: seriesLen}, (_,i)=>i);
+
+            // 1. 地合いチャート (Breadth)
+            makeBaselineChart('breadthLine', l, upArr.map((up, t) => up - downArr[t]), { dayGrid: true });
+            
+            // 2. 平均期待収益チャート
+            makeBaselineChart('avgLine', l, avgArr, { dayGrid: true, aboveColor: 'rgba(74, 222, 128, 0.2)', belowColor: 'rgba(248, 113, 113, 0.2)' });
+
+            // 3. ★資金フローチャート (BTC vs Alt 比較版)
+            // 正規化（始点を0%にする）
+            const norm = (arr) => {
+                const start = arr[0] || 1;
+                return arr.map(v => ((v - start) / start) * 100);
+            };
+            const btcSeries = norm(btcMcapArr);
+            const altSeries = norm(altMcapArr);
+
+            // 2本のラインを描画
+            makeLineChart('mcap7dLine', l, [
+                {
+                    label: 'BTC',
+                    data: btcSeries,
+                    borderColor: '#facc15', // 黄色
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.25
+                },
+                {
+                    label: 'Altcoins',
+                    data: altSeries,
+                    borderColor: '#38bdf8', // 水色
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0.25,
+                    borderDash: [2, 2] // 点線で区別
+                }
+            ], { dayGrid: true });
+
+            // 補足テキストの更新（凡例を表示）
+            const elSub = document.querySelector('#kpiFlowCard .kpi-sub');
+            if (elSub) elSub.innerHTML = `<span style="color:#facc15">■BTC</span> vs <span style="color:#38bdf8">■Alt(除ETH/Stable)</span> の資金循環`;
+
+            // --- 平均期待収益KPIの更新（指定絵文字対応） ---
             const lastAvg = avgArr[avgArr.length - 1];
             const elAvg = document.getElementById('kpiAvgChange'), elDist = document.getElementById('kpiAvgDist');
             if (elAvg && lastAvg != null) {
                 const s = lastRets.sort((a,b)=>a-b), mid = Math.floor(s.length/2), med = (s.length % 2) ? s[mid] : (s[mid-1]+s[mid])/2;
                 const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
+                
                 elAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
+                
                 if (elDist) {
                     let st = '';
-                    if (lastAvg >= 5) st = "📈 好調な推移"; else if (lastAvg >= 0) st = "↗️ プラス圏推移"; else if (lastAvg >= -5) st = "↘️ マイナス圏推移"; else st = "📉 軟調な推移";
-                    elDist.textContent = st; elDist.style.color = color;
+                    // ★ご指定の絵文字ロジックを適用
+                    if (lastAvg >= 5) st = "📈 好調な推移";
+                    else if (lastAvg >= 0) st = "↗️ プラス圏推移";
+                    else if (lastAvg >= -5) st = "↘️ マイナス圏推移";
+                    else st = "📉 軟調な推移";
+                    
+                    elDist.textContent = st; 
+                    elDist.style.color = color;
                 }
             }
         }
