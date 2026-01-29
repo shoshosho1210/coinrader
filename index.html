@@ -1551,6 +1551,32 @@ section[id] {
   border-color: rgba(56, 189, 248, 0.4); /* ホバー時に少し青く光る */
   background: rgba(255, 255, 255, 0.02);
 }
+/* タイル全体のレイアウト調整 */
+.kpi-tile-content {
+    display: flex;
+    flex-direction: column; /* 縦に並べる */
+    align-items: center;    /* 左右中央 */
+    justify-content: center;/* 上下中央 */
+    text-align: center;
+    padding: 10px 4px;
+    min-height: 80px;       /* 高さを揃えてガタつき防止 */
+}
+
+/* メインの数字（24px程度） */
+.kpi-main-label {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;     /* 下の文字との間隔 */
+}
+
+/* 下のステータス文字（11px程度） */
+.kpi-sub-label {
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;    /* 改行させない */
+    letter-spacing: -0.2px; /* 少し文字間を詰めて入りやすくする */
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -3326,9 +3352,11 @@ function renderOverview(){
         }
 
         sentMainEl.textContent = s;
+        sentMainEl.className = "kpi-main-label"; // CSSを適用
         sentMainEl.style.color = color;
         if (sentSubEl) {
             sentSubEl.textContent = detailedLabel;
+            sentSubEl.className = "kpi-sub-label"; // CSSを適用
             sentSubEl.style.color = color;
         }
         if (typeof updateSummarySentBar === 'function') updateSummarySentBar(sentScore);
@@ -3398,12 +3426,22 @@ function renderOverview(){
             color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空';
         }
 
-        // メイン表示の構築（↑120 vs ↓30 のような形式）
-        breadthMainEl.innerHTML = `<span style="color:#4ade80; font-weight:800;">↑${o.up}</span> <span style="font-size:11px; opacity:0.4; margin:0 2px;">vs</span> <span style="color:#f87171; font-weight:800;">↓${o.down}</span>`;
+        // --- 2. 表示の構築（CSSクラスを適用） ---
+        // 上段：上昇数 vs 下落数
+        breadthMainEl.innerHTML = `
+            <div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;">
+                <span style="color:#4ade80;">↑${o.up}</span>
+                <span style="font-size:12px; opacity:0.3; font-weight:normal; margin:0 2px;">vs</span>
+                <span style="color:#f87171;">↓${o.down}</span>
+            </div>
+        `;
         
+        // 下段：ステータスラベル
         if (breadthSubEl) {
             breadthSubEl.textContent = statusLabel;
+            breadthSubEl.className = "kpi-sub-label"; // CSSクラスを適用
             breadthSubEl.style.color = color;
+            breadthSubEl.style.display = "block";    // 確実に改行
         }
 
         // 下部ミニバーの更新
