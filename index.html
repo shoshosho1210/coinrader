@@ -3535,25 +3535,54 @@ function renderOverview(){
         if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
     }
 
-    // 5-3. 騰落バランス
+    // 5-3. 騰落バランス (地合いの健康診断)
     const bMainEl = document.getElementById('sumBreadthMain');
     const bSubEl = document.getElementById('sumBreadthSub');
     if (bMainEl && (o.up + o.down) > 0) {
         const upPct = (o.up / (o.up + o.down)) * 100;
         let color = '#cbd5e1', statusLabel = '';
-        if (upPct >= 70) { color = '#4ade80'; statusLabel = '☀️ まぶしい光'; }
-        else if (upPct >= 55) { color = '#86efac'; statusLabel = '⛅ 明るい兆し'; }
-        else if (upPct <= 30) { color = '#f87171'; statusLabel = '🌑 深い影'; }
-        else if (upPct <= 45) { color = '#fca5a5'; statusLabel = '🌦️ 雲の変化'; }
-        else { color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空'; }
-        bMainEl.innerHTML = `<div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;"><span style="color:#4ade80;">↑${o.up}</span><span style="font-size:12px; opacity:0.3; font-weight:normal; margin:0 2px;">vs</span><span style="color:#f87171;">↓${o.down}</span></div>`;
+
+        if (upPct >= 70) { 
+            color = '#4ade80'; // 鮮やかな緑
+            statusLabel = '☀️ 全面高（健全な上昇）'; 
+        }
+        else if (upPct >= 55) { 
+            color = '#86efac'; // 薄緑
+            statusLabel = '⛅ 買い優勢（良好な地合い）'; 
+        }
+        else if (upPct <= 30) { 
+            color = '#f87171'; // 警告の赤
+            statusLabel = '🌑 全面安（パニック売り）'; 
+        }
+        else if (upPct <= 45) { 
+            color = '#fca5a5'; // 薄赤
+            statusLabel = '🌧️ 売り優勢（冴えない地合い）'; 
+        }
+        else { 
+            color = '#cbd5e1'; // グレー
+            statusLabel = '☁️ 拮抗（迷いのある地合い）'; 
+        }
+
+        // メイン表示（上昇数 vs 下落数）
+        bMainEl.innerHTML = `
+            <div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;">
+                <span style="color:#4ade80;">↑${o.up}</span>
+                <span style="font-size:12px; opacity:0.3; font-weight:normal; margin:0 2px;">vs</span>
+                <span style="color:#f87171;">↓${o.down}</span>
+            </div>`;
+
         if (bSubEl) {
             bSubEl.textContent = statusLabel;
             bSubEl.className = "kpi-sub-label";
             bSubEl.style.color = color;
         }
+
+        // 下部のミニバー更新
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
-        if (upSeg && downSeg) { upSeg.style.width = `${upPct}%`; downSeg.style.width = `${100 - upPct}%`; }
+        if (upSeg && downSeg) { 
+            upSeg.style.width = `${upPct}%`; 
+            downSeg.style.width = `${100 - upPct}%`; 
+        }
     }
 
     // 5-4. ドミナンス
