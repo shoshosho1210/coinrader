@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (01/29)
-分析: 中立
+🤖 CoinRader 市場速報 (01/30)
+分析: 悲観
 
 🔹 Bitcoin 📉
-価格: ¥1347万
-前日比: -2.1%
-RSI(14): 18.08
+価格: ¥1291万
+前日比: -5.8%
+RSI(14): 14.94
 心理指数: 26 (Fear)
 
 📈 注目銘柄
-トレンド入り: BIRB, IRYS, GWEI
-急上昇銘柄: SENT (38%↑)
+トレンド入り: BIRB, ULTIMA, BTC
+急上昇銘柄: SENT (33%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260129.html
+https://coinrader.net/share/20260130.html
 
 #CoinRader #ビットコイン #暗号資産
