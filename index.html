@@ -76,11 +76,14 @@
     .br-pc{display:none}
   }
   *{ box-sizing:border-box; }
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    background:#0f172a; color:#e5e7eb; margin:0; padding:12px;
-  padding-top: calc(var(--hdr-h) + 12px);
-}
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    margin: 0;
+    padding: 12px;
+    padding-top: var(--hdr-h); /* ← ここの + 12px を削除 */
+  }
   h1{ margin:6px 4px 10px; font-size:20px; letter-spacing:.2px; }
 
   .topbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 4px 10px; }
@@ -2359,15 +2362,15 @@ section[id] {
   const refreshBtn = document.getElementById('refreshBtn');
 
   // Keep CSS var --hdr-h in sync with the actual header height (mobile: prevents top note being covered)
-  function syncHeaderHeight(){
-    try{
-      const hdr = document.querySelector('.appHeader');
-      if(!hdr) return;
-      const h = Math.max(48, Math.ceil(hdr.getBoundingClientRect().height));
-      document.documentElement.style.setProperty('--hdr-h', h + 'px');
-    }catch(_e){}
+  function syncHeaderHeight() {
+    try {
+        const hdr = document.querySelector('.appHeader');
+        if (!hdr) return;
+        // 小数点を含めた正確な高さを取得し、CSS変数に反映
+        const rect = hdr.getBoundingClientRect();
+        document.documentElement.style.setProperty('--hdr-h', rect.height + 'px');
+    } catch (_e) {}
   }
-
 
   // 状態表示の更新（ドットの色とテキストを制御）
   function setStatus(text) {
