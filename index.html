@@ -3582,23 +3582,51 @@ function renderOverview(){
         });
     }
 
-    // 5-5. 市場出来高
+// 5-5. 市場出来高 (分析ロジックのブラッシュアップ)
     const vMainEl = document.getElementById('kpiStripVolMain'), vSubEl = document.getElementById('kpiStripVolSub');
     if (vMainEl) {
         const totalV = o.totalVol || 0;
         const vVals = o.volValues || [0,0,0,0];
+        // アルト比率（ETH + Stable + Others）
         const altRatio = totalV ? ((vVals[1] + (vVals[2]||0) + (vVals[3]||0)) / totalV * 100) : 0;
+        
         let sLabel = '', sColor = '#cbd5e1', glow = 'none';
-        if (altRatio >= 60) { sLabel = '🌈 彩り豊かな市'; sColor = '#4ade80'; glow = '0 0 10px rgba(74, 222, 128, 0.4)'; }
-        else if (altRatio >= 45) { sLabel = '✨ 市場の熱気'; sColor = '#fb923c'; glow = '0 0 10px rgba(251, 146, 60, 0.4)'; }
-        else if (totalV > 10_000_000_000_000) { sLabel = '⚡️ 轟く奔流'; sColor = '#facc15'; }
-        else if (altRatio <= 30) { sLabel = '🕯️ 静かな灯火'; sColor = '#60a5fa'; }
-        else { sLabel = '🍃 穏やかな風'; sColor = '#cbd5e1'; }
+
+        if (altRatio >= 60) { 
+            sLabel = '✨ アルト熱狂（攻め）'; 
+            sColor = '#4ade80'; // 活発な緑
+            glow = '0 0 10px rgba(74, 222, 128, 0.4)'; 
+        }
+        else if (altRatio >= 45) { 
+            sLabel = '🌈 資金分散（活発）'; 
+            sColor = '#7dd3fc'; // 明るい水色
+        }
+        else if (totalV > 15_000_000_000_000) { 
+            sLabel = '⚡️ 巨大な流動性'; // 比率に関わらず出来高が凄まじい時
+            sColor = '#facc15'; 
+            glow = '0 0 12px rgba(250, 204, 21, 0.5)';
+        }
+        else if (altRatio <= 30) { 
+            sLabel = '🏔️ BTC集中（防衛）'; 
+            sColor = '#94a3b8'; // 落ち着いたグレー
+        }
+        else { 
+            sLabel = '🍃 穏やかな流動性'; 
+            sColor = '#cbd5e1'; 
+        }
+
         vMainEl.textContent = yenLarge(totalV);
         vMainEl.className = "kpi-main-label";
         vMainEl.style.color = sColor;
         vMainEl.style.textShadow = glow;
-        if (vSubEl) { vSubEl.textContent = sLabel; vSubEl.className = "kpi-sub-label"; vSubEl.style.color = sColor; }
+
+        if (vSubEl) { 
+            vSubEl.textContent = sLabel; 
+            vSubEl.className = "kpi-sub-label"; 
+            vSubEl.style.color = sColor; 
+        }
+        
+        // ミニバーの更新（変更なし）
         const bBtc = document.getElementById('miniVolBarBtc'), bEth = document.getElementById('miniVolBarEth'), bOth = document.getElementById('miniVolBarOth');
         if (bBtc) bBtc.style.width = (totalV ? (vVals[0] / totalV * 100) : 0) + '%';
         if (bEth) bEth.style.width = (totalV ? (vVals[1] / totalV * 100) : 0) + '%';
