@@ -1903,11 +1903,11 @@ section[id] {
     <div class="kpi-grid">
       
       <div class="kpi" id="kpiBreadthCard">
-        <div class="kpi-label">騰落銘柄数 (7日間累積)</div>
+        <div class="kpi-label">市場の地合い（騰落バランス / 7日間）</div>
         <div class="kpi-value" id="kpiBreadth">-</div>
         <div class="kpi-meta" id="kpiBreadthNow">-</div>
         <div class="kpi-meta" id="kpiBreadthMoves">-</div>
-        <div class="kpi-sub" id="kpiBreadthSub">過去7日間で「上がった銘柄」（青）と「下がった銘柄」（赤）の累積差。市場の地合い（強さ）を示します。</div>
+        <div class="kpi-sub" id="kpiBreadthSub">市場全体の「勢い」の推移。0より上（青）なら上昇銘柄が多く、活気がある状態を示します。</div>
         <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
       </div>
 
@@ -3293,25 +3293,25 @@ if (breadthSub){
         // Labels: just indexes (Chart.js will hide axis anyway)
         const labels = Array.from({length: seriesLen}, (_,i)=>i);
 
-        // Breadth chart (2 lines)
-        makeLineChart('breadthLine', labels, [
-          {label:'上昇', data: upArr, border:'rgba(30,136,229,0.9)', fill:false},
-          {label:'下落', data: downArr, border:'rgba(211,47,47,0.9)', fill:false}
-        ], {yBeginAtZero:true, dayGrid:true});
+        // --- 騰落数(Breadth)を1本の「地合いライン」に統合 ---
+        const netBreadthArr = upArr.map((up, t) => up - downArr[t]);
+        makeBaselineChart('breadthLine', labels, netBreadthArr, { dayGrid: true });
 
-        // Avg return chart (0 baseline fill)
+        // Avg return chart
         makeBaselineChart('avgLine', labels, avgArr, {dayGrid:true});
-        // KPI表示を「7d推移」ベース（最新点）に合わせる
+
+        // テキスト表示の更新
         lastUp = upArr[upArr.length - 1];
         lastDown = downArr[downArr.length - 1];
         const lastAvg = avgArr[avgArr.length - 1];
         const kpiB = document.getElementById('kpiBreadth');
-        if (kpiB){
-          const lastFlat = Number(flatArr[flatArr.length - 1]) || 0;
-          const denom = (Number(lastUp)||0) + (Number(lastDown)||0) + lastFlat;
-          const upPct = denom ? ((Number(lastUp)||0) / denom) * 100 : 0;
-          kpiB.textContent = `7d累積: 上昇 ${lastUp} / 下落 ${lastDown}` + ((Number(flatArr[flatArr.length - 1])||0)>0 ? `（中立 ${flatArr[flatArr.length - 1]}）` : '') + `（上昇率 ${upPct.toFixed(1)}%）`;
+        if (kpiB) {
+            const total = lastUp + lastDown + (Number(flatArr[flatArr.length - 1]) || 0);
+            const upPct = total ? (lastUp / total * 100).toFixed(1) : 0;
+            const sign = (lastUp - lastDown) > 0 ? '上昇優勢' : ((lastUp - lastDown) < 0 ? '下落優勢' : '均衡');
+            kpiB.textContent = `${sign}（上昇銘柄: ${upPct}%）`;
         }
+        
         const kpiAvg = document.getElementById('kpiAvgChange');
         if (kpiAvg){
           let med = null;
