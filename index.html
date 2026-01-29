@@ -5170,14 +5170,16 @@ async function getHistoricalData(daysAgo = 7) {
                 const json = await res.json();
                 // 20260128以降の新形式(summaryあり)か、20260126の旧形式かを判定
                 const s = json.summary || {}; 
-                
+                const tech = s.technical || {}; // 安全のために中間に変数を置く
+              
                 return {
                     date: s.date || json.date || dateStr,
                     // FGI/RSIは旧形式には存在しないため null を返す
                     fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
                     dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
-                    rsi: (s.technical && s.technical.btc_rsi) ? s.technical.btc_rsi : null
-                    ma: (s.technical && s.technical.btc_ma_distance !== undefined) ? s.technical.btc_ma_distance : null
+                    rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
+                    // もしJSONの項目名が違う場合は、ここを tech.ma_dist などに変更してください
+                    ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
                 };
             }
         } catch (e) { continue; }
