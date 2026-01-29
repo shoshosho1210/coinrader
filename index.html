@@ -479,53 +479,76 @@
 }
 .btn-cta:hover { background:rgba(255,255,255,.10); }
 
-/* --- Premium Footer Style (Compact Version) --- */
+/* --- Ultra Slim & Robust Footer --- */
 .site-footer {
-    background: rgba(10, 16, 28, 0.4); /* 背景の透明度を上げてより馴染ませる */
-    border-top: 1px solid rgba(56, 189, 248, 0.1);
-    padding: 32px 20px 20px; /* 60pxから32pxへ大幅縮小 */
-    margin-top: 40px;        /* 80pxから40pxへ縮小 */
+    background: rgba(10, 16, 28, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 24px 20px; /* さらに上下を詰めました */
+    margin-top: 30px;
 }
 
 .footer-inner {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr; /* メインカラムを少し狭く */
-    gap: 30px; /* 隙間を詰める */
+    display: flex;
+    justify-content: space-between; /* 左右に振り分け */
+    align-items: flex-start;
+    flex-wrap: wrap; /* スマホで自動折り返し */
+    gap: 24px;
 }
 
-.footer-logo { height: 24px; margin-bottom: 10px; } /* ロゴも微小型化 */
-.footer-tagline { font-size: 11px; color: #64748b; line-height: 1.6; }
+/* 左側：ブランドエリア */
+.footer-col-main {
+    flex: 1 1 300px; /* 最低300px確保 */
+}
+.footer-logo { height: 22px; margin-bottom: 8px; opacity: 0.8; }
+.footer-tagline { font-size: 11px; color: #64748b; line-height: 1.5; margin: 0; }
+
+/* 右側：リンクエリア（重なり防止にFlexを使用） */
+.footer-nav-wrap {
+    display: flex;
+    gap: 40px; /* 列同士の距離を固定 */
+    flex-wrap: wrap;
+}
+
+.footer-col {
+    min-width: fit-content; /* 文字の長さに合わせる */
+}
 
 .footer-title {
-    font-size: 12px; /* 13pxから12pxへ */
+    font-size: 11px;
     font-weight: 800;
     color: #38bdf8;
-    margin-bottom: 12px; /* 20pxから12pxへ */
+    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.footer-links li { margin-bottom: 8px; } /* 行間を詰める */
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 6px; } /* 行間をさらに詰めました */
 .footer-links a {
     color: #94a3b8;
-    font-size: 12px; /* 13pxから12pxへ */
+    font-size: 12px;
     text-decoration: none !important;
+    transition: color 0.2s;
+    white-space: nowrap; /* 勝手な改行を防ぐ */
 }
+.footer-links a:hover { color: #38bdf8; }
 
 .footer-bottom {
-    max-width: 1200px;
-    margin: 24px auto 0; /* 40pxから24pxへ */
-    padding-top: 16px;   /* 20pxから16pxへ */
-    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.02);
+    text-align: center;
 }
-.footer-bottom p { font-size: 11px; color: #64748b; }
+.footer-bottom p { font-size: 10px; color: #475569; margin: 0; }
 
-/* スマホ対応 */
-@media (max-width: 768px) {
-    .footer-inner { grid-template-columns: 1fr; text-align: center; gap: 40px; }
-    .footer-col-main { display: flex; flex-direction: column; align-items: center; }
+/* スマホ表示の最適化 */
+@media (max-width: 640px) {
+    .footer-inner { flex-direction: column; text-align: center; align-items: center; }
+    .footer-nav-wrap { justify-content: center; gap: 30px; }
+    .footer-tagline { margin-bottom: 10px; }
 }
   /* ===== CTA (収益導線) ===== */
   .cta-block{
