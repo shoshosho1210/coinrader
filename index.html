@@ -3314,15 +3314,15 @@ function renderOverview(){
         let detailedLabel = '';
 
         if (s >= 80) { 
-            color = '#4ade80'; detailedLabel = '✨ かなりの熱気（過熱に注意）'; 
+            color = '#4ade80'; detailedLabel = '🔥 非常に強い熱気'; 
         } else if (s >= 60) { 
-            color = '#86efac'; detailedLabel = '🌤️ 活気が出ています（上昇傾向）'; 
+            color = '#86efac'; detailedLabel = '🌤️ 活気ある地合い'; 
         } else if (s >= 40) { 
-            color = '#cbd5e1'; detailedLabel = '🍃 穏やかな地合い（安定）'; 
+            color = '#cbd5e1'; detailedLabel = '🍃 穏やかな凪（なぎ）'; 
         } else if (s >= 20) { 
-            color = '#fca5a5'; detailedLabel = '☁️ 少し慎重なムード（様子見）'; 
+            color = '#fca5a5'; detailedLabel = '☁️ 慎重なムード'; 
         } else { 
-            color = '#f87171'; detailedLabel = '❄️ 冷え込みが強まっています'; 
+            color = '#f87171'; detailedLabel = '❄️ 強い冷え込み'; 
         }
 
         sentMainEl.textContent = s;
@@ -3347,19 +3347,19 @@ function renderOverview(){
         let statusLabel = '';
         let glow = 'none';
 
-        // --- RSIの状態判定ロジック（マイルド＆体感版） ---
+        // --- RSIの状態判定ロジック（簡潔版） ---
         if (r >= 70) {
-            color = '#f87171'; statusLabel = '🌋 かなりの熱気（のぼせ気味）';
+            color = '#f87171'; statusLabel = '🌋 かなりの熱気';
             glow = '0 0 12px rgba(248, 113, 113, 0.5)';
         } else if (r >= 60) {
-            color = '#fca5a5'; statusLabel = '🌡️ 温度上昇中（にぎやかな気配）';
+            color = '#fca5a5'; statusLabel = '🌡️ 温度上昇中';
         } else if (r <= 30) {
-            color = '#38bdf8'; statusLabel = '🌊 静かな水底（エネルギー蓄積中）';
+            color = '#38bdf8'; statusLabel = '🌊 静かな水底';
             glow = '0 0 12px rgba(56, 189, 248, 0.6)';
         } else if (r <= 40) {
-            color = '#7dd3fc'; statusLabel = '💧 少し冷たい空気（深呼吸の時間）';
+            color = '#7dd3fc'; statusLabel = '💧 少し冷たい空気';
         } else {
-            color = '#cbd5e1'; statusLabel = '🍃 心地よい凪（平常運転）';
+            color = '#cbd5e1'; statusLabel = '🍃 心地よい凪（なぎ）';
         }
 
         rsiMainEl.textContent = r;
@@ -3385,17 +3385,17 @@ function renderOverview(){
         let color = '#cbd5e1'; // デフォルト：中立
         let statusLabel = '';
 
-        // --- 騰落バランスの判定ロジック（マイルド＆色彩版） ---
+        // --- 騰落バランスの判定ロジック（簡潔版） ---
         if (upPct >= 70) {
-            color = '#4ade80'; statusLabel = '☀️ まぶしい陽光（全面的な買い）';
+            color = '#4ade80'; statusLabel = '☀️ まぶしい陽光';
         } else if (upPct >= 55) {
-            color = '#86efac'; statusLabel = '⛅ 明るい兆し（上昇の広がり）';
+            color = '#86efac'; statusLabel = '⛅ 明るい兆し';
         } else if (upPct <= 30) {
-            color = '#f87171'; statusLabel = '🌑 深い影（一斉に慎重ムード）';
+            color = '#f87171'; statusLabel = '🌑 深い影';
         } else if (upPct <= 45) {
-            color = '#fca5a5'; statusLabel = '🌦️ 雲行きの変化（少し弱気）';
+            color = '#fca5a5'; statusLabel = '🌦️ 雲行きの変化';
         } else {
-            color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空（方向感待ち）';
+            color = '#cbd5e1'; statusLabel = '☁️ 穏やかな空';
         }
 
         // メイン表示の構築（↑120 vs ↓30 のような形式）
@@ -3429,15 +3429,15 @@ function renderOverview(){
         let phaseLabel = '';
         let phaseColor = '#facc15'; // 基本はBTCゴールド
 
-        // --- 市場フェーズの判定ロジック（マイルド＆直感版） ---
+        // --- 市場フェーズの判定ロジック（簡潔版） ---
         if (btcPct >= 55) {
-            phaseLabel = '🏔️ どっしり安定（BTC主導）';
+            phaseLabel = '🏔️ どっしり安定';
             phaseColor = '#facc15'; // ゴールド
         } else if (btcPct <= 45) {
-            phaseLabel = '🌈 華やかな活気（アルト賑わい）';
+            phaseLabel = '🌈 華やかな活気';
             phaseColor = '#4ade80'; // エメラルド
         } else if (btcPct <= 50) {
-            phaseLabel = '✨ 多彩な動き（銘柄物色中）';
+            phaseLabel = '✨ 多彩な動き';
             phaseColor = '#86efac'; // ライトグリーン
         } else {
             phaseLabel = '🍃 ほどよいバランス';
@@ -3556,27 +3556,27 @@ function renderOverview(){
         
         const altRatio = totalV ? ((ethV + otherV) / totalV * 100) : 0;
         
-        // --- 市場の「活気」判定ロジック（マイルド＆生命力版） ---
+        // --- 市場の「活気」判定ロジック（簡潔版） ---
         let statusLabel = '';
         let statusColor = '#cbd5e1';
         let glow = 'none';
 
         if (altRatio >= 60) {
-            statusLabel = '🌈 色彩豊かな市場（アルト賑わい）';
-            statusColor = '#4ade80'; // エメラルド
+            statusLabel = '🌈 色彩豊かな市場';
+            statusColor = '#4ade80';
             glow = '0 0 10px rgba(74, 222, 128, 0.4)';
         } else if (altRatio >= 45) {
-            statusLabel = '✨ 市場のぬくもり（活発な取引）';
-            statusColor = '#fb923c'; // オレンジ
+            statusLabel = '✨ 市場のぬくもり';
+            statusColor = '#fb923c';
             glow = '0 0 10px rgba(251, 146, 60, 0.4)';
         } else if (totalV > 10_000_000_000_000) { 
-            statusLabel = '⚡️ 轟く奔流（BTC巨大流動性）';
-            statusColor = '#facc15'; // ゴールド
+            statusLabel = '⚡️ 轟く奔流（ほんりゅう）';
+            statusColor = '#facc15';
         } else if (altRatio <= 30) {
-            statusLabel = '🕯️ 静かな灯火（BTCへ集中）';
-            statusColor = '#60a5fa'; // ブルー
+            statusLabel = '🕯️ 静かな灯火（ともしび）';
+            statusColor = '#60a5fa';
         } else {
-            statusLabel = '🍃 穏やかな風（安定した取引）';
+            statusLabel = '🍃 穏やかな風';
             statusColor = '#cbd5e1';
         }
 
@@ -3608,21 +3608,21 @@ function renderOverview(){
         let statusLabel = '';
         let glow = 'none';
 
-        // --- トレンド・クロス判定ロジック（マイルド版） ---
+        // --- トレンド・クロス判定ロジック（簡潔版） ---
         if (d >= 10) {
-            color = '#34d399'; statusLabel = '🌊 力強い上昇の流れ';
+            color = '#34d399'; statusLabel = '🌊 力強い潮流';
         } else if (d > 1) {
-            color = '#38bdf8'; statusLabel = '☀️ 順調な上向き傾向';
+            color = '#38bdf8'; statusLabel = '☀️ 順調な上向き';
         } else if (d > 0) {
-            color = '#60a5fa'; statusLabel = '🌱 期待の芽生え（GC接近）';
+            color = '#60a5fa'; statusLabel = '🌱 期待の芽生え';
             glow = '0 0 10px rgba(96, 165, 250, 0.5)';
         } else if (d >= -1) {
-            color = '#fb923c'; statusLabel = '☁️ 迷いのある動き（慎重）';
+            color = '#fb923c'; statusLabel = '☁️ 迷いのある動き';
             glow = '0 0 10px rgba(251, 146, 60, 0.5)';
         } else if (d > -10) {
-            color = '#f87171'; statusLabel = '📉 重たさが続く足取り';
+            color = '#f87171'; statusLabel = '📉 重たい足取り';
         } else {
-            color = '#ef4444'; statusLabel = '❄️ 厳しい冷え込みの状態';
+            color = '#ef4444'; statusLabel = '❄️ 厳しい冷え込み';
         }
 
         // プラスなら「+」記号を付ける
