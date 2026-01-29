@@ -3475,17 +3475,31 @@ function renderOverview(){
         makeBaselineChart('avgLine', labels, avgArr, { dayGrid: true, aboveColor: 'rgba(74, 222, 128, 0.2)', belowColor: 'rgba(248, 113, 113, 0.2)' });
         makeNormalizedLine('mcap7dLine', labels, mcapArr, { dayGrid: true });
 
-        // 平均・中央値の更新（詳細版）
+        // --- 平均・中央値の更新（マイルド＆情緒版） ---
         const lastAvg = avgArr[avgArr.length - 1];
         const elAvg = document.getElementById('kpiAvgChange'), elDist = document.getElementById('kpiAvgDist');
+
         if (elAvg && lastAvg != null) {
+            // 中央値の計算
             const s = lastRets.sort((a,b)=>a-b), mid = Math.floor(s.length/2), med = (s.length % 2) ? s[mid] : (s[mid-1]+s[mid])/2;
             const color = lastAvg >= 0 ? '#4ade80' : '#f87171';
+            
+            // メイン表示
             elAvg.innerHTML = `<span style="color:${color}">${lastAvg >= 0 ? '+' : ''}${lastAvg.toFixed(2)}%</span> <span style="font-size:12px; opacity:0.8;">(中央値: ${med >= 0 ? '+' : ''}${med.toFixed(2)}%)</span>`;
+
+            // 地合いの言語化
             if (elDist) {
-                if (lastAvg >= 5) elDist.textContent = "🚀 市場全体が「お祭り状態」";
-                else if (lastAvg >= 0) elDist.textContent = "📈 多くの銘柄で「含み益」が発生中";
-                else elDist.textContent = "📉 市場全体に「含み損」が拡大";
+                let statusText = '';
+                if (lastAvg >= 5) {
+                    statusText = "🌸 満開の勢い（全体がプラス圏）";
+                } else if (lastAvg >= 0) {
+                    statusText = "🌤️ 心地よい日差し（緩やかな利益）";
+                } else if (lastAvg >= -5) {
+                    statusText = "🌧️ しとしと雨（含み損の広がり）";
+                } else {
+                    statusText = "⛈️ 本格的な嵐（厳しい調整局面）";
+                }
+                elDist.textContent = statusText;
                 elDist.style.color = color;
             }
         }
