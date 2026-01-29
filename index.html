@@ -1676,14 +1676,17 @@ section[id] {
   </div>
 
   <div class="kpi-tile kpi-breadth">
-    <div class="kpi-tile-title">上昇 / 下落 銘柄数（24h）</div>
-    <div class="kpi-value-row"><div class="kpi-tile-big" id="sumBreadthMain">-</div><div class="kpi-tile-sub inline" id="sumBreadthSub">-</div></div>
-    <div class="kpi-mini-breadth mini-vis" title="上位250の24h上昇/下落銘柄数">
-      <div aria-hidden="true" class="breadth-track">
-        <div class="breadth-seg up" id="sumBreadthSegUp"></div>
-        <div class="breadth-seg down" id="sumBreadthSegDown"></div>
+    <div class="kpi-tile-title">騰落バランス (Market Breadth)</div>
+    <div class="kpi-value-row">
+      <div class="kpi-tile-big" id="sumBreadthMain" style="font-size: 16px; letter-spacing: 0;">-</div>
+      <div class="kpi-tile-sub inline" id="sumBreadthSub" style="font-weight: 700;">-</div>
+    </div>
+    <div class="kpi-mini-breadth mini-vis" title="上位250銘柄の騰落状況">
+      <div aria-hidden="true" class="breadth-track" style="height: 8px; background: rgba(255,255,255,0.05);">
+        <div class="breadth-seg up" id="sumBreadthSegUp" style="transition: width 0.6s ease;"></div>
+        <div class="breadth-seg down" id="sumBreadthSegDown" style="transition: width 0.6s ease;"></div>
       </div>
-      <div class="breadth-caption kpi-bar-caption" id="sumBreadthCaption">上昇/下落（24h）</div>
+      <div class="kpi-bar-caption" id="sumBreadthCaption" style="font-size: 9px; margin-top: 4px;">上昇銘柄 vs 下落銘柄</div>
     </div>
   </div>
 
@@ -3268,9 +3271,48 @@ function renderOverview(){
     setSum('sumRsiSub', lastRsiVal >= 70 ? '過熱' : (lastRsiVal <= 30 ? '売られすぎ' : '中立'));
     if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
 
-    // 騰落数タイル
-    setSum('sumBreadthMain', `↑${o.up} ↓${o.down}`);
-    setSum('sumBreadthSub', o.up >= o.down ? `上昇優勢` : `下落優勢`);
+    // --- 5. [上部タイルの更新：騰落バランス] ---
+    const breadthMainEl = document.getElementById('sumBreadthMain');
+    const breadthSubEl = document.getElementById('sumBreadthSub');
+    
+    if (breadthMainEl && (o.up + o.down) > 0) {
+        const total = o.up + o.down;
+        const upPct = (o.up / total) * 100;
+        let color = '#cbd5e1'; // デフォルト：中立
+        let statusLabel = '';
+
+        // 地合いの強さを判定
+        if (upPct >= 70) {
+            color = '#4ade80'; statusLabel = '🚀 全面高（強い買い気）';
+        } else if (upPct >= 55) {
+            color = '#86efac'; statusLabel = '📈 上昇優勢（買い継続）';
+        } else if (upPct <= 30) {
+            color = '#f87171'; statusLabel = '🚨 全面安（パニック売り）';
+        } else if (upPct <= 45) {
+            color = '#fca5a5'; statusLabel = '📉 下落優勢（弱気）';
+        } else {
+            color = '#cbd5e1'; statusLabel = '⚖️ 均衡（方向感模索）';
+        }
+
+        // メイン表示の構築（↑120 vs ↓30 のような形式）
+        breadthMainEl.innerHTML = `<span style="color:#4ade80; font-weight:800;">↑${o.up}</span> <span style="font-size:11px; opacity:0.4; margin:0 2px;">vs</span> <span style="color:#f87171; font-weight:800;">↓${o.down}</span>`;
+        
+        if (breadthSubEl) {
+            breadthSubEl.textContent = statusLabel;
+            breadthSubEl.style.color = color;
+        }
+
+        // 下部ミニバーの更新
+        const upSeg = document.getElementById('sumBreadthSegUp');
+        const downSeg = document.getElementById('sumBreadthSegDown');
+        if (upSeg && downSeg) {
+            upSeg.style.width = `${upPct}%`;
+            downSeg.style.width = `${100 - upPct}%`;
+            // 勢いがある方の色を明るくする演出
+            upSeg.style.opacity = upPct >= 50 ? '1' : '0.4';
+            downSeg.style.opacity = upPct < 50 ? '1' : '0.4';
+        }
+    }
 
     // ドミナンスタイル
     const totalM = o.totalMcap || 1;
