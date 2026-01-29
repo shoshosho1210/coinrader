@@ -3535,7 +3535,7 @@ function renderOverview(){
         if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
     }
 
-    // 5-3. 騰落バランス (地合いの健康診断)
+    // 5-3. 騰落バランス (表現をより客観的に調整)
     const bMainEl = document.getElementById('sumBreadthMain');
     const bSubEl = document.getElementById('sumBreadthSub');
     if (bMainEl && (o.up + o.down) > 0) {
@@ -3543,27 +3543,28 @@ function renderOverview(){
         let color = '#cbd5e1', statusLabel = '';
 
         if (upPct >= 70) { 
-            color = '#4ade80'; // 鮮やかな緑
+            color = '#4ade80'; 
             statusLabel = '☀️ 全面高（健全な上昇）'; 
         }
         else if (upPct >= 55) { 
-            color = '#86efac'; // 薄緑
+            color = '#86efac'; 
             statusLabel = '⛅ 買い優勢（良好な地合い）'; 
         }
         else if (upPct <= 30) { 
-            color = '#f87171'; // 警告の赤
-            statusLabel = '🌑 全面安（パニック売り）'; 
+            color = '#f87171'; 
+            // 「パニック」を「強い冷え込み」や「売り圧力が極大」に変更
+            statusLabel = '🌑 全面安（強い冷え込み）'; 
         }
         else if (upPct <= 45) { 
-            color = '#fca5a5'; // 薄赤
+            color = '#fca5a5'; 
             statusLabel = '🌧️ 売り優勢（冴えない地合い）'; 
         }
         else { 
-            color = '#cbd5e1'; // グレー
+            color = '#cbd5e1'; 
             statusLabel = '☁️ 拮抗（迷いのある地合い）'; 
         }
 
-        // メイン表示（上昇数 vs 下落数）
+        // メイン表示とミニバーの更新（ここから下は変更なし）
         bMainEl.innerHTML = `
             <div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;">
                 <span style="color:#4ade80;">↑${o.up}</span>
@@ -3577,7 +3578,6 @@ function renderOverview(){
             bSubEl.style.color = color;
         }
 
-        // 下部のミニバー更新
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
         if (upSeg && downSeg) { 
             upSeg.style.width = `${upPct}%`; 
