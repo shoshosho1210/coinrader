@@ -64,6 +64,25 @@ def calculate_rsi(coin_id, days=20):
     rs = avg_up / avg_down
     return round(100 - (100 / (1 + rs)), 2)
 
+def calculate_ma_distance(coin_id):
+    """過去250日分の価格を取得して50日/200日MA乖離率を計算する"""
+    data = get_coingecko_data(f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart", 
+                              {"vs_currency": "jpy", "days": "250", "interval": "daily"})
+    if not data or 'prices' not in data:
+        return None
+    
+    prices = [p[1] for p in data['prices']]
+    if len(prices) < 200:
+        return None
+
+    # SMA50 と SMA200 の計算
+    sma50 = sum(prices[-50:]) / 50
+    sma200 = sum(prices[-200:]) / 200
+    
+    # 乖離率 (%)
+    ma_distance = ((sma50 - sma200) / sma200) * 100
+    return round(ma_distance, 2)
+    
 def get_fear_and_greed_index():
     try:
         res = requests.get("https://api.alternative.me/fng/", timeout=10)
@@ -95,6 +114,7 @@ def generate_post():
     # 高度分析用：BTCとETHのRSIを計算
     btc_rsi = calculate_rsi("bitcoin")
     eth_rsi = calculate_rsi("ethereum")
+    btc_ma_dist = calculate_ma_distance("bitcoin") # ★追加
 
     # 指標抽出
     btc = next((item for item in markets if item["id"] == "bitcoin"), None)
@@ -129,6 +149,7 @@ def generate_post():
             "technical": {
                 "btc_rsi": btc_rsi,
                 "eth_rsi": eth_rsi
+                "btc_ma_distance": btc_ma_dist # ★ここに追加
             },
             "top_gainer": {
                 "symbol": top_gainer[0]['symbol'].upper() if top_gainer else "-",
