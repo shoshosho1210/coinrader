@@ -5199,43 +5199,42 @@ async function updateAiInsight() {
     
     if (!box || !textEl || _aiThinking) return;
 
-    // 1. 各タイルのテキストを取得して数値化
+    // 1. 各タイルのテキストを取得（バックアップ用）
     const sentTxt = document.getElementById('sumSentMain')?.textContent || "";
-    const rsiTxt = document.getElementById('sumRsiMain')?.textContent || "";
-    const domTxt = document.getElementById('sumDomMain')?.textContent || "";
-    const maTxt = document.getElementById('sumMaMain')?.textContent || "";
 
-    const sent = parseFloat(sentTxt);
-    const rsi = parseFloat(rsiTxt);
-    const dom = parseFloat(domTxt);
-    const maDist = parseFloat(maTxt);
+    // --- JSONファイルから正確なデータを取得する ---
+    const pastToday = await getHistoricalData(0); // 今日(0日前)
+    const pastYest  = await getHistoricalData(1); // 昨日
+    const past7d    = await getHistoricalData(7); // 7日前
+    const past30d   = await getHistoricalData(30); // 30日前
+  
+    // 値の確定：JSONにあればそれを使う。なければ画面上の数値を拾う
+    const sent = pastToday?.fgi || parseFloat(document.getElementById('sumSentMain')?.textContent) || 0;
+    const rsi  = pastToday?.rsi || parseFloat(document.getElementById('sumRsiMain')?.textContent) || 0;
+    const dom  = pastToday?.dom || parseFloat(document.getElementById('sumDomMain')?.textContent) || 0;
+    const maDist = pastToday?.ma !== null ? pastToday.ma : parseFloat(document.getElementById('sumMaMain')?.textContent);
 
-    // データが揃うまでガード
-    const isDataInvalid = isNaN(sent) || isNaN(rsi) || isNaN(dom) || sentTxt.includes('—');
-    if (isDataInvalid) {
+    // データが全く取れない（同期前）場合は中断
+    if (isNaN(sent) || sent === 0 || sentTxt.includes('—')) {
         if (timeEl) timeEl.textContent = "[ DATA.WAITING ]";
         return; 
     }
 
-    // 更新の必要性をチェック
-    const currentState = `${sentTxt}|${rsiTxt}|${domTxt}|${maTxt}`;
+    // 以前の状態と変わっていなければ解析スキップ
+    const currentState = `${sent}|${rsi}|${dom}|${maDist}`;
     if (_lastAiState === currentState) return;
 
     _aiThinking = true;
     _lastAiState = currentState;
+  
     if (noteEl) noteEl.style.opacity = "0";
     if (timeEl) timeEl.textContent = "[ ANALYZING... ]";
 
-    // 思考中アニメーション
+    // A. 思考中演出
     textEl.innerHTML = `<div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px; width:100%;"><div class="cyber-loader"><div class="cyber-dot"></div></div><span style="font-family:monospace; color:#38bdf8; font-size:10px; margin-top:12px; letter-spacing:2px; animation: pulse 1.5s infinite;">MARKET.SCANNING...</span></div>`;
 
     await new Promise(r => setTimeout(r, 1200));
 
-    // B. 過去比較データの取得
-    const pastYest = await getHistoricalData(1);
-    const past7d   = await getHistoricalData(7);
-    const past30d  = await getHistoricalData(30);
-    
     // C. 分析ロジック
     let comparisonText = "";
     if (past7d) {
@@ -5247,20 +5246,19 @@ async function updateAiInsight() {
                        (sent <= 20) ? `極端な悲観により、<strong>技術的な反発エネルギー</strong>が蓄積されています。` : 
                        `主要指標は中立圏にあり、<strong>レンジ内での需給均衡</strong>が続いています。`;
 
-    if (maDist !== null && !isNaN(maDist)) {
-        const maMainEl = document.getElementById('sumMaMain');
-        const maSubEl = document.getElementById('sumMaSub');
-        if (maMainEl) {
-            maMainEl.textContent = (maDist >= 0 ? '+' : '') + maDist.toFixed(2) + '%';
-            let c = '#cbd5e1', sl = '';
-            if (maDist >= 1) { c = '#38bdf8'; sl = '📈 上昇トレンド'; }
-            else if (maDist > 0) { c = '#60a5fa'; sl = '✓ 上向き推移'; }
-            else if (maDist >= -1) { c = '#fb923c'; sl = '→ 横ばい傾向'; }
-            else { c = '#f87171'; sl = '↘️ 下落トレンド'; }
-            maMainEl.style.color = c;
-            if (maSubEl) { maSubEl.textContent = sl; maSubEl.style.color = c; }
-            if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(maDist);
-        }
+    // --- ここでタイルの数値を JSON の正確な値で上書き同期 ---
+    const maMainEl = document.getElementById('sumMaMain');
+    const maSubEl = document.getElementById('sumMaSub');
+    if (maMainEl && maDist !== null) {
+        maMainEl.textContent = (maDist >= 0 ? '+' : '') + maDist.toFixed(2) + '%';
+        let c = '#cbd5e1', sl = '';
+        if (maDist >= 1) { c = '#38bdf8'; sl = '📈 上昇トレンド'; }
+        else if (maDist > 0) { c = '#60a5fa'; sl = '✓ 上向き推移'; }
+        else if (maDist >= -1) { c = '#fb923c'; sl = '→ 横ばい傾向'; }
+        else { c = '#f87171'; sl = '↘️ 下落トレンド'; }
+        maMainEl.style.color = c;
+        if (maSubEl) { maSubEl.textContent = sl; maSubEl.style.color = c; }
+        if (typeof updateSummaryMaBar === 'function') updateSummaryMaBar(maDist);
     }
   
     // D. タイピング演出
