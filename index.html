@@ -5137,35 +5137,46 @@ async function typeWriter(el, html, speed = 20) {
     el.classList.remove('typing');
 }
 
+// --- 1.5 過去の分析データを安全に取得する関数 (新旧形式対応) ---
 async function getHistoricalData(daysAgo = 7) {
     const now = new Date();
-    // JST(日本時間)での日付計算
-    const targetDate = new Date(now.getTime() + (9 * 60 * 60 * 1000));
-    targetDate.setDate(targetDate.getDate() - daysAgo);
+    
+    // 日付フォーマット関数（内部用）
+    const formatDate = (d) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}${m}${day}`;
+    };
 
-    const y = targetDate.getFullYear();
-    const m = String(target_date.getMonth() + 1).padStart(2, '0');
-    const d = String(target_date.getDate()).padStart(2, '0');
-    const dateStr = `${y}${m}${d}`;
+    // ターゲットとなる日付を計算
+    const targetDate = new Date(now);
+    targetDate.setDate(now.getDate() - daysAgo);
 
-    try {
-        const res = await fetch(`data/daily/${dateStr}.json?v=${Date.now()}`);
-        if (res.ok) {
-            const json = await res.json();
-            const s = json.summary || {};
-            const tech = s.technical || {}; // ← ここが重要
-
-            return {
-                date: s.date || dateStr,
-                fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
-                dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
-                rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
-                // ★ここを JSON のキー名 "btc_ma_distance" と完全に一致させる
-                ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
-            };
+    // 取得候補：1. 指定日数前、2. 蓄積開始日(20260126)
+    const filenames = [formatDate(targetDate), "20260126"];
+    
+    for (const dateStr of filenames) {
+        try {
+            // キャッシュ対策としてクエリパラメータ(?v=...)を付与
+            const res = await fetch(`data/daily/${dateStr}.json?v=${Date.now()}`);
+            if (res.ok) {
+                const json = await res.json();
+                const s = json.summary || {}; 
+                const tech = s.technical || {}; 
+              
+                return {
+                    date: s.date || json.date || dateStr,
+                    fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
+                    dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
+                    rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
+                    ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
+                };
+            }
+        } catch (e) { 
+            console.warn(`Fetch failed for ${dateStr}:`, e);
+            continue; 
         }
-    } catch (e) {
-        console.warn(`Historical data fetch failed for ${dateStr}`);
     }
     return null;
 }
