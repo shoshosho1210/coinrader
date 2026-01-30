@@ -2,7 +2,7 @@ name: Daily Share Page
 
 on:
   schedule:
-    - cron: "0 * * * *"  # 毎時0分に実行
+    - cron: "52 * * * *"  # 毎時0分に実行
   workflow_dispatch:
 
 jobs:
