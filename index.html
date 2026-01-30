@@ -5458,7 +5458,12 @@ async function updateAiInsight() {
     }
   
     let strategyText = "";
-    if (isExtremeGreed && isOverbought) {
+    // ★緊急時はここが最優先される（修正版：極短・事実のみ）
+    if (isCrash) {
+        strategyText = `⚠️ <strong>【市場変動アラート】短期的な急落局面です。</strong><br>
+        ${crashReason}これに連動し市場全体が「全面安」の展開です。<br><br>
+        ボラティリティが急拡大しており、売り圧力が優勢な地合いとなっています。現在は主要サポートラインでの下げ止まりを探る、調整フェーズにあります。`;
+    } else if (isExtremeGreed && isOverbought) {
         strategyText = pick([
             `主要な技術指標が軒並み高位に達しており、市場は<strong>「統計的限界域」</strong>での推移を続けています。過熱したセンチメントを背景に、現在の価格帯を維持するための強い買い支えが試される局面です。`,
             `心理的・テクニカル面で強い過熱感が確認されます。<strong>「一方向への偏り」</strong>が顕著となっており、小さな需給の変化が価格変動を増幅させやすい非対称な構造となっています。`
