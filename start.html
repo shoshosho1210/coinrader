@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>暗号資産投資の始め方 - CoinRader | データ分析から選ぶ取引所ガイド</title>
-  <meta name="description" content="CoinRader（コインレーダー）による暗号資産投資の始め方。データ分析の視点から、2026年最新の国内取引所（コインチェック・GMOコイン等）を厳選解説します。">
+  <meta name="description" content="CoinRader（コインレーダー）による暗号資産投資の始め方。データ分析の視点から、2026年最新の国内取引所を厳選解説します。">
   <link rel="canonical" href="https://coinrader.net/start">
   
   <meta property="og:site_name" content="CoinRader">
@@ -25,10 +25,9 @@
   <link rel="stylesheet" href="/_page_style.css" />
 
   <style>
-    /* 信頼感のあるプロフェッショナルなダークテーマ */
     .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
     .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
-            background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; margin-bottom: 8px;}
+            background: rgba(56, 189, 248, 0.1); border:1px solid rgba(56, 189, 248, 0.3); color:#38bdf8; margin-bottom: 8px;}
     .section { margin-top: 40px; }
     .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin-top:16px; }
     
@@ -39,13 +38,12 @@
       transition: all 0.2s ease;
       display: flex; flex-direction: column;
     }
-    .xcard:hover { transform: translateY(-4px); border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); }
+    .xcard:hover { transform: translateY(-4px); border-color: #38bdf8; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); }
     .xcard h3 { margin:0 0 8px; font-size:20px; color:#fff; }
     .xcard .badge { font-size: 11px; padding: 3px 10px; border-radius: 4px; background: #2563eb; color: #fff; margin-bottom: 12px; display: inline-block; font-weight: bold;}
     
     .muted { color:#94a3b8; font-size:13px; line-height:1.6; }
     .list { margin:16px 0; padding-left: 20px; color:#cbd5e1; line-height:1.8; flex-grow: 1; }
-    .btnrow { margin-top:auto; }
     
     .btn-primary{
       display:flex; align-items:center; justify-content:center;
@@ -54,12 +52,10 @@
       transition: background 0.2s;
     }
     .btn-primary:hover{ background:#3b82f6; }
-    .btn-secondary { background: #10b981; } /* Cryptact用 */
-    .btn-secondary:hover { background: #059669; }
 
     .expert-box {
-      border: 1px solid rgba(96, 165, 250, 0.2);
-      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      background: rgba(56, 189, 248, 0.05);
       padding: 20px; border-radius: 12px; margin: 24px 0;
       display: flex; gap: 15px; align-items: flex-start;
     }
@@ -69,67 +65,40 @@
       padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.1);
       background:rgba(15, 23, 42, 0.8);
     }
-    .brandLogo{ height:28px; }
-/* --- Final Slim Footer (Consistency Update) --- */
-.site-footer {
-    background: rgba(10, 16, 28, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 20px 16px;
-    margin-top: 60px;
-    width: 100%;
-}
+    .brandLogo{ height:26px; }
 
-.footer-inner {
-    max-width: 1000px; /* start.htmlの幅に合わせた微調整 */
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+    /* プロ仕様：クリプタクト専用モジュール */
+    .tax-card {
+      background: rgba(15, 23, 42, 0.6); 
+      border: 1px solid rgba(16, 185, 129, 0.3); 
+      border-radius: 16px; 
+      padding: 28px; 
+      margin: 24px 0;
+      position: relative;
+    }
+    .tax-btn {
+      display: inline-block;
+      background: #10b981;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 800;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tax-btn:hover { background: #059669; transform: scale(1.02); }
 
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.footer-logo { height: 18px !important; width: auto; opacity: 0.8; }
-.footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
-
-.footer-nav {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.footer-nav a {
-    color: #94a3b8;
-    font-size: 11.5px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s;
-}
-
-.footer-nav a:hover { color: #38bdf8; }
-
-.footer-copyright {
-    max-width: 1000px;
-    margin: 12px auto 0;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    text-align: center;
-    font-size: 10px;
-    color: #475569;
-}
-
-@media (max-width: 768px) {
-    .footer-inner { flex-direction: column; text-align: center; }
-    .footer-nav { justify-content: center; gap: 8px 12px; }
-    .footer-brand { flex-direction: column; gap: 4px; }
-}
-    
+    /* --- Final Slim Footer --- */
+    .site-footer { background: rgba(10, 16, 28, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 20px 16px; margin-top: 60px; width: 100%; }
+    .footer-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .footer-logo { height: 18px !important; width: auto; opacity: 0.8; }
+    .footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav { display: flex; gap: 12px; flex-wrap: wrap; }
+    .footer-nav a { color: #94a3b8; font-size: 11.5px; text-decoration: none !important; transition: color 0.2s; }
+    .footer-nav a:hover { color: #38bdf8; }
+    .footer-copyright { max-width: 1000px; margin: 12px auto 0; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.02); text-align: center; font-size: 10px; color: #475569; }
   </style>
 </head>
 
@@ -153,9 +122,9 @@
       <div class="expert-box">
         <div style="font-size: 24px;">📊</div>
         <div>
-          <strong style="color:#60a5fa;">分析者による推薦:</strong><br>
+          <strong style="color:#38bdf8;">分析者による推薦:</strong><br>
           <span class="muted">
-            運営者は金融庁共催のデータコンペ「金融データ活用チャレンジ」にて上位84位（705人中）を記録。<br>
+            運営者は金融庁共催のデータコンペ「第3回金融データ活用チャレンジ」にて上位84位（705人中）を記録。
             その知見から、信頼性と実用性を兼ね備えたサービスを厳選しています。
           </span>
         </div>
@@ -163,14 +132,12 @@
 
       <div class="noteBox">
         <span class="pill" style="background:rgba(255,255,255,0.05); color:#94a3b8;">広告・PR</span><br>
-        当サイトは広告収益により運営されています。紹介している取引所で口座開設が行われた場合、紹介料が発生することがありますが、ユーザー様への費用負担は一切ございません。
+        当サイトは広告収益により運営されています。本ページを経由した口座開設等により収益が発生することがありますが、ユーザー様への追加費用は一切ございません。
       </div>
 
-      <hr class="hr" style="margin: 40px 0; opacity: 0.1;">
-
       <div class="section">
-        <h2>ステップ1：スタイルに合う「口座」を持つ</h2>
-        <p class="muted">目的（初心者・コスト・分析）に合わせて最適な窓口を選びましょう。</p>
+        <h2>ステップ1：目的に合う「口座」を持つ</h2>
+        <p class="muted">まずは、自分の投資スタイルに合わせて最適な窓口を選びましょう。</p>
 
         <div class="cards">
           <div class="xcard" style="border-top: 4px solid #00d2ff;">
@@ -178,44 +145,44 @@
             <h3>コインチェック</h3>
             <div class="muted">アプリダウンロード数国内No.1</div>
             <ul class="list">
-              <li>スマホアプリの使いやすさが抜群。</li>
-              <li>マネックスグループの強固な基盤。</li>
-              <li><strong>データ重視:</strong> ユーザー数が多いため、市場の関心度を知る上でも必須。</li>
+              <li>スマホアプリが抜群に使いやすく、最初の1口座に最適。</li>
+              <li>マネックスグループによる強固なセキュリティ基盤。</li>
+              <li><strong>分析視点:</strong> ユーザー数が多いため、国内の市場心理を反映しやすい。</li>
             </ul>
             <div class="btnrow">
-              <a class="btn-primary" href="ここにコインチェックのURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cc_open">
+              <a class="btn-primary" href="ここにコインチェックのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cc_open">
                 コインチェック 公式サイト
               </a>
             </div>
           </div>
 
           <div class="xcard" style="border-top: 4px solid #3b82f6;">
-            <span class="badge" style="background:#1e40af;">分析・トレード派</span>
+            <span class="badge" style="background:#1e40af;">トレード・分析重視</span>
             <h3>みんなのコイン / FXTF</h3>
-            <div class="muted">レバレッジ取引 / 分析ツール充実</div>
+            <div class="muted">レバレッジ取引 / 高機能ツール</div>
             <ul class="list">
-              <li><strong>みんなのコイン:</strong> 各種手数料0円でレバレッジ取引。</li>
-              <li><strong>FXTF:</strong> 唯一無二の「MT4」対応。自作指標の検証に。</li>
-              <li>高度な分析を実際の利益に変える「攻め」の口座。</li>
+              <li><strong>みんなのコイン:</strong> 各種手数料0円でレバレッジ取引が可能。</li>
+              <li><strong>FXTF:</strong> 唯一無二の「MT4」対応。独自インジケーターの検証に。</li>
+              <li>高度な分析を実際の利益に変えるための「攻め」の口座。</li>
             </ul>
             <div class="btnrow">
-              <a class="btn-primary" href="ここにみんなのコインのURL" target="_blank" rel="noopener noreferrer" data-ga="ex_minna_open" style="background:#1d4ed8;">
+              <a class="btn-primary" href="ここにみんなのコインのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_minna_open" style="background:#1d4ed8;">
                 トレード専用口座を開く
               </a>
             </div>
           </div>
 
           <div class="xcard" style="border-top: 4px solid #64748b;">
-            <span class="badge" style="background:#475569;">信頼・コスト重視</span>
+            <span class="badge" style="background:#475569;">信頼・低コスト重視</span>
             <h3>GMOコイン / BITPOINT</h3>
             <div class="muted">手数料の安さ国内トップクラス</div>
             <ul class="list">
-              <li><strong>GMOコイン:</strong> 送金手数料無料。オリコン満足度No.1。</li>
-              <li><strong>BITPOINT:</strong> 板取引の手数料が無料。SBIグループ運営。</li>
-              <li>長期保有（ガチホ）で資産を積み上げる「守り」の口座。</li>
+              <li><strong>GMOコイン:</strong> 即時入金・送金手数料が無料。オリコン満足度No.1。</li>
+              <li><strong>BITPOINT:</strong> 板取引の手数料が無料。SBIグループが運営。</li>
+              <li>長期保有（ガチホ）で資産を確実に積み上げる「守り」の口座。</li>
             </ul>
             <div class="btnrow">
-              <a class="btn-primary" href="ここにGMOコインのURL" target="_blank" rel="noopener noreferrer" style="background:#475569;">
+              <a class="btn-primary" href="ここにGMOコインのSSLリンクURL" target="_blank" rel="noopener noreferrer" style="background:#475569;">
                 詳細を公式サイトで見る
               </a>
             </div>
@@ -225,47 +192,58 @@
 
       <div class="section">
         <h2>ステップ2：セキュリティの徹底</h2>
+        <div class="text-block muted">
+          暗号資産は自分の手で守るものです。以下の2点は必ず設定しましょう。
+        </div>
         <ul class="list">
-          <li><strong>2段階認証:</strong> SMSではなくGoogle Authenticator等のアプリを推奨。</li>
-          <li><strong>資産の分散:</strong> 一つの取引所に全財産を置かず、用途別に分けましょう。</li>
+          <li><strong>2段階認証の必須化:</strong> SMS認証ではなく、Google Authenticator等の専用アプリを使いましょう。</li>
+          <li><strong>資産の分散管理:</strong> 一つの取引所に全財産を置かず、用途（売買用・長期保存用）で分けましょう。</li>
         </ul>
       </div>
 
       <div class="section">
-        <h2>ステップ4：損益計算・税金対策（必須）</h2>
-        <p class="muted">複数の口座を持つなら、確定申告に向けた自動計算ツールの導入は必須です。</p>
-        <div class="xcard" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.05);">
-            <span class="badge" style="background:#10b981;">分析者の必須ツール</span>
-            <h3>クリプタクト（Cryptact）</h3>
-            <div class="muted">国内利用者数No.1の損益計算サービス</div>
-            <ul class="list">
-              <li>各取引所の履歴をアップロードするだけで損益を自動算出。</li>
-              <li>「今どれくらい利益（含み損）が出ているか」を正確に把握。</li>
-            </ul>
-            <div class="btnrow">
-              <a class="btn-primary btn-secondary" href="ここにクリプタクトのURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cryptact_open">
-                無料で損益計算を始める
-              </a>
-            </div>
+        <h2>ステップ3：客観的なデータ分析（当サイトの活用）</h2>
+        <div class="text-block muted">
+          口座を開設したら、感情で売買する前に [CoinRader ホーム](/) をチェックしてください。
+        </div>
+        <ul class="list">
+          <li><strong>AIセンチメント:</strong> 今の市場は「パニック（恐怖）」か「総楽観」かを確認する。</li>
+          <li><strong>RSI:</strong> 買いたいと思った瞬間、統計的に「買われすぎ」ていないかをチェックする。</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>ステップ4：損益管理・税金対策</h2>
+        <p class="muted">複数の口座で取引を始めると、損益の把握が困難になります。早い段階でのツール導入が成功の鍵です。</p>
+        
+        <div class="tax-card">
+          <div style="color: #10b981; font-size: 11px; font-weight: bold; letter-spacing: 0.1em; margin-bottom: 8px;">PROFESSIONAL MANAGEMENT TOOL</div>
+          <h3 style="color: #fff; margin: 0 0 12px; font-size: 20px;">正確な損益計算を「自動化」する</h3>
+          <p class="muted" style="margin-bottom: 20px;">
+            国内利用者数No.1の「クリプタクト」は、100以上の取引所に対応。取引履歴をアップロードするだけで、AIとツールがあなたの含み益や税金を1円単位で可視化します。
+          </p>
+          <a href="<a href="https://h.accesstrade.net/sp/cc?rk=0100pdy600onmg" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Cryptact<img src="https://h.accesstrade.net/sp/rr?rk=0100pdy600onmg" width="1" height="1" border="0" alt="" /></a>" target="_blank" rel="noopener noreferrer" class="tax-btn" data-ga="ex_cryptact_open">
+            無料で損益計算を試す →
+          </a>
         </div>
       </div>
 
       <div class="noteBox" style="margin-top: 50px;">
-        ※本ページの内容は投資勧誘を目的としたものではありません。最終的な投資判断はご自身の責任で行ってください。
+        ※本ページの内容は投資勧誘を目的としたものではありません。提供情報の正確性には細心の注意を払っておりますが、最終的な投資判断はご自身の責任で行ってください。
       </div>
     </div>
 
-<footer class="site-footer">
-    <div class="footer-inner">
-        <div class="footer-brand">
-            <img alt="CoinRader" class="footer-logo" src="assets/coinrader_logo_horizontal_075_dark.png"/>
-            <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img alt="CoinRader" class="footer-logo" src="assets/coinrader_logo_horizontal_075_dark.png"/>
+                <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+            </div>
         </div>
-    </div>
-    <div class="footer-copyright">
-        &copy; 2026 CoinRader. All rights reserved.
-    </div>
-</footer>
+        <div class="footer-copyright">
+            &copy; 2026 CoinRader. All rights reserved.
+        </div>
+    </footer>
   </div>
 
   <script>
