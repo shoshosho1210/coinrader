@@ -5460,7 +5460,7 @@ async function updateAiInsight() {
     let strategyText = "";
     // ★緊急時はここが最優先される（修正版：極短・事実のみ）
     if (isCrash) {
-        strategyText = `⚠️ <strong>短期的な急落局面です。</strong>
+        strategyText = `<strong>短期的な急落局面です。</strong>
         ${crashReason}これに連動し市場全体が「全面安」の展開です。<br>
         売り圧力が優勢な地合いです。現在は主要サポートでの下げ止まりを探る調整局面です。`;
     } else if (isExtremeGreed && isOverbought) {
