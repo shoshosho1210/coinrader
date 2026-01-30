@@ -3881,36 +3881,33 @@ function renderOverview(){
             bSubEl.style.fontSize = "12px"; // フォントサイズもFGIに合わせる
         }
 
-        // 3. 【バー】（幅100%強制の最強設定）
+        // 3. 【バー】（DOM再構築版：既存のコンテナがダメなら作り直す）
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
-        if (upSeg && downSeg) { 
-            // セグメントの幅（％）
+        if (upSeg && downSeg) {
+            let barContainer = upSeg.parentElement;
+            
+            // もし親要素がKPIタイルそのもの(kpi-breadth)だった場合、専用の箱がないので作る
+            if (barContainer && (barContainer.id.includes('Breadth') || barContainer.className.includes('kpi-tile'))) {
+                const newWrapper = document.createElement('div');
+                barContainer.insertBefore(newWrapper, upSeg); // upSegの前に箱を置く
+                newWrapper.appendChild(upSeg); // 箱の中に移動
+                newWrapper.appendChild(downSeg); // 箱の中に移動
+                barContainer = newWrapper; // 親要素を新しい箱に更新
+            }
+
+            // ここからは同じスタイル適用
             upSeg.style.width = `${upPct}%`; 
             downSeg.style.width = `${100 - upPct}%`; 
             
-            // 親要素（コンテナ）を取得
-            const barContainer = upSeg.parentElement;
-            
-            if (barContainer) {
-                // スタイルをリセットして強制的に広げる
-                // "flex: 1 1 auto" と "width: 100%" を両方指定して隙間を埋める
-                barContainer.style.cssText = `
-                    display: flex;
-                    flex-direction: row;
-                    width: 100%;
-                    min-width: 100%;
-                    max-width: 100%;
-                    height: 6px;
-                    margin-top: 8px;
-                    margin-bottom: 6px;
-                    border-radius: 2px;
-                    background-color: rgba(255,255,255,0.1);
-                    overflow: hidden;
-                    box-sizing: border-box;
-                    align-self: stretch; 
-                    justify-self: stretch;
-                `;
-            }
+            barContainer.style.cssText = `
+                display: flex;
+                width: 100%;
+                height: 6px;
+                margin: 8px 0 6px 0;
+                background: rgba(255,255,255,0.1);
+                border-radius: 2px;
+                overflow: hidden;
+            `;
         }
         
         // 4. 【詳細】キャプション（バーの下・一番下）
