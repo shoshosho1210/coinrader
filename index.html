@@ -3840,52 +3840,61 @@ function renderOverview(){
         if (typeof updateSummaryRsiBar === 'function') updateSummaryRsiBar(lastRsiVal);
     }
 
-    // 5-3. 騰落バランス (表現をより客観的に調整)
+    // 5-3. 騰落バランス (決定版：危機感を伝える「深さ」と「広がり」の両立)
     const bMainEl = document.getElementById('sumBreadthMain');
     const bSubEl = document.getElementById('sumBreadthSub');
+    const bCaptionEl = document.querySelector('.kpi-tile.kpi-breadth .kpi-bar-caption'); 
+
     if (bMainEl && (o.up + o.down) > 0) {
+        // ★ここが重要：市場全体の「平均的な痛み」を計算
+        const marketAvg = o.avgChg || 0;
         const upPct = (o.up / (o.up + o.down)) * 100;
-        let color = '#cbd5e1', statusLabel = '';
+        
+        let color = '#cbd5e1', statusLabel = '', icon = '';
 
-        if (upPct >= 70) { 
-          color = '#4ade80'; 
-          statusLabel = '📊 広範な上昇'; 
-        }
-        else if (upPct >= 55) { 
-          color = '#86efac'; 
-          statusLabel = '↗️ 上昇銘柄優勢'; 
-        }
-        else if (upPct <= 30) { 
-          color = '#f87171'; 
-          statusLabel = '📉 広範な下落'; 
-        }
-        else if (upPct <= 45) { 
-          color = '#fca5a5'; 
-          statusLabel = '↘️ 下落銘柄優勢'; 
-        }
-        else { 
-          color = '#cbd5e1'; 
-          statusLabel = '⚖️ 均衡状態'; 
+        // 平均騰落率（深さ）でメインの色とアイコンを決める
+        if (marketAvg <= -5) { 
+            color = '#ef4444'; statusLabel = '全面安 (Crash)'; icon = '📉';
+        } else if (marketAvg <= -2) { 
+            color = '#f87171'; statusLabel = '軟調 (Weak)'; icon = '↘️';
+        } else if (marketAvg >= 5) { 
+            color = '#22c55e'; statusLabel = '全面高 (Surge)'; icon = '🚀';
+        } else if (marketAvg >= 2) { 
+            color = '#4ade80'; statusLabel = '堅調 (Strong)'; icon = '↗️';
+        } else { 
+            color = '#cbd5e1'; statusLabel = 'もみ合い (Flat)'; icon = '➡️';
         }
 
-        // メイン表示とミニバーの更新（ここから下は変更なし）
+        // ★メイン表示：一番大事な「平均騰落率」を大きく表示
         bMainEl.innerHTML = `
-            <div class="kpi-main-label" style="display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:0;">
-                <span style="color:#4ade80;">↑${o.up}</span>
-                <span style="font-size:12px; opacity:0.3; font-weight:normal; margin:0 2px;">vs</span>
-                <span style="color:#f87171;">↓${o.down}</span>
+            <div class="kpi-main-label" style="color:${color}; font-size:22px; letter-spacing:-0.5px;">
+                ${icon} ${(marketAvg > 0 ? '+' : '')}${marketAvg.toFixed(2)}%
             </div>`;
 
+        // ★サブ表示：ここで「数（↑15 vs ↓235）」を見せる
         if (bSubEl) {
-            bSubEl.textContent = statusLabel;
-            bSubEl.className = "kpi-sub-label";
-            bSubEl.style.color = color;
+            bSubEl.innerHTML = `
+                <span style="font-size:11px; color:#cbd5e1;">
+                    <span style="color:#4ade80; font-weight:700;">↑${o.up}</span>
+                    <span style="opacity:0.4; margin:0 2px;">/</span>
+                    <span style="color:#f87171; font-weight:700;">↓${o.down}</span>
+                </span>
+            `;
+            bSubEl.className = "kpi-tile-sub"; 
+            bSubEl.style.marginTop = "2px";
         }
 
+        // 下のバー（青赤の帯）はそのまま「比率」を表示
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
         if (upSeg && downSeg) { 
             upSeg.style.width = `${upPct}%`; 
             downSeg.style.width = `${100 - upPct}%`; 
+        }
+        
+        // キャプション：状況説明を入れる
+        if (bCaptionEl) {
+            bCaptionEl.textContent = statusLabel; // 例: 全面安 (Crash)
+            bCaptionEl.style.color = color;
         }
     }
 
