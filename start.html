@@ -201,32 +201,62 @@
         </ul>
       </div>
 
-<div class="section">
+<div class="section" style="position: relative; z-index: 100;">
   <h2>ステップ3：客観的なデータ分析（当サイトの活用）</h2>
   <div class="text-block muted">
-    口座を開設し、入金を済ませたら、感情で注文を出す前に必ず <a href="/" style="color: #38bdf8; text-decoration: underline; font-weight: bold;">CoinRader ホーム</a> で市場の「検温」を行ってください。
+    注文を出す前に、必ず <a href="/" style="color: #38bdf8; text-decoration: underline; font-weight: bold;">CoinRader ホーム</a> で市場の「検温」を行ってください。
   </div>
   <ul class="list">
-    <li><strong>AIセンチメント:</strong> 群衆心理がパニック（恐怖）や総楽観に陥っていないかを確認。</li>
-    <li><strong>RSI (相対力指数):</strong> 買いたいと思った瞬間、統計的に「買われすぎ（天井圏）」ではないかをチェック。</li>
+    <li><strong>AIセンチメント:</strong> 市場がパニックや総楽観になっていないか。</li>
+    <li><strong>RSI:</strong> 統計的に「買われすぎ」ていないか。</li>
   </ul>
 </div>
 
-<div class="section" style="position: relative; z-index: 10;">
+<div class="section" style="position: relative; z-index: 100;">
   <h2>ステップ4：損益管理・税金対策（必須）</h2>
-  <p class="muted">複数の口座で取引を始めると、損益の把握が困難になります。早い段階でのツール導入が成功の鍵です。</p>
+  <p class="muted">複数の口座を持つなら、自動計算ツールの導入は必須です。</p>
   
-  <a href="あなたのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cryptact_open" style="text-decoration: none; display: block; color: inherit;">
-    <div class="tax-card-interactive">
-      <div class="tax-tag">PROFESSIONAL MANAGEMENT TOOL</div>
-      <h3 class="tax-title">正確な損益計算を「自動化」する</h3>
-      <p class="tax-desc">
-        国内利用者数No.1の「クリプタクト」は、100以上の取引所に対応。取引履歴をアップロードするだけで、AIとツールがあなたの含み益や税金を1円単位で可視化します。
-      </p>
-      <div class="tax-action-label">無料で損益計算を試す →</div>
+  <a href="あなたのSSLリンクURL" target="_blank" rel="noopener noreferrer" 
+     style="display: block; text-decoration: none; position: relative; z-index: 999; pointer-events: auto; margin: 24px 0;">
+    
+    <div class="tax-card-final">
+      <div style="color: #10b981; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px;">PROFESSIONAL TOOL</div>
+      <h3 style="color: #fff; margin: 0 0 12px; font-size: 20px;">正確な損益計算を「自動化」する</h3>
+      <p class="muted" style="font-size: 14px; margin-bottom: 20px;">取引履歴をアップロードするだけで、AIとツールが含み益や税金を1円単位で可視化。</p>
+      <div class="tax-btn-final">無料で損益計算を試す →</div>
     </div>
   </a>
 </div>
+
+<style>
+  /* 判定を確実にするためのスタイル */
+  .tax-card-final {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+  
+  /* マウスを乗せた時の挙動：カード全体を少し明るくして「押せる」ことを明示 */
+  .tax-card-final:hover {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: #10b981;
+    transform: translateY(-2px);
+  }
+
+  .tax-btn-final {
+    background: #10b981;
+    color: #fff;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 800;
+    text-align: center;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+</style>
 
 <style>
   .tax-card-interactive {
