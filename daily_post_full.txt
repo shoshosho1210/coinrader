@@ -2,14 +2,14 @@
 分析: 中立
 
 🔹 Bitcoin 📈
-価格: ¥1297万
-前日比: +0.7%
-RSI(14): 15.79
+価格: ¥1303万
+前日比: +0.8%
+RSI(14): 17.49
 心理指数: 16 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: INX, HYPE, XAUT
-急上昇銘柄: LIT (7%↑)
+トレンド入り: INX, PENGU, KAG
+急上昇銘柄: SENT (10%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260131.html
