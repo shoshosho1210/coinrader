@@ -5451,7 +5451,7 @@ async function updateAiInsight() {
     // 判定基準：BTCが5%以上急落、またはFGIが「極度の恐怖(15以下)」
     if (btcChg <= -5) {
         isCrash = true;
-        crashReason = `ビットコインが24時間で<strong>${btcChg.toFixed(1)}%急落</strong>しており、`;
+        crashReason = `ビットコインが24時間で${btcChg.toFixed(1)}%急落しており、`;
     } else if (sent !== null && sent <= 15) { 
         isCrash = true;
         crashReason = `恐怖指数が<strong>${sent}（極度の恐怖）</strong>まで低下しており、`;
@@ -5461,7 +5461,7 @@ async function updateAiInsight() {
     // ★緊急時はここが最優先される（修正版：極短・事実のみ）
     if (isCrash) {
         strategyText = `⚠️ <strong>短期的な急落局面です。</strong>
-        ${crashReason}これに連動し市場全体が「全面安」の展開です。<br><br>
+        ${crashReason}これに連動し市場全体が「全面安」の展開です。<br>
         ボラティリティが急拡大しており、売り圧力が優勢な地合いとなっています。現在は主要サポートラインでの下げ止まりを探る、調整フェーズにあります。`;
     } else if (isExtremeGreed && isOverbought) {
         strategyText = pick([
