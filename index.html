@@ -3881,9 +3881,10 @@ function renderOverview(){
             bSubEl.style.fontSize = "12px"; // フォントサイズもFGIに合わせる
         }
 
-        // 3. 【バー】（ここが修正ポイント：FGIと同じ長さにするための強制スタイル）
+        // 3. 【バー】（幅100%強制の最強設定）
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
         if (upSeg && downSeg) { 
+            // セグメントの幅（％）
             upSeg.style.width = `${upPct}%`; 
             downSeg.style.width = `${100 - upPct}%`; 
             
@@ -3891,20 +3892,24 @@ function renderOverview(){
             const barContainer = upSeg.parentElement;
             
             if (barContainer) {
-                // ★ここが魔法のコード：FGIと同じ幅にする設定
-                barContainer.style.width = "100%";        // 横幅100%
-                barContainer.style.display = "flex";        // フレックスボックス化
-                barContainer.style.flexDirection = "row";   // 横並び
-                barContainer.style.alignSelf = "stretch";   // ★重要：親の中央揃えを無視して端まで広げる
-                
-                // 見た目の調整（FGIのバーと高さを合わせる）
-                barContainer.style.height = "6px";
-                barContainer.style.marginTop = "8px";       // ステータスとの距離
-                barContainer.style.marginBottom = "6px";    // 下の文字との距離
-                barContainer.style.borderRadius = "2px";
-                barContainer.style.backgroundColor = "rgba(255,255,255,0.1)"; // 背景の薄い色
-                barContainer.style.overflow = "hidden";     // はみ出し防止
-                barContainer.style.boxSizing = "border-box"; // 枠線を含めた計算
+                // スタイルをリセットして強制的に広げる
+                // "flex: 1 1 auto" と "width: 100%" を両方指定して隙間を埋める
+                barContainer.style.cssText = `
+                    display: flex;
+                    flex-direction: row;
+                    width: 100%;
+                    min-width: 100%;
+                    max-width: 100%;
+                    height: 6px;
+                    margin-top: 8px;
+                    margin-bottom: 6px;
+                    border-radius: 2px;
+                    background-color: rgba(255,255,255,0.1);
+                    overflow: hidden;
+                    box-sizing: border-box;
+                    align-self: stretch; 
+                    justify-self: stretch;
+                `;
             }
         }
         
