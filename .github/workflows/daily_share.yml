@@ -33,6 +33,12 @@ jobs:
           mkdir -p share
           python generate_daily_post_v2.py
 
+          # ★追加：生成された最新の日付JSONをlatest.jsonにコピー
+          # 日付付きのファイル（例: 20260131.json）を latest.json として上書き保存します
+          LATEST_FILE=$(ls -t data/daily/[0-9]*.json | head -1)
+          cp "$LATEST_FILE" data/daily/latest.json
+          echo "Updated latest.json with $LATEST_FILE"
+          
       # --- 60日経過したファイルの自動削除 ---
       - name: Prune old files (keep last 60 days)
         env:
