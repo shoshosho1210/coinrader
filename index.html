@@ -3871,30 +3871,36 @@ function renderOverview(){
                 ${(marketAvg > 0 ? '+' : '')}${marketAvg.toFixed(2)}%
             </div>`;
 
-        // ★サブ表示：ここで「数（↑15 vs ↓235）」を見せる
+        // 2. 【ステータス】サブ表示（バーの上・真ん中）
+        // ※ここに「全面安」などの言葉を持ってくることでFGIと統一されます
         if (bSubEl) {
-            bSubEl.innerHTML = `
-                <span style="font-size:11px; color:#cbd5e1;">
-                    <span style="color:#4ade80; font-weight:700;">↑${o.up}</span>
-                    <span style="opacity:0.4; margin:0 2px;">/</span>
-                    <span style="color:#f87171; font-weight:700;">↓${o.down}</span>
-                </span>
-            `;
-            bSubEl.className = "kpi-tile-sub"; 
+            bSubEl.textContent = statusLabel; 
+            bSubEl.className = "kpi-sub-label"; // FGIと同じクラスを適用
+            bSubEl.style.color = color;
             bSubEl.style.marginTop = "2px";
+            bSubEl.style.fontSize = "12px"; // フォントサイズもFGIに合わせる
         }
 
-        // 下のバー（青赤の帯）はそのまま「比率」を表示
+        // 3. 【バー】（変更なし、自動的にサブの下に表示される）
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
         if (upSeg && downSeg) { 
             upSeg.style.width = `${upPct}%`; 
             downSeg.style.width = `${100 - upPct}%`; 
+            // バー自体の高さをFGI等と合わせるためのスタイル指定（念のため）
+            upSeg.parentElement.style.height = "6px"; 
+            upSeg.parentElement.style.marginTop = "6px";
         }
         
-        // キャプション：状況説明を入れる
+        // 4. 【詳細】キャプション（バーの下・一番下）
+        // ※ここに「↑15 / ↓235」を持ってくる
         if (bCaptionEl) {
-            bCaptionEl.textContent = statusLabel; // 例: 全面安 (Crash)
-            bCaptionEl.style.color = color;
+            bCaptionEl.innerHTML = `
+                <span style="color:#4ade80; font-weight:700;">↑${o.up}</span>
+                <span style="opacity:0.3; margin:0 4px;">/</span>
+                <span style="color:#f87171; font-weight:700;">↓${o.down}</span>
+            `;
+            bCaptionEl.style.color = "#94a3b8"; // 控えめな色にする
+            bCaptionEl.style.textAlign = "right"; // 右寄せ（またはcenter）
         }
     }
 
