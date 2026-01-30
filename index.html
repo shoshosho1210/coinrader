@@ -2040,6 +2040,31 @@ body {
 /* 変化の矢印 */
 .hist-up { color: #4ade80; margin-right: 2px; }
 .hist-down { color: #f87171; margin-right: 2px; }
+
+/* --- KPI数値の完全統一（最高精度の修正） --- */
+.kpi-tile-big, 
+.kpi-main-label, 
+.kpi-value, 
+.summary-kpis .kpi-tile-big {
+    font-size: 24px !important; /* すべて24pxに統一。スマホでは20px程度が理想 */
+    font-weight: 800 !important;
+    font-family: 'Inter', sans-serif;
+    font-variant-numeric: tabular-nums; /* 数字の横幅を固定してガタつきを防止 */
+    letter-spacing: -0.02em;
+    line-height: 1.2 !important;
+    display: block;
+}
+
+/* スマホ表示での微調整（画面からはみ出さないように） */
+@media (max-width: 640px) {
+    .kpi-tile-big, 
+    .kpi-main-label, 
+    .kpi-value, 
+    .summary-kpis .kpi-tile-big {
+        font-size: 20px !important;
+    }
+}
+  
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
