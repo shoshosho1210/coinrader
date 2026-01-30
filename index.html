@@ -3881,14 +3881,25 @@ function renderOverview(){
             bSubEl.style.fontSize = "12px"; // フォントサイズもFGIに合わせる
         }
 
-        // 3. 【バー】（変更なし、自動的にサブの下に表示される）
+        // 3. 【バー】（幅を100%に強制して他のタイルと揃える）
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
         if (upSeg && downSeg) { 
+            // セグメントの幅を設定
             upSeg.style.width = `${upPct}%`; 
             downSeg.style.width = `${100 - upPct}%`; 
-            // バー自体の高さをFGI等と合わせるためのスタイル指定（念のため）
-            upSeg.parentElement.style.height = "6px"; 
-            upSeg.parentElement.style.marginTop = "6px";
+            
+            // ★修正ポイント：親要素（コンテナ）のスタイルを強制的にFGI等と合わせる
+            const barContainer = upSeg.parentElement;
+            if (barContainer) {
+                barContainer.style.width = "100%";       // 横幅いっぱいに広げる
+                barContainer.style.display = "flex";       // 横並びにする
+                barContainer.style.height = "6px";         // 高さを統一
+                barContainer.style.marginTop = "8px";      // 上のマージンを統一
+                barContainer.style.marginBottom = "4px";   // 下のマージン
+                barContainer.style.borderRadius = "2px";   // 角丸
+                barContainer.style.backgroundColor = "rgba(255,255,255,0.1)"; // 背景色（隙間用）
+                barContainer.style.overflow = "hidden";    // はみ出し防止
+            }
         }
         
         // 4. 【詳細】キャプション（バーの下・一番下）
