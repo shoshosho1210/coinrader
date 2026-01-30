@@ -2,14 +2,14 @@
 分析: 悲観
 
 🔹 Bitcoin 📉
-価格: ¥1272万
-前日比: -5.4%
-RSI(14): 14.34
+価格: ¥1273万
+前日比: -5.5%
+RSI(14): 14.39
 心理指数: 16 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: ULTIMA, BTC, XAUT
-急上昇銘柄: ADI (13%↑)
+トレンド入り: BTC, ULTIMA, HYPE
+急上昇銘柄: SENT (9%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260130.html
