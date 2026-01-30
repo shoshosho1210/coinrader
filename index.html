@@ -5283,8 +5283,8 @@ async function typeWriter(el, html, speed = 20) {
     el.classList.remove('typing');
 }
 
-// --- 1.5 過去の分析データを安全に取得する関数 (404エラー対策版) ---
-async function getHistoricalData(daysAgo = 7) {
+// --- 1.5 過去の分析データを安全に取得する関数 (遅延・404対策 最終版) ---
+async function getHistoricalData(daysAgo = 0) {
     const now = new Date();
     
     // 日付フォーマット関数
@@ -5295,39 +5295,44 @@ async function getHistoricalData(daysAgo = 7) {
         return `${y}${m}${day}`;
     };
 
-    // ターゲットとなる日付を計算
+    // 取得候補リストを「鮮度の高い順」に作成
+    const candidates = [];
+    
+    // 1. まずはピンポイントで指定の日付
     const targetDate = new Date(now);
     targetDate.setDate(now.getDate() - daysAgo);
+    candidates.push(formatDate(targetDate));
 
-    // 取得候補：1. 指定日数前、2. 蓄積開始日(20260126)
-    const filenames = [formatDate(targetDate), "20260126"];
+    // 2. daysAgoが0（最新）を求めている場合、昨日の日付も予備に入れる
+    if (daysAgo === 0) {
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        candidates.push(formatDate(yesterday));
+    }
     
-    for (const dateStr of filenames) {
-        try {
-            // キャッシュ対策パラメータ付きでリクエスト
-            const res = await fetch(`data/daily/${dateStr}.json?v=${Date.now()}`);
-            
-            // ★修正点：ステータスがOK(200番台)でない場合は、HTMLを解析せずにスキップする
-            if (!res.ok) {
-                // ファイルがないのは正常なので、警告を出さずに次の候補へ
-                continue;
-            }
+    // 3. 最後の手段として蓄積開始日
+    candidates.push("20260126");
 
-            // ここまで来たらJSONであることが確定しているので安全にパース
+    for (const name of candidates) {
+        try {
+            // キャッシュを強制回避するためのクエリ
+            const res = await fetch(`data/daily/${name}.json?v=${Date.now()}`);
+            
+            if (!res.ok) continue;
+
             const json = await res.json();
             const s = json.summary || {}; 
             const tech = s.technical || {}; 
             
+            console.log(`Successfully loaded data from: ${name}.json`);
             return {
-                date: s.date || json.date || dateStr,
+                date: s.date || json.date || name,
                 fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
                 dom: s.btc_dominance !== undefined ? s.btc_dominance : null,
                 rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
                 ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
             };
         } catch (e) { 
-            // JSONパースエラーなどが万一起きた場合も、静かに無視する
-            // console.warn(`Skipping data for ${dateStr}:`, e); // ログがうるさい場合はコメントアウト可
             continue; 
         }
     }
