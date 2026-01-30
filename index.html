@@ -3881,24 +3881,34 @@ function renderOverview(){
             bSubEl.style.fontSize = "12px"; // フォントサイズもFGIに合わせる
         }
 
-        // 3. 【バー】（幅を100%に強制して他のタイルと揃える）
+        // 3. 【バー】（幅を強制的に100%にし、必要なら余白を調整）
         const upSeg = document.getElementById('sumBreadthSegUp'), downSeg = document.getElementById('sumBreadthSegDown');
         if (upSeg && downSeg) { 
-            // セグメントの幅を設定
             upSeg.style.width = `${upPct}%`; 
             downSeg.style.width = `${100 - upPct}%`; 
             
-            // ★修正ポイント：親要素（コンテナ）のスタイルを強制的にFGI等と合わせる
+            // ★修正ポイント：親要素（コンテナ）を強制的に広げる
             const barContainer = upSeg.parentElement;
             if (barContainer) {
-                barContainer.style.width = "100%";       // 横幅いっぱいに広げる
-                barContainer.style.display = "flex";       // 横並びにする
-                barContainer.style.height = "6px";         // 高さを統一
-                barContainer.style.marginTop = "8px";      // 上のマージンを統一
-                barContainer.style.marginBottom = "4px";   // 下のマージン
-                barContainer.style.borderRadius = "2px";   // 角丸
-                barContainer.style.backgroundColor = "rgba(255,255,255,0.1)"; // 背景色（隙間用）
-                barContainer.style.overflow = "hidden";    // はみ出し防止
+                // フレックスコンテナとしての設定
+                barContainer.style.display = "flex";
+                barContainer.style.flexDirection = "row";
+                barContainer.style.width = "100%";       // 横幅100%
+                barContainer.style.minWidth = "100%";    // 縮小防止
+                barContainer.style.maxWidth = "100%";    // はみ出し防止
+                barContainer.style.boxSizing = "border-box"; // パディング計算を含める
+                
+                // 高さ・マージンの統一
+                barContainer.style.height = "6px";         
+                barContainer.style.marginTop = "8px";      
+                barContainer.style.marginBottom = "4px";   
+                barContainer.style.borderRadius = "2px";   
+                barContainer.style.backgroundColor = "rgba(255,255,255,0.1)";
+                barContainer.style.overflow = "hidden";
+                
+                // もし親要素がflexで中央揃え（align-items: center）になっていると
+                // width: 100% が効かないことがあるため、align-self を上書き
+                barContainer.style.alignSelf = "stretch"; 
             }
         }
         
