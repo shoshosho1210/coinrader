@@ -5359,7 +5359,13 @@ async function updateAiInsight() {
             maMainEl.textContent = "-";
         }
     }
-
+    // ★修正ポイント：時間はここで必ず更新する（内容の変化有無に関わらず）
+    const nowTime = new Date();
+    const timeStr = `${nowTime.getHours().toString().padStart(2, '0')}:${nowTime.getMinutes().toString().padStart(2, '0')}`;
+    if (timeEl) {
+        timeEl.textContent = `[ ANALYZED AT ${timeStr} ]`;
+        timeEl.style.opacity = "1"; // データがあれば濃く表示
+    }
     // 5. 状態変化チェック
     const currentState = `${sent}|${rsi}|${dom}|${maDist}`;
     if (_last_ai_state === currentState) return;
@@ -5480,9 +5486,6 @@ async function updateAiInsight() {
         if (grid) grid.style.opacity = '1';
     }, 100);
 
-    const nowTime = new Date();
-    const timeStr = `${nowTime.getHours().toString().padStart(2, '0')}:${nowTime.getMinutes().toString().padStart(2, '0')}`;
-    if (timeEl) timeEl.textContent = `[ ANALYZED AT ${timeStr} ]`;
     if (noteEl) noteEl.style.opacity = "0.8";
     _ai_thinking = false;
 }
