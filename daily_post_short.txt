@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (01/30)
+🤖 CoinRader 市場速報 (01/31)
 分析: 悲観
 
 🔹 Bitcoin 📉
 価格: ¥1282万
-前日比: -4.5%
-RSI(14): 14.76
+前日比: -3.0%
+RSI(14): 14.78
 心理指数: 16 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: BTC, ULTIMA, HYPE
-急上昇銘柄: SENT (5%↑)
+トレンド入り: ULTIMA, BTC, HYPE
+急上昇銘柄: SENT (6%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260130.html
+https://coinrader.net/share/20260131.html
 
 #CoinRader #ビットコイン #暗号資産
