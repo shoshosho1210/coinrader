@@ -5302,8 +5302,6 @@ async function typeWriter(el, html, speed = 20) {
 // --- 1.5 過去の分析データを安全に取得する関数 (遅延・404対策 最終版) ---
 async function getHistoricalData(daysAgo = 0) {
     const now = new Date();
-    
-    // 日付フォーマット関数
     const formatDate = (d) => {
         const y = d.getFullYear();
         const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -5311,29 +5309,31 @@ async function getHistoricalData(daysAgo = 0) {
         return `${y}${m}${day}`;
     };
 
-    // 取得候補リストを「鮮度の高い順」に作成
+    // 取得候補リスト（優先度順）
     const candidates = [];
     
-    // 1. まずはピンポイントで指定の日付
+    // 1. 指定された日付
     const targetDate = new Date(now);
     targetDate.setDate(now.getDate() - daysAgo);
     candidates.push(formatDate(targetDate));
 
-    // 2. daysAgoが0（最新）を求めている場合、昨日の日付も予備に入れる
+    // 2. daysAgoが0（最新）なら昨日の日付も予備に
     if (daysAgo === 0) {
         const yesterday = new Date(now);
         yesterday.setDate(now.getDate() - 1);
         candidates.push(formatDate(yesterday));
     }
     
-    // 3. 最後の手段として蓄積開始日
+    // 3. 最後の手段（蓄積開始日）
     candidates.push("20260126");
 
-    for (const name of candidates) {
+    // 分単位のキャッシュバスター（ブラウザのキャッシュを強制回避）
+    const cacheBuster = Math.floor(Date.now() / 60000);
+
+    for (const name of [...new Set(candidates)]) { // 重複を削除してループ
         try {
-            // キャッシュを強制回避するためのクエリ
-            const res = await fetch(`data/daily/${name}.json?v=${Date.now()}`);
-            
+            // ★キャッシュバスターを付与してリクエスト
+            const res = await fetch(`data/daily/${name}.json?t=${cacheBuster}`);
             if (!res.ok) continue;
 
             const json = await res.json();
@@ -5373,6 +5373,20 @@ async function updateAiInsight() {
     const past7d    = await getHistoricalData(7);
     const past30d   = await getHistoricalData(30);
 
+    // --- 【追加】データ鮮度ガード ---
+    const lastFetch = getLastFetchAt();
+    const diffMin = (Date.now() - lastFetch) / 60000;
+
+    // 1時間以上前のデータなら、AI分析を「更新待ち」にする
+    if (diffMin > 60) {
+        if (timeEl) {
+            timeEl.textContent = "[ DATA STALE: RELOAD REQUIRED ]";
+            timeEl.style.color = "#f87171";
+        }
+        textEl.innerHTML = `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">表示中の市場データが古いため、AI分析を一時停止しています。<br>最新情報を取得するには「更新」ボタンを押してください。</div>`;
+        return;
+    }
+  
     // 2. ヘルパー関数: 画面の値を安全に取得
     const getVal = (id) => {
         const el = document.getElementById(id);
