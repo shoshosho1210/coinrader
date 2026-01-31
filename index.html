@@ -5327,12 +5327,12 @@ async function getHistoricalData(daysAgo = 0) {
     // 3. 最後の手段（蓄積開始日）
     candidates.push("20260126");
 
-    // 分単位のキャッシュバスター（ブラウザのキャッシュを強制回避）
-    const cacheBuster = Math.floor(Date.now() / 60000);
+    // 分単位のキャッシュバスター
+    const cacheBuster = Math.floor(Date.now() / 60000); 
 
-    for (const name of [...new Set(candidates)]) { // 重複を削除してループ
+    // ループ処理
+    for (const name of [...new Set(candidates)]) {
         try {
-            // ★キャッシュバスターを付与してリクエスト
             const res = await fetch(`data/daily/${name}.json?t=${cacheBuster}`);
             if (!res.ok) continue;
 
@@ -5340,7 +5340,7 @@ async function getHistoricalData(daysAgo = 0) {
             const s = json.summary || {}; 
             const tech = s.technical || {}; 
             
-            console.log(`Successfully loaded data from: ${name}.json`);
+            // ★この return が関数の外に出ているとエラーになります
             return {
                 date: s.date || json.date || name,
                 fgi: (s.fgi && s.fgi.value !== undefined) ? s.fgi.value : null,
@@ -5348,12 +5348,13 @@ async function getHistoricalData(daysAgo = 0) {
                 rsi: tech.btc_rsi !== undefined ? tech.btc_rsi : null,
                 ma: tech.btc_ma_distance !== undefined ? tech.btc_ma_distance : null
             };
-        } catch (e) { 
+        } catch (e) {
             continue; 
-        }
-    }
-    return null;
-}
+        } // try-catch の閉じ
+    } // for ループの閉じ
+    
+    return null; // 関数としての最後の return
+} // ★ここ！この「関数の閉じカッコ」が抜けている可能性が高いです
 
 // --- 2. メイン関数: AI分析 ＆ 再描画抑止 ＆ 過去比較ロジック ---
 let _ai_thinking = false; // 変数名の重複を避けるため _ai_thinking に統一
