@@ -2,14 +2,14 @@
 分析: 中立
 
 🔹 Bitcoin 📈
-価格: ¥1285万
-前日比: +1.1%
-RSI(14): 16.65
+価格: ¥1284万
+前日比: +1.4%
+RSI(14): 16.61
 心理指数: 20 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: MOLT, XAUT, SOL
-急上昇銘柄: DCR (15%↑)
+トレンド入り: MOLT, BTC, INX
+急上昇銘柄: DCR (11%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260131.html
