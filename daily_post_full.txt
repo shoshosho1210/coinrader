@@ -1,15 +1,15 @@
 🤖 CoinRader 市場速報 (02/01)
-分析: 中立
+分析: 悲観
 
 🔹 Bitcoin 📉
-価格: ¥1252万
-前日比: -2.5%
-RSI(14): 15.13
+価格: ¥1221万
+前日比: -4.6%
+RSI(14): 13.94
 心理指数: 20 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: USOR, BTC, SOL
-急上昇銘柄: SENT (14%↑)
+トレンド入り: BTC, SOL, ETH
+急上昇銘柄: SENT (12%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260201.html
