@@ -2064,7 +2064,76 @@ body {
         font-size: 20px !important;
     }
 }
-  
+/* ▼▼▼ スマホ用：ヘッダー＆ナビの超圧縮スタイル (Step 1) ▼▼▼ */
+@media (max-width: 640px) {
+    /* 1. ヘッダー全体の高さを定義（約20px削減） */
+    :root { --hdr-h: 44px; } 
+
+    /* 2. ヘッダー外枠の余白削除 */
+    .appHeader {
+        padding: 0 !important;
+        background: rgba(10, 14, 28, 0.95) !important; /* 背景を少し濃くして視認性アップ */
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* 3. ヘッダー内部のレイアウト調整 */
+    .hdr-inner {
+        height: 44px; /* 高さを固定 */
+        padding: 0 8px !important; /* 横の余白も節約 */
+    }
+
+    /* 4. ロゴの縮小 */
+    .brandLogo {
+        height: 18px !important; /* 22px -> 18px */
+    }
+
+    /* 5. 右側エリア（更新ボタン・ステータス）の圧縮 */
+    .hdr-right {
+        gap: 4px !important;
+    }
+
+    /* ステータス表示（緑の点など）を極小化 */
+    .status-indicator {
+        font-size: 9px !important;
+        padding: 2px 5px !important;
+        background: transparent !important; /* 背景を消してスッキリ */
+        border: 1px solid rgba(255,255,255,0.1);
+        height: 22px;
+    }
+    #statusText { display: none; } /* 「最新」などの文字を消してドットだけにする */
+
+    /* 更新ボタンを小さく */
+    #refreshBtn {
+        min-width: auto !important;
+        width: auto !important;
+        padding: 3px 8px !important;
+        height: 24px;
+        font-size: 10px !important;
+        border-radius: 4px;
+    }
+
+    /* 6. ナビゲーションバー（2段目）の圧縮 */
+    .sticky-nav {
+        /* ヘッダー直下の余白を詰める */
+        padding: 4px 0 4px 8px !important; 
+        margin-bottom: 8px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+    }
+
+    /* ナビボタン自体の小型化 */
+    .nav-tab {
+        padding: 4px 10px !important;
+        font-size: 10px !important;
+        height: 26px; /* 高さ制限 */
+        border-radius: 6px;
+    }
+    
+    /* アイコンと文字の間隔を詰める */
+    .nav-tab span {
+        font-size: 11px !important;
+        margin-right: 2px;
+    }
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
