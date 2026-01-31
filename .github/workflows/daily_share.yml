@@ -2,7 +2,9 @@ name: Daily Share Page
 
 on:
   schedule:
-    - cron: "52 * * * *"  # 毎時0分に実行
+    # 毎時43分に実行（0, 30, 52分などの混雑しやすい時間を避ける）
+    # 日本時間（JST）では 毎時43分頃に動く設定です
+    - cron: "43 * * * *"
   workflow_dispatch:
 
 jobs:
