@@ -5368,6 +5368,19 @@ async function updateAiInsight() {
     const past7d    = await getHistoricalData(7);
     const past30d   = await getHistoricalData(30);
 
+    // --- 【追加】データ鮮度ガード ---
+    const lastFetch = getLastFetchAt();
+    const diffMin = (Date.now() - lastFetch) / 60000;
+    // 1時間以上前のデータなら、AI分析を「更新待ち」にする
+    if (diffMin > 60) {
+        if (timeEl) {
+            timeEl.textContent = "[ DATA STALE: RELOAD REQUIRED ]";
+            timeEl.style.color = "#f87171";
+        }
+        textEl.innerHTML = `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">表示中の市場データが古いため、AI分析を一時停止しています。<br>最新情報を取得するには「更新」ボタンを押してください。</div>`;
+        return;
+    }
+  
     // 2. ヘルパー関数: 画面の値を安全に取得
     const getVal = (id) => {
         const el = document.getElementById(id);
