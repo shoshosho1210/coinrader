@@ -2606,17 +2606,33 @@ body {
     return `${Math.floor(d/86400000)}日前`;
   }
 
-  // 更新時間の表示（「〇〇前」に特化）
+  // 更新時間の表示（古すぎる場合に警告を出すガードを追加）
   function renderUpdatedPill() {
     const el = document.getElementById('updatedTimeText');
-    if(!el) return;
+    const statusTxt = document.getElementById('statusText');
+    const dot = document.getElementById('statusDot');
+    if(!el || !dot) return;
+
     const ts = getLastFetchAt();
     if(!ts) {
       el.textContent = '--';
       return;
     }
-    // formatAgo関数は既存のものを利用（「1分前」などの形式を返す）
+
+    const diffMin = (Date.now() - ts) / 60000;
     el.textContent = formatAgo(ts);
+
+    // ★ガード：30分以上更新されていない場合
+    if (diffMin > 30) {
+      dot.style.background = '#f87171'; // 警告：赤
+      if (statusTxt) statusTxt.textContent = 'データが古いです';
+      el.style.color = '#f87171';
+      el.style.fontWeight = 'bold';
+    } else {
+      // 正常時（既存のロジック）
+      el.style.color = '';
+      el.style.fontWeight = '';
+    }
   }
 
   function setUpdated(){
@@ -2994,28 +3010,37 @@ const EXCLUDE_MCAP_IDS = new Set([
     if (EXCLUDE_MCAP_IDS.has(id)) return true;
     return EXCLUDE_MCAP_KEYWORDS.some(k => name.includes(k) || sym.includes(k));
   }
+  
   async function loadMarketsTop250(forceNetwork=false){
+  // ★キャッシュ破壊：URLに現在の時刻を混ぜて、ブラウザのキャッシュを無視させる
   const url = 'https://api.coingecko.com/api/v3/coins/markets'
     + '?vs_currency=jpy'
     + '&order=market_cap_desc'
     + '&per_page=250&page=1'
     + '&sparkline=true'
-    + '&price_change_percentage=24h,7d';
+    + '&price_change_percentage=24h,7d'
+    + '&_t=' + Date.now(); // ← これを追加
 
-  // まずキャッシュで即表示（ネット失敗でも「真っ白」を避ける）
   const cached = readCache(LS_KEYS.markets);
   if (cached && Array.isArray(cached.data) && cached.data.length){
     marketsTop = cached.data;
   }
 
-  // F5連打など短時間の再読み込みはネット取得をスキップ（API制限対策）
   const now = Date.now();
   const lastFetchAt = getLastFetchAt();
-  const canSkipNetwork = !forceNetwork && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
+  const diffMin = (now - lastFetchAt) / 60000;
+
+  // ★ガード：1時間（60分）以上前のデータなら、クールダウンを無視して強制取得
+  const shouldForce = forceNetwork || (diffMin > 60);
+
+  const canSkipNetwork = !shouldForce && (now - lastFetchAt) < BOOT_NETWORK_COOLDOWN_MS;
+  
   if (canSkipNetwork && marketsTop.length){
-    setStatus('保存済みデータを表示中（自動で最新に切り替わります）');
+    setStatus('保存済みデータを表示中');
     return;
   }
+  
+  // ... (以下、既存の fetch 処理)
 
   try{
     const fresh = await fetchJsonRetry(url, {retries:2});
