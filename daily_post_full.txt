@@ -1,15 +1,15 @@
 🤖 CoinRader 市場速報 (01/31)
-分析: 中立
+分析: 楽観
 
 🔹 Bitcoin 📈
-価格: ¥1302万
-前日比: +0.5%
-RSI(14): 17.14
-心理指数: 16 (Extreme Fear)
+価格: ¥1300万
+前日比: +3.0%
+RSI(14): 17.46
+心理指数: 20 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: USOR, INX, KAG
-急上昇銘柄: SENT (12%↑)
+トレンド入り: USOR, PENGU, PAXG
+急上昇銘柄: FLUID (11%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260131.html
