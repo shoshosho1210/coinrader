@@ -1,5 +1,5 @@
 MARKET UPDATE: [ 02/01 ]
 FGI: [ 14 ]
-BTC RSI(14): [ 14.73 ]
-STATUS: [ ⚖️ NEUTRAL ]
-TOPIC: [ 市場動向を分析中 ]
+BTC RSI(14): [ 14.76 ]
+STATUS: [ 🚨 EXTREME OVERSOLD ]
+TOPIC: [ 底値圏での歴史的買い場を模索中 ]
