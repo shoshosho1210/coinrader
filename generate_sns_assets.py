@@ -35,14 +35,14 @@ def generate_sns_assets():
     date_label = jst_now.strftime("%m/%d")
     update_time = jst_now.strftime("%H:%M:%S")
     
-    # Git強制更新用タグ
+    # Gitに「変更あり」と強制認識させるためのタイムスタンプ
     force_update_tag = f"\n\n(Generated at: {update_time})"
     
     paths = [f"data/daily/{file_date}.json", "data/daily/latest.json"]
     json_path = next((p for p in paths if os.path.exists(p)), None)
 
     if not json_path:
-        print("❌ エラー: データJSONが見つかりません。")
+        print("❌ エラー: 参照データが見つかりません。")
         sys.exit(1)
 
     with open(json_path, "r", encoding="utf-8") as f:
@@ -61,7 +61,7 @@ def generate_sns_assets():
     trending_str = ", ".join(summary.get("trending", []))
     top_g = summary.get("top_gainer", {"symbol": "-", "change": 0})
 
-    # --- ① SNS投稿用テキスト (short) の復元 ---
+    # --- ① SNS投稿用テキスト (short) ---
     short_post = (
         f"🤖 CoinRader 市場速報 ({date_label})\n"
         f"{ai_status_msg}\n\n"
@@ -97,7 +97,7 @@ def generate_sns_assets():
         f"- **心理指数(FGI):** {fgi['value']} ({fgi['label']})\n"
     )
 
-    # --- ④ HTML出力の完全復元 ---
+    # --- ④ OGP対応HTMLの完全版 ---
     share_html = f"""<!doctype html>
 <html lang="ja">
 <head>
@@ -112,8 +112,29 @@ def generate_sns_assets():
 <body></body>
 </html>"""
 
-    # --- ファイル書き出し ---
+    # --- 💾 修正ポイント：インデントとtry-exceptの完全閉鎖 ---
     try:
         os.makedirs("share", exist_ok=True)
-        with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
-        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write
+        # 1. SNS短文
+        with open("daily_post_short.txt", "w", encoding="utf-8") as f:
+            f.write(short_post)
+        # 2. 画像用データ
+        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f:
+            f.write(image_overlay_text)
+        # 3. レポート案
+        with open("daily_note_draft.md", "w", encoding="utf-8") as f:
+            f.write(note_content)
+        # 4. シェアURL (確実に出力)
+        with open("daily_share_url.txt", "w", encoding="utf-8") as f:
+            f.write(f"https://coinrader.net/share/{file_date}.html")
+        # 5. シェア用HTML
+        with open(f"share/{file_date}.html", "w", encoding="utf-8") as f:
+            f.write(share_html)
+        
+        print(f"✅ 全SNSアセット・HTML・URLの書き出しに成功しました ({update_time})")
+    except Exception as e:
+        print(f"❌ 書き込み失敗: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    generate_sns_assets()
