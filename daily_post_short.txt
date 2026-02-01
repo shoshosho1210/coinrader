@@ -4,16 +4,12 @@
 🔹 Bitcoin 📉
 価格: ¥1217万
 前日比: -6.4%
-RSI(14): 14.84
-心理指数: 14 (Extreme Fear)
+RSI: 14.84
+心理指数: 14
 
-📈 注目銘柄
-トレンド入り: BTC, CC, HYPE
-急上昇銘柄: ZK (12%↑)
+📈 注目銘柄: BTC, CC, HYPE
 
 📊 詳細分析
 https://coinrader.net/share/20260201.html
 
-#CoinRader #ビットコイン #暗号資産
-
-(Generated at: 12:34:48)
+(Generated at: 12:37:23)
