@@ -3,9 +3,6 @@ import os
 import json
 import sys
 
-# ==========================================
-# 1. 判定ロジック
-# ==========================================
 def determine_rsi_status(rsi):
     if rsi is None: return "ANALYZING..."
     if rsi <= 30: return "🚨 EXTREME OVERSOLD"
@@ -29,23 +26,19 @@ def format_price(price):
     if price >= 1000000: return f"{price/10000:.0f}万"
     return f"{price:,.0f}"
 
-# ==========================================
-# 2. メイン処理
-# ==========================================
 def generate_sns_assets():
-    # 日本時間 (JST)
     jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     file_date = jst_now.strftime("%Y%m%d")
     display_date = jst_now.strftime("%Y-%m-%d")
     date_label = jst_now.strftime("%m/%d")
     update_time = jst_now.strftime("%H:%M:%S")
     
-    # データ読み込みパス
+    # データ読み込み
     paths = [f"data/daily/{file_date}.json", "data/daily/latest.json"]
     json_path = next((p for p in paths if os.path.exists(p)), None)
 
     if not json_path:
-        print("❌ エラー: 参照データが見つかりません。")
+        print(f"❌ エラー: 参照JSONが見つかりません。")
         sys.exit(1)
 
     with open(json_path, "r", encoding="utf-8") as f:
@@ -53,7 +46,6 @@ def generate_sns_assets():
 
     summary = data.get("summary", {})
     btc = next((c for c in data.get("raw_data", []) if c["id"] == "bitcoin"), None)
-    
     btc_rsi = summary.get("technical", {}).get("btc_rsi")
     btc_dom = summary.get("btc_dominance", 0)
     fgi = summary.get("fgi", {"value": 50, "label": "Neutral"})
@@ -61,57 +53,29 @@ def generate_sns_assets():
     
     rsi_status = determine_rsi_status(btc_rsi)
     topic_text = generate_market_topic(summary)
-
-    ai_status_msg = "分析: 楽観" if chg > 3 else ("分析: 悲観" if chg < -3 else "分析: 中立")
-    icon = "📈" if chg > 0 else "📉"
-    trending_str = ", ".join(summary.get("trending", []))
     top_g = summary.get("top_gainer", {"symbol": "-", "change": 0})
+    trending_str = ", ".join(summary.get("trending", []))
+    ai_status_msg = "分析: 楽観" if chg > 3 else ("分析: 悲観" if chg < -3 else "分析: 中立")
 
-    # --- ① SNS投稿用短文 (Twitter/X用) ---
-    short_post = (
-        f"🤖 CoinRader 市場速報 ({date_label})\n{ai_status_msg}\n\n"
-        f"🔹 Bitcoin {icon}\n価格: ¥{format_price(btc['current_price']) if btc else '-'}\n"
-        f"前日比: {'+' if chg > 0 else ''}{chg:.1f}%\nRSI(14): {btc_rsi if btc_rsi else '-'}\n"
-        f"心理指数: {fgi['value']} ({fgi['label']})\n\n"
-        f"📈 注目銘柄\nトレンド入り: {trending_str}\n急上昇銘柄: {top_g['symbol']} ({int(top_g['change'])}%↑)\n\n"
-        f"📊 詳細分析\nhttps://coinrader.net/share/{file_date}.html\n\n#CoinRader #ビットコイン #暗号資産"
-    )
+    # ファイル内容の作成
+    short_post = f"🤖 CoinRader 市場速報 ({date_label})\n{ai_status_msg}\n\n🔹 Bitcoin\n価格: ¥{format_price(btc['current_price']) if btc else '-'}\n前日比: {'+' if chg > 0 else ''}{chg:.1f}%\nRSI(14): {btc_rsi if btc_rsi else '-'}\n心理指数: {fgi['value']} ({fgi['label']})\n\n📈 注目銘柄\nトレンド: {trending_str}\n急上昇: {top_g['symbol']} ({int(top_g['change'])}%↑)\n\n📊 詳細分析\nhttps://coinrader.net/share/{file_date}.html"
+    image_overlay = f"MARKET UPDATE: [ {date_label} ]\nFGI: [ {fgi['value']} ({fgi['label']}) ]\nBTC RSI(14): [ {btc_rsi if btc_rsi else '-'} ]\nSTATUS: [ {rsi_status} ]\nTOPIC: [ {topic_text} ]"
+    note_draft = f"# Market Note {display_date}\n\n## 📊 主要指標\n- BTC RSI: {btc_rsi}\n- FGI: {fgi['value']} ({fgi['label']})\n- BTC Dominance: {btc_dom}%"
+    share_html = f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>{display_date}</title><meta property='og:image' content='https://coinrader.net/assets/og/ogp2.png?v={file_date}'><meta http-equiv='refresh' content='0;url=https://coinrader.net/?v={file_date}'></head></html>"
 
-    # --- ② 画像オーバーレイ用テキスト ---
-    image_overlay_text = (
-        f"MARKET UPDATE: [ {date_label} ]\nFGI: [ {fgi['value']} ({fgi['label']}) ]\n"
-        f"BTC RSI(14): [ {btc_rsi if btc_rsi else '-'} ]\nSTATUS: [ {rsi_status} ]\nTOPIC: [ {topic_text} ]"
-    )
-
-    # --- ③ daily_note_draft.md (詳細レポート案) ---
-    note_content = f"""# Market Note {display_date} ({update_time} 更新)
-
-## 📊 今日の主要マーケット指標
-- **BTC価格:** ¥{format_price(btc['current_price']) if btc else '-'} ({'+' if chg > 0 else ''}{chg:.1f}%)
-- **BTC RSI(14):** {btc_rsi if btc_rsi else 'データ収集中'}
-- **心理指数(FGI):** {fgi['value']} ({fgi['label']})
-- **BTCドミナンス:** {btc_dom}%
-
-## 📈 注目銘柄の動向
-- **トレンド入り:** {trending_str}
-- **本日の急上昇銘柄:** {top_g['symbol']} ({int(top_g['change'])}%↑)
-
-## ✍️ 市場分析メモ
-- 本日の市場センチメントは「{fgi['label']}」となっており、{ai_status_msg}の傾向が見られます。
-- テクニカル的にはBTC RSIが {btc_rsi if btc_rsi else '-'} の水準にあり、{'買われすぎ' if (btc_rsi or 0) > 70 else '売られすぎ' if (btc_rsi or 0) < 30 else '中立圏'} を示唆しています。
-"""
-
-    share_html = f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>CoinRader {display_date}</title><meta property='og:image' content='https://coinrader.net/assets/og/ogp2.png?v={file_date}'><meta http-equiv='refresh' content='0;url=https://coinrader.net/?v={file_date}'></head></html>"
-
-    # --- 💾 ファイル書き出しセクション ---
+    # 保存実行
     try:
         os.makedirs("share", exist_ok=True)
-        with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
-        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write(image_overlay_text)
-        with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(note_content)
-        with open("daily_share_url.txt", "w", encoding="utf-8") as f: f.write(f"https://coinrader.net/share/{file_date}.html")
-        with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
-        print("✅ 全SNSアセット・レポートの書き出しに成功しました")
+        files = {
+            "daily_post_short.txt": short_post,
+            "daily_image_overlay.txt": image_overlay,
+            "daily_note_draft.md": note_draft,
+            "daily_share_url.txt": f"https://coinrader.net/share/{file_date}.html",
+            f"share/{file_date}.html": share_html
+        }
+        for name, content in files.items():
+            with open(name, "w", encoding="utf-8") as f: f.write(content)
+            print(f"✅ 生成成功: {name}")
     except Exception as e:
         print(f"❌ 書き込み失敗: {e}")
         sys.exit(1)
