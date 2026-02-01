@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (02/01)
-分析: 悲観
+🤖 CoinRader 市場速報 (02/02)
+分析: 中立
 
 🔹 Bitcoin 📉
-価格: ¥1212万
-前日比: -6.1%
-RSI(14): 14.61
+価格: ¥1193万
+前日比: -1.2%
+RSI(14): 13.91
 心理指数: 14 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: ZORA, BTC, ZK
-急上昇銘柄: ZK (12%↑)
+トレンド入り: SOL, RIVER, BTC
+急上昇銘柄: ZK (36%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260201.html
+https://coinrader.net/share/20260202.html
 
 #CoinRader #ビットコイン #暗号資産
