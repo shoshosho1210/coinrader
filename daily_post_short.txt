@@ -1,15 +1,5 @@
 🤖 CoinRader 市場速報 (02/01)
-分析: 悲観
+価格: ¥12146221
+前日比: -6.3%
 
-🔹 Bitcoin
-価格: ¥1214万
-前日比: -6.5%
-RSI(14): 14.69
-心理指数: 14 (Extreme Fear)
-
-📈 注目銘柄
-トレンド: BTC, HYPE, SOL
-急上昇: ZK (6%↑)
-
-📊 詳細分析
-https://coinrader.net/share/20260201.html
+(Generated at: 11:29:22)
