@@ -1,3 +1,17 @@
-🤖 CoinRader 市場速報 (2026-02-01)
+🤖 CoinRader 市場速報 (02/01)
+分析: 悲観
 
-(Update: 2026-02-01 12:42:11)
+🔹 Bitcoin 📉
+価格: ¥1207万
+前日比: -6.7%
+RSI(14): 14.45
+心理指数: 14 (Extreme Fear)
+
+📈 注目銘柄
+トレンド入り: ZORA, BTC, ZK
+急上昇銘柄: ZK (13%↑)
+
+📊 詳細分析
+https://coinrader.net/share/20260201.html
+
+#CoinRader #ビットコイン #暗号資産

@@ -1,1 +1,4 @@
-IMAGE_DATA
+DATE: 02/01
+FGI: 14
+RSI: 14.45
+TOPIC: 底値圏での歴史的買い場を模索中
