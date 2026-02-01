@@ -3,7 +3,7 @@ import os
 import json
 import sys
 
-# --- [修正] 必須の補助関数をすべて再定義 ---
+# --- 1. 補助関数 ---
 def determine_rsi_status(rsi):
     if rsi is None: return "ANALYZING..."
     if rsi <= 30: return "🚨 EXTREME OVERSOLD"
@@ -27,7 +27,7 @@ def format_price(price):
     if price >= 1000000: return f"{price/10000:.0f}万"
     return f"{price:,.0f}"
 
-# --- メイン処理 ---
+# --- 2. メイン処理 ---
 def generate_sns_assets():
     jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     file_date = jst_now.strftime("%Y%m%d")
@@ -35,7 +35,7 @@ def generate_sns_assets():
     date_label = jst_now.strftime("%m/%d")
     update_time = jst_now.strftime("%H:%M:%S")
     
-    # 💡 強制更新用タグ (毎朝必ずGitに「変更あり」と認識させる)
+    # Git強制更新用タグ
     force_update_tag = f"\n\n(Generated at: {update_time})"
     
     paths = [f"data/daily/{file_date}.json", "data/daily/latest.json"]
@@ -48,33 +48,72 @@ def generate_sns_assets():
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+    # データ抽出
     summary = data.get("summary", {})
     btc = next((c for c in data.get("raw_data", []) if c["id"] == "bitcoin"), None)
+    
     btc_rsi = summary.get("technical", {}).get("btc_rsi")
     fgi = summary.get("fgi", {"value": 50, "label": "Neutral"})
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
     
-    # 各アセットにタイムスタンプを付与
-    short_post = f"🤖 CoinRader 市場速報 ({date_label})\n価格: ¥{format_price(btc['current_price']) if btc else '-'}\n前日比: {chg:.1f}%" + force_update_tag
-    image_overlay = f"MARKET UPDATE: [ {date_label} ]\nFGI: [ {fgi['value']} ]\nBTC RSI(14): [ {btc_rsi} ]\nSTATUS: [ {determine_rsi_status(btc_rsi)} ]\nTOPIC: [ {generate_market_topic(summary)} ]"
-    note_draft = f"# Market Note {display_date}\n\nLast Update: {update_time}\n- BTC RSI: {btc_rsi}"
+    ai_status_msg = "分析: 楽観" if chg > 3 else ("分析: 悲観" if chg < -3 else "分析: 中立")
+    icon = "📈" if chg > 0 else "📉"
+    trending_str = ", ".join(summary.get("trending", []))
+    top_g = summary.get("top_gainer", {"symbol": "-", "change": 0})
 
+    # --- ① SNS投稿用テキスト (short) の復元 ---
+    short_post = (
+        f"🤖 CoinRader 市場速報 ({date_label})\n"
+        f"{ai_status_msg}\n\n"
+        f"🔹 Bitcoin {icon}\n"
+        f"価格: ¥{format_price(btc['current_price']) if btc else '-'}\n"
+        f"前日比: {'+' if chg > 0 else ''}{chg:.1f}%\n"
+        f"RSI(14): {btc_rsi if btc_rsi else '-'}\n"
+        f"心理指数: {fgi['value']} ({fgi['label']})\n\n"
+        f"📈 注目銘柄\n"
+        f"トレンド入り: {trending_str}\n"
+        f"急上昇銘柄: {top_g['symbol']} ({int(top_g['change'])}%↑)\n\n"
+        f"📊 詳細分析\n"
+        f"https://coinrader.net/share/{file_date}.html\n\n"
+        f"#CoinRader #ビットコイン #暗号資産"
+        f"{force_update_tag}"
+    )
+
+    # --- ② 画像オーバーレイ用 ---
+    image_overlay_text = (
+        f"MARKET UPDATE: [ {date_label} ]\n"
+        f"FGI: [ {fgi['value']} ({fgi['label']}) ]\n"
+        f"BTC RSI(14): [ {btc_rsi if btc_rsi else '-'} ]\n"
+        f"STATUS: [ {determine_rsi_status(btc_rsi)} ]\n"
+        f"TOPIC: [ {generate_market_topic(summary)} ]"
+    )
+
+    # --- ③ daily_note_draft.md ---
+    note_content = (
+        f"# Market Note {display_date} ({update_time} 更新)\n\n"
+        f"## 📊 今日の主要マーケット指標\n"
+        f"- **BTC価格:** ¥{format_price(btc['current_price']) if btc else '-'}\n"
+        f"- **BTC RSI(14):** {btc_rsi if btc_rsi else '-'}\n"
+        f"- **心理指数(FGI):** {fgi['value']} ({fgi['label']})\n"
+    )
+
+    # --- ④ HTML出力の完全復元 ---
+    share_html = f"""<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>CoinRader {display_date}</title>
+  <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
+  <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp2.png?v={file_date}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
+</head>
+<body></body>
+</html>"""
+
+    # --- ファイル書き出し ---
     try:
         os.makedirs("share", exist_ok=True)
-        # ファイルの書き出し
         with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
-        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write(image_overlay)
-        with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(note_draft)
-        with open("daily_share_url.txt", "w", encoding="utf-8") as f: 
-            f.write(f"https://coinrader.net/share/{file_date}.html?t={jst_now.strftime('%H%M')}")
-        
-        share_html = f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>{display_date}</title><meta http-equiv='refresh' content='0;url=https://coinrader.net/?v={file_date}'></head></html>"
-        with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
-        
-        print(f"✅ 全ファイルを正常に書き出しました ({update_time})")
-    except Exception as e:
-        print(f"❌ 書き込み失敗: {e}")
-        sys.exit(1)
-
-if __name__ == "__main__":
-    generate_sns_assets()
+        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write
