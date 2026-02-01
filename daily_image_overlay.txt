@@ -1,4 +1,14 @@
-DATE: 02/01
-FGI: 14
-RSI: 14.61
-TOPIC: 底値圏での歴史的買い場を模索中
+Attached is the base template 'ogp_v2.png'. 
+Please overlay the following market data onto the right-side highlighted area in a professional cyberpunk HUD style. 
+Ensure the text has a subtle neon glow and is perfectly integrated into the background theme.
+
+--- DATA TO OVERLAY ---
+DATE: [ 02/01 ]
+SENTIMENT: [ 14 (Extreme Fear) ]
+BTC RSI: [ 14.61 ]
+STATUS: [ 分析: 悲観 / 売られすぎ ]
+FOCUS: [ パニック売り一巡、底打ち反転を模索中 ]
+
+--- DESIGN INSTRUCTION ---
+Use high-tech digital font. Highlight the SENTIMENT value with a '赤色(Neon Red)' glow. 
+Maintain a clean, sophisticated atmosphere for institutional traders.
