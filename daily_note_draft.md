@@ -1,4 +1,6 @@
-# Market Note 2026-02-01
+# Market Note 2026-02-01 (12:00:41 更新)
 
-Last Update: 11:55:54
-- BTC RSI: 14.76
+## 📊 今日の主要マーケット指標
+- **BTC価格:** ¥1215万
+- **BTC RSI(14):** 14.76
+- **心理指数(FGI):** 14 (Extreme Fear)
