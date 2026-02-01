@@ -97,11 +97,11 @@ def generate_sns_assets():
 
     # --- ファイル書き出し ---
     try:
-        with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
-        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write(image_overlay_text)
-        with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(note_content)
-        os.makedirs("share", exist_ok=True)
-        with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
+        ##with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
+        ##with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write(image_overlay_text)
+        ##with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(note_content)
+        ##os.makedirs("share", exist_ok=True)
+        ##with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
         print("✅ 全SNSアセット・レポートの生成に成功しました")
     except Exception as e:
         print(f"❌ ファイル書き込みエラー: {e}")
