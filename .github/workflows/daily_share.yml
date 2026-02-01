@@ -96,10 +96,10 @@ jobs:
           # JSONフォルダのみを追加
           git add data/daily/
           
-          # 💡 修正ポイント：チェック対象を data/daily/ に限定する
+          # 💡 チェック対象を data/daily/ に限定することで、txtなどの変更を無視して正常終了させる
           if [ -n "$(git status --porcelain data/daily/)" ]; then
-            git commit -m "Update daily market JSON [skip ci]"
+            git commit -m "Update hourly market JSON [skip ci]"
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
           else
-            echo "No changes in JSON data."
+            echo "No changes in JSON files. Skipping commit."
           fi
