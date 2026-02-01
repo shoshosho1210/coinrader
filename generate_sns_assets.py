@@ -45,7 +45,7 @@ def generate_sns_assets():
     json_path = next((p for p in paths if os.path.exists(p)), None)
 
     if not json_path:
-        print("❌ エラー: データJSONが見つかりません。")
+        print("❌ エラー: 参照データが見つかりません。")
         sys.exit(1)
 
     with open(json_path, "r", encoding="utf-8") as f:
@@ -79,11 +79,8 @@ def generate_sns_assets():
 
     # --- ② 画像オーバーレイ用テキスト ---
     image_overlay_text = (
-        f"MARKET UPDATE: [ {date_label} ]\n"
-        f"FGI: [ {fgi['value']} ({fgi['label']}) ]\n"
-        f"BTC RSI(14): [ {btc_rsi if btc_rsi else '-'} ]\n"
-        f"STATUS: [ {rsi_status} ]\n"
-        f"TOPIC: [ {topic_text} ]"
+        f"MARKET UPDATE: [ {date_label} ]\nFGI: [ {fgi['value']} ({fgi['label']}) ]\n"
+        f"BTC RSI(14): [ {btc_rsi if btc_rsi else '-'} ]\nSTATUS: [ {rsi_status} ]\nTOPIC: [ {topic_text} ]"
     )
 
     # --- ③ daily_note_draft.md (詳細レポート案) ---
@@ -104,11 +101,20 @@ def generate_sns_assets():
 - テクニカル的にはBTC RSIが {btc_rsi if btc_rsi else '-'} の水準にあり、{'買われすぎ' if (btc_rsi or 0) > 70 else '売られすぎ' if (btc_rsi or 0) < 30 else '中立圏'} を示唆しています。
 """
 
-    # --- ④ シェア用HTML ---
     share_html = f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>CoinRader {display_date}</title><meta property='og:image' content='https://coinrader.net/assets/og/ogp2.png?v={file_date}'><meta http-equiv='refresh' content='0;url=https://coinrader.net/?v={file_date}'></head></html>"
 
     # --- 💾 ファイル書き出しセクション ---
     try:
         os.makedirs("share", exist_ok=True)
-        # 短文
-        with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_
+        with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
+        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write(image_overlay_text)
+        with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(note_content)
+        with open("daily_share_url.txt", "w", encoding="utf-8") as f: f.write(f"https://coinrader.net/share/{file_date}.html")
+        with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
+        print("✅ 全SNSアセット・レポートの書き出しに成功しました")
+    except Exception as e:
+        print(f"❌ 書き込み失敗: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    generate_sns_assets()
