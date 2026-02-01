@@ -1,4 +1,41 @@
-- name: Commit and Push
+name: Daily SNS Assets Preparation
+
+on:
+  schedule:
+    # 日本時間 毎日朝6:00 (UTC 21:00)
+    - cron: "0 21 * * *"
+  workflow_dispatch: # 手動実行ボタン
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pillow
+
+      - name: Run SNS Assets script
+        run: |
+          # フォルダ作成とスクリプト実行
+          mkdir -p data/daily
+          mkdir -p share
+          python generate_sns_assets.py
+          # 画像生成もここで行う
+          python generate_sns_image.py
+
+      - name: Commit and Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -6,10 +43,12 @@
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # daily_note_draft.md を忘れずに追加
-          git add daily_post_short.txt daily_image_overlay.txt daily_market_update.png daily_note_draft.md share/
+          # SNS投稿に必要なファイルのみを追加
+          git add daily_post_short.txt daily_image_overlay.txt daily_market_update.png daily_note_draft.md daily_share_url.txt share/
           
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Update SNS assets and daily report [skip ci]"
+            git commit -m "Prepare SNS assets for 6AM update [skip ci]"
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
+          else
+            echo "No changes found."
           fi
