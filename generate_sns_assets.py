@@ -16,11 +16,11 @@ def generate_market_topic(summary):
     btc_rsi = summary.get('technical', {}).get('btc_rsi')
     btc_dom = summary.get('btc_dominance', 0)
     top_gainer = summary.get('top_gainer', {})
-    if btc_rsi and btc_rsi <= 25: return "底値圏での歴史的買い場を模索中"
-    if btc_dom < 45: return "アルトコインへの資金循環が鮮明"
+    if btc_rsi and btc_rsi <= 25: return "パニック売り一巡、底打ち反転を模索中"
+    if btc_dom < 45: return "アルトへの資金循環。セクター別物色の兆候"
     if top_gainer.get('change', 0) > 15:
-        return f"{top_gainer.get('symbol', '').upper()}等の特定アルトに強い買い需要"
-    return "主要指標は均衡、次なるトレンド待ち"
+        return f"特定アルト({top_gainer.get('symbol', '').upper()})への強い買い需要"
+    return "主要指標は均衡、次のトレンド待ちの局面"
 
 def format_price(price):
     if price is None: return "-"
@@ -105,7 +105,7 @@ def generate_sns_assets():
   <title>CoinRader {display_date}</title>
   <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
   <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
-  <meta property="og:image" content="https://coinrader.net/assets/og/ogp.png?v={file_date}">
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png?v={file_date}">
   <meta name="twitter:card" content="summary_large_image">
   <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
 </head>
@@ -121,11 +121,34 @@ def generate_sns_assets():
             f.write(f"https://coinrader.net/share/{file_date}.html?t={jst_now.strftime('%H%M')}")
         with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
         
-        # 画像生成はスキップするが、overlay用のテキストはAIプロンプト用に残しておく
+        # ==========================================
+        # 💡 [変更箇所] daily_image_overlay.txt 
+        # nano banana pro（画像生成AI）用の詳細プロンプト
+        # ==========================================
+        fgi_val = fgi.get('value', 50)
+        # 恐怖指数に応じた発光色の指定
+        accent_color = "赤色(Neon Red)" if fgi_val <= 30 else "オレンジ色(Orange)" if fgi_val <= 45 else "シアン(Cyan)"
+        
+        ai_image_prompt = (
+            f"Attached is the base template 'ogp_v2.png'. \n"
+            f"Please overlay the following market data onto the right-side highlighted area in a professional cyberpunk HUD style. \n"
+            f"Ensure the text has a subtle neon glow and is perfectly integrated into the background theme.\n\n"
+            f"--- DATA TO OVERLAY ---\n"
+            f"DATE: [ {date_label} ]\n"
+            f"SENTIMENT: [ {fgi_val} ({fgi.get('label', 'Neutral')}) ]\n"
+            f"BTC RSI: [ {btc_rsi if btc_rsi else '-'} ]\n"
+            f"STATUS: [ {ai_status_msg} / {rsi_note} ]\n"
+            f"FOCUS: [ {generate_market_topic(summary)} ]\n\n"
+            f"--- DESIGN INSTRUCTION ---\n"
+            f"Use high-tech digital font. Highlight the SENTIMENT value with a '{accent_color}' glow. \n"
+            f"Maintain a clean, sophisticated atmosphere for institutional traders."
+        )
+
         with open("daily_image_overlay.txt", "w", encoding="utf-8") as f:
-            f.write(f"DATE: {date_label}\nFGI: {fgi['value']}\nRSI: {btc_rsi}\nTOPIC: {generate_market_topic(summary)}")
+            f.write(ai_image_prompt.strip())
             
-        print(f"✅ リッチレポート形式で全アセットを復元しました ({update_time})")
+        print(f"✅ 全アセット生成完了。AI画像プロンプトを書き出しました ({update_time})")
+
     except Exception as e:
         print(f"❌ 書き込み失敗: {e}")
         sys.exit(1)
