@@ -2,9 +2,9 @@ name: Daily SNS Assets Preparation
 
 on:
   schedule:
-    # 日本時間 毎日朝6:00 (UTC 21:00)
+    # 毎日 日本時間 朝6:00 (UTC 21:00) に実行
     - cron: "0 21 * * *"
-  workflow_dispatch: # 手動実行ボタン
+  workflow_dispatch: # 手動実行ボタンを有効化
 
 jobs:
   build:
@@ -26,13 +26,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pillow
 
-      - name: Run SNS Assets script
+      - name: Run scripts
         run: |
-          # フォルダ作成とスクリプト実行
           mkdir -p data/daily
           mkdir -p share
+          # SNSテキスト、Markdownレポート、HTMLを生成
           python generate_sns_assets.py
-          # 画像生成もここで行う
+          # SNS投稿用画像を生成
           python generate_sns_image.py
 
       - name: Commit and Push
@@ -43,11 +43,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # SNS投稿に必要なファイルのみを追加
+          # daily_note_draft.md を含む全アセットをステージング
           git add daily_post_short.txt daily_image_overlay.txt daily_market_update.png daily_note_draft.md daily_share_url.txt share/
           
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Prepare SNS assets for 6AM update [skip ci]"
+            git commit -m "Update SNS assets and daily report [skip ci]"
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
           else
             echo "No changes found."
