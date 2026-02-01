@@ -28,12 +28,10 @@ jobs:
 
       - name: Run scripts
         run: |
-          mkdir -p data/daily
           mkdir -p share
-          # SNSテキスト、Markdownレポート、HTMLを生成
+          # SNSテキスト、Markdownレポート、HTMLのみを生成
           python generate_sns_assets.py
-          # SNS投稿用画像を生成
-          python generate_sns_image.py
+          # 💡 画像生成スクリプトの実行を削除しました
 
       - name: Commit and Push
         env:
@@ -43,12 +41,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # daily_note_draft.md を含む全アセットをステージング
-          git add daily_post_short.txt daily_image_overlay.txt daily_market_update.png daily_note_draft.md daily_share_url.txt share/
+          # 💡 画像ファイル（.png）を除外してステージング
+          git add daily_post_short.txt daily_image_overlay.txt daily_note_draft.md daily_share_url.txt share/
           
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "Update SNS assets and daily report [skip ci]"
+            git commit -m "Update SNS text assets and daily report [skip ci]"
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
-          else
-            echo "No changes found."
           fi
+
