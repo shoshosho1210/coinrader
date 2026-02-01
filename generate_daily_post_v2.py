@@ -175,7 +175,7 @@ def generate_post():
   <title>CoinRader {display_date}</title>
   <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
   <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
-  <meta property="og:image" content="https://coinrader.net/assets/og/ogp2.png?v={file_date}">
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png?v={file_date}">
   <meta name="twitter:card" content="summary_large_image">
   <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
 </head>
