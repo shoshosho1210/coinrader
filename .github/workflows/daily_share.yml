@@ -96,7 +96,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # 変更（生成および削除）をすべてステージング
-          git add data/daily/ share/ *.txt *.md
+          #git add data/daily/ share/ *.txt *.md
+          git add data/daily/
           
           # 変更がある場合のみコミット＆プッシュ（トークン付きURL）
           if [ -n "$(git status --porcelain)" ]; then
