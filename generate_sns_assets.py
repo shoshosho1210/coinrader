@@ -3,45 +3,57 @@ import os
 import json
 import sys
 
-# --- 1. 補助関数 ---
-
-# ★追加: スパークラインから最新のRSIを計算する関数
+# --- 1. RSI計算ロジック (HTML側のJavaScriptと完全一致) ---
 def calculate_latest_rsi(prices, period=14):
+    """
+    CoinGeckoのスパークライン(価格配列)からWilder's RSIを計算し、
+    最新(最後)の値を返す関数
+    """
     if not prices or len(prices) < period + 1:
         return None
 
+    # 1. 最初のperiod回分の平均ゲイン/ロスを計算 (Simple Average)
     gain_sum = 0
     loss_sum = 0
     for i in range(1, period + 1):
         diff = prices[i] - prices[i-1]
-        if diff >= 0: gain_sum += diff
-        else: loss_sum += -diff
+        if diff >= 0:
+            gain_sum += diff
+        else:
+            loss_sum += -diff
 
     avg_gain = gain_sum / period
     avg_loss = loss_sum / period
 
+    # 2. その後のデータをWilder's Smoothingで計算
     current_rsi = 0
-    if avg_loss == 0: current_rsi = 100.0
+    
+    # period地点の初期RSI
+    if avg_loss == 0:
+        current_rsi = 100.0
     else:
         rs = avg_gain / avg_loss
         current_rsi = 100.0 - (100.0 / (1.0 + rs))
 
+    # period + 1 から最後までループして最新値を導出
     for i in range(period + 1, len(prices)):
         diff = prices[i] - prices[i-1]
         gain = diff if diff > 0 else 0
         loss = -diff if diff < 0 else 0
 
+        # Wilder's Smoothing
         avg_gain = ((avg_gain * (period - 1)) + gain) / period
         avg_loss = ((avg_loss * (period - 1)) + loss) / period
 
-        if avg_loss == 0: current_rsi = 100.0
+        if avg_loss == 0:
+            current_rsi = 100.0
         else:
             rs = avg_gain / avg_loss
             current_rsi = 100.0 - (100.0 / (1.0 + rs))
             
     return current_rsi
 
-# (既存のまま)
+# --- 2. 補助関数 ---
 def determine_rsi_status(rsi):
     if rsi is None: return "分析中"
     if rsi <= 30: return "売られすぎ"
@@ -50,86 +62,102 @@ def determine_rsi_status(rsi):
     if rsi >= 60: return "やや買われすぎ"
     return "中立圏"
 
-# (既存のまま)
-def generate_market_topic(summary):
-    btc_rsi = summary.get('technical', {}).get('btc_rsi')
+def generate_market_topic(summary, current_rsi=None):
+    # 計算された最新のRSIがあれば優先使用
+    btc_rsi = current_rsi if current_rsi is not None else summary.get('technical', {}).get('btc_rsi')
+    
     btc_dom = summary.get('btc_dominance', 0)
     top_gainer = summary.get('top_gainer', {})
-    if btc_rsi and btc_rsi <= 25: return "パニック売り一巡、底打ち反転を模索中"
+    
+    if btc_rsi is not None and btc_rsi <= 25: return "パニック売り一巡、底打ち反転を模索中"
     if btc_dom < 45: return "アルトへの資金循環。セクター別物色の兆候"
     if top_gainer.get('change', 0) > 15:
         return f"特定アルト({top_gainer.get('symbol', '').upper()})への強い買い需要"
     return "主要指標は均衡、次のトレンド待ちの局面"
 
-# (既存のまま)
 def format_price(price):
     if price is None: return "-"
     if price >= 1000000: return f"{price/10000:.0f}万"
     return f"{price:,.0f}"
 
-# --- 2. メイン処理 ---
+# --- 3. メイン処理 ---
 def generate_sns_assets():
+    print("🚀 処理を開始します...")
+    
     jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     file_date = jst_now.strftime("%Y%m%d")
     display_date = jst_now.strftime("%Y-%m-%d")
     date_label = jst_now.strftime("%m/%d")
     update_time = jst_now.strftime("%H:%M:%S")
+    git_force_tag = "\n"
     
-    # Git強制更新用の不可視タグ（ファイルの末尾に隠す）
-    git_force_tag = f"\n"
-    
-    paths = [f"data/daily/{file_date}.json", "data/daily/latest.json"]
-    json_path = next((p for p in paths if os.path.exists(p)), None)
+    # JSON読み込み
+    target_files = [f"data/daily/{file_date}.json", "data/daily/latest.json"]
+    json_path = next((p for p in target_files if os.path.exists(p)), None)
 
     if not json_path:
         print("❌ エラー: データJSONが見つかりません。")
         sys.exit(1)
 
+    print(f"📂 Reading data from: {json_path}")
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # データ抽出
     summary = data.get("summary", {})
     raw_data = data.get("raw_data", [])
-    btc = next((c for c in raw_data if c["id"] == "bitcoin"), None)
     
-    # --- ★追加: スパークラインデータの確保とRSI再計算 ---
-    spark_prices = None
+    # BTCデータの探索
+    btc = next((c for c in raw_data if c.get("id") == "bitcoin"), None)
     
-    # 1. まず読み込んだファイルから探す
-    if btc and "sparkline_in_7d" in btc:
-        spark = btc["sparkline_in_7d"]
-        spark_prices = spark.get("price") if isinstance(spark, dict) else spark
+    # --- ★強化ポイント: データの徹底探索とRSI再計算 ---
+    spark_prices = []
+    
+    # 1. ロードしたファイルから探す
+    if btc:
+        raw_spark = btc.get("sparkline_in_7d")
+        if raw_spark:
+            # { "price": [...] } の形式か、直接 [...] の形式か両方対応
+            if isinstance(raw_spark, dict):
+                spark_prices = raw_spark.get("price", [])
+            elif isinstance(raw_spark, list):
+                spark_prices = raw_spark
+    
+    # 2. なければ latest.json を強制的に見に行く
+    fallback_path = "data/daily/latest.json"
+    if not spark_prices and json_path != fallback_path:
+        if os.path.exists(fallback_path):
+            print(f"⚠️ {os.path.basename(json_path)} にデータがないため、{fallback_path} を確認します...")
+            try:
+                with open(fallback_path, "r", encoding="utf-8") as f2:
+                    data2 = json.load(f2)
+                    btc2 = next((c for c in data2.get("raw_data", []) if c.get("id") == "bitcoin"), None)
+                    if btc2:
+                        raw_spark2 = btc2.get("sparkline_in_7d")
+                        if isinstance(raw_spark2, dict):
+                            spark_prices = raw_spark2.get("price", [])
+                        elif isinstance(raw_spark2, list):
+                            spark_prices = raw_spark2
+                        
+                        if spark_prices:
+                            print(f"✅ latest.json から {len(spark_prices)} 件の価格データを取得しました。")
+            except Exception as e:
+                print(f"⚠️ フォールバック読み込みエラー: {e}")
 
-    # 2. なければ latest.json を見に行く (フォールバック)
-    if not spark_prices and os.path.exists("data/daily/latest.json"):
-        print("⚠️ 現在のファイルにスパークラインがないため、latest.jsonを確認します...")
-        try:
-            with open("data/daily/latest.json", "r", encoding="utf-8") as f2:
-                data2 = json.load(f2)
-                btc2 = next((c for c in data2.get("raw_data", []) if c["id"] == "bitcoin"), None)
-                if btc2 and "sparkline_in_7d" in btc2:
-                    spark2 = btc2["sparkline_in_7d"]
-                    spark_prices = spark2.get("price") if isinstance(spark2, dict) else spark2
-                    print("✅ latest.json からスパークラインデータを取得しました。")
-        except Exception as e:
-            print(f"⚠️ フォールバック読み込み失敗: {e}")
-
-    # 3. RSI再計算実行
+    # 3. 計算実行
     btc_rsi_calculated = None
-    if spark_prices and isinstance(spark_prices, list):
+    if spark_prices and len(spark_prices) > 14:
         btc_rsi_calculated = calculate_latest_rsi(spark_prices)
     
     if btc_rsi_calculated is not None:
-        btc_rsi = round(btc_rsi_calculated, 1)
-        # ★重要: 既存関数(generate_market_topic)が新しい値を参照できるようにsummaryを書き換える
+        btc_rsi = round(btc_rsi_calculated, 1) # 小数点1桁
+        # サマリーを上書きして後続処理に反映させる
         if "technical" not in summary: summary["technical"] = {}
         summary["technical"]["btc_rsi"] = btc_rsi
-        print(f"✅ RSI再計算成功: {btc_rsi}")
+        print(f"✅ RSI再計算成功: {btc_rsi} (HTMLと同等の値)")
     else:
-        # 計算失敗時は既存の値を使用
+        # 計算失敗時は古い保存値を使用
         btc_rsi = summary.get("technical", {}).get("btc_rsi")
-        print(f"⚠️ RSI再計算不可。保存値を使用: {btc_rsi}")
+        print(f"⚠️ RSI再計算不可 (データ件数: {len(spark_prices)})。保存値を使用: {btc_rsi}")
     # ----------------------------------------------------
 
     btc_dom = summary.get("btc_dominance", 0)
@@ -140,7 +168,9 @@ def generate_sns_assets():
     icon = "📈" if chg > 0 else "📉"
     trending_str = ", ".join(summary.get("trending", []))
     top_g = summary.get("top_gainer", {"symbol": "-", "change": 0})
+    
     rsi_note = determine_rsi_status(btc_rsi)
+    market_topic = generate_market_topic(summary, btc_rsi) # 最新RSIを渡す
 
     # --- ① SNS投稿用テキスト (short) ---
     short_post = (
@@ -160,7 +190,7 @@ def generate_sns_assets():
         f"{git_force_tag}"
     )
 
-    # --- ② 【完全復元】daily_note_draft.md ---
+    # --- ② Note用テキスト ---
     note_content = (
         f"# Market Note {display_date} ({update_time} 更新)\n\n"
         f"## 📊 今日の主要マーケット指標\n"
@@ -177,7 +207,8 @@ def generate_sns_assets():
         f"{git_force_tag}"
     )
 
-    # --- ③ HTML出力 ---
+    # --- ③ HTMLコンテンツ ---
+    # ★変更: 時刻を入れて毎回内容を変える
     share_html = f"""<!doctype html>
 <html lang="ja">
 <head>
@@ -188,49 +219,57 @@ def generate_sns_assets():
   <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png?v={file_date}">
   <meta name="twitter:card" content="summary_large_image">
   <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
-</head>
+  </head>
 <body></body>
 </html>"""
+
+    # --- ④ 画像生成プロンプト ---
+    fgi_val = fgi.get('value', 50)
+    accent_color = "赤色(Neon Red)" if fgi_val <= 30 else "オレンジ色(Orange)" if fgi_val <= 45 else "シアン(Cyan)"
+    
+    # ★変更: 末尾にタイムスタンプを追加し、Gitが変更を検知するようにする
+    ai_image_prompt = (
+        f"Attached is the base template 'ogp_v2.png'. \n"
+        f"Please overlay the following market data onto the right-side highlighted area in a professional cyberpunk HUD style. \n"
+        f"Ensure the text has a subtle neon glow and is perfectly integrated into the background theme.\n\n"
+        f"--- DATA TO OVERLAY ---\n"
+        f"DATE: [ {date_label} ]\n"
+        f"SENTIMENT: [ {fgi_val} ({fgi.get('label', 'Neutral')}) ]\n"
+        f"BTC RSI: [ {btc_rsi if btc_rsi else '-'} ]\n"
+        f"STATUS: [ {ai_status_msg} / {rsi_note} ]\n"
+        f"FOCUS: [ {market_topic} ]\n\n"
+        f"--- DESIGN INSTRUCTION ---\n"
+        f"Use high-tech digital font. Highlight the SENTIMENT value with a '{accent_color}' glow. \n"
+        f"Maintain a clean, sophisticated atmosphere for institutional traders.\n"
+        f"GENERATED: [ {update_time} ]"
+    )
 
     # --- 💾 ファイル書き出し ---
     try:
         os.makedirs("share", exist_ok=True)
+        
+        print("💾 writing: daily_post_short.txt")
         with open("daily_post_short.txt", "w", encoding="utf-8") as f: f.write(short_post)
+        
+        print("💾 writing: daily_note_draft.md")
         with open("daily_note_draft.md", "w", encoding="utf-8") as f: f.write(note_content)
+        
+        print("💾 writing: daily_share_url.txt")
         with open("daily_share_url.txt", "w", encoding="utf-8") as f: 
             f.write(f"https://coinrader.net/share/{file_date}.html?t={jst_now.strftime('%H%M')}")
+        
+        print(f"💾 writing: share/{file_date}.html")
         with open(f"share/{file_date}.html", "w", encoding="utf-8") as f: f.write(share_html)
         
-        # ==========================================
-        # 💡 [変更箇所] daily_image_overlay.txt 
-        # nano banana pro（画像生成AI）用の詳細プロンプト
-        # ==========================================
-        fgi_val = fgi.get('value', 50)
-        # 恐怖指数に応じた発光色の指定
-        accent_color = "赤色(Neon Red)" if fgi_val <= 30 else "オレンジ色(Orange)" if fgi_val <= 45 else "シアン(Cyan)"
-        
-        ai_image_prompt = (
-            f"Attached is the base template 'ogp_v2.png'. \n"
-            f"Please overlay the following market data onto the right-side highlighted area in a professional cyberpunk HUD style. \n"
-            f"Ensure the text has a subtle neon glow and is perfectly integrated into the background theme.\n\n"
-            f"--- DATA TO OVERLAY ---\n"
-            f"DATE: [ {date_label} ]\n"
-            f"SENTIMENT: [ {fgi_val} ({fgi.get('label', 'Neutral')}) ]\n"
-            f"BTC RSI: [ {btc_rsi if btc_rsi else '-'} ]\n"
-            f"STATUS: [ {ai_status_msg} / {rsi_note} ]\n"
-            f"FOCUS: [ {generate_market_topic(summary)} ]\n\n"
-            f"--- DESIGN INSTRUCTION ---\n"
-            f"Use high-tech digital font. Highlight the SENTIMENT value with a '{accent_color}' glow. \n"
-            f"Maintain a clean, sophisticated atmosphere for institutional traders."
-        )
-
-        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f:
-            f.write(ai_image_prompt.strip())
+        print("💾 writing: daily_image_overlay.txt")
+        with open("daily_image_overlay.txt", "w", encoding="utf-8") as f: f.write(ai_image_prompt.strip())
             
-        print(f"✅ 全アセット生成完了。AI画像プロンプトを書き出しました ({update_time})")
+        print(f"✅ 全アセット生成完了 ({update_time})")
 
     except Exception as e:
         print(f"❌ 書き込み失敗: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 if __name__ == "__main__":
