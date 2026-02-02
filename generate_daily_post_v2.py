@@ -40,6 +40,7 @@ def calculate_rsi(prices, period=14):
     rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
     
+    # 平滑化
     for i in range(period, len(prices) - 1):
         gain = gains[i]
         loss = losses[i]
@@ -78,4 +79,6 @@ def main():
         "vs_currency": "jpy",
         "order": "market_cap_desc",
         "per_page": 250,
-        "page":
+        "page": 1,
+        "sparkline": "true",
+        "price_change_percentage": "24h,7d"
