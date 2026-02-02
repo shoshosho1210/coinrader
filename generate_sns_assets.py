@@ -3,58 +3,7 @@ import os
 import json
 import sys
 
-# --- 1. RSI計算ロジック (HTML側の computeRSISeries をPythonで完全再現) ---
-def calculate_latest_rsi(prices, period=14):
-    """
-    CoinGeckoのスパークライン(価格配列)からWilder's RSIを計算し、
-    最新(最後)の値を返す関数
-    """
-    if not prices or len(prices) < period + 1:
-        return None
-
-    # 1. 最初のperiod回分の平均ゲイン/ロスを計算 (Simple Average)
-    gain_sum = 0
-    loss_sum = 0
-    for i in range(1, period + 1):
-        diff = prices[i] - prices[i-1]
-        if diff >= 0:
-            gain_sum += diff
-        else:
-            loss_sum += -diff
-
-    avg_gain = gain_sum / period
-    avg_loss = loss_sum / period
-
-    # 2. その後のデータをWilder's Smoothingで計算
-    # JavaScript側のロジックと一致させるため、配列の最後まで平滑化を行う
-    current_rsi = 0
-    
-    # period地点の初期RSI計算
-    if avg_loss == 0:
-        current_rsi = 100.0
-    else:
-        rs = avg_gain / avg_loss
-        current_rsi = 100.0 - (100.0 / (1.0 + rs))
-
-    # period + 1 から最後までループして最新値を導出
-    for i in range(period + 1, len(prices)):
-        diff = prices[i] - prices[i-1]
-        gain = diff if diff > 0 else 0
-        loss = -diff if diff < 0 else 0
-
-        # Wilder's Smoothing
-        avg_gain = ((avg_gain * (period - 1)) + gain) / period
-        avg_loss = ((avg_loss * (period - 1)) + loss) / period
-
-        if avg_loss == 0:
-            current_rsi = 100.0
-        else:
-            rs = avg_gain / avg_loss
-            current_rsi = 100.0 - (100.0 / (1.0 + rs))
-            
-    return current_rsi
-
-# --- 1.5 補助関数（既存ロジック） ---
+# --- 1. 補助関数（ロジック完全復元） ---
 def determine_rsi_status(rsi):
     if rsi is None: return "分析中"
     if rsi <= 30: return "売られすぎ"
@@ -63,13 +12,11 @@ def determine_rsi_status(rsi):
     if rsi >= 60: return "やや買われすぎ"
     return "中立圏"
 
-def generate_market_topic(summary, btc_rsi_val):
-    # RSI判定には引数で渡された最新の計算値を使用する
+def generate_market_topic(summary):
+    btc_rsi = summary.get('technical', {}).get('btc_rsi')
     btc_dom = summary.get('btc_dominance', 0)
     top_gainer = summary.get('top_gainer', {})
-    
-    # 引数のRSIを使用
-    if btc_rsi_val and btc_rsi_val <= 25: return "パニック売り一巡、底打ち反転を模索中"
+    if btc_rsi and btc_rsi <= 25: return "パニック売り一巡、底打ち反転を模索中"
     if btc_dom < 45: return "アルトへの資金循環。セクター別物色の兆候"
     if top_gainer.get('change', 0) > 15:
         return f"特定アルト({top_gainer.get('symbol', '').upper()})への強い買い需要"
@@ -103,29 +50,8 @@ def generate_sns_assets():
 
     # データ抽出
     summary = data.get("summary", {})
-    raw_data = data.get("raw_data", []) # raw_dataを取得
-    
-    # BTCデータの取得
-    btc = next((c for c in raw_data if c["id"] == "bitcoin"), None)
-    
-    # --- ★修正ポイント: RSIをスパークラインから再計算する ---
-    btc_rsi_calculated = None
-    if btc and "sparkline_in_7d" in btc:
-        spark = btc["sparkline_in_7d"]
-        # priceキーの中に配列がある場合と、sparkline_in_7d自体が配列の場合に対応
-        prices = spark.get("price") if isinstance(spark, dict) else spark
-        
-        if prices and isinstance(prices, list):
-            btc_rsi_calculated = calculate_latest_rsi(prices)
-    
-    # 計算できなかった場合は従来のsummary値をフォールバックとして使用
-    if btc_rsi_calculated is not None:
-        btc_rsi = round(btc_rsi_calculated, 1) # 小数点1桁に丸める
-        print(f"✅ RSI再計算成功: {btc_rsi}")
-    else:
-        btc_rsi = summary.get("technical", {}).get("btc_rsi")
-        print(f"⚠️ RSI再計算不可。保存値を使用: {btc_rsi}")
-
+    btc = next((c for c in data.get("raw_data", []) if c["id"] == "bitcoin"), None)
+    btc_rsi = summary.get("technical", {}).get("btc_rsi")
     btc_dom = summary.get("btc_dominance", 0)
     fgi = summary.get("fgi", {"value": 50, "label": "Neutral"})
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
@@ -203,9 +129,6 @@ def generate_sns_assets():
         # 恐怖指数に応じた発光色の指定
         accent_color = "赤色(Neon Red)" if fgi_val <= 30 else "オレンジ色(Orange)" if fgi_val <= 45 else "シアン(Cyan)"
         
-        # ★ここで渡す focus も、再計算したRSIに基づくように修正
-        market_topic = generate_market_topic(summary, btc_rsi)
-        
         ai_image_prompt = (
             f"Attached is the base template 'ogp_v2.png'. \n"
             f"Please overlay the following market data onto the right-side highlighted area in a professional cyberpunk HUD style. \n"
@@ -215,7 +138,7 @@ def generate_sns_assets():
             f"SENTIMENT: [ {fgi_val} ({fgi.get('label', 'Neutral')}) ]\n"
             f"BTC RSI: [ {btc_rsi if btc_rsi else '-'} ]\n"
             f"STATUS: [ {ai_status_msg} / {rsi_note} ]\n"
-            f"FOCUS: [ {market_topic} ]\n\n"
+            f"FOCUS: [ {generate_market_topic(summary)} ]\n\n"
             f"--- DESIGN INSTRUCTION ---\n"
             f"Use high-tech digital font. Highlight the SENTIMENT value with a '{accent_color}' glow. \n"
             f"Maintain a clean, sophisticated atmosphere for institutional traders."
