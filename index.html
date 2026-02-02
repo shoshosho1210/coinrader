@@ -7114,37 +7114,7 @@ const trendLabel = (v) => {
 const fmtPct = (v, digits=1) => (v === null) ? '—' : ((v >= 0 ? '+' : '') + v.toFixed(digits) + '%');
 const fmtInt = (v) => (v === null) ? '—' : String(Math.round(v));
 
-// ①結論（1行）
-// === AI details: compact structured report (v15) ===
-const verdictTxt = (badgeEl?.querySelector('.status-text')?.textContent || '').trim() || '—';
-const fgNum  = (sent === null || sent === undefined) ? null : Number(sent);
-const rsiNum = (rsi === null || rsi === undefined) ? null : Number(rsi);
-const maNum  = (maDist === null || maDist === undefined) ? null : Number(maDist);
-const btcChgNum = (btcChg === null || btcChg === undefined || isNaN(btcChg)) ? null : Number(btcChg);
 
-// ラベル
-const fgLabel = (v) => {
-  if (v === null) return '—';
-  if (v <= 20) return 'Extreme Fear';
-  if (v <= 40) return 'Fear';
-  if (v <= 60) return 'Neutral';
-  if (v <= 80) return 'Greed';
-  return 'Extreme Greed';
-};
-const rsiLabel = (v) => {
-  if (v === null) return '—';
-  if (v <= 25) return '強い売られすぎ';
-  if (v <= 30) return '売られすぎ';
-  if (v >= 75) return '強い買われすぎ';
-  if (v >= 70) return '買われすぎ';
-  return '中立';
-};
-const trendLabel = (v) => {
-  if (v === null) return '—';
-  if (v <= -2.0) return '下向き';
-  if (v >=  2.0) return '上向き';
-  return '横ばい';
-};
 
 // 地合い（ポジション指示ではなく“市場環境”）
 let regime = 'レンジ（様子見）';
