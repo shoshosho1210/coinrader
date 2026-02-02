@@ -1,286 +1,196 @@
 import requests
-import datetime
-import os
 import json
 import time
+from datetime import datetime
+import os
 
-# ==========================================
-# 1. 除外ロジック (ステーブル・Wrapped除外)
-# ==========================================
-STABLE_IDS = {"tether", "usd-coin", "dai", "true-usd", "first-digital-usd", "ethena-usde", "frax", "pax-dollar", "paypal-usd", "gemini-dollar", "paxos-standard", "binance-usd", "liquity-usd"}
-STABLE_SYMBOLS = {"usdt", "usdc", "dai", "tusd", "usde", "fdusd", "pyusd", "gusd", "usdp", "busd", "lusd", "frax"}
-SKIP_KEYWORDS = ["wrapped", "staked", "bridged", "token", "wbtc", "weth", "steth"]
+# --- 設定 ---
+COINGECKO_API_URL = "https://api.coingecko.com/api/v3"
+FGI_API_URL = "https://api.alternative.me/fng/?limit=1"
+OUTPUT_FILE = "data/latest_market_data.json"
 
-def is_stable_coin(coin):
-    c_id = (coin.get('id') or '').lower()
-    c_sym = (coin.get('symbol') or '').lower()
-    return c_id in STABLE_IDS or c_sym in STABLE_SYMBOLS
-
-def is_wrapped_or_duplicate(coin):
-    c_id = (coin.get('id') or '').lower()
-    if c_id in ['bitcoin', 'ethereum']: return False
-    c_name = (coin.get('name') or '').lower()
-    c_sym = (coin.get('symbol') or '').lower()
-    for k in SKIP_KEYWORDS:
-        if k in c_name or k in c_sym: return True
-    return False
-
-# ==========================================
-# 2. データ取得・分析関数
-# ==========================================
-def get_coingecko_data(url, params):
-    api_key = os.getenv("CG_DEMO_KEY")
-    headers = {"x-cg-demo-api-key": api_key} if api_key else {}
+def fetch_json(url, params=None):
+    """安全なリクエスト送信"""
     try:
-        res = requests.get(url, params=params, headers=headers, timeout=30)
-        res.raise_for_status()
-        return res.json()
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        return response.json()
     except Exception as e:
-        print(f"APIエラー: {url} -> {e}")
+        print(f"Error fetching {url}: {e}")
         return None
 
-# ★変更: フロントエンドと同じWilder's RSI (14) をスパークラインから計算
-def calculate_wilders_rsi(prices, period=14):
+def calculate_rsi(prices, period=14):
     """
-    スパークライン（価格配列）からWilder's RSIを計算する。
-    HTML/JS側のロジックと完全に一致させる。
+    価格配列からRSIを計算
+    Coingeckoのsparkline_in_7d (168時間) を想定
     """
     if not prices or len(prices) < period + 1:
         return None
-
-    # 1. 最初の平均ゲイン/ロス (Simple Average)
-    gain_sum = 0
-    loss_sum = 0
-    for i in range(1, period + 1):
-        diff = prices[i] - prices[i-1]
-        if diff >= 0:
-            gain_sum += diff
-        else:
-            loss_sum += -diff
-
-    avg_gain = gain_sum / period
-    avg_loss = loss_sum / period
-
-    # 2. Wilder's Smoothing で最後まで計算
-    current_rsi = 0
     
-    # ループ: period + 1 から 配列末尾まで
-    for i in range(period + 1, len(prices)):
-        diff = prices[i] - prices[i-1]
-        gain = diff if diff > 0 else 0
-        loss = -diff if diff < 0 else 0
-
-        # Wilder's Smoothing Formula
-        avg_gain = ((avg_gain * (period - 1)) + gain) / period
-        avg_loss = ((avg_loss * (period - 1)) + loss) / period
-
+    # 価格変動の計算
+    deltas = [prices[i] - prices[i-1] for i in range(1, len(prices))]
+    
+    gains = [d if d > 0 else 0 for d in deltas]
+    losses = [-d if d < 0 else 0 for d in deltas]
+    
+    avg_gain = sum(gains[:period]) / period
+    avg_loss = sum(losses[:period]) / period
+    
     if avg_loss == 0:
         return 100.0
     
     rs = avg_gain / avg_loss
-    return round(100 - (100 / (1 + rs)), 2)
+    rsi = 100 - (100 / (1 + rs))
+    
+    # 平滑化（Wilder's Smoothing）を行い精度を高める
+    for i in range(period, len(prices) - 1):
+        gain = gains[i]
+        loss = losses[i]
+        avg_gain = (avg_gain * (period - 1) + gain) / period
+        avg_loss = (avg_loss * (period - 1) + loss) / period
+        
+        if avg_loss == 0:
+            rsi = 100.0
+        else:
+            rs = avg_gain / avg_loss
+            rsi = 100 - (100 / (1 + rs))
+            
+    return round(rsi, 2)
 
-def calculate_ma_distance(coin_id):
-    """過去250日分の価格を取得して50日/200日MA乖離率を計算する"""
-    data = get_coingecko_data(f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart", 
-                              {"vs_currency": "jpy", "days": "250", "interval": "daily"})
-    if not data or 'prices' not in data:
+def calculate_ma_distance(coin_id, days=200):
+    """移動平均線乖離率を計算"""
+    # 過去データ取得 (daily)
+    data = fetch_json(f"{COINGECKO_API_URL}/coins/{coin_id}/market_chart", params={"vs_currency": "jpy", "days": days + 5})
+    if not data or "prices" not in data:
         return None
     
-    prices = [p[1] for p in data['prices']]
-    if len(prices) < 200:
+    prices = [p[1] for p in data["prices"]]
+    if len(prices) < days:
         return None
-
-    # SMA50 と SMA200 の計算
-    sma50 = sum(prices[-50:]) / 50
-    sma200 = sum(prices[-200:]) / 200
+    
+    current_price = prices[-1]
+    # 直近N日の平均
+    sma = sum(prices[-days:]) / days
     
     # 乖離率 (%)
-    ma_distance = ((sma50 - sma200) / sma200) * 100
-    return round(ma_distance, 2)
+    distance = ((current_price - sma) / sma) * 100
+    return round(distance, 2)
+
+def main():
+    print("Fetching Market Data...")
+
+    # 1. 市場全体データの取得 (Top 250)
+    # sparkline=true で7日間の価格データを取得しRSI計算に使用
+    market_params = {
+        "vs_currency": "jpy",
+        "order": "market_cap_desc",
+        "per_page": 250,
+        "page": 1,
+        "sparkline": "true",
+        "price_change_percentage": "24h,7d"
+    }
+    raw_data = fetch_json(f"{COINGECKO_API_URL}/coins/markets", params=market_params)
     
-def get_fear_and_greed_index():
-    try:
-        res = requests.get("https://api.alternative.me/fng/", timeout=10)
-        data = res.json()
-        return {"value": int(data['data'][0]['value']), "label": data['data'][0]['value_classification']}
-    except:
-        return {"value": 50, "label": "Neutral"}
+    if not raw_data:
+        print("Failed to fetch market data.")
+        return
 
-def format_price(price):
-    if price is None: return "-"
-    if price >= 1000000: return f"{price/10000:.0f}万"
-    return f"{price:,.0f}"
+    # 2. Fear & Greed Index
+    fgi_data = fetch_json(FGI_API_URL)
+    fgi_val = 0
+    fgi_label = "Neutral"
+    if fgi_data and "data" in fgi_data:
+        fgi_val = int(fgi_data["data"][0]["value"])
+        fgi_label = fgi_data["data"][0]["value_classification"]
 
-# ==========================================
-# 3. メイン処理
-# ==========================================
-def generate_post():
-    # ★変更: "sparkline": "true" を追加して生データを取得する
-    markets = get_coingecko_data("https://api.coingecko.com/api/v3/coins/markets", 
-                                {"vs_currency": "jpy", "order": "market_cap_desc", "per_page": 250, "sparkline": "true"})
+    # 3. Global Data (BTC Dominance)
+    global_data = fetch_json(f"{COINGECKO_API_URL}/global")
+    btc_dom = 0
+    if global_data and "data" in global_data:
+        btc_dom = round(global_data["data"]["market_cap_percentage"].get("btc", 0), 2)
+
+    # 4. Trending
+    trending_data = fetch_json(f"{COINGECKO_API_URL}/search/trending")
+    trending_coins = []
+    if trending_data and "coins" in trending_data:
+        # 上位3つを取得
+        for item in trending_data["coins"][:3]:
+            trending_coins.append(item["item"]["symbol"])
+
+    # 5. Technicals Calculation (RSI & MA)
+    btc_coin = next((c for c in raw_data if c["id"] == "bitcoin"), None)
+    eth_coin = next((c for c in raw_data if c["id"] == "ethereum"), None)
+
+    btc_rsi = 50.0
+    eth_rsi = 50.0
     
-    trending_raw = get_coingecko_data("https://api.coingecko.com/api/v3/search/trending", {})
-    trending_coins = [item['item'] for item in trending_raw.get('coins', [])] if trending_raw else []
-    fgi = get_fear_and_greed_index()
+    # RSI計算 (7日分のSparklineデータを使用)
+    if btc_coin and "sparkline_in_7d" in btc_coin:
+        prices = btc_coin["sparkline_in_7d"].get("price", [])
+        calc = calculate_rsi(prices)
+        if calc: btc_rsi = calc
 
-    if not markets:
-        print("❌ 市場データの取得に失敗しました。")
-        return False
+    if eth_coin and "sparkline_in_7d" in eth_coin:
+        prices = eth_coin["sparkline_in_7d"].get("price", [])
+        calc = calculate_rsi(prices)
+        if calc: eth_rsi = calc
 
-    # 指標抽出 (RSI計算のために先に取得)
-    btc = next((item for item in markets if item["id"] == "bitcoin"), None)
-    eth = next((item for item in markets if item["id"] == "ethereum"), None)
+    # MA乖離率 (別途ヒストリカルデータを取得)
+    btc_ma_dist = calculate_ma_distance("bitcoin", 200) or 0.0
+
+    # 6. Top Gainer (24h)
+    valid_gainers = [
+        c for c in raw_data 
+        if c["price_change_percentage_24h"] is not None 
+        and "usd" not in c["symbol"].lower()
+        and c["total_volume"] > 100000000 
+    ]
+    valid_gainers.sort(key=lambda x: x["price_change_percentage_24h"], reverse=True)
     
-    # ★変更: 別途APIを叩くのではなく、取得したスパークラインからRSIを計算
-    btc_rsi = None
-    if btc and "sparkline_in_7d" in btc:
-        prices = btc["sparkline_in_7d"].get("price", [])
-        btc_rsi = calculate_wilders_rsi(prices)
+    top_gainer = {"symbol": "N/A", "change": 0.0}
+    if valid_gainers:
+        top = valid_gainers[0]
+        top_gainer = {
+            "symbol": top["symbol"].upper(),
+            "change": round(top["price_change_percentage_24h"], 2)
+        }
 
-    eth_rsi = None
-    if eth and "sparkline_in_7d" in eth:
-        prices = eth["sparkline_in_7d"].get("price", [])
-        eth_rsi = calculate_wilders_rsi(prices)
+    # --- 7. 最終JSON構築 (フラット構造に戻しました) ---
+    today_str = datetime.now().strftime("%Y-%m-%d")
 
-    # MA乖離率は日足が必要なため維持
-    btc_ma_dist = calculate_ma_distance("bitcoin")
-
-    total_mcap = sum(c.get('market_cap', 0) or 0 for c in markets)
-    btc_dom = (btc['market_cap'] / total_mcap * 100) if btc and total_mcap > 0 else 0
-
-    # 急上昇 (出来高5億以上から)
-    # ★変更: .get() or 0 を使ってNoneエラーを回避
-    valid_gainers = [c for c in markets if (c.get('total_volume') or 0) >= 500_000_000 and not is_stable_coin(c) and not is_wrapped_or_duplicate(c)]
-    top_gainer = sorted(valid_gainers, key=lambda x: x.get('price_change_percentage_24h', 0) or 0, reverse=True)[:1]
-    
-    # トレンドシンボル
-    trend_symbols = []
-    for t in trending_coins:
-        if not (is_wrapped_or_duplicate(t) or is_stable_coin(t)):
-            trend_symbols.append(t['symbol'].upper())
-        if len(trend_symbols) >= 3: break
-
-    # 日付計算 (JST)
-    jst_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-    file_date = jst_now.strftime("%Y%m%d")
-    display_date = jst_now.strftime("%Y-%m-%d")
-    date_label = jst_now.strftime("%m/%d")
-
-    # ==========================================
-    # 4. 高度分析用 JSON 構造の構築
-    # ==========================================
-    intelligence_json = {
+    output_data = {
         "summary": {
-            "date": display_date,
-            "fgi": fgi,
-            "btc_dominance": round(btc_dom, 2),
-            "technical": {
-                "btc_rsi": btc_rsi, # 計算済み (HTMLと同じロジックの値が入る)
-                "eth_rsi": eth_rsi,
-                "btc_ma_distance": btc_ma_dist
-            },
-            "top_gainer": {
-                "symbol": top_gainer[0]['symbol'].upper() if top_gainer else "-",
-                "change": round(top_gainer[0]['price_change_percentage_24h'], 2) if top_gainer else 0
-            },
-            "trending": trend_symbols
+            "date": today_str,
+            
+            # FGI (フラット)
+            "fgi": fgi_val,
+            "fgi_label": fgi_label,
+            
+            # Dominance (フラット)
+            "btc_dominance": btc_dom,
+            
+            # Technicals (フラット)
+            "btc_rsi": btc_rsi,
+            "eth_rsi": eth_rsi,
+            "btc_ma_distance": btc_ma_dist,
+            
+            # Top Gainer (フラット)
+            "top_gainer_symbol": top_gainer["symbol"],
+            "top_gainer_change": top_gainer["change"],
+            
+            # Trending (リスト)
+            "trending": [t.upper() for t in trending_coins]
         },
-        "raw_data_count": len(markets),
-        "raw_data": markets # sparklineが含まれた状態で保存される
+        "raw_data_count": len(raw_data),
+        "raw_data": raw_data
     }
 
-    # JSON保存
-    os.makedirs("data/daily", exist_ok=True)
-    with open(f"data/daily/{file_date}.json", "w", encoding="utf-8") as f:
-        json.dump(intelligence_json, f, ensure_ascii=False, indent=2)
+    # 保存
+    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, indent=2, ensure_ascii=False)
 
-    # シェア用HTML作成
-    share_html = f"""<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <title>CoinRader {display_date}</title>
-  <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
-  <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
-  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png?v={file_date}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
-</head>
-<body></body>
-</html>"""
-    os.makedirs("share", exist_ok=True)
-    with open(f"share/{file_date}.html", "w", encoding="utf-8") as f:
-        f.write(share_html)
-
-  # ==========================================
-    # 5. SNS投稿テキスト & 各種レポート出力
-    # ==========================================
-    chg = btc.get('price_change_percentage_24h', 0) if btc else 0
-    # ステータス文字を簡略化（【】を外す）
-    ai_status_msg = "分析: 楽観" if chg > 3 else ("分析: 悲観" if chg < -3 else "分析: 中立")
-    icon = "📈" if chg > 0 else "📉"
-    
-    # 注目銘柄用データの整形
-    trending_str = ", ".join(trend_symbols) if trend_symbols else "-"
-    top_g_sym = intelligence_json['summary']['top_gainer']['symbol']
-    top_g_chg = int(intelligence_json['summary']['top_gainer']['change']) # 整数で丸める
-    
-    # --- short_post (ご要望のフォーマット) ---
-    short_post = (
-        f"🤖 CoinRader 市場速報 ({date_label})\n"
-        f"{ai_status_msg}\n\n"
-        f"🔹 Bitcoin {icon}\n"
-        f"価格: ¥{format_price(btc['current_price']) if btc else '-'}\n"
-        f"前日比: {'+' if chg > 0 else ''}{chg:.1f}%\n"
-        f"RSI(14): {btc_rsi if btc_rsi else '-'}\n"
-        f"心理指数: {fgi['value']} ({fgi['label']})\n\n"
-        f"📈 注目銘柄\n"
-        f"トレンド入り: {trending_str}\n"
-        f"急上昇銘柄: {top_g_sym} ({top_g_chg}%↑)\n\n"
-        f"📊 詳細分析\n"
-        f"https://coinrader.net/share/{file_date}.html\n\n"
-        f"#CoinRader #ビットコイン #暗号資産"
-    )
-
-    # 実行時刻を秒まで入れることで、Gitに「更新」を認識させる
-    update_time = jst_now.strftime("%H:%M:%S")
-
-    # --- daily_note_draft.md (高度なレポート下書き) ---
-    note_content = f"""# Market Note {display_date} ({update_time} 更新)
-
-## 📊 今日の主要マーケット指標
-- **BTC価格:** ¥{format_price(btc['current_price']) if btc else '-'} ({'+' if chg > 0 else ''}{chg:.1f}%)
-- **BTC RSI(14):** {btc_rsi if btc_rsi else 'データ収集中'}
-- **心理指数(FGI):** {fgi['value']} ({fgi['label']})
-- **BTCドミナンス:** {round(btc_dom, 2)}%
-
-## 📈 注目銘柄の動向
-- **トレンド入り:** {trending_str}
-- **本日の急上昇銘柄:** {top_g_sym} ({top_g_chg}%↑)
-
-## ✍️ 市場分析メモ
-- 本日の市場センチメントは「{fgi['label']}」となっており、{ai_status_msg}の傾向が見られます。
-- テクニカル的にはBTC RSIが {btc_rsi if btc_rsi else '-'} の水準にあり、{'買われすぎ' if (btc_rsi or 0) > 70 else '売られすぎ' if (btc_rsi or 0) < 30 else '中立圏'} を示唆しています。
-"""
-
-    # --- ファイルの書き出し ---
-    with open("daily_post_short.txt", "w", encoding="utf-8") as f:
-        f.write(short_post)
-    
-    with open("daily_post_full.txt", "w", encoding="utf-8") as f:
-        f.write(short_post)
-    
-    with open("daily_share_url.txt", "w", encoding="utf-8") as f:
-        f.write(f"https://coinrader.net/share/{file_date}.html")
-    
-    with open("daily_note_draft.md", "w", encoding="utf-8") as f:
-        f.write(note_content)
-
-    return True
+    print(f"Successfully generated {OUTPUT_FILE}")
 
 if __name__ == "__main__":
-    if generate_post():
-        print("✅ RSI・詳細レポートを含む全ファイルの生成に成功しました")
-    else:
-        print("❌ プロセス中にエラーが発生しました")
+    main()
