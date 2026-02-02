@@ -3396,6 +3396,57 @@ body {
   }
 }
 
+
+
+/* ===== v11: mobile no horizontal scroll + tighter top lists ===== */
+html, body { overflow-x: hidden; }
+
+@media (max-width: 820px){
+  /* Disable old swipe/flex rules and keep 2+1 grid (Trend/Up + Mcap full width) */
+  .summary-lists{
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    overflow-x: visible !important;
+    scroll-snap-type: none !important;
+    padding-bottom: 0 !important;
+  }
+  .summary-card{
+    flex: none !important;
+    min-width: 0 !important;
+    width: auto !important;
+  }
+  .summary-card.summary-mcap{ grid-column: 1 / -1; }
+
+  /* Tighten list items so values don't cause horizontal overflow */
+  .top5-item{
+    padding: 6px 8px !important;
+  }
+  .top5-rank{
+    margin-right: 8px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+  .top5-name{
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+  }
+  .top5-val{
+    white-space: nowrap !important;
+    font-size: 11px !important;
+  }
+}
+
+/* Extra-tight for very small phones */
+@media (max-width: 380px){
+  .top5-item{ padding: 5px 6px !important; }
+  .top5-name{ font-size: 11px !important; }
+  .top5-val{ font-size: 10px !important; }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
