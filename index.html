@@ -1182,17 +1182,6 @@
   .info-body p { margin-bottom: 12px; }
   .info-body ul { padding-left: 20px; margin-bottom: 12px; }
   .info-body a { color: #60a5fa; text-decoration: underline; }
-  /* ▼▼▼ 追加：Xシェアボタン専用スタイル ▼▼▼ */
-  .linkbtn.btn-x {
-    background: #000;
-    border-color: #333;
-    color: #fff;
-    transition: border-color 0.2s;
-  }
-  .linkbtn.btn-x:hover {
-    border-color: #ffffff; /* ホバー時は白く光る */
-    background: #000;
-  }
 /* --- AI Insight Box: プレミアム・サイバーアップデート --- */
 .ai-insight-box {
     margin: 10px 0 16px;
@@ -2301,7 +2290,7 @@ body {
     background: rgba(15, 23, 42, 0.95);
     border-bottom: 1px solid rgba(56, 189, 248, 0.15);
     padding: 8px 0;
-    margin-bottom: 16px; /* HUDとの間隔 */
+    margin-bottom: 8px; /* HUDとの間隔 */
     backdrop-filter: blur(5px);
     overflow: hidden;
     position: sticky;
@@ -2390,6 +2379,41 @@ body {
     border: 1px solid rgba(56, 189, 248, 0.2);
     box-shadow: 0 0 8px rgba(56, 189, 248, 0.15);
 }
+/* ===== AI details: compact readable blocks ===== */
+.ai-mini{ display:flex; flex-direction:column; gap:10px; }
+.ai-mini-block{ border:1px solid rgba(255,255,255,0.06); background: rgba(15,23,42,0.55); border-radius: 12px; padding:10px 12px; }
+.ai-mini-title{ font-size:12px; color: rgba(229,231,235,0.92); letter-spacing:.2px; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.ai-mini-title:before{ content:""; width:7px; height:7px; border-radius:50%; background: rgba(56,189,248,0.9); box-shadow: 0 0 12px rgba(56,189,248,0.35); }
+.ai-mini-line{ font-size:13px; color: rgba(229,231,235,0.92); line-height:1.45; }
+.ai-mini-ul{ margin:0; padding-left: 18px; color: rgba(226,232,240,0.9); font-size:13px; line-height:1.55; }
+.ai-mini-ul li{ margin:4px 0; }
+.ai-mini-note{ font-size:13px; color: rgba(226,232,240,0.9); line-height:1.55; }
+.ai-mini-links{ display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
+.ai-mini-link{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius: 999px; border:1px solid rgba(56,189,248,0.22); background: rgba(56,189,248,0.08); color: rgba(229,231,235,0.92); text-decoration:none; font-size:12px; }
+.ai-mini-link:hover{ background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.32); }
+/* AI details v15 additions */
+.ai-mini-head{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.ai-mini-chip{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.10); background:rgba(2,6,23,0.35);}
+.ai-mini-chip.regime-bull{border-color:rgba(74,222,128,0.35); box-shadow:0 0 0 1px rgba(74,222,128,0.08) inset;}
+.ai-mini-chip.regime-bear{border-color:rgba(248,113,113,0.35); box-shadow:0 0 0 1px rgba(248,113,113,0.08) inset;}
+.ai-mini-chip.regime-neutral{border-color:rgba(148,163,184,0.25);}
+.ai-mini-meta{font-size:12px; color:rgba(226,232,240,0.78);}
+
+.ai-mini-meters{display:grid; grid-template-columns:1fr; gap:10px;}
+@media (min-width: 520px){ .ai-mini-meters{grid-template-columns:repeat(3,1fr);} }
+.ai-meter{border:1px solid rgba(255,255,255,0.06); background:rgba(15,23,42,0.35); border-radius:12px; padding:8px 10px;}
+.ai-meter-top{display:flex; justify-content:space-between; align-items:center; font-size:12px; color:rgba(226,232,240,0.9); margin-bottom:6px;}
+.ai-meter-val{font-variant-numeric:tabular-nums; color:rgba(229,231,235,0.95);}
+.ai-meter-track{position:relative; height:8px; border-radius:999px; background:rgba(148,163,184,0.15); overflow:hidden;}
+.ai-meter-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(56,189,248,0.9), rgba(34,211,238,0.65));}
+.ai-meter-track-center{overflow:visible;}
+.ai-meter-zero{position:absolute; left:50%; top:-2px; width:2px; height:12px; background:rgba(226,232,240,0.35); border-radius:2px;}
+/* trend indicator: a small dot positioned on the -10..+10 axis */
+.ai-meter-fill2{position:absolute; top:50%; width:10px; height:10px; transform:translate(-50%,-50%); border-radius:999px; background:rgba(56,189,248,0.9); box-shadow:0 0 14px rgba(56,189,248,0.35);}
+.ai-th{opacity:0.75; font-size:11px; padding:0 6px; border:1px solid rgba(255,255,255,0.08); border-radius:999px; background:rgba(2,6,23,0.25);}
+.ai-mini-note2{margin-top:8px; font-size:13px; color:rgba(226,232,240,0.85); line-height:1.55;}
+
+
 
 /* 3. エビデンス・グリッド（表）のサイバー化 */
 .ai-evidence-grid {
@@ -3473,9 +3497,6 @@ html, body { overflow-x: hidden; }
   background: linear-gradient(90deg, rgba(248,113,113,0.85), rgba(244,63,94,0.55));
 }
 
-/* Mobile: hide X share button in section header to avoid overlap */
-@media (max-width: 820px){
-  .section-actions{ display:none !important; }
   .macro-ticker-wrap{ position: static !important; top:auto !important; }
 }
 
@@ -3560,11 +3581,6 @@ html, body { overflow-x: hidden; }
 <i class="fa-solid fa-bolt section-icon-accent"></i>
       リアルタイム・マーケット解析
     </div>
-</div>
-<div class="section-actions">
-<button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
-<span style="font-size:11px">𝕏</span> 共有
-  </button>
 </div>
 </div>
 <div class="ai-insight-box hud-panel" id="aiInsightBox">
@@ -7019,7 +7035,7 @@ async function updateAiInsight() {
         strategyText = `市場構造は緩やかな変化の中にあり、特定の指標に極端な偏りは見られません。<strong>「個別銘柄の材料視」</strong>が優先される地合いとなっており、構造的なトレンドの発生を待機している状態です。`;
     }
 
-    await typeWriter(textEl, (comparisonText ? comparisonText + "<br><br>" : "") + strategyText, 20);
+    // typeWriter removed for compact report
 
 // --- 8. エビデンス・テーブル＆レポート生成 (HTML刷新版: HUD完全同期) ---
     
@@ -7062,68 +7078,166 @@ async function updateAiInsight() {
     const formattedComparison = highlightKeywords(comparisonText || "市場構造は緩やかな変化の中にあります。");
     const formattedStrategy = highlightKeywords(strategyText);
 
-    // HTML構造 (テーブル最下部にチャート行を追加)
-    const htmlContent = `
-        <div class="hud-content-text">
-            <div class="ai-section-title">
-                <div class="ai-section-dot"></div> 市場局面
-            </div>
-            <div class="ai-text-block">
-                ${formattedComparison}
-            </div>
+    // === Compact report template (Proposal 1) ===
+const verdictTxt = (badgeEl?.querySelector('.status-text')?.textContent || '').trim() || '—';
+const fgNum  = (sent === null || sent === undefined) ? null : Number(sent);
+const rsiNum = (rsi === null || rsi === undefined) ? null : Number(rsi);
+const maNum  = (maDist === null || maDist === undefined) ? null : Number(maDist);
+const btcChgNum = (btcChg === null || btcChg === undefined || isNaN(btcChg)) ? null : Number(btcChg);
 
-            <div class="ai-section-title strategy">
-                <div class="ai-section-dot"></div> 戦略メモ
-            </div>
-            <div class="ai-text-block">
-                ${formattedStrategy}
-            </div>
+const fgLabel = (v) => {
+  if (v === null) return '—';
+  if (v <= 20) return 'Extreme Fear';
+  if (v <= 40) return 'Fear';
+  if (v <= 60) return 'Neutral';
+  if (v <= 80) return 'Greed';
+  return 'Extreme Greed';
+};
+const rsiLabel = (v) => {
+  if (v === null) return '—';
+  if (v <= 25) return '強い売られすぎ';
+  if (v <= 30) return '売られすぎ';
+  if (v >= 75) return '強い買われすぎ';
+  if (v >= 70) return '買われすぎ';
+  return '中立';
+};
+const trendLabel = (v) => {
+  if (v === null) return '—';
+  if (v >= 2.0) return '上向き';
+  if (v <= -2.0) return '下向き';
+  return '横ばい';
+};
 
-            <div class="ai-evidence-grid">
-                <table class="ai-evidence-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%">METRICS</th>
-                            <th class="col-current" style="width: 25%">CURRENT</th>
-                            <th style="width: 25%">24H AGO</th>
-                            <th style="width: 25%">7D AGO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>RSI <span style="font-size:9px; opacity:0.6">(過熱)</span></td>
-                            <td class="cell-current" style="color: ${getCls(rsi, 'rsi')}">${rsiDisplay}</td>
-                            <td>${pastYest?.rsi ? Math.round(pastYest.rsi) : '—'}</td>
-                            <td>${past7d?.rsi ? Math.round(past7d.rsi) : '—'}</td>
-                        </tr>
-                        <tr>
-                            <td>SENTIMENT <span style="font-size:9px; opacity:0.6">(心理)</span></td>
-                            <td class="cell-current" style="color: ${getCls(sent, 'sent')}">${sentDisplay}</td>
-                            <td>${pastYest?.fgi || '—'}</td>
-                            <td>${past7d?.fgi || '—'}</td>
-                        </tr>
-                        <tr>
-                            <td>TREND STR. <span style="font-size:9px; opacity:0.6">(強度)</span></td>
-                            <td class="cell-current" style="color: #e2e8f0;">${trendDisplay}</td>
-                            <td>${getMaText(pastYest?.ma)}</td>
-                            <td>${getMaText(past7d?.ma)}</td>
-                        </tr>
-                        <tr>
-                            <td style="border-bottom:none; vertical-align:middle;">CHART <span style="font-size:9px; opacity:0.6">(BTC 7d)</span></td>
-                            <td colspan="3" style="border-bottom:none; padding:8px 12px; text-align:center;">
-                                <div style="width:100%; height:40px; display:flex; align-items:center; justify-content:center;">
-                                    ${btcSparklineHtml}
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+const fmtPct = (v, digits=1) => (v === null) ? '—' : ((v >= 0 ? '+' : '') + v.toFixed(digits) + '%');
+const fmtInt = (v) => (v === null) ? '—' : String(Math.round(v));
+
+// ①結論（1行）
+// === AI details: compact structured report (v15) ===
+const verdictTxt = (badgeEl?.querySelector('.status-text')?.textContent || '').trim() || '—';
+const fgNum  = (sent === null || sent === undefined) ? null : Number(sent);
+const rsiNum = (rsi === null || rsi === undefined) ? null : Number(rsi);
+const maNum  = (maDist === null || maDist === undefined) ? null : Number(maDist);
+const btcChgNum = (btcChg === null || btcChg === undefined || isNaN(btcChg)) ? null : Number(btcChg);
+
+// ラベル
+const fgLabel = (v) => {
+  if (v === null) return '—';
+  if (v <= 20) return 'Extreme Fear';
+  if (v <= 40) return 'Fear';
+  if (v <= 60) return 'Neutral';
+  if (v <= 80) return 'Greed';
+  return 'Extreme Greed';
+};
+const rsiLabel = (v) => {
+  if (v === null) return '—';
+  if (v <= 25) return '強い売られすぎ';
+  if (v <= 30) return '売られすぎ';
+  if (v >= 75) return '強い買われすぎ';
+  if (v >= 70) return '買われすぎ';
+  return '中立';
+};
+const trendLabel = (v) => {
+  if (v === null) return '—';
+  if (v <= -2.0) return '下向き';
+  if (v >=  2.0) return '上向き';
+  return '横ばい';
+};
+
+// 地合い（ポジション指示ではなく“市場環境”）
+let regime = 'レンジ（様子見）';
+let regimeCls = 'regime-neutral';
+if (verdictTxt.includes('弱気')) { regime = 'リスクオフ（警戒）'; regimeCls = 'regime-bear'; }
+else if (verdictTxt.includes('強気')) { regime = 'リスクオン（選別）'; regimeCls = 'regime-bull'; }
+
+// 判断理由（数値＋しきい値で“何が効いたか”を明示）
+const reasonRsi = (rsiNum === null)
+  ? `RSI：—（データ未取得）`
+  : `RSI：<b>${fmtInt(rsiNum)}</b>（<span class="ai-th">目安</span> 30以下=売られすぎ / 70以上=買われすぎ）→ <b>${rsiLabel(rsiNum)}</b>`;
+const reasonFg = (fgNum === null)
+  ? `Fear&Greed：—（データ未取得）`
+  : `Fear&Greed：<b>${fmtInt(fgNum)}</b>（<span class="ai-th">目安</span> 30以下=恐怖優勢 / 70以上=強欲優勢）→ <b>${fgLabel(fgNum)}</b>`;
+const reasonTrend = (maNum === null)
+  ? `TREND：—（データ未取得）`
+  : `TREND：<b>${fmtPct(maNum)}</b>（<span class="ai-th">目安</span> 0未満=下向き / 0超=上向き）→ <b>${trendLabel(maNum)}</b>`;
+
+const reasons = [reasonRsi, reasonFg, reasonTrend];
+
+// 戦略メモ（煽り／指示を避ける・運用の注意と観測ポイント）
+let memo = '結論に寄せすぎず、反応を見ながら段階的に判断。分割・逆指値などリスク管理を優先。';
+if ((rsiNum !== null && rsiNum <= 30) || (fgNum !== null && fgNum <= 30)) {
+  memo = '恐怖優勢・売られすぎ寄り。反発は出やすい一方、戻り売りも出やすいので「強い銘柄の選別」＋分割前提が無難。';
+}
+if (maNum !== null && maNum <= -2.0) {
+  memo = 'トレンドが下向き寄り。反発局面でも追いかけず、出来高の伴う戻り（またはレンジ化）を確認してからが安全。';
+}
+if (btcChgNum !== null && btcChgNum <= -4) {
+  memo = '急落局面はスプレッド拡大・滑りが出やすい。成行を避け、指値/逆指値の前提を点検。';
+}
+
+// 今後の展望（“何を見て判断を更新するか”）
+let outlook = '注目：Fear&Greedの改善、TRENDのゼロ超え、反発時の出来高（弱い反発は失速しやすい）。';
+if (verdictTxt.includes('強気')) {
+  outlook = '注目：過熱（RSI/FG上振れ）の兆候が出たら利確優先の空気になりやすい。急な反転に備えて管理を。';
+}
+
+// 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
+const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const pct01 = (x) => (Math.round(clamp01(x) * 1000) / 10).toFixed(1) + '%';
+
+const rsiFill = (rsiNum === null) ? 0 : clamp01(rsiNum / 100);
+const fgFill  = (fgNum  === null) ? 0 : clamp01(fgNum  / 100);
+
+const trendClamp = (maNum === null) ? 0 : Math.max(-10, Math.min(10, maNum));
+const trendPos = (maNum === null) ? 0.5 : (trendClamp + 10) / 20; // 0..1 with 0 at -10, 0.5 at 0, 1 at +10
+
+const htmlContent = `
+  <div class="ai-mini">
+    <div class="ai-mini-head">
+      <span class="ai-mini-chip ${regimeCls}">地合い：${regime}</span>
+      <span class="ai-mini-meta">BTC 24h：${btcChgNum===null?'—':(btcChgNum>=0?'+':'')+btcChgNum.toFixed(2)+'%'} / BTC.D：${(dom===null||dom===undefined)?'—':Number(dom).toFixed(1)+'%'}</span>
+    </div>
+
+    <div class="ai-mini-meters">
+      <div class="ai-meter">
+        <div class="ai-meter-top"><span>RSI</span><span class="ai-meter-val">${fmtInt(rsiNum)}</span></div>
+        <div class="ai-meter-track"><div class="ai-meter-fill" style="width:${pct01(rsiFill)}"></div></div>
+      </div>
+      <div class="ai-meter">
+        <div class="ai-meter-top"><span>Fear&Greed</span><span class="ai-meter-val">${fmtInt(fgNum)}</span></div>
+        <div class="ai-meter-track"><div class="ai-meter-fill" style="width:${pct01(fgFill)}"></div></div>
+      </div>
+      <div class="ai-meter">
+        <div class="ai-meter-top"><span>TREND</span><span class="ai-meter-val">${fmtPct(maNum)}</span></div>
+        <div class="ai-meter-track ai-meter-track-center">
+          <div class="ai-meter-zero"></div>
+          <div class="ai-meter-fill2" style="left:${pct01(trendPos)}"></div>
         </div>
-    `;
+      </div>
+    </div>
 
-    // 出力
-    textEl.innerHTML = htmlContent;
+    <div class="ai-mini-block">
+      <div class="ai-mini-title">判断理由</div>
+      <ul class="ai-mini-ul">
+        <li>${reasons[0]}</li>
+        <li>${reasons[1]}</li>
+        <li>${reasons[2]}</li>
+      </ul>
+    </div>
+
+    <div class="ai-mini-block">
+      <div class="ai-mini-title">戦略メモ</div>
+      <div class="ai-mini-note">${memo}</div>
+      <div class="ai-mini-note2">今後の展望：${outlook}</div>
+      <div class="ai-mini-links">
+        <a class="ai-mini-link" href="#sec-trend">トレンド</a>
+        <a class="ai-mini-link" href="#sec-gainers">上昇</a>
+        <a class="ai-mini-link" href="#sec-mcap">時価総額</a>
+      </div>
+    </div>
+  </div>
+`;
+
+textEl.innerHTML = htmlContent;
     
     // フェードイン演出
     textEl.style.opacity = '0';
@@ -7334,191 +7448,8 @@ async function updateAiInsight() {
   function closePageModal() {
     document.getElementById('pageModalOverlay').classList.remove('open');
   }
-// ▼▼▼ 修正版：daily_post_short.txt と同じフォーマットでシェアする関数 ▼▼▼
-function shareMarketStatus() {
-  // 0. 日付情報の取得 (JST)
-  const now = new Date();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
-  const yyyy = now.getFullYear();
-  const dateLabel = `${mm}/${dd}`;
-  const fileDate = `${yyyy}${mm}${dd}`;
+// (X share removed)
 
-  // 1. BTC情報の取得
-  const btc = marketsTop.find(c => c.id === 'bitcoin');
-  if (!btc) return;
-
-  const chg = btc.price_change_percentage_24h || 0;
-  // Python版と同じ分析ロジック
-  const aiStatusMsg = chg > 3 ? "分析: 楽観" : (chg < -3 ? "分析: 悲観" : "分析: 中立");
-  const icon = chg > 0 ? '📈' : '📉';
-  const sign = chg > 0 ? '+' : '';
-
-  // 各種指標を画面上の要素から直接取得（一貫性を保つため）
-  const rsiVal = document.getElementById('sumRsiMain')?.textContent || '-';
-  const fgiVal = document.getElementById('sumSentMain')?.textContent || '-';
-  const fgiLabel = document.getElementById('sumSentSub')?.textContent || '';
-
-  // 2. 注目銘柄の取得
-  const trendNames = trendingCoins.slice(0, 3).map(c => c.symbol.toUpperCase());
-  const trendingStr = trendNames.length ? trendNames.join(', ') : '-';
-
-  const gainers = getGainersTop5();
-  const topGainer = gainers.length ? gainers[0] : null;
-  let gainerText = '-';
-  if (topGainer) {
-    const gSym = topGainer.symbol.toUpperCase();
-    const gPct = Math.round(topGainer.price_change_percentage_24h);
-    gainerText = `${gSym} (${gPct}%↑)`;
-  }
-
-  // 3. テキストの組み立て (daily_post_short.txt の最新フォーマットに完全準拠)
-  const text = [
-    `🤖 CoinRader 市場速報 (${dateLabel})\n`,
-    `${aiStatusMsg}\n\n`,
-    `🔹 Bitcoin ${icon}\n`,
-    `価格: ${yenLarge(btc.current_price)}\n`, // yenLargeで「¥1357万」形式にする
-    `前日比: ${sign}${chg.toFixed(1)}%\n`,
-    `RSI(14): ${rsiVal}\n`,
-    `心理指数: ${fgiVal} (${fgiLabel})\n\n`,
-    `📈 注目銘柄\n`,
-    `トレンド入り: ${trendingStr}\n`,
-    `急上昇銘柄: ${gainerText}\n\n`,
-    `📊 詳細分析\n`,
-    `https://coinrader.net/share/${fileDate}.html\n\n`, // 日別URLを動的に生成
-    `#CoinRader #ビットコイン #暗号資産`
-  ].join('');
-
-  // 4. Xの投稿画面をポップアップウィンドウで開く
-  const width = 600;
-  const height = 400;
-  const left = (window.innerWidth - width) / 2;
-  const top = (window.innerHeight - height) / 2;
-  
-  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-  
-  // '_blank' の代わりにウィンドウのサイズと位置を指定
-  window.open(
-    url, 
-    'share_window', 
-    `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
-  );
-  
-  // アナリティクス計測
-  if(typeof fireCtaClick === 'function'){
-    fireCtaClick({cta_id:'share_x', placement:'overview', partner:'self', pr:0});
-  }
-}
-
-/**
- * ▼ マクロ・ティッカー更新機能
- * CoinGecko APIとAlternative.me APIを使用して市場データを取得・表示します。
- * API制限対策としてlocalStorageによる5分間のキャッシュを含みます。
- */
-/* --- 修正箇所 1: マクロデータを順番に取得するように変更 --- */
-async function updateMacroTicker() {
-    const CACHE_KEY = 'cr_macro_ticker_data';
-    const CACHE_DURATION = 5 * 60 * 1000;
-
-    const els = {
-        btcPrice: document.getElementById('tickerBtcPrice'),
-        btcDom: document.getElementById('tickerBtcDom'),
-        ethPrice: document.getElementById('tickerEthPrice'),
-        fgScore: document.getElementById('tickerFgScore'),
-        usdJpy: document.getElementById('tickerUsdJpy')
-    };
-
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-        const { timestamp, data } = JSON.parse(cached);
-        if (Date.now() - timestamp < CACHE_DURATION) {
-            console.log('Using cached macro data');
-            renderTicker(data);
-            return;
-        }
-    }
-
-    try {
-        console.log('Fetching fresh macro data...');
-        
-        // ★修正: Promise.all をやめて、1つずつ待機(await)しながら実行し、間隔(sleep)を空ける
-        
-        // 1. Global Data
-        const globalRes = await fetch('https://api.coingecko.com/api/v3/global');
-        if(!globalRes.ok) throw new Error('Global API 429/Error');
-        const globalData = await globalRes.json();
-        await sleep(1500); // 1.5秒休憩
-
-        // 2. Simple Price
-        const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd,jpy&include_24hr_change=true');
-        if(!priceRes.ok) throw new Error('Price API 429/Error');
-        const priceData = await priceRes.json();
-        await sleep(1500); // 1.5秒休憩
-
-        // 3. Fear & Greed (これは別ドメインなので休憩なしでも可だが、念のため)
-        const fngRes = await fetch('https://api.alternative.me/fng/?limit=1');
-        if(!fngRes.ok) throw new Error('FnG API Error');
-        const fngData = await fngRes.json();
-
-        const mergedData = {
-            btcDom: globalData.data.market_cap_percentage.btc,
-            btc: priceData.bitcoin,
-            eth: priceData.ethereum,
-            fng: fngData.data[0]
-        };
-
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            data: mergedData
-        }));
-
-        renderTicker(mergedData);
-
-    } catch (err) {
-        console.warn('Macro Ticker Update Failed:', err);
-        if (cached) {
-            renderTicker(JSON.parse(cached).data);
-        }
-    }
-
-    function renderTicker(data) {
-        /* ...中身は変更なし... */
-        if (els.btcDom) els.btcDom.innerText = data.btcDom.toFixed(1) + '%';
-        
-        if (els.btcPrice) {
-            const price = Math.round(data.btc.jpy).toLocaleString();
-            const change = data.btc.jpy_24h_change.toFixed(1);
-            const isPlus = data.btc.jpy_24h_change >= 0;
-            const colorClass = isPlus ? 'text-up' : 'text-down';
-            const sign = isPlus ? '+' : '';
-            els.btcPrice.innerHTML = `¥${price} <span class="${colorClass}" style="font-size:0.9em; margin-left:4px;">(${sign}${change}%)</span>`;
-        }
-
-        if (els.ethPrice) {
-            const price = Math.round(data.eth.jpy).toLocaleString();
-            els.ethPrice.innerText = `¥${price}`;
-        }
-
-        if (els.fgScore) {
-            const score = data.fng.value;
-            const label = data.fng.value_classification;
-            let color = '#e2e8f0';
-            if (score >= 70) color = '#4ade80';
-            else if (score <= 30) color = '#f87171';
-            els.fgScore.innerHTML = `<span style="color:${color}; font-weight:800;">${score}</span> <span style="font-size:0.8em; opacity:0.7;">(${label})</span>`;
-        }
-
-        if (els.usdJpy && data.btc.jpy && data.btc.usd) {
-            const rate = data.btc.jpy / data.btc.usd;
-            els.usdJpy.innerText = `¥${rate.toFixed(2)}`;
-        }
-    }
-}
-
-/**
- * ▼ AI HUD更新機能 (Brain to UI)
- * 分析データ(JSON)を受け取り、HUDの表示（色、バッジ、数値）を動的に切り替える
- */
 function renderAiHud(data) {
     console.log("Updating AI HUD with:", data);
 
