@@ -139,10 +139,12 @@ def main():
     btc_ma_dist = calculate_ma_distance("bitcoin", 200) or 0.0
 
     # 6. Top Gainer (24h)
+    # 修正箇所: total_volume が None でないことを確認する条件を追加
     valid_gainers = [
         c for c in raw_data 
-        if c["price_change_percentage_24h"] is not None 
+        if c.get("price_change_percentage_24h") is not None 
         and "usd" not in c["symbol"].lower()
+        and c.get("total_volume") is not None  # ← ここを追加
         and c["total_volume"] > 100000000 
     ]
     valid_gainers.sort(key=lambda x: x["price_change_percentage_24h"], reverse=True)
@@ -155,30 +157,30 @@ def main():
             "change": round(top["price_change_percentage_24h"], 2)
         }
 
-    # --- 7. 最終JSON構築 (フラット構造に戻しました) ---
+    # --- 7. 最終JSON構築 (フラット構造) ---
     today_str = datetime.now().strftime("%Y-%m-%d")
 
     output_data = {
         "summary": {
             "date": today_str,
             
-            # FGI (フラット)
+            # FGI
             "fgi": fgi_val,
             "fgi_label": fgi_label,
             
-            # Dominance (フラット)
+            # Dominance
             "btc_dominance": btc_dom,
             
-            # Technicals (フラット)
+            # Technicals
             "btc_rsi": btc_rsi,
             "eth_rsi": eth_rsi,
             "btc_ma_distance": btc_ma_dist,
             
-            # Top Gainer (フラット)
+            # Top Gainer
             "top_gainer_symbol": top_gainer["symbol"],
             "top_gainer_change": top_gainer["change"],
             
-            # Trending (リスト)
+            # Trending
             "trending": [t.upper() for t in trending_coins]
         },
         "raw_data_count": len(raw_data),
