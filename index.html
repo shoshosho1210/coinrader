@@ -667,6 +667,25 @@
 /* Section header: avoid "もっと見る" vertical wrap on narrow screens */
 @media (max-width: 520px){
   .section-header{ flex-direction: column; align-items: flex-start; }
+
+@media (max-width: 520px){
+  /* Compact first-view to fit Trend TOP3 + Up TOP3 + Mcap TOP5 without scroll */
+  .hud-panel{ padding: 10px; border-radius: 10px; }
+  .hud-title{ font-size: 14px; }
+  .hud-verdict{ font-size: 12px; padding: 5px 8px; }
+  .hud-metrics-row.compact{ gap: 6px; margin-top: 6px; }
+  .hud-pill{ padding: 6px 8px; border-radius: 10px; }
+  .pill-val{ font-size: 12px; }
+  .pill-label{ font-size: 10px; }
+  .pill-sub{ font-size: 10px; }
+  .summary-card{ padding: 8px 10px 6px; border-radius: 12px; }
+  .summary-card-title{ font-size: 12px; margin-bottom: 4px; }
+  .summary-ol{ padding-left: 16px; }
+  .summary-li{ padding: 4px 0; gap: 8px; }
+  .summary-li:last-child{ border-bottom: 0; }
+  .summary-li .coin{ font-size: 12px; }
+  .summary-li .chg{ font-size: 12px; }
+}
   .section-actions{ width: 100%; justify-content: flex-end; }
   .linkbtn{ white-space: nowrap; }
 }
@@ -697,7 +716,11 @@
 }
 
 @media (max-width: 820px){
-  .summary-lists{ grid-template-columns: 1fr; }
+  .summary-lists{ display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+}
+
+@media (min-width: 1024px){
+  .summary-lists{ grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
 }
 .summary-lists{
   display: grid;
@@ -707,7 +730,7 @@
 }
 
 @media (max-width: 820px){
-  .summary-lists{ grid-template-columns: 1fr !important; }
+  .summary-lists{ display: grid !important; grid-template-columns: 1fr !important; }
 }
 .summary-card{
   background: rgba(255,255,255,0.03);
@@ -2591,6 +2614,7 @@ body {
     position: relative;
     overflow: hidden;
 }
+.hud-shortline{ display:none !important; }
 /* スキャンライン背景演出 */
 .hud-panel::before {
     content: "";
@@ -3212,63 +3236,34 @@ body {
   .pill-value{ font-size: 13px; }
 }
 
-/* === v8 fastview responsive: PC horizontal, mobile vertical & tighter === */
-@media (min-width: 821px){
-  .summary-lists{
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-    margin-top: 12px !important;
-  }
+/* === v7 fastview vertical: make TOP lists stack vertically and fit in first view === */
+.summary-lists{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
 }
 
-@media (max-width: 820px){
-  .summary-lists{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-    margin-top: 10px !important;
-
-    /* cancel swipe settings from older variants */
-    overflow-x: visible !important;
-    -webkit-overflow-scrolling: auto !important;
-    scroll-snap-type: none !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* Make summary cards slimmer on mobile so all items fit */
-  .summary-card{
-    flex: none !important;
-    min-width: 0 !important;
-    scroll-snap-align: none !important;
-
-    padding: 8px 10px 6px !important;
-    border-radius: 12px !important;
-  }
-  .summary-card-title{
-    margin-bottom: 4px !important;
-    font-size: 12px !important;
-  }
-  .summary-ol{
-    padding-left: 14px !important;
-  }
-  .summary-li{
-    padding: 2px 0 !important;
-    gap: 8px !important;
-    line-height: 1.2 !important;
-    border-bottom: 0 !important;
-  }
-  .summary-rank{ width: 16px !important; }
-  .summary-symbol{ font-size: 12.5px !important; }
-  .summary-right{ font-size: 12px !important; }
-
-  /* Compact AI HUD further so lists appear without scrolling */
-  .hud-metrics-row.compact{ margin-top: 8px !important; gap: 6px !important; }
-  .hud-pill{ padding: 6px 8px !important; }
-  .pill-sub{ display:none !important; }
-  .pill-bar-bg{ display:none !important; }
-  .pill-value{ font-size: 13px !important; }
+/* Make summary cards slimmer */
+.summary-card{
+  padding: 10px 10px 8px !important;
+  border-radius: 12px !important;
 }
+.summary-card-title{
+  margin-bottom: 6px !important;
+  font-size: 13px !important;
+}
+.summary-ol{
+  padding-left: 16px !important;
+}
+.summary-li{
+  padding: 4px 0 !important;
+  gap: 8px !important;
+}
+.summary-rank{ width: 18px !important; }
+.summary-symbol{ font-size: 13px !important; }
+.summary-right{ font-size: 12.5px !important; }
+
 /* Compact AI card further so lists can appear without scrolling */
 .ai-insight-box{
   margin: 8px 0 10px !important;
@@ -3431,7 +3426,8 @@ body {
 <button class="hud-guide-btn" onclick="openPageModal('guide.html', 'CoinRader 活用ガイド');">
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
-</div><div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudTrendBar"></div></div></div></div>
+</div><div class="hud-shortline" id="aiInsightShort">—</div>
+<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudTrendBar"></div></div></div></div>
 <details class="hud-details">
 <summary class="hud-summary-btn">
 <span class="btn-text">詳細レポートを展開</span>
@@ -3450,7 +3446,7 @@ body {
 </div>
 <div class="summary-lists">
 <div class="summary-card summary-trend">
-<div class="summary-card-title">🔥 トレンド TOP5</div>
+<div class="summary-card-title">🔥 トレンド TOP3</div>
 <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
 </div>
 <div class="summary-card summary-up">
@@ -6253,7 +6249,7 @@ function makeLineChart(canvasId, labels, series, opts){
         return;
       }
 
-      const limit = (listId === 'summaryUpList') ? 3 : (listId === 'summaryTrendList') ? 5 : 5;
+      const limit = (listId === 'summaryTrendList' || listId === 'summaryUpList') ? 3 : 5;
 
       coins.slice(0, limit).forEach((coin, idx) => {
         // コンテナ作成
@@ -6610,6 +6606,8 @@ async function updateAiInsight() {
     const textEl = document.getElementById('aiInsightText');
     const timeEl = document.getElementById('aiUpdateTime');
     const noteEl = document.getElementById('aiInsightNote');
+    const shortEl = document.getElementById('aiInsightShort');
+
     // 1. 【修正】バッジ要素を取得（ANALYZINGを解除するため）
     const badgeEl = document.getElementById('aiVerdictBadge');
 
@@ -6631,6 +6629,7 @@ async function updateAiInsight() {
             timeEl.textContent = "[ DATA STALE: RELOAD REQUIRED ]";
             timeEl.style.color = "#f87171";
         }
+        if (shortEl) shortEl.textContent = 'データ更新待ち：更新ボタンで最新化してください';
         textEl.innerHTML = `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">表示中の市場データが古いため、AI分析を一時停止しています。<br>最新情報を取得するには「更新」ボタンを押してください。</div>`;
         return;
     }
