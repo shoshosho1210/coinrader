@@ -5,7 +5,7 @@ Ensure the text has a subtle neon glow and is perfectly integrated into the back
 --- DATA TO OVERLAY ---
 DATE: [ 02/02 ]
 SENTIMENT: [ 14 (Extreme Fear) ]
-BTC RSI: [ 13.91 ]
+BTC RSI: [ 13.95 ]
 STATUS: [ 分析: 中立 / 売られすぎ ]
 FOCUS: [ パニック売り一巡、底打ち反転を模索中 ]
 

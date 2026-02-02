@@ -2,14 +2,14 @@
 分析: 中立
 
 🔹 Bitcoin 📉
-価格: ¥1193万
-前日比: -1.2%
-RSI(14): 13.91
+価格: ¥1194万
+前日比: -1.9%
+RSI(14): 13.95
 心理指数: 14 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: SOL, RIVER, BTC
-急上昇銘柄: ZK (36%↑)
+トレンド入り: BTC, MOLT, SOL
+急上昇銘柄: ZK (34%↑)
 
 📊 詳細分析
 https://coinrader.net/share/20260202.html
