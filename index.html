@@ -3454,19 +3454,19 @@ html, body { overflow-x: hidden; }
 <div class="macro-ticker-wrap">
 <div class="macro-ticker-scroll">
 <div class="ticker-item">
-<span class="t-label">BTC</span>
+<span class="t-label" title="BTC価格 (JPY)">BTC</span>
 <span class="t-val" id="tickerBtcPrice">Loading...</span>
 </div>
 <div class="ticker-item">
-<span class="t-label">BTC.D</span>
+<span class="t-label" title="ビットコイン・ドミナンス">BTC.D</span>
 <span class="t-val" id="tickerBtcDom">--%</span>
 </div>
 <div class="ticker-item">
-<span class="t-label">F&amp;G</span>
+<span class="t-label" title="恐怖&強欲指数 (Fear & Greed Index)">Fear&Greed</span>
 <span class="t-val" id="tickerFgScore">--</span>
 </div>
 <div class="ticker-item">
-<span class="t-label">ETH</span>
+<span class="t-label" title="ETH価格 (JPY)">ETH</span>
 <span class="t-val" id="tickerEthPrice">--</span>
 </div>
 <div class="ticker-item">
@@ -3497,31 +3497,6 @@ html, body { overflow-x: hidden; }
 </div>
 </div>
 </header>
-<nav aria-label="クイックアクセス" class="sticky-nav">
-<div class="sticky-nav-inner">
-<a class="nav-tab tab-ai" href="#sec-summary" onclick="scrollToId('sec-summary'); return false;">
-<i class="fa-solid fa-microchip"></i> 解析
-    </a>
-<a class="nav-tab" href="#sec-trend" onclick="scrollToId('sec-trend'); return false;">
-<i class="fa-solid fa-fire"></i> トレンド
-    </a>
-<a class="nav-tab" href="#sec-gainers" onclick="scrollToId('sec-gainers'); return false;">
-<i class="fa-solid fa-arrow-trend-up"></i> 上昇率
-    </a>
-<a class="nav-tab" href="#sec-volume" onclick="scrollToId('sec-volume'); return false;">
-<i class="fa-solid fa-chart-simple"></i> 出来高
-    </a>
-<a class="nav-tab" href="#sec-alt-volume" onclick="scrollToId('sec-alt-volume'); return false;">
-<i class="fa-solid fa-layer-group"></i> アルト
-    </a>
-<a class="nav-tab" href="#sec-mcap" onclick="scrollToId('sec-mcap'); return false;">
-<i class="fa-solid fa-ranking-star"></i> ランキング
-    </a>
-<a class="nav-tab" href="#sec-overview" onclick="scrollToId('sec-overview'); return false;">
-<i class="fa-solid fa-globe"></i> 市場概況
-    </a>
-</div>
-</nav>
 <div class="sideMenuOverlay" hidden="" id="sideMenuOverlay"></div>
 <aside aria-hidden="true" class="sideMenu" id="sideMenu">
 <div class="sideMenuHeader">
@@ -7463,17 +7438,17 @@ async function updateMacroTicker() {
         if (els.btcDom) els.btcDom.innerText = data.btcDom.toFixed(1) + '%';
         
         if (els.btcPrice) {
-            const price = Math.round(data.btc.usd).toLocaleString();
-            const change = data.btc.usd_24h_change.toFixed(1);
-            const isPlus = data.btc.usd_24h_change >= 0;
+            const price = Math.round(data.btc.jpy).toLocaleString();
+            const change = data.btc.jpy_24h_change.toFixed(1);
+            const isPlus = data.btc.jpy_24h_change >= 0;
             const colorClass = isPlus ? 'text-up' : 'text-down';
             const sign = isPlus ? '+' : '';
-            els.btcPrice.innerHTML = `$${price} <span class="${colorClass}" style="font-size:0.9em; margin-left:4px;">(${sign}${change}%)</span>`;
+            els.btcPrice.innerHTML = `¥${price} <span class="${colorClass}" style="font-size:0.9em; margin-left:4px;">(${sign}${change}%)</span>`;
         }
 
         if (els.ethPrice) {
-            const price = Math.round(data.eth.usd).toLocaleString();
-            els.ethPrice.innerText = `$${price}`;
+            const price = Math.round(data.eth.jpy).toLocaleString();
+            els.ethPrice.innerText = `¥${price}`;
         }
 
         if (els.fgScore) {
