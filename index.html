@@ -3296,6 +3296,39 @@ body {
   .summary-li{ padding: 3px 0 !important; }
 }
 
+
+/* v9: PC layout tightening (keep mobile vertical) */
+.summary-lists{ align-items: start; }
+.summary-lists > .summary-card{ align-self: start; }
+
+@media (min-width: 900px){
+  .summary-lists{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+    gap: 16px;
+    align-items: start;         /* prevent equal-height stretch */
+    justify-content: start;
+  }
+  .summary-lists > .summary-card{
+    max-width: 520px;           /* avoid overly wide cards on large screens */
+    width: 100%;
+    justify-self: start;
+  }
+  .summary-card{
+    padding: 14px 16px 12px;    /* a bit more breathing room on desktop */
+  }
+}
+
+/* Ensure small screens remain single-column */
+@media (max-width: 820px){
+  .summary-lists{
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .summary-lists > .summary-card{
+    max-width: none;
+  }
+}
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
