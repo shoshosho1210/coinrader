@@ -3101,6 +3101,44 @@ body {
 #sumDomSegStb { background: #34d399 !important; }
 #sumDomSegOth, #miniVolBarOth { background: #94a3b8 !important; }
 
+
+/* ===== Fast-view tweaks (AI + Top lists) ===== */
+.kpi-details{ margin-top: 12px; }
+.kpi-details-summary{
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kpi-details[open] .kpi-details-summary{ opacity: 0.95; }
+.kpi-details-summary::-webkit-details-marker{ display:none; }
+.top5-val .val-sep{ opacity:0.6; font-size:11px; margin:0 4px; }
+
+@media (max-width: 820px){
+  /* make Top5 cards swipeable instead of stacking tall */
+  .summary-lists{
+    display: flex !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 10px !important;
+    padding-bottom: 6px;
+  }
+  .summary-card{
+    flex: 0 0 auto;
+    min-width: 280px;
+    scroll-snap-align: start;
+  }
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
@@ -3281,6 +3319,22 @@ body {
     </div>
   </details>
 </div>
+<div class="summary-lists">
+<div class="summary-card">
+<div class="summary-card-title">🔥 トレンド TOP5</div>
+<ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
+</div>
+<div class="summary-card">
+<div class="summary-card-title">🚀 上昇 TOP5（24h）</div>
+<ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
+</div>
+<div class="summary-card">
+<div class="summary-card-title">🏆 時価総額 TOP5（24h / 7d）</div>
+<ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
+</div>
+</div>
+<details class="kpi-details">
+  <summary class="kpi-details-summary">📌 主要指標（KPI）を表示</summary>
 <div class="summary-kpis" id="summaryKpis">
 
   <div class="kpi-tile kpi-sent">
@@ -3383,23 +3437,7 @@ body {
   </div> 
 
 </div>
- 
-</div></div></div>
-
-<div class="summary-lists">
-<div class="summary-card">
-<div class="summary-card-title">🔥 トレンド TOP5</div>
-<ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
-</div>
-<div class="summary-card">
-<div class="summary-card-title">🚀 上昇 TOP5（24h）</div>
-<ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
-</div>
-<div class="summary-card">
-<div class="summary-card-title">📊 出来高(アルト) TOP5（24h）</div>
-<ol class="summary-ol" id="summaryVolAltList"><li class="summary-li muted">データ取得中…</li></ol>
-</div>
-</div>
+</details>
 </section>
 <section aria-label="投資の準備" class="cta-block" style="border-color: rgba(56, 189, 248, 0.25); background: rgba(15, 23, 42, 0.85); box-shadow: 0 0 15px rgba(56, 189, 248, 0.08);">
 <div class="cta-inner">
@@ -6163,7 +6201,10 @@ function makeLineChart(canvasId, labels, series, opts){
         item.appendChild(rightWrap);
 
         // クリックイベント（カードへスクロール）
-        item.onclick = () => scrollToCoin(gridId, coin);
+        item.onclick = () => {
+          if (typeof gridId === 'string' && gridId.startsWith('sec-')) scrollToId(gridId);
+          else scrollToCoin(gridId, coin);
+        };
 
         ol.appendChild(item);
       });
@@ -6171,7 +6212,7 @@ function makeLineChart(canvasId, labels, series, opts){
 
     fillList('summaryTrendList', trendingCoins, 'grid-trend');
     fillList('summaryUpList', getGainersTop5(), 'grid-gainers');
-    fillList('summaryVolAltList', getAltVolumeTop5(), 'grid-alt-volume');
+    fillList('summaryMcapTopList', getMarketCapTop20(), 'sec-mcap');
   }
 
 // ▼▼▼ 修正版：7日比（週間変動率）を追加したテーブル描画 ▼▼▼
