@@ -7332,7 +7332,74 @@ textEl.innerHTML = htmlContent;
   }
   // 初回ロード
   /* --- 修正箇所 3: 起動時のリクエストを順番に行う --- */
-  (async function boot(){
+  
+  // ===== Macro ticker (BTC/ETH JPY, BTC.D, Fear&Greed, USD/JPY) =====
+  function _setText(id, txt){
+    const el = document.getElementById(id);
+    if (el) el.textContent = (txt==null? '--' : String(txt));
+  }
+  async function updateMacroTicker(){
+    try{
+      // BTC / ETH JPY from marketsTop (preferred)
+      let btc = (Array.isArray(marketsTop) ? marketsTop.find(c=>c && c.id==='bitcoin') : null);
+      let eth = (Array.isArray(marketsTop) ? marketsTop.find(c=>c && c.id==='ethereum') : null);
+
+      // Fallback: simple price (JPY)
+      if ((!btc || !eth) && typeof fetchJsonRetry === 'function'){
+        try{
+          const sp = await fetchJsonRetry('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=jpy');
+          if (!btc && sp?.bitcoin?.jpy!=null) btc = { current_price: Number(sp.bitcoin.jpy) };
+          if (!eth && sp?.ethereum?.jpy!=null) eth = { current_price: Number(sp.ethereum.jpy) };
+        }catch(_e){}
+      }
+      if (btc?.current_price!=null) _setText('tickerBtcPrice', formatJPY(Number(btc.current_price)));
+      else _setText('tickerBtcPrice', '--');
+      if (eth?.current_price!=null) _setText('tickerEthPrice', formatJPY(Number(eth.current_price)));
+      else _setText('tickerEthPrice', '--');
+
+      // BTC Dominance
+      let btcDom = null;
+      try{
+        const g = await fetchJsonRetry('https://api.coingecko.com/api/v3/global');
+        btcDom = g?.data?.market_cap_percentage?.btc;
+      }catch(_e){}
+      if (btcDom==null && btc?.market_cap!=null && Array.isArray(marketsTop) && marketsTop.length){
+        const total = marketsTop.reduce((s,c)=>s+(Number(c?.market_cap)||0),0);
+        if (total>0) btcDom = (Number(btc.market_cap)/total)*100;
+      }
+      if (typeof btcDom === 'number' && isFinite(btcDom)) _setText('tickerBtcDom', btcDom.toFixed(1) + '%');
+      else _setText('tickerBtcDom', '--%');
+
+      // Fear & Greed Index
+      let fgScore = null, fgClass = '';
+      try{
+        const fg = await fetchJsonRetry('https://api.alternative.me/fng/?limit=1&format=json');
+        fgScore = Number(fg?.data?.[0]?.value);
+        fgClass = fg?.data?.[0]?.value_classification || '';
+      }catch(_e){}
+      const fgEl = document.getElementById('tickerFgScore');
+      if (fgEl){
+        if (typeof fgScore === 'number' && isFinite(fgScore)) fgEl.textContent = String(Math.round(fgScore));
+        else fgEl.textContent = '--';
+        if (fgClass) fgEl.title = `恐怖&強欲指数: ${fgClass}`;
+      }
+
+      // USD/JPY (show rate)
+      let usdJpy = null;
+      try{
+        const fx = await fetchJsonRetry('https://open.er-api.com/v6/latest/USD');
+        usdJpy = fx?.rates?.JPY;
+      }catch(_e){}
+      if (typeof usdJpy === 'number' && isFinite(usdJpy)) _setText('tickerUsdJpy', usdJpy.toFixed(2));
+      else _setText('tickerUsdJpy', '--');
+
+    }catch(e){
+      console.warn('updateMacroTicker failed', e);
+    }
+  }
+
+
+(async function boot(){
     try{ syncHeaderHeight(); setupOverviewToggle(); setupSideMenu(); }catch(_e){}
     
     tickRefreshButton();
