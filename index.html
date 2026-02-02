@@ -2480,7 +2480,7 @@ body {
     opacity: 0.3;
 }
 
-/* セクション見出し: MARKET PHASE / STRATEGY LOG */
+/* セクション見出し: 市場局面 / 戦略メモ */
 .ai-section-title {
     font-size: 11px;
     color: #38bdf8;
@@ -3342,7 +3342,7 @@ body {
   #aiInsightShort{ display:none !important; }
 
   /* Make RSI/SENT/TREND pills shorter */
-  .pill-bar-bg{ display:none !important; }
+  .pill-bar-bg{ display:block !important; margin-top:4px !important; height:3px !important; }
   .hud-metrics-row.compact{ margin-top: 6px !important; gap: 6px !important; }
   .hud-pill{ padding: 6px 7px !important; }
   .pill-value{ font-size: 12.5px !important; }
@@ -3445,6 +3445,38 @@ html, body { overflow-x: hidden; }
   .top5-item{ padding: 5px 6px !important; }
   .top5-name{ font-size: 11px !important; }
   .top5-val{ font-size: 10px !important; }
+}
+
+
+/* --- Trend bar: diverging (supports negative) --- */
+.pill-bar-bg.trend{ position:relative; }
+.pill-bar-bg.trend::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:0; bottom:0;
+  width:1px;
+  background: rgba(255,255,255,0.18);
+}
+.pill-bar-fill.trend{
+  position:absolute;
+  top:0; bottom:0;
+  width:0%;
+  border-radius:999px;
+}
+.pill-bar-fill.trend.positive{
+  left:50%;
+  background: linear-gradient(90deg, rgba(56,189,248,0.95), rgba(34,211,238,0.7));
+}
+.pill-bar-fill.trend.negative{
+  right:50%;
+  background: linear-gradient(90deg, rgba(248,113,113,0.85), rgba(244,63,94,0.55));
+}
+
+/* Mobile: hide X share button in section header to avoid overlap */
+@media (max-width: 820px){
+  .section-actions{ display:none !important; }
+  .macro-ticker-wrap{ position: static !important; top:auto !important; }
 }
 
 </style>
@@ -3553,10 +3585,10 @@ html, body { overflow-x: hidden; }
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
 </div><div class="hud-shortline" id="aiInsightShort">—</div>
-<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudTrendBar"></div></div></div></div>
+<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
 <details class="hud-details">
 <summary class="hud-summary-btn">
-<span class="btn-text">詳細レポートを展開</span>
+<span class="btn-text">AIの判断理由を見る（30秒）</span>
 <span class="toggle-arrow">▼</span>
 </summary>
 <div class="hud-content-text" id="aiInsightText">
@@ -6799,7 +6831,23 @@ async function updateAiInsight() {
     if (maDist !== null) {
         const maVal = parseFloat(maDist);
         document.getElementById('hudTrendVal').textContent = (maVal >= 0 ? '+' : '') + maVal.toFixed(1) + '%';
-        document.getElementById('hudTrendBar').style.width = Math.min(100, Math.max(0, (maVal + 10) * 5)) + '%';
+        const bar = document.getElementById('hudTrendBar');
+        if (bar){
+            const clamped = Math.max(-10, Math.min(10, maVal)); // -10%..+10% を代表レンジ
+            const abs = Math.abs(clamped);
+            const w = (abs / 10) * 50; // 0..50% (片側)
+            bar.style.width = w.toFixed(1) + '%';
+            bar.classList.remove('positive','negative');
+            if (clamped >= 0){
+                bar.classList.add('positive');
+                bar.style.left = '50%';
+                bar.style.right = 'auto';
+            }else{
+                bar.classList.add('negative');
+                bar.style.right = '50%';
+                bar.style.left = 'auto';
+            }
+        }
     }
 
     // 5. 【修正】ANALYZING表示を解除し、判定を表示
@@ -6810,7 +6858,7 @@ async function updateAiInsight() {
             const verdictTxt = badgeEl.querySelector('.status-text')?.textContent || '';
             const rsiTxt = document.getElementById('hudRsiVal')?.textContent || '';
             const fgTxt  = document.getElementById('hudFgVal')?.textContent || '';
-            shortEl.textContent = `結論：${verdictTxt}｜RSI ${rsiTxt}｜Sent ${fgTxt}`;
+            shortEl.textContent = `結論：${verdictTxt}｜RSI ${rsiTxt}｜Fear&Greed ${fgTxt}`;
         }
         const icon = badgeEl.querySelector('.status-icon i');
         if (icon) icon.className = (sent <= 30 || btcChg <= -3 ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-rocket');
@@ -7018,14 +7066,14 @@ async function updateAiInsight() {
     const htmlContent = `
         <div class="hud-content-text">
             <div class="ai-section-title">
-                <div class="ai-section-dot"></div> MARKET PHASE
+                <div class="ai-section-dot"></div> 市場局面
             </div>
             <div class="ai-text-block">
                 ${formattedComparison}
             </div>
 
             <div class="ai-section-title strategy">
-                <div class="ai-section-dot"></div> STRATEGY LOG
+                <div class="ai-section-dot"></div> 戦略メモ
             </div>
             <div class="ai-text-block">
                 ${formattedStrategy}
@@ -7575,14 +7623,14 @@ function renderAiHud(data) {
         const htmlContent = `
             <div class="hud-content-text">
                 <div class="ai-section-title">
-                    <div class="ai-section-dot"></div> MARKET PHASE
+                    <div class="ai-section-dot"></div> 市場局面
                 </div>
                 <div class="ai-text-block">
                     ${formattedComparison}
                 </div>
 
                 <div class="ai-section-title strategy">
-                    <div class="ai-section-dot"></div> STRATEGY LOG
+                    <div class="ai-section-dot"></div> 戦略メモ
                 </div>
                 <div class="ai-text-block">
                     ${formattedStrategy}
