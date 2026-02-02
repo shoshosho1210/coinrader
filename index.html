@@ -5,7 +5,6 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <title>CoinRader - 暗号資産ダッシュボード | AI市場分析 & ビットコイン相場</title>
 
@@ -2135,1002 +2134,11 @@ body {
         margin-right: 2px;
     }
 }
-/* HUDパネル化のスタイル */
-/* 1. ヘッドライン */
-.hud-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 12px;
-}
-
-.hud-status-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 800;
-    font-size: 1.1rem;
-    letter-spacing: 0.05em;
-}
-/* 強気モード */
-.status-bullish {
-    background: rgba(74, 222, 128, 0.15);
-    color: #4ade80;
-    border: 1px solid rgba(74, 222, 128, 0.3);
-    text-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
-}
-/* 弱気モード用 */
-.status-bearish {
-    background: rgba(248, 113, 113, 0.15);
-    color: #f87171;
-    border: 1px solid rgba(248, 113, 113, 0.3);
-    text-shadow: 0 0 10px rgba(248, 113, 113, 0.4);
-}
-
-.hud-score {
-    text-align: right;
-}
-.score-label {
-    display: block;
-    font-size: 0.7rem;
-    color: #94a3b8;
-    text-transform: uppercase;
-}
-.score-val {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #e2e8f0;
-}
-.score-max {
-    font-size: 0.8rem;
-    color: #64748b;
-}
-
-/* 2. グリッド */
-.hud-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-.hud-metric {
-    background: rgba(15, 23, 42, 0.6);
-    padding: 8px;
-    border-radius: 8px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-.metric-label {
-    display: block;
-    font-size: 0.7rem;
-    color: #94a3b8;
-    margin-bottom: 2px;
-}
-.metric-val {
-    font-size: 1rem;
-    font-weight: 700;
-}
-.text-green { color: #4ade80; }
-.text-orange { color: #fb923c; }
-
-/* 3. アコーディオン */
-.hud-details summary {
-    list-style: none;
-    cursor: pointer;
-    text-align: center;
-    color: #38bdf8;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 8px;
-    background: rgba(56, 189, 248, 0.05);
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-.hud-details summary:hover {
-    background: rgba(56, 189, 248, 0.15);
-}
-.hud-details[open] summary {
-    margin-bottom: 12px;
-    background: transparent;
-    color: #94a3b8;
-}
-.hud-content-text {
-    animation: fadeIn 0.3s ease-in;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-/* ガイドボタンのHUD用スタイル */
-.hud-guide-btn {
-    background: rgba(56, 189, 248, 0.1);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    color: #38bdf8;
-    font-size: 10px;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.2s;
-}
-.hud-guide-btn:hover {
-    background: rgba(56, 189, 248, 0.25);
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
-}
-
-/* ローディング時のパルスアニメーション */
-.cyber-pulse {
-    animation: pulseRed 1.5s infinite;
-    color: #facc15; /* 準備中は黄色 */
-}
-@keyframes pulseRed {
-    0% { opacity: 1; }
-    50% { opacity: 0.4; }
-    100% { opacity: 1; }
-}
-
-/* ヘッダー調整 */
-.hud-header-left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 700;
-    color: #e2e8f0;
-    font-size: 14px;
-}
-.ai-icon { font-size: 18px; }
-
-/* マクロ・ティッカーのデザイン */
-.macro-ticker-wrap {
-    background: rgba(15, 23, 42, 0.95);
-    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
-    padding: 8px 0;
-    margin-bottom: 16px; /* HUDとの間隔 */
-    backdrop-filter: blur(5px);
-    overflow: hidden;
-    position: sticky;
-    top: 60px; /* ヘッダーの高さに合わせて調整（追従させる場合） */
-    z-index: 90;
-}
-
-.macro-ticker-scroll {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    padding: 0 16px;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch; /* スマホで慣性スクロール */
-    scrollbar-width: none; /* スクロールバーを隠す */
-}
-.macro-ticker-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.ticker-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #cbd5e1;
-    font-family: 'Inter', monospace; /* 数字を見やすく */
-    border-right: 1px solid rgba(255,255,255,0.1); /* 区切り線 */
-    padding-right: 20px;
-}
-.ticker-item:last-child {
-    border-right: none;
-}
-
-.t-label {
-    color: #94a3b8;
-    font-weight: 600;
-}
-.t-val {
-    color: #e2e8f0;
-    font-weight: 700;
-}
-/* 変動率の色（JSで制御するための基本クラス） */
-.text-up { color: #4ade80; }
-.text-down { color: #f87171; }
-/* 中立 (Neutral/Wait) モード */
-.status-neutral {
-    background: rgba(148, 163, 184, 0.15); /* グレーベース */
-    color: #cbd5e1;
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    text-shadow: 0 0 10px rgba(148, 163, 184, 0.2);
-}
-/* 中立時のアイコン色 */
-.status-neutral .status-icon {
-    color: #facc15; /* アイコンだけ黄色で注意喚起 */
-}
-
-/* --- 詳細レポートエリアのCyber化 --- */
-
-/* 1. コンテナ背景: 少し暗くして没入感を出す */
-.hud-content-text {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 10px;
-    border-top: 1px solid rgba(56, 189, 248, 0.1);
-}
-
-/* 2. 分析テキスト: 読みやすさとマシン感の両立 */
-.ai-text-body {
-    font-family: 'Inter', sans-serif; /* あえてゴシックで見やすく */
-    font-size: 14px;
-    line-height: 1.8;
-    color: #cbd5e1;
-    letter-spacing: 0.03em;
-    margin-bottom: 20px;
-}
-
-/* 強調キーワードの発光演出 */
-.ai-highlight {
-    color: #38bdf8;
-    font-weight: 700;
-    background: rgba(56, 189, 248, 0.1);
-    padding: 0 4px;
-    border-radius: 3px;
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.15);
-}
-
-/* 3. エビデンス・グリッド（表）のサイバー化 */
-.ai-evidence-grid {
-    background: rgba(15, 23, 42, 0.6) !important;
-    border: 1px solid rgba(56, 189, 248, 0.15) !important;
-    border-radius: 8px !important;
-    padding: 0 !important; /* 内部パディングはtableに任せる */
-    overflow: hidden; /* 角丸を効かせる */
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.ai-evidence-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-}
-
-.ai-evidence-table th {
-    background: rgba(56, 189, 248, 0.05);
-    color: #94a3b8;
-    font-weight: 600;
-    padding: 10px 12px;
-    text-align: right;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.1);
-}
-.ai-evidence-table th:first-child { text-align: left; }
-
-.ai-evidence-table td {
-    padding: 12px;
-    text-align: right;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    color: #64748b; /* 過去データは暗めに */
-    font-family: monospace; /* 数字は等幅フォントで */
-}
-.ai-evidence-table td:first-child {
-    text-align: left;
-    color: #cbd5e1;
-    font-weight: 500;
-    font-family: sans-serif;
-}
-
-/* 「今」のカラムだけ特別扱い（発光） */
-.col-current {
-    color: #f8fafc !important; /* 真っ白 */
-    font-weight: 700;
-    background: linear-gradient(to bottom, rgba(56, 189, 248, 0.05), transparent);
-    position: relative;
-}
-.col-current::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; bottom: 0; width: 2px;
-    background: #38bdf8;
-    box-shadow: 0 0 8px #38bdf8;
-    opacity: 0.5;
-}
-
-/* タイムスタンプなどのフッター情報 */
-.ai-footer-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-    font-size: 10px;
-    color: #475569;
-    border-top: 1px dashed rgba(255,255,255,0.05);
-    padding-top: 8px;
-}
-/* --- AI詳細レポート: サイバー・コンソールUI --- */
-
-/* コンテナ：半透明の黒背景と発光ボーダー */
-.hud-content-text {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(56, 189, 248, 0.15);
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    position: relative;
-    overflow: hidden;
-}
-/* スキャンライン装飾（オプション） */
-.hud-content-text::before {
-    content: "";
-    position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), transparent);
-    opacity: 0.3;
-}
-
-/* セクション見出し: MARKET PHASE / STRATEGY LOG */
-.ai-section-title {
-    font-size: 11px;
-    color: #38bdf8;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-    padding-bottom: 4px;
-}
-/* Strategy Logは黄色でアクセント */
-.ai-section-title.strategy { 
-    color: #facc15; 
-    border-color: rgba(250, 204, 21, 0.2); 
-    margin-top: 20px;
-}
-.ai-section-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: currentColor;
-    box-shadow: 0 0 6px currentColor;
-}
-
-/* 分析テキスト本文 */
-.ai-text-block {
-    font-size: 13px;
-    line-height: 1.7;
-    color: #cbd5e1;
-    text-align: justify;
-}
-
-/* キーワード強調（ネオン風） */
-.ai-highlight {
-    color: #38bdf8;
-    font-weight: 700;
-    background: rgba(56, 189, 248, 0.1);
-    padding: 0 4px;
-    border-radius: 3px;
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.15);
-    border: 1px solid rgba(56, 189, 248, 0.25);
-    text-shadow: 0 0 4px rgba(56, 189, 248, 0.4);
-}
-
-/* --- テーブルデザインの刷新 --- */
-.ai-evidence-grid {
-    margin-top: 24px !important;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    overflow-x: auto;
-}
-
-.ai-evidence-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 4px; /* 行の間に隙間を作る */
-    font-size: 11px;
-}
-
-.ai-evidence-table th {
-    text-align: right;
-    padding: 6px 12px;
-    color: #64748b;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    font-size: 10px;
-}
-.ai-evidence-table th:first-child { text-align: left; }
-.ai-evidence-table th.col-current { 
-    color: #38bdf8; 
-    text-shadow: 0 0 8px rgba(56, 189, 248, 0.4); 
-    text-align: center;
-}
-
-/* 行のデザイン */
-.ai-evidence-table tbody tr {
-    background: rgba(15, 23, 42, 0.4);
-    transition: background 0.2s;
-}
-.ai-evidence-table tbody tr:hover {
-    background: rgba(56, 189, 248, 0.05);
-}
-
-.ai-evidence-table td {
-    text-align: right;
-    padding: 10px 12px;
-    border-top: 1px solid rgba(56, 189, 248, 0.1);
-    border-bottom: 1px solid rgba(56, 189, 248, 0.1);
-    color: #94a3b8;
-    font-family: 'Inter', monospace;
-}
-.ai-evidence-table td:first-child {
-    text-align: left;
-    border-left: 1px solid rgba(56, 189, 248, 0.1);
-    border-radius: 6px 0 0 6px;
-    color: #cbd5e1;
-    font-weight: 600;
-    font-family: sans-serif;
-}
-.ai-evidence-table td:last-child {
-    border-right: 1px solid rgba(56, 189, 248, 0.1);
-    border-radius: 0 6px 6px 0;
-}
-
-/* Current列の強調（発光ライン付き） */
-.ai-evidence-table td.cell-current {
-    color: #f8fafc;
-    font-weight: 700;
-    background: rgba(56, 189, 248, 0.05);
-    box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.05);
-    position: relative;
-    text-align: center;
-}
-/* 左端の青い光るライン */
-.ai-evidence-table td.cell-current::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 2px; bottom: 2px; width: 2px;
-    background: #38bdf8;
-    box-shadow: 0 0 6px #38bdf8;
-}
-/* --- HUDパネル全体 --- */
-.hud-panel {
-    background: radial-gradient(circle at top right, #1e293b, #0f172a);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.05), inset 0 0 40px rgba(0,0,0,0.5);
-    border-radius: 12px;
-    padding: 16px;
-    position: relative;
-    overflow: hidden;
-}
-/* スキャンライン背景演出 */
-.hud-panel::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(56, 189, 248, 0.03) 3px
-    );
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* ヘッダー周り */
-.hud-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 16px; position: relative; z-index: 1;
-}
-.hud-header-left { display: flex; align-items: center; gap: 10px; }
-.ai-icon-pulse { font-size: 20px; animation: iconPulse 2s infinite; }
-@keyframes iconPulse { 0%{opacity:1;} 50%{opacity:0.6;} 100%{opacity:1;} }
-
-.ai-label {
-    font-weight: 800; font-size: 14px; letter-spacing: 0.1em; color: #fff;
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-}
-
-/* 計器パネル（3カラム） */
-.hud-metrics-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 16px;
-    position: relative; z-index: 1;
-}
-
-/* ガラスプレート（個別の計器） */
-.hud-glass-plate {
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 10px 4px;
-    text-align: center;
-    position: relative;
-    transition: all 0.3s ease;
-}
-.hud-glass-plate:hover {
-    background: rgba(56, 189, 248, 0.05);
-    border-color: rgba(56, 189, 248, 0.3);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
-}
-
-/* ラベルと数値 */
-.plate-label {
-    font-size: 10px; color: #94a3b8; letter-spacing: 0.05em; font-weight: 700;
-    margin-bottom: 4px; text-transform: uppercase;
-}
-.plate-value-wrap {
-    height: 32px; display: flex; align-items: center; justify-content: center;
-}
-.plate-value {
-    font-size: 20px; font-weight: 800; color: #f8fafc; font-family: 'Inter', sans-serif;
-}
-.text-glow { text-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
-
-/* 下部のミニバー */
-.plate-bar-bg {
-    height: 3px; width: 80%; margin: 6px auto 0;
-    background: rgba(255, 255, 255, 0.1); border-radius: 2px;
-}
-.plate-bar-fill {
-    height: 100%; width: 0%;
-    background: #38bdf8; border-radius: 2px;
-    transition: width 1s ease;
-    box-shadow: 0 0 5px #38bdf8;
-}
-
-/* 詳細ボタン */
-.hud-summary-btn {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px dashed rgba(56, 189, 248, 0.2);
-    color: #38bdf8;
-    padding: 8px;
-    border-radius: 6px;
-    font-size: 11px; font-weight: 700; letter-spacing: 1px;
-    cursor: pointer; text-align: center;
-    transition: all 0.2s;
-    list-style: none; /* 三角アイコン消去 */
-}
-.hud-summary-btn:hover {
-    background: rgba(56, 189, 248, 0.1);
-    border-style: solid;
-}
-.hud-summary-btn::-webkit-details-marker { display: none; }
-
-/* スマホ最適化 */
-@media (max-width: 640px) {
-    .hud-metrics-row { gap: 6px; }
-    .plate-value { font-size: 18px; }
-    .ai-label { font-size: 12px; }
-    .hud-status-badge { display: none; } /* スマホではヘッダーの幅確保のためバッジを隠す */
-}
-/* アイコン共通スタイル */
-.fa-icon-glow {
-    color: #38bdf8; /* シアン */
-    filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.6)); /* 発光 */
-    margin-right: 6px;
-    font-size: 1.1em; /* 少し大きめに */
-}
-
-/* 警告などの色違い */
-.fa-warning { color: #facc15; filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.6)); }
-.fa-danger { color: #f87171; filter: drop-shadow(0 0 5px rgba(248, 113, 113, 0.6)); }
-/* 黄色い発光アクセント（雷アイコン用） */
-.section-icon-accent {
-    color: #facc15; /* ビビッドな黄色 */
-    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.6)); /* 黄色の光彩 */
-    margin-right: 8px;
-    font-size: 1.1em;
-}
-
-/* オプション: 「リアルタイム感」を出すための点滅アニメーション */
-.section-icon-accent {
-    animation: flashPulse 3s infinite;
-}
-@keyframes flashPulse {
-    0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.6)); }
-    50% { opacity: 0.7; filter: drop-shadow(0 0 2px rgba(250, 204, 21, 0.3)); }
-}
-/* HUDパネルのホバー演出（Excite effect） */
-.hud-panel {
-    transition: all 0.3s ease; /* アニメーションを滑らかに */
-}
-
-.hud-panel:hover {
-    /* 1. ボーダー: より強く光らせる */
-    border-color: rgba(56, 189, 248, 0.6);
-    
-    /* 2. 背景: 暗くせず、少しだけ「青み」を足して明るくする（ガラスが光を受けた表現） */
-    background: radial-gradient(circle at top right, #2a3855, #162032); 
-    
-    /* 3. グロー: 外側にも光を漏らす */
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.15), inset 0 0 10px rgba(56, 189, 248, 0.05);
-    
-    /* 4. わずかに浮き上がらせる */
-    transform: translateY(-2px);
-}
-/* --- スパークライン（ミニチャート） --- */
-.sparkline-cell {
-    width: 100px;
-    padding: 0 8px !important;
-    vertical-align: middle;
-}
-
-.sparkline-wrap {
-    width: 80px;
-    height: 30px;
-    position: relative;
-    overflow: hidden;
-}
-
-/* チャートの線 */
-.spark-path {
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    /* 色はJSで指定（上昇なら緑、下落なら赤） */
-}
-
-/* チャートの塗りつぶし（オプション） */
-.spark-fill {
-    stroke: none;
-    opacity: 0.15; /* 薄く塗る */
-}
-
-/* --- テーブル内スパークライン(SVG)用 --- */
-.td-chart {
-    width: 120px;
-    padding: 4px 8px;
-    vertical-align: middle;
-    text-align: center; /* SVGを中央寄せ */
-}
-.td-chart svg {
-    display: block;
-    margin: 0 auto;
-    width: 100px;
-    height: 35px;
-}
-
-/* --- Sticky Navigation: Professional Style --- */
-.sticky-nav {
-    background: rgba(15, 23, 42, 0.95) !important; /* 透過を減らして文字を読みやすく */
-    backdrop-filter: blur(12px) !important;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.15) !important;
-    padding: 8px 0 !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-
-.sticky-nav-inner {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    padding: 2px 12px; /* 横スクロールの端に余白 */
-}
-.sticky-nav-inner::-webkit-scrollbar { display: none; }
-
-.nav-tab {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px; /* アイコンと文字の間隔 */
-    font-size: 11px;
-    font-weight: 700;
-    color: #94a3b8; /* 通常時は落ち着いたグレー */
-    text-decoration: none;
-    padding: 8px 14px;
-    border-radius: 6px; /* 丸みを少し抑えてクールに */
-    background: transparent;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
-    letter-spacing: 0.05em;
-}
-
-/* アイコンのスタイル調整 */
-.nav-tab i {
-    font-size: 12px;
-    color: #64748b; /* アイコンはさらに控えめに */
-    transition: color 0.2s;
-}
-
-/* ホバー時の挙動 */
-.nav-tab:hover {
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-1px);
-}
-.nav-tab:hover i {
-    color: #cbd5e1;
-}
-
-/* --- アクティブ/特別ボタンのデザイン --- */
-
-/* 「解析 (AI)」ボタンだけ特別扱い（常に少し目立たせる） */
-.nav-tab.tab-ai {
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.05);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.05);
-}
-.nav-tab.tab-ai i {
-    color: #38bdf8; /* アイコンもシアン */
-}
-.nav-tab.tab-ai:hover {
-    background: rgba(56, 189, 248, 0.15);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
-}
-
-/* クリック時の沈み込み演出 */
-.nav-tab:active {
-    transform: translateY(1px);
-    opacity: 0.8;
-}
-
-/* --- KPI Grid: System Monitor Style --- */
-
-/* グリッド全体の調整 */
-.summary-kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* スマホでも2列確保 */
-    gap: 12px;
-    margin-top: 16px;
-}
-
-/* 個別タイルのサイバー化 */
-.kpi-tile {
-    background: rgba(15, 23, 42, 0.6) !important; /* ガラスのような透過黒 */
-    border: 1px solid rgba(56, 189, 248, 0.15) !important; /* 薄いシアン枠 */
-    border-radius: 8px !important; /* 丸みを少し減らして機械的に */
-    padding: 12px 10px !important;
-    position: relative;
-    overflow: hidden;
-    box-shadow: none !important; /* 既存の影を消す */
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-
-/* ホバー時の発光 */
-.kpi-tile:hover {
-    background: rgba(15, 23, 42, 0.8) !important;
-    border-color: rgba(56, 189, 248, 0.5) !important;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.1) !important;
-    transform: translateY(-2px);
-}
-
-/* タイトルの統一 */
-.kpi-tile-title {
-    font-size: 10px !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-/* アイコンをタイトルの前につけるためのスペース */
-.kpi-tile-title i {
-    color: #38bdf8;
-    font-size: 11px;
-}
-
-/* 数値の強調 */
-.kpi-tile-big {
-    font-size: 20px !important;
-    font-family: 'Inter', sans-serif;
-    font-weight: 700 !important;
-    color: #e2e8f0 !important;
-    line-height: 1.2;
-    margin: 4px 0 !important;
-    text-align: left !important; /* 左寄せで整列 */
-}
-
-/* サブテキスト（状態） */
-.kpi-tile-sub {
-    font-size: 10px !important;
-    color: #64748b !important;
-    text-align: left !important;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-/* --- バー（ゲージ）のネオン化 --- */
-
-/* 共通トラック（背景の線） */
-.mini-sent-track, .mini-rsi-track, .breadth-track, .mini-dom-track, .mini-ma-track {
-    height: 4px !important; /* 極細にする */
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-radius: 2px !important;
-    margin-top: auto; /* 常に下部に配置 */
-    overflow: visible !important; /* マーカーをはみ出させる */
-}
-
-/* バーの中身（ゾーン） */
-.mini-sent-zone, .mini-rsi-zone, .mini-ma-zone {
-    opacity: 0.3; /* 少し暗くしてマーカーを目立たせる */
-}
-
-/* 現在位置マーカー（光る点） */
-.mini-sent-marker, .mini-rsi-marker, .mini-ma-marker {
-    width: 8px !important;
-    height: 8px !important;
-    top: 50% !important;
-    margin-top: 0 !important;
-    background: #fff !important;
-    box-shadow: 0 0 10px #fff, 0 0 20px currentColor !important; /* 強く発光 */
-    border: none !important;
-    z-index: 10;
-}
-
-/* ドミナンスなどの積み上げバー */
-.breadth-seg, .mini-dom-seg {
-    height: 100% !important;
-    position: relative;
-    box-shadow: 0 0 5px currentColor; /* バー自体を発光させる */
-}
-
-/* キャプション（バーの下の文字）はノイズになるので非表示、または極小化 */
-.kpi-bar-caption {
-    display: none !important; /* すっきりさせるために削除推奨 */
-}
-/* --- ゾーン（背景のカラーバンド）の定義 --- */
-/* これがないとバーがただの灰色の線になります */
-
-.mini-rsi-zone, .mini-sent-zone, .mini-ma-zone {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-}
-
-/* 1. RSIゾーン (左:青 -> 右:赤) */
-.mini-rsi-zone.low { left: 0; width: 30%; background: #38bdf8; opacity: 0.6; }
-.mini-rsi-zone.mid { left: 30%; width: 40%; background: rgba(255,255,255,0.1); }
-.mini-rsi-zone.high { left: 70%; width: 30%; background: #f87171; opacity: 0.6; }
-
-/* 2. センチメントゾーン (左:赤 -> 右:緑) */
-.mini-sent-zone.fear { left: 0; width: 25%; background: #f87171; opacity: 0.6; }
-.mini-sent-zone.caution { left: 25%; width: 25%; background: #fb923c; opacity: 0.5; }
-.mini-sent-zone.neutral { left: 50%; width: 25%; background: #cbd5e1; opacity: 0.2; }
-.mini-sent-zone.greed { left: 75%; width: 25%; background: #4ade80; opacity: 0.6; }
-
-/* 3. トレンドゾーン (左:赤 -> 右:緑) */
-.mini-ma-zone.dc-strong { left: 0; width: 25%; background: #f87171; opacity: 0.6; }
-.mini-ma-zone.dc-weak { left: 25%; width: 25%; background: #fb923c; opacity: 0.5; }
-.mini-ma-zone.gc-weak { left: 50%; width: 25%; background: #60a5fa; opacity: 0.5; }
-.mini-ma-zone.gc-strong { left: 75%; width: 25%; background: #4ade80; opacity: 0.6; }
-
-/* --- 修正：バーの基準点を設定（これで帯が表示されます） --- */
-.mini-sent-track, 
-.mini-rsi-track, 
-.mini-ma-track {
-    position: relative !important; /* ★重要：これを基準に帯を配置 */
-    overflow: visible !important;  /* マーカーのはみ出しを許可 */
-    background: rgba(255, 255, 255, 0.1) !important; /* ベースのグレー線 */
-    z-index: 0;
-}
-
-/* 帯（ゾーン）の表示を強制 */
-.mini-rsi-zone, .mini-sent-zone, .mini-ma-zone {
-    position: absolute !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    height: 100% !important;
-    z-index: 1; /* マーカーより下、ベースより上 */
-    border-radius: 2px; /* 角を丸める */
-}
-
-/* 白い丸（マーカー）を一番上に */
-.mini-sent-marker, .mini-rsi-marker, .mini-ma-marker {
-    z-index: 10 !important;
-    transform: translate(-50%, -50%) !important; /* 中心に合わせる */
-}
-
-/* =========================================
-   【強制修正】KPIカラーゾーン表示用CSS
-   ========================================= */
-
-/* 1. ベースの線（トラック）の設定 */
-.summary-kpis .mini-rsi-track,
-.summary-kpis .mini-sent-track,
-.summary-kpis .mini-ma-track,
-.summary-kpis .breadth-track,
-.summary-kpis .mini-dom-track {
-    position: relative !important; /* 子要素の基準点 */
-    height: 6px !important;        /* 高さを明示 */
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-radius: 3px !important;
-    overflow: hidden !important;   /* はみ出しをカット */
-    z-index: 0 !important;
-    margin-top: auto !important;   /* 下寄せ */
-}
-
-/* 2. カラー帯（ゾーン）の強制表示 */
-.summary-kpis .mini-rsi-zone,
-.summary-kpis .mini-sent-zone,
-.summary-kpis .mini-ma-zone {
-    position: absolute !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    height: 100% !important;
-    display: block !important;
-    z-index: 1 !important;
-}
-
-/* 3. マーカー（白い丸）の設定 */
-.summary-kpis .mini-rsi-marker,
-.summary-kpis .mini-sent-marker,
-.summary-kpis .mini-ma-marker {
-    position: absolute !important;
-    top: 50% !important;
-    width: 10px !important;        /* 少し大きく */
-    height: 10px !important;
-    background: #fff !important;
-    border-radius: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    z-index: 10 !important;        /* 最前面 */
-    box-shadow: 0 0 10px rgba(255,255,255,0.8) !important;
-}
-
-/* 4. 色の定義（ !important で強制適用） */
-.summary-kpis .mini-rsi-zone.low { left: 0; width: 30%; background: #38bdf8 !important; opacity: 0.6; }
-.summary-kpis .mini-rsi-zone.mid { left: 30%; width: 40%; background: rgba(255,255,255,0.05) !important; }
-.summary-kpis .mini-rsi-zone.high { left: 70%; width: 30%; background: #f87171 !important; opacity: 0.6; }
-
-.summary-kpis .mini-sent-zone.fear { left: 0; width: 25%; background: #f87171 !important; opacity: 0.6; }
-.summary-kpis .mini-sent-zone.caution { left: 25%; width: 25%; background: #fb923c !important; opacity: 0.6; }
-.summary-kpis .mini-sent-zone.neutral { left: 50%; width: 25%; background: #cbd5e1 !important; opacity: 0.2; }
-.summary-kpis .mini-sent-zone.greed { left: 75%; width: 25%; background: #4ade80 !important; opacity: 0.6; }
-
-.summary-kpis .mini-ma-zone.dc-strong { left: 0; width: 25%; background: #f87171 !important; opacity: 0.6; }
-.summary-kpis .mini-ma-zone.dc-weak { left: 25%; width: 25%; background: #fb923c !important; opacity: 0.6; }
-.summary-kpis .mini-ma-zone.gc-weak { left: 50%; width: 25%; background: #60a5fa !important; opacity: 0.6; }
-.summary-kpis .mini-ma-zone.gc-strong { left: 75%; width: 25%; background: #4ade80 !important; opacity: 0.6; }
-
-/* ドミナンス・出来高バーの色定義（HTMLのstyle属性を削除したためCSSで指定） */
-#sumDomSegBtc, #miniVolBarBtc { background: #facc15 !important; }
-#sumDomSegEth, #miniVolBarEth { background: #60a5fa !important; }
-#sumDomSegStb { background: #34d399 !important; }
-#sumDomSegOth, #miniVolBarOth { background: #94a3b8 !important; }
-
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"
    crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="macro-ticker-wrap">
-        <div class="macro-ticker-scroll">
-            <div class="ticker-item">
-                <span class="t-label">BTC</span>
-                <span id="tickerBtcPrice" class="t-val">Loading...</span>
-            </div>
-            <div class="ticker-item">
-                <span class="t-label">BTC.D</span>
-                <span id="tickerBtcDom" class="t-val">--%</span>
-            </div>
-            <div class="ticker-item">
-                <span class="t-label">F&G</span>
-                <span id="tickerFgScore" class="t-val">--</span>
-            </div>
-            <div class="ticker-item">
-                <span class="t-label">ETH</span>
-                <span id="tickerEthPrice" class="t-val">--</span>
-            </div>
-             <div class="ticker-item">
-                <span class="t-label">USD/JPY</span>
-                <span id="tickerUsdJpy" class="t-val">--</span>
-            </div>
-        </div>
-    </div>
-
 <header class="appHeader" role="banner">
 <div class="hdr-inner">
 <div class="hdr-left">
@@ -3157,32 +2165,14 @@ body {
 <nav class="sticky-nav" aria-label="クイックアクセス">
   <div class="sticky-nav-inner">
     <a href="#sec-summary" class="nav-tab tab-ai" onclick="scrollToId('sec-summary'); return false;">
-      <i class="fa-solid fa-microchip"></i> 解析
+      <span>🤖</span>解析
     </a>
-    
-    <a href="#sec-trend" class="nav-tab" onclick="scrollToId('sec-trend'); return false;">
-      <i class="fa-solid fa-fire"></i> トレンド
-    </a>
-    
-    <a href="#sec-gainers" class="nav-tab" onclick="scrollToId('sec-gainers'); return false;">
-      <i class="fa-solid fa-arrow-trend-up"></i> 上昇率
-    </a>
-    
-    <a href="#sec-volume" class="nav-tab" onclick="scrollToId('sec-volume'); return false;">
-      <i class="fa-solid fa-chart-simple"></i> 出来高
-    </a>
-    
-    <a href="#sec-alt-volume" class="nav-tab" onclick="scrollToId('sec-alt-volume'); return false;">
-      <i class="fa-solid fa-layer-group"></i> アルト
-    </a>
-    
-    <a href="#sec-mcap" class="nav-tab" onclick="scrollToId('sec-mcap'); return false;">
-      <i class="fa-solid fa-ranking-star"></i> ランキング
-    </a>
-    
-    <a href="#sec-overview" class="nav-tab" onclick="scrollToId('sec-overview'); return false;">
-      <i class="fa-solid fa-globe"></i> 市場概況
-    </a>
+    <a href="#sec-trend" class="nav-tab" onclick="scrollToId('sec-trend'); return false;"><span>🔥</span>トレンド</a>
+    <a href="#sec-gainers" class="nav-tab" onclick="scrollToId('sec-gainers'); return false;"><span>🚀</span>上昇率</a>
+    <a href="#sec-volume" class="nav-tab" onclick="scrollToId('sec-volume'); return false;"><span>📊</span>出来高</a>
+    <a href="#sec-alt-volume" class="nav-tab" onclick="scrollToId('sec-alt-volume'); return false;"><span>💎</span>アルト</a>
+    <a href="#sec-mcap" class="nav-tab" onclick="scrollToId('sec-mcap'); return false;"><span>🏆</span>時価総額</a>
+    <a href="#sec-overview" class="nav-tab" onclick="scrollToId('sec-overview'); return false;"><span>📈</span>概況</a>
   </div>
 </nav>
 <div class="sideMenuOverlay" hidden="" id="sideMenuOverlay"></div>
@@ -3211,179 +2201,165 @@ body {
 </aside>
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
 <div class="section-header">
-  <div>
-    <div class="section-title">
-      <i class="fa-solid fa-bolt section-icon-accent"></i>
-      リアルタイム・マーケット解析
-    </div>
-  </div>
+<div>
+<div class="section-title">⚡️ リアルタイム・マーケット解析</div>
+</div>
 <div class="section-actions">
   <button class="linkbtn btn-x" onclick="shareMarketStatus()" style="margin-right:4px;">
     <span style="font-size:11px">𝕏</span> 共有
   </button>
 </div>
 </div>
-<div class="ai-insight-box hud-panel" id="aiInsightBox">
-  <div class="hud-header">
-    <div class="hud-header-left">
-      <span class="ai-icon-pulse">
-        <i class="fa-solid fa-robot" style="color:#38bdf8; filter:drop-shadow(0 0 5px rgba(56,189,248,0.6));"></i>
-      </span>
-      <span class="ai-label">AI JUDGE</span>
-      
-      <div id="aiVerdictBadge" class="hud-status-badge status-loading">
-        <span class="status-icon">
-          <i class="fa-solid fa-circle-notch fa-spin"></i>
-        </span>
-        <span class="status-text">ANALYZING...</span>
-      </div>
-    </div>
-    
-    <button onclick="openPageModal('guide.html', 'CoinRader 活用ガイド');" class="hud-guide-btn">
-      <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
-    </button>
+<div class="ai-insight-box" id="aiInsightBox">
+  <div class="ai-insight-header">
+    <span style="font-size:18px; margin-right:2px;">🤖</span>
+    <span class="ai-title-label">AI Market Insight</span>
+    <span class="ai-badge">Beta</span>
+    <button onclick="openPageModal('guide.html', '📖 CoinRader 活用ガイド');" 
+          style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); color:#38bdf8; font-size:10px; border-radius:4px; padding:2px 8px; cursor:pointer; margin-left:10px; font-weight:700; transition:all 0.2s;"
+          onmouseover="this.style.background='rgba(56,189,248,0.2)'" 
+          onmouseout="this.style.background='rgba(56,189,248,0.1)'">
+    活用ガイド
+  </button>
+    <span id="aiUpdateTime" style="margin-left: auto; font-size: 10px; color: #38bdf8; font-family: monospace; opacity: 0.6; letter-spacing: 1px;">[ STANDBY ]</span>
   </div>
 
-<div class="hud-metrics-row">
-    <div class="hud-glass-plate">
-        <div class="plate-label">RSI <span style="font-size:9px; opacity:0.7">(過熱感)</span></div>
-        <div class="plate-value-wrap"><span id="hudRsiVal" class="plate-value text-glow">--</span></div>
-        <div class="plate-bar-bg"><div id="hudRsiBar" class="plate-bar-fill"></div></div>
+<div class="ai-insight-text" id="aiInsightText">
+  <div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px; width:100%;">
+    <div class="cyber-loader">
+      <div class="cyber-dot"></div>
     </div>
-
-    <div class="hud-glass-plate">
-        <div class="plate-label">SENTIMENT <span style="font-size:9px; opacity:0.7">(市場心理)</span></div>
-        <div class="plate-value-wrap"><span id="hudFgVal" class="plate-value text-glow">--</span></div>
-        <div class="plate-bar-bg"><div id="hudFgBar" class="plate-bar-fill"></div></div>
-    </div>
-
-    <div class="hud-glass-plate">
-        <div class="plate-label">TREND STR. <span style="font-size:9px; opacity:0.7">(トレンド強度)</span></div>
-        <div class="plate-value-wrap"><span id="hudTrendVal" class="plate-value text-glow">--</span></div>
-        <div class="plate-bar-bg"><div id="hudTrendBar" class="plate-bar-fill"></div></div>
-    </div>
+    <span style="font-family:monospace; color:#38bdf8; font-size:10px; margin-top:12px; letter-spacing:2px; animation: pulse 1.5s infinite;">SYSTEM.INITIALIZING...</span>
+  </div>
 </div>
 
-  <details class="hud-details">
-    <summary class="hud-summary-btn">
-      <span class="btn-text">詳細レポートを展開</span>
-      <span class="toggle-arrow">▼</span>
-    </summary>
-    
-    <div id="aiInsightText" class="hud-content-text">
-        <div class="ai-loading-placeholder">
-            <span class="cyber-blink">INITIALIZING NEURAL NET...</span>
-        </div>
-    </div>
-    <div class="ai-footer-info">
-        <span id="aiUpdateTime" class="ai-timestamp">[ STANDBY ]</span>
-        <span class="ai-disclaimer">※投資助言ではありません</span>
-    </div>
-  </details>
+  <div class="ai-insight-note" id="aiInsightNote" style="opacity: 0; transition: opacity 0.5s ease;">※指標に基づく自動生成コメントです。投資助言ではありません。</div>
 </div>
 <div class="summary-kpis" id="summaryKpis">
 
   <div class="kpi-tile kpi-sent">
-    <div class="kpi-tile-title"><i class="fa-solid fa-gauge-high"></i> SENTIMENT</div>
+    <div class="kpi-tile-title">恐怖指数<br>(Market Sentiment)</div>
     <div class="kpi-value-row">
-      <div class="kpi-tile-big" id="sumSentMain">-</div>
-      <div class="kpi-tile-sub inline" id="sumSentSub">-</div>
+      <div class="kpi-tile-big" id="sumSentMain" style="transition: color 0.5s ease;">-</div>
+      <div class="kpi-tile-sub inline" id="sumSentSub" style="font-weight: 700;">-</div>
     </div>
     <div aria-hidden="true" class="mini-vis">
-      <div class="mini-sent-track">
+      <div class="mini-sent-track" style="background: rgba(255,255,255,0.05); height: 8px;">
         <div class="mini-sent-zone fear"></div>
         <div class="mini-sent-zone caution"></div>
         <div class="mini-sent-zone neutral"></div>
         <div class="mini-sent-zone greed"></div>
         <div class="mini-sent-marker" id="sumSentMarker"></div>
       </div>
+      <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; padding: 0 2px;">
+        <span>⚠️ 恐怖</span>
+        <span>⚖️ 中立</span>
+        <span>🚀 強欲</span>
+      </div>
     </div>
   </div>
-
   <div class="kpi-tile kpi-rsi">
-    <div class="kpi-tile-title"><i class="fa-solid fa-wave-square"></i> BTC RSI</div>
+    <div class="kpi-tile-title">BTC RSI<br>(相対力指数 / 14日)</div>
     <div class="kpi-value-row">
-      <div class="kpi-tile-big" id="sumRsiMain">-</div>
-      <div class="kpi-tile-sub inline" id="sumRsiSub">-</div>
+      <div class="kpi-tile-big" id="sumRsiMain" style="transition: all 0.5s ease;">-</div>
+      <div class="kpi-tile-sub inline" id="sumRsiSub" style="font-weight: 700;">-</div>
     </div>
     <div aria-hidden="true" class="mini-vis">
-      <div class="mini-rsi-track">
+      <div class="mini-rsi-track" style="height: 8px; background: rgba(255,255,255,0.05);">
         <div class="mini-rsi-zone low"></div>
         <div class="mini-rsi-zone mid"></div>
         <div class="mini-rsi-zone high"></div>
         <div class="mini-rsi-marker" id="sumRsiMarker"></div>
       </div>
+      <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+        <span>売られすぎ(30)</span>
+        <span>買われすぎ(70)</span>
+      </div>
     </div>
   </div>
 
   <div class="kpi-tile kpi-breadth">
-    <div class="kpi-tile-title"><i class="fa-solid fa-scale-balanced"></i> BREADTH</div>
+    <div class="kpi-tile-title">騰落バランス<br>(Market Breadth)</div>
     <div class="kpi-value-row">
-      <div class="kpi-tile-big" id="sumBreadthMain">-</div>
-      <div class="kpi-tile-sub inline" id="sumBreadthSub">-</div>
+      <div class="kpi-tile-big" id="sumBreadthMain" style="font-size: 16px; letter-spacing: 0;">-</div>
+      <div class="kpi-tile-sub inline" id="sumBreadthSub" style="font-weight: 700;">-</div>
     </div>
-    <div class="kpi-mini-breadth mini-vis">
-      <div aria-hidden="true" class="breadth-track">
-        <div class="breadth-seg up" id="sumBreadthSegUp"></div>
-        <div class="breadth-seg down" id="sumBreadthSegDown"></div>
+    <div class="kpi-mini-breadth mini-vis" title="上位250銘柄の騰落状況">
+      <div aria-hidden="true" class="breadth-track" style="height: 8px; background: rgba(255,255,255,0.05);">
+        <div class="breadth-seg up" id="sumBreadthSegUp" style="transition: width 0.6s ease;"></div>
+        <div class="breadth-seg down" id="sumBreadthSegDown" style="transition: width 0.6s ease;"></div>
       </div>
+      <div class="kpi-bar-caption" id="sumBreadthCaption" style="font-size: 9px; margin-top: 4px;">上昇銘柄 vs 下落銘柄</div>
     </div>
   </div>
 
   <div class="kpi-tile kpi-dom">
-    <div class="kpi-tile-title"><i class="fa-solid fa-chart-pie"></i> DOMINANCE</div>
+    <div class="kpi-tile-title">資金シェア<br>(BTC Dominance)</div>
     <div class="kpi-with-donut">
       <div class="kpi-text">
         <div class="kpi-value-row">
-          <div class="kpi-tile-big" id="sumDomMain">-</div>
-          <div class="kpi-tile-sub inline" id="sumDomSub">-</div>
+          <div class="kpi-tile-big" id="sumDomMain" style="color: #facc15;">-</div>
+          <div class="kpi-tile-sub inline" id="sumDomSub" style="font-weight: 700;">-</div>
         </div>
       </div>
-      <div aria-hidden="true" class="mini-dom-bar mini-vis">
-        <div aria-label="Dominance bar" class="mini-dom-track">
-          <div class="mini-dom-seg btc" id="sumDomSegBtc"></div>
-          <div class="mini-dom-seg eth" id="sumDomSegEth"></div>
-          <div class="mini-dom-seg stb" id="sumDomSegStb"></div>
-          <div class="mini-dom-seg oth" id="sumDomSegOth"></div>
+      <div aria-hidden="true" class="mini-dom-bar mini-vis" title="市場の資金構成比率">
+        <div aria-label="Dominance bar" class="mini-dom-track" style="height: 8px; background: rgba(255,255,255,0.05);">
+          <div class="mini-dom-seg btc" id="sumDomSegBtc" style="background: #facc15; transition: width 0.6s ease;"></div>
+          <div class="mini-dom-seg eth" id="sumDomSegEth" style="background: #60a5fa; transition: width 0.6s ease;"></div>
+          <div class="mini-dom-seg stb" id="sumDomSegStb" style="background: #34d399; transition: width 0.6s ease;"></div>
+          <div class="mini-dom-seg oth" id="sumDomSegOth" style="background: #94a3b8; transition: width 0.6s ease;"></div>
+        </div>
+        <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+          <span style="color:#facc15">BTC</span>
+          <span style="color:#60a5fa">ETH</span>
+          <span style="color:#34d399">Stable</span>
+          <span style="color:#94a3b8">Others</span>
         </div>
       </div>
     </div>
   </div>
 
   <div class="kpi-tile kpi-ma">
-    <div class="kpi-tile-title"><i class="fa-solid fa-arrow-trend-up"></i> TREND (MA)</div>
+    <div class="kpi-tile-title">長期トレンド<br>(50/200日 MA距離)</div>
     <div class="kpi-value-row">
-      <div class="kpi-tile-big" id="sumMaMain">-</div>
-      <div class="kpi-tile-sub inline" id="sumMaSub">-</div>
+      <div class="kpi-tile-big" id="sumMaMain" style="transition: all 0.5s ease;">-</div>
+      <div class="kpi-tile-sub inline" id="sumMaSub" style="font-weight: 700;">-</div>
     </div>
-    <div aria-hidden="true" class="mini-vis">
-      <div class="mini-ma-track">
+    <div aria-hidden="true" class="mini-vis" title="SMA50とSMA200の乖離率。0%でクロスが発生。">
+      <div class="mini-ma-track" style="height: 8px; background: rgba(255,255,255,0.05); position: relative; overflow: visible;">
         <div class="mini-ma-zone dc-strong"></div>
         <div class="mini-ma-zone dc-weak"></div>
         <div class="mini-ma-zone gc-weak"></div>
         <div class="mini-ma-zone gc-strong"></div>
+        <div style="position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.4); z-index: 1;"></div>
         <div class="mini-ma-marker" id="sumMaMarker"></div>
+      </div>
+      <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+        <span>デッドクロス側</span>
+        <span>ゴールデンクロス側</span>
       </div>
     </div>
   </div>
   
-  <div class="kpi-tile kpi-vol">
-    <div class="kpi-tile-title"><i class="fa-solid fa-chart-simple"></i> VOLUME</div>
-    <div class="kpi-value-row">
-      <div class="kpi-tile-big" id="kpiStripVolMain">-</div>
-      <div class="kpi-tile-sub inline" id="kpiStripVolSub">-</div>
+<div class="kpi-tile kpi-vol">
+  <div class="kpi-tile-title">市場エネルギー<br>(24h 出来高)</div>
+  <div class="kpi-value-row">
+    <div class="kpi-tile-big" id="kpiStripVolMain" style="transition: all 0.5s ease;">-</div>
+    <div class="kpi-tile-sub inline" id="kpiStripVolSub" style="font-weight: 700;">-</div>
+  </div>
+  <div aria-hidden="true" class="mini-vis" style="margin-top:10px;">
+    <div style="display:flex; height:8px; border-radius:99px; overflow:hidden; background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05);">
+      <div id="miniVolBarBtc" style="background:#facc15; width:0%; transition: width 0.6s ease;"></div>
+      <div id="miniVolBarEth" style="background:#60a5fa; width:0%; transition: width 0.6s ease;"></div>
+      <div id="miniVolBarOth" style="background:#94a3b8; width:0%; transition: width 0.6s ease;"></div>
     </div>
-    <div aria-hidden="true" class="mini-vis">
-       <div class="mini-vol-track" style="display:flex; height:4px; border-radius:2px; overflow:hidden; background:rgba(255,255,255,0.1); margin-top:auto;">
-          <div id="miniVolBarBtc" style="background:#facc15; width:0%;"></div>
-          <div id="miniVolBarEth" style="background:#60a5fa; width:0%;"></div>
-          <div id="miniVolBarOth" style="background:#94a3b8; width:0%;"></div>
-       </div>
+    <div class="kpi-bar-caption" style="display: flex; justify-content: space-between; font-size: 9px; margin-top: 4px;">
+      <span style="color:#facc15">BTC</span>
+      <span style="color:#60a5fa">ETH</span>
+      <span style="color:#94a3b8">Alt / Others</span>
     </div>
-  </div> 
-
-</div>
- 
+  </div>
+</div> 
 </div></div></div>
 
 <div class="summary-lists">
@@ -3498,7 +2474,7 @@ body {
         <th class="th-sym">銘柄</th>
         <th class="th-price">現在値</th>
         <th class="th-chg">前日比</th> <th class="th-chg">7日比</th>  <th class="th-mcap">時価総額</th> <th class="th-rsi">RSI</th>
-        <th class="th-chart" style="width:120px; text-align:center;">7d推移</th>
+        <th class="th-chart">7d推移</th>
         <th class="th-vol">24h出来高</th>
       </tr>
     </thead>
@@ -4528,58 +3504,66 @@ function getAltVolumeTop5(){
   }
 
 
-// ===== Summary mini visuals (v68 - Fixed) =====
-  
-  // 1. RSIの更新
+  // ===== Summary mini visuals (v68) =====
   function updateSummaryRsiBar(val){
     const marker = document.getElementById('sumRsiMarker');
     if(!marker) return;
-    
-    // 値がない場合は中央で半透明に
     if(typeof val !== 'number' || !isFinite(val)){
       marker.style.left = '50%';
-      marker.style.opacity = '0.3';
+      marker.style.opacity = '0.25';
+      marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
-    
-    // 0-100% の位置計算のみ行う（色はCSSに任せる）
     const v = Math.max(0, Math.min(100, val));
     marker.style.left = v.toFixed(1) + '%';
     marker.style.opacity = '1';
+    if (v >= 70) marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.25)';
+    else if (v <= 30) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.25)';
+    else marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.25)';
   }
 
-  // 2. トレンド(MA)の更新
+
   function updateSummaryMaBar(distPct){
     const marker = document.getElementById('sumMaMarker');
     if (!marker) return;
 
     if (!Number.isFinite(distPct)) {
       marker.style.left = '50%';
-      marker.style.opacity = '0.3';
+      marker.style.opacity = '0.35';
+      marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
 
-    const range = 20; // ±20% 表示
+    const range = 20; // ±20% を表示レンジに（超過はクランプ）
     const d = Math.max(-range, Math.min(range, distPct));
     const left = (d + range) / (2 * range) * 100;
     marker.style.left = `${left}%`;
     marker.style.opacity = '1';
+
+    // 色味は「危険→安全（赤→黄→青→緑）」に合わせる（下→上）
+    if (d <= -range * 0.5) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.22)';        // 下(大)
+    else if (d < 0)        marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';        // 下(小)
+    else if (d <  range*0.5) marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.22)';      // 上(小)
+    else                   marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.22)';         // 上(大)
   }
 
-  // 3. センチメントの更新
+
   function updateSummarySentBar(val){
     const marker = document.getElementById('sumSentMarker');
     if(!marker) return;
-    
     if(typeof val !== 'number' || !isFinite(val)){
       marker.style.left = '50%';
-      marker.style.opacity = '0.3';
+      marker.style.opacity = '0.25';
+      marker.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.18)';
       return;
     }
-    
     const v = Math.max(0, Math.min(100, val));
     marker.style.left = v.toFixed(1) + '%';
     marker.style.opacity = '1';
+    if (v >= 75) marker.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.22)';
+    else if (v <= 25) marker.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.22)';
+    else if (v >= 50) marker.style.boxShadow = '0 0 0 3px rgba(148,163,184,0.22)';
+    else marker.style.boxShadow = '0 0 0 3px rgba(245,158,11,0.22)';
   }
   function updateSummaryDomBar(pcts){
     const elB = document.getElementById('sumDomSegBtc');
@@ -6173,82 +5157,78 @@ function makeLineChart(canvasId, labels, series, opts){
 
 // ▼▼▼ 修正版：7日比（週間変動率）を追加したテーブル描画 ▼▼▼
 function renderRankTable(coins) {
-    const tbody = document.getElementById('mcapTableBody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
+  const tbody = document.getElementById('mcapTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
 
-    if (!coins || !coins.length) {
-        tbody.innerHTML = '<tr><td colspan="8" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
-        return;
+  if (!coins || !coins.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
+    return;
+  }
+
+  coins.forEach((c, i) => {
+    // データ整形
+    const price = yen(c.current_price);
+    const mcap = yenLarge(c.market_cap);
+    const vol = yenLarge(c.total_volume);
+    
+    // 24時間比
+    const chg24 = c.price_change_percentage_24h;
+    const chg24Class = (chg24 >= 0) ? 'text-up' : 'text-down';
+    const chg24Str = (typeof chg24 === 'number') ? (chg24 > 0 ? '+' : '') + chg24.toFixed(1) + '%' : '-';
+
+    // ★追加：7日比
+    // APIから "price_change_percentage_7d_in_currency" という名前でデータが来ます
+    const chg7d = c.price_change_percentage_7d_in_currency;
+    const chg7dClass = (chg7d >= 0) ? 'text-up' : 'text-down';
+    const chg7dStr = (typeof chg7d === 'number') ? (chg7d > 0 ? '+' : '') + chg7d.toFixed(1) + '%' : '-';
+
+    // RSI計算
+    let rsiVal = null, rsiClass = '';
+    let sparkData = [];
+    if (c.sparkline_in_7d && c.sparkline_in_7d.price) {
+      sparkData = c.sparkline_in_7d.price;
+      const series = computeRSISeries(sparkData);
+      const last = series[series.length - 1];
+      if (last) {
+        rsiVal = Math.round(last);
+        if (rsiVal >= 70) rsiClass = 'rsi-high';
+        else if (rsiVal <= 30) rsiClass = 'rsi-low';
+      }
     }
+    // バッジのHTML生成
+    const rsiHtml = rsiVal !== null 
+      ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` 
+      : `<span class="rsi-badge">—</span>`;
 
-    coins.forEach((c, i) => {
-        // --- 1. 基本データ整形 ---
-        const price = yen(c.current_price);
-        const mcap = yenLarge(c.market_cap);
-        const vol = yenLarge(c.total_volume);
-        
-        // 24時間比
-        const chg24 = c.price_change_percentage_24h;
-        const chg24Class = (chg24 >= 0) ? 'text-up' : 'text-down';
-        const chg24Str = (typeof chg24 === 'number') ? (chg24 > 0 ? '+' : '') + chg24.toFixed(1) + '%' : '-';
+    const canvasId = `tbl_chart_${c.id}_${i}`;
 
-        // 7日比
-        const chg7d = c.price_change_percentage_7d_in_currency;
-        const chg7dClass = (chg7d >= 0) ? 'text-up' : 'text-down';
-        const chg7dStr = (typeof chg7d === 'number') ? (chg7d > 0 ? '+' : '') + chg7d.toFixed(1) + '%' : '-';
+    // --- テーブル行（TR）の生成部分 ---
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-sym">
+        <div class="sym-wrap">
+          <span class="sym-rank">${i + 1}</span>
+          <img class="sym-icon" src="${c.image}" loading="lazy" alt="">
+          <span class="sym-code">${c.symbol.toUpperCase()}</span>
+        </div>
+      </td>
+      <td>${price}</td>
+      <td class="${chg24Class}">${chg24Str}</td> 
+      <td class="${chg7dClass}">${chg7dStr}</td> 
+      <td>${mcap}</td> 
+      <td class="td-rsi">${rsiHtml}</td> <td class="td-chart"><canvas id="${canvasId}"></canvas></td>
+      <td>${vol}</td>
+    `;
+    
+    tr.style.cursor = 'pointer';
+    tr.onclick = () => window.open(coinGeckoUrlFor(c), '_blank');
+    tbody.appendChild(tr);
 
-        // --- 2. RSI計算 (バッジ用) ---
-        let rsiVal = null, rsiClass = '';
-        let sparkPrices = []; // スパークライン用配列
-
-        if (c.sparkline_in_7d && c.sparkline_in_7d.price) {
-            sparkPrices = c.sparkline_in_7d.price;
-            // RSI計算
-            const series = computeRSISeries(sparkPrices);
-            const last = series[series.length - 1];
-            if (last) {
-                rsiVal = Math.round(last);
-                if (rsiVal >= 70) rsiClass = 'rsi-high';
-                else if (rsiVal <= 30) rsiClass = 'rsi-low';
-            }
-        }
-        const rsiHtml = rsiVal !== null 
-            ? `<span class="rsi-badge ${rsiClass}">${rsiVal}</span>` 
-            : `<span class="rsi-badge">—</span>`;
-
-        // --- 3. ★ここを変更: SVGチャート生成 ---
-        let chartHtml = '<span style="color:#64748b; font-size:10px;">--</span>';
-        if (sparkPrices.length >= 2) {
-            // トレンド判定（始値 vs 終値）
-            const isUp = sparkPrices[sparkPrices.length - 1] >= sparkPrices[0];
-            // 既存の createSparkline 関数を呼び出してSVGタグを取得
-            chartHtml = createSparkline(sparkPrices, isUp);
-        }
-
-        // --- 4. 行(TR)の生成 ---
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="td-sym">
-                <div class="sym-wrap">
-                    <span class="sym-rank">${i + 1}</span>
-                    <img class="sym-icon" src="${c.image}" loading="lazy" alt="${c.symbol}">
-                    <span class="sym-code">${c.symbol.toUpperCase()}</span>
-                </div>
-            </td>
-            <td>${price}</td>
-            <td class="${chg24Class}">${chg24Str}</td> 
-            <td class="${chg7dClass}">${chg7dStr}</td> 
-            <td>${mcap}</td> 
-            <td class="td-rsi">${rsiHtml}</td>
-            <td class="td-chart">${chartHtml}</td>
-            <td>${vol}</td>
-        `;
-        
-        tr.style.cursor = 'pointer';
-        tr.onclick = () => window.open(coinGeckoUrlFor(c), '_blank');
-        tbody.appendChild(tr);
-    });
+    setTimeout(() => {
+      if (sparkData.length > 0) drawSparkline(canvasId, sparkData);
+    }, 0);
+  });
 }
 
 function renderAll(){
@@ -6651,9 +5631,7 @@ async function updateAiInsight() {
 
     await typeWriter(textEl, (comparisonText ? comparisonText + "<br><br>" : "") + strategyText, 20);
 
-// --- 8. エビデンス・テーブル＆レポート生成 (HTML刷新版: HUD完全同期) ---
-    
-    // ヘルパー関数
+    // --- 8. エビデンス・テーブルの生成 ---
     const getMaText = (val) => (val === null || val === undefined || isNaN(val)) ? '—' : (val >= 0 ? '+' : '') + Number(val).toFixed(1) + '%';
     const getCls = (val, type) => {
         if (val === null) return '#e2e8f0';
@@ -6664,103 +5642,35 @@ async function updateAiInsight() {
 
     const sentDisplay = (sent !== null) ? sent : "—";
     const rsiDisplay = (rsi !== null) ? Math.round(rsi) : "—";
-    const trendDisplay = (typeof maDist !== 'undefined') ? getMaText(maDist) : "—";
+    const domDisplay = (dom !== null) ? dom.toFixed(1) + '%' : "—";
 
-    // ▼▼▼ 追加: BTCスパークラインの生成 ▼▼▼
-    let btcSparklineHtml = '<span style="font-size:10px; opacity:0.5">NO DATA</span>';
-    const btcCoin = marketsTop.find(c => c.id === 'bitcoin');
-    if (btcCoin && btcCoin.sparkline_in_7d && btcCoin.sparkline_in_7d.price) {
-        const p = btcCoin.sparkline_in_7d.price;
-        // SVG生成関数(createSparkline)を再利用
-        // 第2引数はトレンド判定(true=緑/false=赤)
-        const isUp = p.length >= 2 ? (p[p.length - 1] >= p[0]) : true;
-        // サイズ指定なしで生成されるので、コンテナ側で調整するか、関数側でサイズ調整
-        btcSparklineHtml = createSparkline(p, isUp); 
-    }
-    // ▲▲▲ 追加ここまで ▲▲▲
+    const evidenceHtml = `
+      <div class="ai-evidence-grid" style="opacity:0; transition: opacity 1s ease; overflow-x: auto; padding: 6px 10px !important; margin-top: 8px !important; border: 1px solid rgba(56, 189, 248, 0.12); border-radius: 8px;">
+        <table style="width: 100%; font-size: 10px; border-collapse: collapse; min-width: 250px; table-layout: fixed; line-height: 1.05;">
+          <thead>
+            <tr style="color: #475569; border-bottom: 1px solid rgba(255,255,255,0.04);">
+              <th style="text-align: left; padding: 2px 0; width: 34%;">指標</th>
+              <th style="text-align: right; padding: 2px 2px; color: #38bdf8;">今</th>
+              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">昨日</th>
+              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">7日前</th>
+              <th style="text-align: right; padding: 2px 2px; font-weight: normal; opacity: 0.5;">30日前</th>
+            </tr>
+          </thead>
+          <tbody style="color: #cbd5e1;">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">心理 (FGI)</td><td style="text-align: right; color: ${getCls(sent, 'sent')}; font-weight: 800;">${sentDisplay}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.fgi || '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.fgi || '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.fgi || '—'}</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">勢い (RSI)</td><td style="text-align: right; color: ${getCls(rsi, 'rsi')}; font-weight: 800;">${rsiDisplay}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.rsi ? Math.round(pastYest.rsi) : '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.rsi ? Math.round(past7d.rsi) : '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.rsi ? Math.round(past30d.rsi) : '—'}</td></tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);"><td style="padding: 4px 0; color: #94a3b8;">資金 (DOM)</td><td style="text-align: right; color: #e2e8f0; font-weight: 800;">${domDisplay}</td><td style="text-align: right; opacity: 0.4;">${pastYest?.dom ? pastYest.dom.toFixed(1) + '%' : '—'}</td><td style="text-align: right; opacity: 0.4;">${past7d?.dom ? past7d.dom.toFixed(1) + '%' : '—'}</td><td style="text-align: right; opacity: 0.4;">${past30d?.dom ? past30d.dom.toFixed(1) + '%' : '—'}</td></tr>
+            <tr><td style="padding: 4px 0; color: #94a3b8;">構造 (MA)</td><td style="text-align: right; color: #e2e8f0; font-weight: 800;">${getMaText(maDist)}</td><td style="text-align: right; opacity: 0.4;">${getMaText(pastYest?.ma)}</td><td style="text-align: right; opacity: 0.4;">${getMaText(past7d?.ma)}</td><td style="text-align: right; opacity: 0.4;">${getMaText(past30d?.ma)}</td></tr>
+          </tbody>
+        </table>
+      </div>`;
 
-    // キーワードをハイライトタグで囲む処理
-    const highlightKeywords = (text) => {
-        const keys = ["全面安", "全面高", "需給の歪み", "底値探り", "警戒感", "好転", "極度の恐怖", "統計的限界域", "強気", "弱気", "ゴールデンクロス"];
-        let res = text;
-        keys.forEach(k => {
-            res = res.replace(new RegExp(k, 'g'), `<span class="ai-highlight">${k}</span>`);
-        });
-        return res;
-    };
+    textEl.innerHTML += evidenceHtml;
 
-    const formattedComparison = highlightKeywords(comparisonText || "市場構造は緩やかな変化の中にあります。");
-    const formattedStrategy = highlightKeywords(strategyText);
-
-    // HTML構造 (テーブル最下部にチャート行を追加)
-    const htmlContent = `
-        <div class="hud-content-text">
-            <div class="ai-section-title">
-                <div class="ai-section-dot"></div> MARKET PHASE
-            </div>
-            <div class="ai-text-block">
-                ${formattedComparison}
-            </div>
-
-            <div class="ai-section-title strategy">
-                <div class="ai-section-dot"></div> STRATEGY LOG
-            </div>
-            <div class="ai-text-block">
-                ${formattedStrategy}
-            </div>
-
-            <div class="ai-evidence-grid">
-                <table class="ai-evidence-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%">METRICS</th>
-                            <th class="col-current" style="width: 25%">CURRENT</th>
-                            <th style="width: 25%">24H AGO</th>
-                            <th style="width: 25%">7D AGO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>RSI <span style="font-size:9px; opacity:0.6">(過熱)</span></td>
-                            <td class="cell-current" style="color: ${getCls(rsi, 'rsi')}">${rsiDisplay}</td>
-                            <td>${pastYest?.rsi ? Math.round(pastYest.rsi) : '—'}</td>
-                            <td>${past7d?.rsi ? Math.round(past7d.rsi) : '—'}</td>
-                        </tr>
-                        <tr>
-                            <td>SENTIMENT <span style="font-size:9px; opacity:0.6">(心理)</span></td>
-                            <td class="cell-current" style="color: ${getCls(sent, 'sent')}">${sentDisplay}</td>
-                            <td>${pastYest?.fgi || '—'}</td>
-                            <td>${past7d?.fgi || '—'}</td>
-                        </tr>
-                        <tr>
-                            <td>TREND STR. <span style="font-size:9px; opacity:0.6">(強度)</span></td>
-                            <td class="cell-current" style="color: #e2e8f0;">${trendDisplay}</td>
-                            <td>${getMaText(pastYest?.ma)}</td>
-                            <td>${getMaText(past7d?.ma)}</td>
-                        </tr>
-                        <tr>
-                            <td style="border-bottom:none; vertical-align:middle;">CHART <span style="font-size:9px; opacity:0.6">(BTC 7d)</span></td>
-                            <td colspan="3" style="border-bottom:none; padding:8px 12px; text-align:center;">
-                                <div style="width:100%; height:40px; display:flex; align-items:center; justify-content:center;">
-                                    ${btcSparklineHtml}
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-
-    // 出力
-    textEl.innerHTML = htmlContent;
-    
-    // フェードイン演出
-    textEl.style.opacity = '0';
-    setTimeout(() => { 
-        textEl.style.transition = 'opacity 0.8s ease';
-        textEl.style.opacity = '1'; 
-    }, 50);
+    setTimeout(() => {
+        const grid = textEl.querySelector('.ai-evidence-grid');
+        if (grid) grid.style.opacity = '1';
+    }, 100);
 
     if (noteEl) noteEl.style.opacity = "0.8";
     _ai_thinking = false;
@@ -7020,333 +5930,6 @@ function shareMarketStatus() {
     fireCtaClick({cta_id:'share_x', placement:'overview', partner:'self', pr:0});
   }
 }
-
-/**
- * ▼ マクロ・ティッカー更新機能
- * CoinGecko APIとAlternative.me APIを使用して市場データを取得・表示します。
- * API制限対策としてlocalStorageによる5分間のキャッシュを含みます。
- */
-async function updateMacroTicker() {
-    const CACHE_KEY = 'cr_macro_ticker_data';
-    const CACHE_DURATION = 5 * 60 * 1000; // 5分 (ミリ秒)
-
-    // 1. DOM要素の取得
-    const els = {
-        btcPrice: document.getElementById('tickerBtcPrice'),
-        btcDom: document.getElementById('tickerBtcDom'),
-        ethPrice: document.getElementById('tickerEthPrice'),
-        fgScore: document.getElementById('tickerFgScore'),
-        usdJpy: document.getElementById('tickerUsdJpy')
-    };
-
-    // 2. キャッシュチェック
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-        const { timestamp, data } = JSON.parse(cached);
-        // キャッシュが有効期限内ならそれを使って終了
-        if (Date.now() - timestamp < CACHE_DURATION) {
-            console.log('Using cached macro data'); // デバッグ用
-            renderTicker(data);
-            return;
-        }
-    }
-
-    // 3. データ取得 (APIコール)
-    try {
-        console.log('Fetching fresh macro data...');
-        
-        // 3つのAPIを並列で叩く（待ち時間短縮）
-        // CoinGecko Global: ドミナンス取得
-        // CoinGecko Simple Price: BTC, ETH価格とUSD, JPYレート取得
-        // Alternative.me: 恐怖指数取得
-        const [globalRes, priceRes, fngRes] = await Promise.all([
-            fetch('https://api.coingecko.com/api/v3/global'),
-            fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd,jpy&include_24hr_change=true'),
-            fetch('https://api.alternative.me/fng/?limit=1')
-        ]);
-
-        if (!globalRes.ok || !priceRes.ok || !fngRes.ok) throw new Error('API Response Error');
-
-        const globalData = await globalRes.json();
-        const priceData = await priceRes.json();
-        const fngData = await fngRes.json();
-
-        // データの整形
-        const mergedData = {
-            btcDom: globalData.data.market_cap_percentage.btc,
-            btc: priceData.bitcoin,
-            eth: priceData.ethereum,
-            fng: fngData.data[0]
-        };
-
-        // キャッシュに保存
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            data: mergedData
-        }));
-
-        // 描画実行
-        renderTicker(mergedData);
-
-    } catch (err) {
-        console.warn('Macro Ticker Update Failed:', err);
-        // エラーが出た場合、古いキャッシュがあればそれを使う（フォールバック）
-        if (cached) {
-            renderTicker(JSON.parse(cached).data);
-        }
-    }
-
-    /**
-     * 画面描画用サブ関数
-     */
-    function renderTicker(data) {
-        // BTC Dominance
-        if (els.btcDom) {
-            els.btcDom.innerText = data.btcDom.toFixed(1) + '%';
-        }
-
-        // BTC Price (USD) & Change
-        if (els.btcPrice) {
-            const price = Math.round(data.btc.usd).toLocaleString();
-            const change = data.btc.usd_24h_change.toFixed(1);
-            const isPlus = data.btc.usd_24h_change >= 0;
-            const colorClass = isPlus ? 'text-up' : 'text-down'; // CSSで定義済みの色クラス
-            const sign = isPlus ? '+' : '';
-            
-            // 価格と変動率をHTMLで流し込む
-            els.btcPrice.innerHTML = `$${price} <span class="${colorClass}" style="font-size:0.9em; margin-left:4px;">(${sign}${change}%)</span>`;
-        }
-
-        // ETH Price (USD)
-        if (els.ethPrice) {
-            const price = Math.round(data.eth.usd).toLocaleString();
-            els.ethPrice.innerText = `$${price}`;
-        }
-
-        // Fear & Greed Index
-        if (els.fgScore) {
-            const score = data.fng.value;
-            const label = data.fng.value_classification;
-            // スコアに応じて色を変える簡易ロジック
-            let color = '#e2e8f0'; // Default
-            if (score >= 70) color = '#4ade80'; // Green (Greed)
-            else if (score <= 30) color = '#f87171'; // Red (Fear)
-            
-            els.fgScore.innerHTML = `<span style="color:${color}; font-weight:800;">${score}</span> <span style="font-size:0.8em; opacity:0.7;">(${label})</span>`;
-        }
-
-        // Bonus: USD/JPY (BTC価格から逆算: BTCJPY / BTCUSD)
-        if (els.usdJpy && data.btc.jpy && data.btc.usd) {
-            const rate = data.btc.jpy / data.btc.usd;
-            els.usdJpy.innerText = `¥${rate.toFixed(2)}`;
-        }
-    }
-}
-
-// 4. 実行トリガー
-document.addEventListener('DOMContentLoaded', () => {
-    updateMacroTicker();
-    
-    // 5分(300000ms)おきに更新を試みる
-    setInterval(updateMacroTicker, 300000);
-});
-
-/**
- * ▼ AI HUD更新機能 (Brain to UI)
- * 分析データ(JSON)を受け取り、HUDの表示（色、バッジ、数値）を動的に切り替える
- */
-function renderAiHud(data) {
-    console.log("Updating AI HUD with:", data);
-
-    // 1. DOM要素の取得
-    const ui = {
-        badge: document.getElementById('aiVerdictBadge'),
-        icon: document.querySelector('#aiVerdictBadge .status-icon'),
-        text: document.querySelector('#aiVerdictBadge .status-text'),
-        scoreVal: document.querySelector('.score-val'),
-        rsi: document.getElementById('hudRsiVal'),
-        fng: document.getElementById('hudFgVal'),
-        trend: document.getElementById('hudTrendVal'),
-        bodyText: document.getElementById('aiInsightText'),
-        time: document.getElementById('aiUpdateTime')
-    };
-
-    // 2. 判定バッジの切り替え (Bullish / Bearish / Neutral)
-    // まず全クラスをリセット
-    ui.badge.className = 'hud-status-badge'; 
-    
-    if (data.verdict === 'bullish') {
-        ui.badge.classList.add('status-bullish');
-        ui.icon.innerText = '🚀';
-        ui.text.innerText = '強気 (BULL)';
-    } else if (data.verdict === 'bearish') {
-        ui.badge.classList.add('status-bearish');
-        ui.icon.innerText = '⚠️';
-        ui.text.innerText = '弱気 (BEAR)';
-    } else {
-        ui.badge.classList.add('status-neutral'); // CSSで定義が必要（後述）
-        ui.icon.innerText = '⚖️';
-        ui.text.innerText = '中立 (WAIT)';
-    }
-
-// --- 3. メインHUD（数値とビジュアルバー）の更新 ---
-
-    // A. RSI (数値 + バー)
-    if(ui.rsi) ui.rsi.innerText = data.evidence.rsi;
-    const rsiBar = document.getElementById('hudRsiBar');
-    if(rsiBar && data.evidence.rsi) {
-        // 0-100%の幅調整
-        rsiBar.style.width = Math.min(100, Math.max(0, data.evidence.rsi)) + '%';
-        // 色変化: 70以上赤(過熱)、30以下青(売られすぎ)
-        rsiBar.style.background = data.evidence.rsi >= 70 ? '#f87171' : (data.evidence.rsi <= 30 ? '#38bdf8' : '#cbd5e1');
-    }
-
-    // B. Sentiment (数値 + バー)
-    if(ui.fng) ui.fng.innerText = data.evidence.fng;
-    const fngBar = document.getElementById('hudFgBar');
-    if(fngBar && data.evidence.fng) {
-        fngBar.style.width = Math.min(100, Math.max(0, data.evidence.fng)) + '%';
-        // 色変化: 80以上緑(強欲)、20以下赤(恐怖)
-        fngBar.style.background = data.evidence.fng >= 80 ? '#4ade80' : (data.evidence.fng <= 20 ? '#f87171' : '#facc15');
-    }
-
-    // C. Trend (数値 + バー)
-    // 文字列(例: "+5.2%")をそのまま表示
-    if(ui.trend) ui.trend.innerText = data.evidence.trend; 
-    const trendBar = document.getElementById('hudTrendBar');
-    // バーのために数値変換して計算
-    if(trendBar && typeof data.evidence.trend === 'string') {
-        const val = parseFloat(data.evidence.trend); // "+5.2%" -> 5.2
-        if(!isNaN(val)) {
-            // -10%を0、+10%を100とするマッピング (中央50%)
-            const pct = Math.min(100, Math.max(0, (val + 10) * 5)); 
-            trendBar.style.width = pct + '%';
-            trendBar.style.background = val >= 0 ? '#4ade80' : '#f87171';
-        }
-    }
-
-
-    // --- 4. 詳細レポート生成 (Market Phase + Strategy + Table) ---
-    
-    if(ui.bodyText) {
-        // ヘルパー関数定義
-        const getMaText = (val) => (val === null || val === undefined || isNaN(val)) ? '—' : (val >= 0 ? '+' : '') + Number(val).toFixed(1) + '%';
-        const getCls = (val, type) => {
-            if (val === null) return '#e2e8f0';
-            if (type === 'rsi') return val >= 70 ? '#f87171' : (val <= 30 ? '#38bdf8' : '#94a3b8');
-            if (type === 'sent') return val >= 75 ? '#4ade80' : (val <= 25 ? '#f87171' : '#94a3b8');
-            return '#e2e8f0';
-        };
-
-        // 過去データの安全な取得
-        const pastYest = data.history?.yesterday || null;
-        const past7d = data.history?.day7 || null;
-
-        // キーワードハイライト処理
-        const highlightKeywords = (text) => {
-            const keys = ["全面安", "全面高", "需給の歪み", "底値探り", "警戒感", "好転", "極度の恐怖", "統計的限界域", "強気", "弱気", "ゴールデンクロス"];
-            let res = text || "";
-            keys.forEach(k => {
-                res = res.replace(new RegExp(k, 'g'), `<span class="ai-highlight">${k}</span>`);
-            });
-            return res;
-        };
-
-        const formattedComparison = highlightKeywords(data.main_text_phase || "市場構造は緩やかな変化の中にあります。");
-        const formattedStrategy = highlightKeywords(data.main_text_strategy || data.main_text);
-
-        // 詳細エリアのHTML構築 (Phase + Strategy + 3列テーブル)
-        const htmlContent = `
-            <div class="hud-content-text">
-                <div class="ai-section-title">
-                    <div class="ai-section-dot"></div> MARKET PHASE
-                </div>
-                <div class="ai-text-block">
-                    ${formattedComparison}
-                </div>
-
-                <div class="ai-section-title strategy">
-                    <div class="ai-section-dot"></div> STRATEGY LOG
-                </div>
-                <div class="ai-text-block">
-                    ${formattedStrategy}
-                </div>
-
-                <div class="ai-evidence-grid">
-                    <table class="ai-evidence-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%">METRICS</th>
-                                <th class="col-current" style="width: 25%">CURRENT</th>
-                                <th style="width: 25%">24H AGO</th>
-                                <th style="width: 25%">7D AGO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>RSI <span style="font-size:9px; opacity:0.6">(過熱)</span></td>
-                                <td class="cell-current" style="color: ${getCls(data.evidence.rsi, 'rsi')}">${Math.round(data.evidence.rsi)}</td>
-                                <td>${pastYest?.rsi ? Math.round(pastYest.rsi) : '—'}</td>
-                                <td>${past7d?.rsi ? Math.round(past7d.rsi) : '—'}</td>
-                            </tr>
-                            <tr>
-                                <td>SENTIMENT <span style="font-size:9px; opacity:0.6">(心理)</span></td>
-                                <td class="cell-current" style="color: ${getCls(data.evidence.fng, 'sent')}">${data.evidence.fng}</td>
-                                <td>${pastYest?.fgi || '—'}</td>
-                                <td>${past7d?.fgi || '—'}</td>
-                            </tr>
-                            <tr>
-                                <td>TREND STR. <span style="font-size:9px; opacity:0.6">(強度)</span></td>
-                                <td class="cell-current" style="color: #e2e8f0;">${data.evidence.trend}</td>
-                                <td>${getMaText(pastYest?.ma)}</td>
-                                <td>${getMaText(past7d?.ma)}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-        
-        // HTML流し込み
-        ui.bodyText.innerHTML = htmlContent;
-    }
-
-
-    // --- 5. タイムスタンプ & 完了アニメーション ---
-    
-    if(ui.time) {
-        const date = new Date(data.timestamp);
-        ui.time.innerText = `更新: ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-    }
-
-    ui.badge.animate([
-        { transform: 'scale(0.95)', opacity: 0.7 },
-        { transform: 'scale(1)', opacity: 1 }
-    ], { duration: 300, easing: 'ease-out' });
-}
-
-/* --- Sparkline (Mini Chart) Generator --- */
-function createSparkline(prices, isUp) {
-    if (!prices || prices.length < 2) return '<span style="color:#64748b; font-size:10px;">--</span>';
-    
-    const width = 100, height = 30;
-    const min = Math.min(...prices), max = Math.max(...prices);
-    const range = max - min || 1;
-    
-    const points = prices.map((p, i) => {
-        const x = (i / (prices.length - 1)) * width;
-        const y = height - ((p - min) / range) * height;
-        return `${x},${y}`;
-    }).join(' ');
-    
-    // 上昇=緑、下落=赤
-    const color = isUp ? '#4ade80' : '#f87171';
-    
-    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block; margin:auto;">
-        <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`;
-}
-
 </script>
 <footer class="site-footer">
     <div class="footer-inner">
