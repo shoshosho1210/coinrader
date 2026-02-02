@@ -6595,7 +6595,7 @@ function renderAll(){
     // ★追加：ブラウザのタブタイトルを動的に更新（BTC価格とトレンド）
     updateDynamicTitle();
     // ▼▼▼ 追加：AI分析を実行 ▼▼▼
-    try { updateAiInsight(); } catch(e){ console.warn("AI insight failed", e); }
+    updateAiInsight().catch(e=>console.warn("AI insight failed", e));
     // ▲▲▲ 追加ここまで ▲▲▲
   }
   // ★追加：タイトル更新関数
@@ -6795,7 +6795,8 @@ async function updateAiInsight() {
     const past30d   = await getHistoricalData(30);
 
     // --- 【追加】データ鮮度ガード ---
-    const lastFetch = getLastFetchAt();
+    let lastFetch = getLastFetchAt();
+    if (!lastFetch) { setLastFetchAt(); lastFetch = Date.now(); }
     const diffMin = (Date.now() - lastFetch) / 60000;
     // 1時間以上前のデータなら、AI分析を「更新待ち」にする
     if (diffMin > 60) {
@@ -6948,6 +6949,8 @@ async function updateAiInsight() {
 
     _ai_thinking = true;
     _last_ai_state = currentState;
+
+    try {
 
     if (noteEl) noteEl.style.opacity = "0";
     textEl.innerHTML = `<div class="ai-loading-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px; width:100%;"><div class="cyber-loader"><div class="cyber-dot"></div></div><span style="font-family:monospace; color:#38bdf8; font-size:10px; margin-top:12px; letter-spacing:2px; animation: pulse 1.5s infinite;">MARKET.SCANNING...</span></div>`;
@@ -7248,6 +7251,10 @@ textEl.innerHTML = htmlContent;
 
     if (noteEl) noteEl.style.opacity = "0.8";
     _ai_thinking = false;
+
+    } finally {
+      _ai_thinking = false;
+    }
 }
   
   // ============ Boot ============
@@ -7374,7 +7381,7 @@ textEl.innerHTML = htmlContent;
     
     // 4. さらに2秒休んでからAI分析
     await sleep(2000);
-    try { updateAiInsight(); } catch(e){ console.warn("AI insight failed", e); }
+    updateAiInsight().catch(e=>console.warn("AI insight failed", e));
 
   })();
 
