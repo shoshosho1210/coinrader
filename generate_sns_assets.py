@@ -41,6 +41,7 @@ def calculate_latest_rsi(prices, period=14):
             
     return current_rsi
 
+# (既存のまま)
 def determine_rsi_status(rsi):
     if rsi is None: return "分析中"
     if rsi <= 30: return "売られすぎ"
@@ -49,11 +50,9 @@ def determine_rsi_status(rsi):
     if rsi >= 60: return "やや買われすぎ"
     return "中立圏"
 
-# ★修正: 再計算したRSIを受け取れるように引数を追加
-def generate_market_topic(summary, current_rsi=None):
-    # 引数があればそれを使い、なければsummaryから取得
-    btc_rsi = current_rsi if current_rsi is not None else summary.get('technical', {}).get('btc_rsi')
-    
+# (既存のまま)
+def generate_market_topic(summary):
+    btc_rsi = summary.get('technical', {}).get('btc_rsi')
     btc_dom = summary.get('btc_dominance', 0)
     top_gainer = summary.get('top_gainer', {})
     if btc_rsi and btc_rsi <= 25: return "パニック売り一巡、底打ち反転を模索中"
@@ -62,6 +61,7 @@ def generate_market_topic(summary, current_rsi=None):
         return f"特定アルト({top_gainer.get('symbol', '').upper()})への強い買い需要"
     return "主要指標は均衡、次のトレンド待ちの局面"
 
+# (既存のまま)
 def format_price(price):
     if price is None: return "-"
     if price >= 1000000: return f"{price/10000:.0f}万"
@@ -90,23 +90,47 @@ def generate_sns_assets():
 
     # データ抽出
     summary = data.get("summary", {})
-    btc = next((c for c in data.get("raw_data", []) if c["id"] == "bitcoin"), None)
+    raw_data = data.get("raw_data", [])
+    btc = next((c for c in raw_data if c["id"] == "bitcoin"), None)
     
-    # --- ★修正: RSI再計算処理ここから ---
-    btc_rsi_calculated = None
+    # --- ★追加: スパークラインデータの確保とRSI再計算 ---
+    spark_prices = None
+    
+    # 1. まず読み込んだファイルから探す
     if btc and "sparkline_in_7d" in btc:
         spark = btc["sparkline_in_7d"]
-        prices = spark.get("price") if isinstance(spark, dict) else spark
-        if prices and isinstance(prices, list):
-            btc_rsi_calculated = calculate_latest_rsi(prices)
+        spark_prices = spark.get("price") if isinstance(spark, dict) else spark
+
+    # 2. なければ latest.json を見に行く (フォールバック)
+    if not spark_prices and os.path.exists("data/daily/latest.json"):
+        print("⚠️ 現在のファイルにスパークラインがないため、latest.jsonを確認します...")
+        try:
+            with open("data/daily/latest.json", "r", encoding="utf-8") as f2:
+                data2 = json.load(f2)
+                btc2 = next((c for c in data2.get("raw_data", []) if c["id"] == "bitcoin"), None)
+                if btc2 and "sparkline_in_7d" in btc2:
+                    spark2 = btc2["sparkline_in_7d"]
+                    spark_prices = spark2.get("price") if isinstance(spark2, dict) else spark2
+                    print("✅ latest.json からスパークラインデータを取得しました。")
+        except Exception as e:
+            print(f"⚠️ フォールバック読み込み失敗: {e}")
+
+    # 3. RSI再計算実行
+    btc_rsi_calculated = None
+    if spark_prices and isinstance(spark_prices, list):
+        btc_rsi_calculated = calculate_latest_rsi(spark_prices)
     
     if btc_rsi_calculated is not None:
         btc_rsi = round(btc_rsi_calculated, 1)
+        # ★重要: 既存関数(generate_market_topic)が新しい値を参照できるようにsummaryを書き換える
+        if "technical" not in summary: summary["technical"] = {}
+        summary["technical"]["btc_rsi"] = btc_rsi
         print(f"✅ RSI再計算成功: {btc_rsi}")
     else:
+        # 計算失敗時は既存の値を使用
         btc_rsi = summary.get("technical", {}).get("btc_rsi")
         print(f"⚠️ RSI再計算不可。保存値を使用: {btc_rsi}")
-    # --- ★修正: RSI再計算処理ここまで ---
+    # ----------------------------------------------------
 
     btc_dom = summary.get("btc_dominance", 0)
     fgi = summary.get("fgi", {"value": 50, "label": "Neutral"})
@@ -185,7 +209,6 @@ def generate_sns_assets():
         # 恐怖指数に応じた発光色の指定
         accent_color = "赤色(Neon Red)" if fgi_val <= 30 else "オレンジ色(Orange)" if fgi_val <= 45 else "シアン(Cyan)"
         
-        # ★修正: 最新のRSIを渡すように変更
         ai_image_prompt = (
             f"Attached is the base template 'ogp_v2.png'. \n"
             f"Please overlay the following market data onto the right-side highlighted area in a professional cyberpunk HUD style. \n"
@@ -195,7 +218,7 @@ def generate_sns_assets():
             f"SENTIMENT: [ {fgi_val} ({fgi.get('label', 'Neutral')}) ]\n"
             f"BTC RSI: [ {btc_rsi if btc_rsi else '-'} ]\n"
             f"STATUS: [ {ai_status_msg} / {rsi_note} ]\n"
-            f"FOCUS: [ {generate_market_topic(summary, btc_rsi)} ]\n\n"
+            f"FOCUS: [ {generate_market_topic(summary)} ]\n\n"
             f"--- DESIGN INSTRUCTION ---\n"
             f"Use high-tech digital font. Highlight the SENTIMENT value with a '{accent_color}' glow. \n"
             f"Maintain a clean, sophisticated atmosphere for institutional traders."
