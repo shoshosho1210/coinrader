@@ -5,11 +5,11 @@ Ensure the text has a subtle neon glow and is perfectly integrated into the back
 --- DATA TO OVERLAY ---
 DATE: [ 02/02 ]
 SENTIMENT: [ 14 (Extreme Fear) ]
-BTC RSI: [ 13.95 ]
-STATUS: [ 分析: 中立 / 売られすぎ ]
-FOCUS: [ パニック売り一巡、底打ち反転を模索中 ]
+BTC RSI: [ 37.4 ]
+STATUS: [ 分析: 悲観 / やや売られすぎ ]
+FOCUS: [ 特定アルト(ULTIMA)への強い買い需要 ]
 
 --- DESIGN INSTRUCTION ---
 Use high-tech digital font. Highlight the SENTIMENT value with a '赤色(Neon Red)' glow. 
 Maintain a clean, sophisticated atmosphere for institutional traders.
-GENERATED: [ 11:43:54 ]
+GENERATED: [ 14:08:49 ]
