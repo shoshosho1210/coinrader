@@ -4472,35 +4472,7 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 <div class="cta-note">※当サイトは広告収益により運営されています（景品表示法に基づくPR表記）。</div>
 </section>
-<div class="data-reference-bar">
-<div class="ref-title">
-<span>📡</span> System Data Specification
-    </div>
-<div class="ref-grid">
-<div class="ref-item">
-<strong>回転率 (Turnover):</strong> 
-            24h出来高÷時価総額。市場の「呼吸の速さ」を示し、値が高いほど短期的な売買が活発な状態です。
-        </div>
-<div class="ref-item">
-<strong>ATH比 (ATH Dist):</strong> 
-            最高値からの乖離。市場の「体温の余白」を示し、乖離が大きいほど長期的な底値圏の可能性があります。
-        </div>
-</div>
-<div class="ref-footer">
-        ※ データ欠損がある銘柄は自動的に計算から除外されます。投資の最終決定はご自身の判断で行ってください。
-    </div>
-</div>
-<section id="sec-trend">
-<div class="section-header">
-<div>
-<div class="section-title">トレンド TOP5</div>
-<div class="section-sub">CoinGeckoの「トップトレンド」（API: /search/trending）／カード内チャート：過去7日スパークライン（サンプル間隔・点数はAPI依存）</div>
-</div>
-<div class="section-actions">
-<a class="linkbtn" data-ga="ext_coingecko_trending" data-partner="coingecko" data-placement="index_trend_header" data-pr="0" href="https://www.coingecko.com/ja/highlights/trending-crypto" rel="noopener" target="_blank">もっと見る</a>
-</div>
-</div>
-<div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
+<!-- data-reference-bar removed -->
 </section>
 <section id="sec-gainers">
 <div class="section-header">
@@ -8204,9 +8176,20 @@ textEl.innerHTML = htmlContent;
       if (typeof btcDom === 'number' && isFinite(btcDom)) {
         // BTC.D: 差分(▲/▼)は表示しない（値のみ）
         _setText('tickerBtcDom', `${btcDom.toFixed(1)}%`);
+        // 念のため、BTC.D のティッカーに差分要素が残っていたら削除
+        (function(){
+          const el = document.getElementById('tickerBtcDom');
+          const item = el ? el.closest('.ticker-item') : null;
+          if (item){ item.querySelectorAll('.t-delta').forEach(n=>n.remove()); }
+        })();
         try{ localStorage.setItem('prev_btc_dom', String(btcDom)); }catch(_e){}
       } else {
         _setText('tickerBtcDom', '--%');
+        (function(){
+          const el = document.getElementById('tickerBtcDom');
+          const item = el ? el.closest('.ticker-item') : null;
+          if (item){ item.querySelectorAll('.t-delta').forEach(n=>n.remove()); }
+        })();
       }
 
       // Fear & Greed Index
