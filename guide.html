@@ -1,204 +1,427 @@
-<style>
-  .guide-wrap { color: #e2e8f0; font-size: 14px; line-height: 1.6; }
-  .guide-header { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .guide-header h1 { font-size: 18px; color: #38bdf8; margin: 0; font-weight: 800; }
-  
-  .guide-section { margin-bottom: 28px; }
-  .guide-h2 { 
-    font-size: 15px; font-weight: 800; color: #f8fafc; 
-    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
-  }
-  .guide-h2 .step-num { background: #38bdf8; color: #0f172a; padding: 1px 8px; border-radius: 4px; font-size: 11px; }
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>サイトの見かたガイド - CoinRader</title>
+  <meta name="description" content="CoinRader（コインレーダー）の見かた・指標の読み方を、初心者でも迷わない順番で解説します。">
+  <link rel="canonical" href="https://coinrader.net/guide.html">
 
-  /* 箇条書きリストのスタイル */
-  .guide-list { list-style: none; padding: 0; margin: 0; }
-  .guide-list li { 
-    background: rgba(255,255,255,0.02); 
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-  }
-  .guide-list li strong { color: #f8fafc; display: block; margin-bottom: 4px; font-size: 14px; }
-  .guide-list li span { color: #94a3b8; font-size: 13px; display: block; }
-  .guide-list li b { color: #38bdf8; } /* 強調色 */
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  /* AI Insight セクション */
-  .guide-ai-panel {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), transparent);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 12px; padding: 16px; margin-top: 24px;
-  }
-  .guide-ai-panel h3 { color: #38bdf8; font-size: 15px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
 
-  .guide-footer { margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
-/* --- Final Slim Footer (Consistency) --- */
-.site-footer {
-    background: rgba(10, 16, 28, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 16px 12px;
-    margin-top: 40px;
-    width: 100%;
-}
+  <link rel="stylesheet" href="_page_style.css" />
 
-.footer-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
 
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+  <style>
+    /* Header (consistent with other pages) */
+    .pageHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      margin: 18px 0 18px;
+      gap: 12px;
+    }
+    .brandLogo{ height:36px; width:auto; }
+    .headerNav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a{
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .headerNav a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.06);
+    }
 
-.footer-logo { height: 36px !important; width: auto; opacity: 0.8; }
-.footer-tagline { font-size: 10.5px; color: #64748b; white-space: nowrap; }
+    /* Content */
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px; font-weight:900;
+      background: rgba(56,189,248,.10);
+      border:1px solid rgba(56,189,248,.22);
+      color:#7dd3fc;
+      margin-bottom: 10px;
+    }
+    .lead { color:#cbd5e1; line-height:1.9; margin: 12px 0 22px; font-size: 15px; }
 
-.footer-nav {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+    .toc{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0 22px;
+    }
+    .toc a{
+      display:flex; align-items:center; gap:10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      color:#cbd5e1;
+      text-decoration:none !important;
+      font-weight: 850;
+      font-size: 12.5px;
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toc a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.30);
+      background: rgba(56,189,248,.06);
+    }
+    .toc i{ color:#38bdf8; }
 
-.footer-nav a {
-    color: #94a3b8;
-    font-size: 11px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s;
-}
+    .sec { margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 18px; }
+    .sec h2{
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: #fff;
+      display:flex; align-items:center; gap:10px;
+      letter-spacing: .2px;
+    }
+    .sec h2 i{
+      color:#38bdf8;
+      filter: drop-shadow(0 0 10px rgba(56,189,248,.10));
+    }
 
-.footer-nav a:hover { color: #38bdf8; }
+    .text-block { color:#cbd5e1; line-height:1.9; font-size:14px; margin: 0 0 14px; }
 
-.footer-copyright {
-    max-width: 1000px;
-    margin: 10px auto 0;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    text-align: center;
-    font-size: 10px;
-    color: #475569;
-}
+    .callout{
+      margin: 12px 0 6px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(56,189,248,.05);
+      border:1px solid rgba(56,189,248,.16);
+      color:#cbd5e1;
+      font-size: 13px;
+      line-height: 1.85;
+    }
+    .callout .title{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 900; margin-bottom: 6px;
+      color:#e2e8f0;
+    }
+    .callout .title i{ color:#38bdf8; }
 
-@media (max-width: 640px) {
-    .footer-inner { flex-direction: column; text-align: center; }
-    .footer-nav { justify-content: center; }
-}
-</style>
+    .stepGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .stepCard{
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+    }
+    .stepTag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 4px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight: 950;
+      border:1px solid rgba(255,255,255,.10);
+      color:#e2e8f0;
+      background: rgba(255,255,255,.03);
+      margin-bottom: 10px;
+    }
+    .stepTitle{
+      font-weight: 950;
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: 14px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .stepTitle i{ color:#a78bfa; }
+    .stepText{ margin: 0; color:#cbd5e1; line-height: 1.85; font-size: 13px; }
 
-<div class="guide-wrap">
-  <div class="guide-header">
-    <h1>CoinRader 活用ガイド</h1>
-    <p style="font-size: 13px; color: #94a3b8; margin-top: 6px;">3つのステップで相場の「体温」と「流れ」をスキャンします。</p>
-  </div>
+    .miniList{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height: 1.9; font-size:14px; }
+    .miniList li{ margin: 8px 0; }
 
-  <div class="guide-section">
-    <div class="guide-h2"><span class="step-num">STEP 1</span> 市場の「心理」をチェック</div>
-    <ul class="guide-list">
-      <li>
-        <strong>🍃 恐怖指数 (Sentiment)</strong>
-        <span>市場が怖がっているか、浮かれているか。<b>20以下（悲観）</b>は買いの好機、<b>80以上（熱狂）</b>は調整に注意。</span>
-      </li>
-      <li>
-        <strong>☀️ 騰落バランス (Breadth)</strong>
-        <span>上昇・下落銘柄の数。<b>「まぶしい陽光（上昇優勢）」</b>なら市場全体に買いが広がっている健全な状態です。</span>
-      </li>
-    </ul>
-  </div>
+    .faq{
+      margin-top: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      overflow: hidden;
+    }
+    .faq details{ border-top: 1px solid rgba(255,255,255,.06); }
+    .faq details:first-child{ border-top:none; }
+    .faq summary{
+      cursor:pointer;
+      padding: 12px 14px;
+      display:flex; align-items:center; gap:10px;
+      color:#e2e8f0;
+      font-weight: 900;
+      list-style:none;
+      user-select:none;
+    }
+    .faq summary::-webkit-details-marker{ display:none; }
+    .faq summary i{ color:#fbbf24; }
+    .faq .ans{
+      padding: 0 14px 14px 14px;
+      color:#cbd5e1;
+      font-size: 13.5px;
+      line-height: 1.85;
+    }
 
-  <div class="guide-section">
-    <div class="guide-h2"><span class="step-num">STEP 2</span> トレンドの「限界」を見極める</div>
-    <ul class="guide-list">
-      <li>
-        <strong>🌊 BTC RSI (14日)</strong>
-        <span>値動きの勢い。<b>30以下（売られすぎ）</b>なら反発目前、<b>70以上（買われすぎ）</b>なら一服する可能性大。</span>
-      </li>
-      <li>
-        <strong>🌱 長期トレンド (MA距離)</strong>
-        <span>過去の平均とのズレ。<b>「期待の芽生え」</b>は上昇への転換、<b>「力強い潮流」</b>は上昇トレンドの継続を示します。</span>
-      </li>
-    </ul>
-  </div>
+    /* Footer (consistent) */
+    .site-footer{
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px 16px;
+      margin-top: 60px;
+      width: 100%;
+    }
+    .footer-inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .footer-brand{ display:flex; align-items:center; gap:10px; }
+    .footer-logo{ height: 36px !important; width:auto; opacity: .85; }
+    .footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a{
+      color:#94a3b8;
+      font-size: 11.5px;
+      text-decoration:none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .footer-nav a:hover{ color:#38bdf8; }
+    .footer-copyright{
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
+    }
 
-  <div class="guide-section">
-    <div class="guide-h2"><span class="step-num">STEP 3</span> 資金の「居場所」を特定</div>
-    <ul class="guide-list">
-      <li>
-        <strong>🏔️ ドミナンス (Dominance)</strong>
-        <span>BTCのシェア。<b>比率上昇</b>は守りの相場、<b>比率低下</b>はアルトコインにお金が流れる攻めの相場です。</span>
-      </li>
-      <li>
-        <strong>✨ 注目銘柄リスト</strong>
-        <span>今この瞬間に世界中で検索されたり、取引が急増している「風の吹いている銘柄」をリストアップします。</span>
-      </li>
-    </ul>
-  </div>
+    @media (max-width: 820px){
+      .toc{ grid-template-columns: 1fr; }
+      .stepGrid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px){
+      .footer-inner{ flex-direction: column; text-align:center; }
+      .footer-nav{ justify-content: center; gap: 8px 12px; }
+      .footer-brand{ flex-direction: column; gap: 4px; }
+      .headerNav{ justify-content: flex-end; }
+    }
+  </style>
+</head>
 
-<div class="guide-ai-panel">
-    <div class="ai-panel-header">
-      <span class="ai-bot-icon">🤖</span>
-      <h3>AI Market Insight の「深読み」活用術</h3>
-    </div>
-    
-    <div class="ai-feature-grid">
-      <div class="ai-feature-item">
-        <strong>🔍 データの裏側を客観視</strong>
-        <p>人間は「今の価格」に惑わされがちですが、AIは恐怖指数やRSIなどの全指標を秒速で統合。感情を排除し、<b>データに基づいた相場の歪み</b>を特定します。</p>
+<body>
+  <div class="container">
+    <header class="pageHeader" role="banner">
+      <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="assets/icons/logo_horizontal_v4.png" alt="CoinRader">
+      </a>
+
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="index.html"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="data-sources.html"><i class="fa-solid fa-database"></i><span>データソース</span></a>
+        <a href="privacy.html"><i class="fa-solid fa-shield"></i><span>プライバシー</span></a>
+        <a href="contact.html"><i class="fa-solid fa-envelope"></i><span>お問い合わせ</span></a>
+      </nav>
+    </header>
+
+    <div class="card">
+      <span class="pill"><i class="fa-solid fa-book-open"></i>Guide</span>
+      <h1>サイトの見かたガイド</h1>
+      <p class="lead">
+        CoinRaderは「市場の空気感」を短時間でつかむためのダッシュボードです。<br>
+        迷ったら、まずは <b>AI JUDGE → 今日の注目 → 詳細セクション</b> の順に見てください。
+      </p>
+
+      <div class="toc" aria-label="目次">
+        <a href="#sec-quick"><i class="fa-solid fa-stopwatch"></i>30秒で全体像</a>
+        <a href="#sec-ai"><i class="fa-solid fa-robot"></i>AI JUDGEの読み方</a>
+        <a href="#sec-summary"><i class="fa-solid fa-bullseye"></i>今日の注目（要約）</a>
+        <a href="#sec-ranks"><i class="fa-solid fa-list-ol"></i>ランキングの見方</a>
+        <a href="#sec-refresh"><i class="fa-solid fa-rotate"></i>更新と注意点</a>
+        <a href="#sec-share"><i class="fa-solid fa-share-nodes"></i>Shareページとは</a>
       </div>
-      
-      <div class="ai-feature-item">
-        <strong>⚠️ 矛盾（逆行）の検知</strong>
-        <p>「価格は上がっているのに、呼吸（RSI）が苦しそう」といった<b>インジケーター同士の矛盾</b>を指摘。これは次の大きな反転の予兆になることが多い重要なサインです。</p>
-      </div>
 
-      <div class="ai-feature-item" style="border: none; padding-bottom: 0;">
-        <strong>📊 根拠（エビデンス）の確認</strong>
-        <p>分析文の下にある「多角的な分析エビデンス」をチェック。AIがどの数値を重視してその結論に至ったのか、自分の判断のダブルチェックとして活用できます。</p>
-      </div>
-    </div>
-
-    <div class="guide-routine" style="margin-top: 15px; background: rgba(0,0,0,0.2); border-left-color: #38bdf8;">
-      💡 <b>Tip:</b> 指標が複雑なときほど、AIが紡ぐ「客観的な独り言」に相場の本質が隠れています。
-    </div>
-  </div>
-
-<footer class="site-footer">
-    <div class="footer-inner">
-        <div class="footer-brand">
-            <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
-            <span class="footer-tagline">暗号資産分析ダッシュボード</span>
+      <div class="sec" id="sec-quick">
+        <h2><i class="fa-solid fa-stopwatch"></i>30秒で全体像</h2>
+        <div class="text-block">
+          「いま全体が強いのか弱いのか」を最短で判断する見方です。
         </div>
-    </div>
-    
-    <p style="font-size: 10px; color: #475569; text-align: center; margin-top: 15px; line-height: 1.5;">
-      ※本ガイドは情報提供を目的としており、投資を推奨するものではありません。
-    </p>
 
+        <div class="stepGrid">
+          <div class="stepCard">
+            <div class="stepTag">STEP 1</div>
+            <div class="stepTitle"><i class="fa-solid fa-robot"></i>AI JUDGEを見る</div>
+            <p class="stepText">
+              分析（強気/弱気/中立）と、その根拠（RSI・心理・トレンド強度）をチェック。
+            </p>
+          </div>
+          <div class="stepCard">
+            <div class="stepTag">STEP 2</div>
+            <div class="stepTitle"><i class="fa-solid fa-bullseye"></i>今日の注目を見る</div>
+            <p class="stepText">
+              トレンド/急上昇/出来高の上位を眺めて「何に資金が集まっているか」を把握。
+            </p>
+          </div>
+          <div class="stepCard">
+            <div class="stepTag">STEP 3</div>
+            <div class="stepTitle"><i class="fa-solid fa-chart-line"></i>必要な所だけ深掘り</div>
+            <p class="stepText">
+              気になった銘柄をランキングから追い、外部リンクで詳細を確認。
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="title"><i class="fa-solid fa-lightbulb"></i>コツ</div>
+          指標は「完璧な予測」ではなく、<b>同じものを毎日同じ順番で見る</b>ことで判断のブレを減らすために使います。
+        </div>
+      </div>
+
+      <div class="sec" id="sec-ai">
+        <h2><i class="fa-solid fa-robot"></i>AI JUDGEの読み方</h2>
+        <div class="text-block">
+          AI JUDGEは「いまの市場は攻める局面か、守る局面か」を短い文章にまとめたものです。
+          判断理由（根拠）は、概ね次の3つで構成されます。
+        </div>
+
+        <ul class="miniList">
+          <li><b>RSI / 過熱感</b>：短期の買われすぎ・売られすぎの目安</li>
+          <li><b>SENTIMENT / 市場心理</b>：恐怖&強欲指数など、心理面の温度感</li>
+          <li><b>TREND / 強度</b>：トレンド入りや出来高など、注目度の強さ</li>
+        </ul>
+
+        <div class="callout">
+          <div class="title"><i class="fa-solid fa-circle-info"></i>読み取りの例</div>
+          <b>弱気 + 恐怖が強い</b> → 反発の芽はあるが、飛びつきは危険。<br>
+          <b>強気 + 過熱気味</b> → 伸びているが、押し目・分割の意識が必要。
+        </div>
+      </div>
+
+      <div class="sec" id="sec-summary">
+        <h2><i class="fa-solid fa-bullseye"></i>今日の注目（要約）</h2>
+        <div class="text-block">
+          ここは「今日の話題」を1ページで把握する場所です。Xに投稿する材料もここから作りやすいです。
+        </div>
+        <ul class="miniList">
+          <li><b>トレンド</b>：話題性が高い銘柄（注目度）</li>
+          <li><b>急上昇</b>：直近24hで大きく動いた銘柄（勢い）</li>
+          <li><b>出来高</b>：取引が活発な銘柄（資金の集中）</li>
+        </ul>
+      </div>
+
+      <div class="sec" id="sec-ranks">
+        <h2><i class="fa-solid fa-list-ol"></i>ランキングの見方</h2>
+        <div class="text-block">
+          ランキングは「市場の主役がどこか」をつかむための一覧です。気になった銘柄は外部ページで追加確認してください。
+        </div>
+        <div class="callout">
+          <div class="title"><i class="fa-solid fa-shuffle"></i>おすすめの使い分け</div>
+          <b>トレンド</b>＝話題の種探し／ <b>上昇率</b>＝短期の勢い確認／ <b>時価総額</b>＝主力の安定確認
+        </div>
+      </div>
+
+      <div class="sec" id="sec-refresh">
+        <h2><i class="fa-solid fa-rotate"></i>更新と注意点</h2>
+        <div class="text-block">
+          表示データは外部APIに依存します。通信状況・API制限・欠損により、更新が遅れたり一部が空欄になることがあります。
+        </div>
+        <ul class="miniList">
+          <li>ページ上部の「Auto」や更新時刻で、更新状況を確認できます</li>
+          <li>「更新」ボタンは短時間に連打すると失敗しやすい場合があります</li>
+          <li>数値は参考情報です。最終判断はご自身でお願いします</li>
+        </ul>
+      </div>
+
+      <div class="sec" id="sec-share">
+        <h2><i class="fa-solid fa-share-nodes"></i>Shareページとは</h2>
+        <div class="text-block">
+          Shareページは、<b>その日の市場状況を1枚にまとめた共有用ページ</b>です。X投稿やメモの保存に向いています。
+        </div>
+        <div class="callout">
+          <div class="title"><i class="fa-solid fa-pen"></i>X投稿に使うなら</div>
+          ① ShareページのURLを貼る → ② 画像（OGP）を添付 → ③ 重要ポイントを短く書く。<br>
+          これだけで「毎日同じ型」の投稿にできます。
+        </div>
+      </div>
+
+      <div class="sec" id="sec-faq">
+        <h2><i class="fa-solid fa-circle-question"></i>よくある質問</h2>
+        <div class="faq">
+          <details>
+            <summary><i class="fa-solid fa-circle-question"></i> 数値が「--」のままです</summary>
+            <div class="ans">
+              API側の応答遅延・制限・欠損の可能性があります。時間を置いて更新するか、通信環境を変えてお試しください。
+            </div>
+          </details>
+          <details>
+            <summary><i class="fa-solid fa-circle-question"></i> 指標は投資判断にそのまま使えますか</summary>
+            <div class="ans">
+              参考情報としてお使いください。CoinRaderは「判断を速くするための整理」に主眼があり、利益を保証するものではありません。
+            </div>
+          </details>
+          <details>
+            <summary><i class="fa-solid fa-circle-question"></i> 表示崩れ・不具合を見つけました</summary>
+            <div class="ans">
+              <b>お問い合わせ</b>から、ページURL・端末・スクリーンショット・発生時刻（目安）を添えてご連絡いただけると助かります。
+            </div>
+          </details>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="index.html">ホーム</a>
+        <a href="data-sources.html">データソース</a>
+        <a href="about.html">運営者情報</a>
+        <a href="privacy.html">プライバシー</a>
+        <a href="disclaimer.html">免責事項</a>
+        <a href="contact.html">お問い合わせ</a>
+      </div>
+    </div>
     <div class="footer-copyright">
-        &copy; 2026 CoinRader. All rights reserved.
+      &copy; 2026 CoinRader. All rights reserved.
     </div>
   </footer>
-</div> <style>
-  /* AIセクション専用の追加スタイル */
-  .guide-ai-panel {
-    background: linear-gradient(165deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-    border: 1px solid rgba(56, 189, 248, 0.4);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
-    border-radius: 16px; padding: 20px; margin-top: 24px;
-  }
-  .ai-panel-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-  .ai-panel-header h3 { color: #38bdf8 !important; font-size: 16px !important; margin: 0 !important; font-weight: 800; letter-spacing: 0.05em; }
-  .ai-bot-icon { font-size: 22px; }
-
-  .ai-feature-grid { display: flex; flex-direction: column; gap: 14px; }
-  .ai-feature-item { border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; }
-  .ai-feature-item strong { color: #f8fafc; font-size: 13.5px; display: block; margin-bottom: 4px; }
-  .ai-feature-item p { font-size: 12.5px; color: #94a3b8; margin: 0; line-height: 1.7; }
-  .ai-feature-item b { color: #38bdf8; }
-</style>
+</body>
+</html>
