@@ -4024,6 +4024,37 @@ white-space:nowrap; word-break:keep-all; }
   .ai-hint-line{ margin-top: 8px !important; font-size: 13px !important; line-height: 1.35 !important; }
 }
 
+
+/* v48: mobile-firstpage further compact */
+@media (max-width: 520px){
+  .sectionTitle{margin:10px 0 10px !important; font-size:26px !important; line-height:1.12 !important;}
+  .ai-box{padding:12px 12px 10px !important;}
+  .ai-head{gap:10px !important; margin-bottom:8px !important;}
+  .ai-head .ai-label{font-size:18px !important; letter-spacing:.06em !important;}
+  .ai-head .ai-badge{padding:10px 12px !important; font-size:22px !important;}
+  .ai-meters{gap:10px !important; margin:10px 0 8px !important;}
+  .meter{padding:10px 10px !important; min-height:62px !important;}
+  .meter .meter-title{font-size:12px !important;}
+  .meter .meter-value{font-size:18px !important;}
+  .ai-toggle{margin-top:8px !important; padding:10px 12px !important;}
+  .ai-detail{margin-top:10px !important;}
+  .ai-regime-card{padding:12px 12px !important; min-height:0 !important;}
+  .ai-regime-card .regime-title{font-size:12px !important; margin-bottom:6px !important;}
+  .ai-regime-card .regime-main{font-size:22px !important; line-height:1.15 !important;}
+  .ai-regime-card .regime-sub{font-size:12px !important;}
+  .ai-regime-card .regime-kpis{gap:8px !important;}
+  .ai-reason-card, .ai-strategy-card{padding:10px 10px !important;}
+  .ai-card-title{margin-bottom:8px !important;}
+  .reason-table{gap:6px !important;}
+  .reason-row{padding:8px 0 !important;}
+  .reason-row .c-judge{white-space:nowrap !important;}
+  .reason-row .c-thr{white-space:nowrap !important;}
+  .ai-strategy-card ul{margin-top:6px !important;}
+  .ai-strategy-card li{margin:4px 0 !important; line-height:1.32 !important;}
+  .chip{padding:2px 8px !important; font-size:12px !important;}
+  .ai-hint-line{margin-top:6px !important; font-size:12px !important; line-height:1.25 !important;}
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -7621,7 +7652,7 @@ const btcChgNum = (btcChg === null || btcChg === undefined || isNaN(btcChg)) ? n
 
 const fgLabel = (v) => {
   if (v === null) return '—';
-  if (v <= 20) return 'Ex Fear';
+  if (v <= 20) return 'ExFear';
   if (v <= 40) return 'Fear';
   if (v <= 60) return 'Neutral';
   if (v <= 80) return 'Greed';
@@ -7676,7 +7707,7 @@ function _aiSigTone(sigText){
 function fgText(n){
   const v = Number(n);
   if (!isFinite(v)) return '—';
-  if (v <= 25) return 'Ex Fear';
+  if (v <= 25) return 'ExFear';
   if (v <= 45) return 'Fear';
   if (v < 55) return 'Neutral';
   if (v < 75) return 'Greed';
@@ -7764,12 +7795,12 @@ if (regimeCls === 'regime-bear') {
   ];
 }
 
-// 地合いが変わる目安（次に見るポイント）
-let updateHint = '地合いが変わる目安：TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
+// 地合い目安（次に見るポイント）
+let updateHint = '地合い目安：TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
 if (regimeCls === 'regime-bull') {
-  updateHint = '地合いが変わる目安：RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
+  updateHint = '地合い目安：RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
 } else if (regimeCls === 'regime-neutral') {
-  updateHint = '地合いが変わる目安：TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
+  updateHint = '地合い目安：TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
 }
 
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
