@@ -3548,9 +3548,15 @@ html, body { overflow-x: hidden; }
   /* Mcap TOP5: 2-column list to reduce height and balance the row */
   #summaryMcapTopList{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: 14px;
     row-gap: 0px;
+    padding-left: 0;      /* reset .summary-ol padding that causes overflow */
+    margin: 0;
+    list-style: none;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
   #summaryMcapTopList .top5-item{
     margin: 0;
