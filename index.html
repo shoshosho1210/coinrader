@@ -7484,6 +7484,16 @@ function _aiSigTone(sigText){
   if (t.includes('greed') || t.includes('上向き') || t.includes('買われすぎ')) return 'bull';
   return 'neutral';
 }
+function fgText(n){
+  const v = Number(n);
+  if (!isFinite(v)) return '—';
+  if (v <= 25) return 'Extreme Fear';
+  if (v <= 45) return 'Fear';
+  if (v < 55) return 'Neutral';
+  if (v < 75) return 'Greed';
+  return 'Extreme Greed';
+}
+
 const reasonRows = [
   {
     k:'RSI',
