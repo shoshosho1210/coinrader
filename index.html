@@ -3882,6 +3882,25 @@ white-space:nowrap; word-break:keep-all; }
   .ai-kw{ padding: 1px 6px; }
 }
 
+
+/* ===== v41: tighten mobile regime card spacing ===== */
+@media (max-width: 520px){
+  /* 전체 디테일 블록을 조금 더 압축 */
+  .ai-mini{ gap:8px !important; }
+
+  /* 시장국면(市場局面) 카드: 위/아래 여백 + 패딩 축소 */
+  .ai-regime-hero{ margin:0 0 6px !important; padding:7px 10px !important; }
+  .ai-regime-kicker{ margin-bottom:2px !important; font-size:11px !important; }
+  .ai-regime-main{ font-size:16px !important; line-height:1.08 !important; }
+  .ai-regime-meta{ font-size:10.5px !important; line-height:1.1 !important; white-space:nowrap; opacity:.92; }
+  .ai-regime-meta br{ display:none; }
+
+  /* 이유표(判断理由) 블록 상단 여백 축소 */
+  .ai-reasons-grid{ padding-top:2px !important; gap:5px 8px !important; }
+
+  /* 戦略メモ: 少しだけ詰める */
+  .ai-mini-ul{ font-size:12.5px !important; line-height:1.45 !important; }
+}
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
