@@ -7976,10 +7976,11 @@ textEl.innerHTML = htmlContent;
         textEl.style.opacity = '1'; 
     }, 50);
 
-    if (noteEl) noteEl.style.opacity = "0.8";
-    _ai_thinking = false;
-
+    } catch (e) {
+      console.warn('AI insight failed', e);
+      if (textEl) textEl.textContent = 'AI insight unavailable';
     } finally {
+      if (noteEl) noteEl.style.opacity = "0.8";
       _ai_thinking = false;
     }
 }
