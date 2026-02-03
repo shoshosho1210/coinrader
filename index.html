@@ -3549,6 +3549,8 @@ html, body { overflow-x: hidden; }
   #summaryMcapTopList{
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-auto-flow: column;
+    grid-template-rows: repeat(3, auto);
     column-gap: 14px;
     row-gap: 0px;
     padding-left: 0;      /* reset .summary-ol padding that causes overflow */
@@ -3591,6 +3593,8 @@ html, body { overflow-x: hidden; }
     max-width: 100% !important;
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(3, auto);
     column-gap: 12px !important;
     row-gap: 10px !important;
   }
