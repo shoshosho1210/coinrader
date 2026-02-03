@@ -7516,15 +7516,15 @@ const reasonRows = [
 ];
 const reasonGridHtml = `
   <div class="ai-reasons-grid" role="table" aria-label="判断理由">
-    <div class="h">指標</div><div class="h" style="text-align:right;">現在値</div><div class="h">目安</div><div class="h" style="text-align:right;">判定</div>
+    <div class="h">指標</div><div class="h" style="text-align:right;">現在値</div><div class="h" style="text-align:right;">判定</div><div class="h">目安</div>
     ${reasonRows.map(r=>{
       const tone=_aiSigTone(r.sig);
       return `
         <div class="row" role="row">
           <div class="c"><span class="tag"><span class="dot ${tone}"></span>${r.k}</span></div>
           <div class="c value">${r.v}</div>
-          <div class="c th">${r.th}</div>
           <div class="c sig">${r.sig}</div>
+          <div class="c th">${r.th}</div>
         </div>`;
     }).join('')}
   </div>`;
@@ -7575,12 +7575,12 @@ if (regimeCls === 'regime-bear') {
   ];
 }
 
-// 更新の目安（「次に何を見れば地合いが変わるか」だけ提示）
-let updateHint = '更新の目安：TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
+// 地合いが変わる目安（次に見るポイント）
+let updateHint = '地合いが変わる目安：TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
 if (regimeCls === 'regime-bull') {
-  updateHint = '更新の目安：RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
+  updateHint = '地合いが変わる目安：RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
 } else if (regimeCls === 'regime-neutral') {
-  updateHint = '更新の目安：TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
+  updateHint = '地合いが変わる目安：TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
 }
 
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
@@ -7616,12 +7616,6 @@ const htmlContent = `
         <li>${hlMemo(memoLines[1])}</li>
       </ul>
       <div class="ai-mini-foot">${hlMemo(updateHint)}</div>
-
-      <div class="ai-mini-links">
-        <a class="ai-mini-link" href="#sec-trend">トレンド</a>
-        <a class="ai-mini-link" href="#sec-gainers">上昇</a>
-        <a class="ai-mini-link" href="#sec-mcap">時価総額</a>
-      </div>
     </div>
   </div>
 `;
