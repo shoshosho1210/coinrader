@@ -761,7 +761,7 @@
 
 
 /* ===== Quick Summary (A案) ===== */
-.summary-block{ margin-top: 18px; }
+.summary-block{ margin-top: 12px; }
 .summary-kpis{
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -3932,6 +3932,21 @@ white-space:nowrap; word-break:keep-all; }
   /* 戦略メモ: 少しだけ詰める */
   .ai-mini-ul{ font-size:12.5px !important; line-height:1.45 !important; }
 }
+
+/* v43: first-view further compact on mobile */
+@media (max-width: 640px){
+  .macro-ticker-wrap{ padding: 6px 0 !important; margin-bottom: 10px !important; }
+  #sec-summary .section-header{ margin-bottom: 6px !important; }
+  .summary-block{ margin-top: 10px !important; }
+  .ai-insight-box{ margin-top: 2px !important; margin-bottom: 6px !important; padding: 10px 12px !important; }
+  .hud-panel{ padding: 8px 10px !important; }
+  .hud-header{ padding-bottom: 6px !important; }
+  .hud-metrics-row{ margin-top: 4px !important; gap: 8px !important; }
+  .hud-metric{ padding: 8px 10px !important; }
+  .hud-summary-btn{ padding: 4px 8px !important; font-size: 10px !important; min-height: 34px !important; }
+  .ai-regime-card{ margin-top: 6px !important; }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -4005,7 +4020,7 @@ white-space:nowrap; word-break:keep-all; }
 <div>
 <div class="section-title">
 <i class="fa-solid fa-bolt section-icon-accent"></i>
-      リアルタイム・マーケット解析
+      リアルタイム市場分析
     </div>
 </div>
 </div>
