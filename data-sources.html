@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>データソースと分析ロジック - CoinRader</title>
-  <meta name="description" content="CoinRader（コインレーダー）のデータ透明性。利用しているAPI、独自の多角的センチメント解析、トレンド構造分析の仕組みを公開します。">
-  <link rel="canonical" href="https://coinrader.net/data-sources">
-  
+  <meta name="description" content="CoinRader（コインレーダー）のデータソース、更新頻度、ランキング基準、分析ロジックの考え方をまとめています。">
+  <link rel="canonical" href="https://coinrader.net/data-sources.html">
+
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -15,171 +16,281 @@
     gtag('config', 'G-TDEBXC7DH6');
   </script>
 
-  <link rel="stylesheet" href="/_page_style.css" />
+  <link rel="stylesheet" href="_page_style.css" />
+
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
 
   <style>
-    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
-    .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
-            background: rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; margin-bottom: 8px;}
-    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
-    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; display: flex; align-items: center; gap: 8px;}
-    .list { margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.8; }
-    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
-            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
-            color:#94a3b8; font-size:13px; line-height:1.6; }
-    .logic-card { background: rgba(59, 130, 246, 0.03); border-left: 4px solid #3b82f6; padding: 15px; margin: 15px 0; }
-    
-    .pageHeader {
+    /* Header */
+    .pageHeader{
       display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
-      border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+      padding:12px 16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      margin: 18px 0 18px;
+      gap: 12px;
     }
-    .brandLogo { height:36px; }
-/* --- Final Slim Footer (Consistency Update) --- */
-.site-footer {
-    background: rgba(10, 16, 28, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 20px 16px;
-    margin-top: 60px;
-    width: 100%;
-}
+    .brandLogo{ height:36px; width:auto; }
+    .headerNav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a{
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .headerNav a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.06);
+    }
 
-.footer-inner {
-    max-width: 1000px; /* start.htmlの幅に合わせた微調整 */
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+    /* Content */
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      background: rgba(56,189,248,.08);
+      border:1px solid rgba(56,189,248,.24);
+      color:#7dd3fc;
+      margin-bottom: 10px;
+    }
+    .lead{
+      color:#cbd5e1;
+      line-height:1.9;
+      margin: 12px 0 22px;
+      font-size: 15px;
+    }
 
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .sec{ margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 18px; }
+    .sec h2{
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: #fff;
+      display:flex; align-items:center; gap:10px;
+      letter-spacing: .2px;
+    }
+    .sec h2 i{
+      color:#38bdf8;
+      filter: drop-shadow(0 0 10px rgba(56,189,248,.14));
+    }
 
-.footer-logo { height: 36px !important; width: auto; opacity: 0.8; }
-.footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
+    .text-block{ color:#cbd5e1; line-height:1.9; font-size:14px; margin: 0 0 14px; }
+    .list{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.9; font-size:14px; }
+    .list li{ margin: 8px 0; }
 
-.footer-nav {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+    .note{
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.08);
+      color:#94a3b8;
+      font-size:13px;
+      line-height:1.8;
+    }
 
-.footer-nav a {
-    color: #94a3b8;
-    font-size: 11.5px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s;
-}
+    .logic-card{
+      background: rgba(56, 189, 248, 0.04);
+      border: 1px solid rgba(56,189,248,.16);
+      border-left: 4px solid rgba(56,189,248,.65);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 12px 0;
+    }
+    .logic-card .title{
+      font-weight: 900;
+      color:#e2e8f0;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom: 6px;
+    }
+    .logic-card .title i{ color:#38bdf8; }
+    .logic-card .body{ color:#cbd5e1; font-size: 13px; line-height: 1.85; }
 
-.footer-nav a:hover { color: #38bdf8; }
+    .finalNote{
+      margin-top: 18px;
+      border: 1px solid rgba(245,158,11,.20);
+      background: rgba(245,158,11,.06);
+      border-radius: 14px;
+      padding: 14px;
+      color:#cbd5e1;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .finalNote i{ color:#fbbf24; margin-right: 8px; }
 
-.footer-copyright {
-    max-width: 1000px;
-    margin: 12px auto 0;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    text-align: center;
-    font-size: 10px;
-    color: #475569;
-}
-
-@media (max-width: 768px) {
-    .footer-inner { flex-direction: column; text-align: center; }
-    .footer-nav { justify-content: center; gap: 8px 12px; }
-    .footer-brand { flex-direction: column; gap: 4px; }
-}
+    /* Footer (consistent) */
+    .site-footer{
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px 16px;
+      margin-top: 60px;
+      width: 100%;
+    }
+    .footer-inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .footer-brand{ display:flex; align-items:center; gap:10px; }
+    .footer-logo{ height: 36px !important; width:auto; opacity: .85; }
+    .footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a{
+      color:#94a3b8;
+      font-size: 11.5px;
+      text-decoration:none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .footer-nav a:hover{ color:#38bdf8; }
+    .footer-copyright{
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
+    }
+    @media (max-width: 768px){
+      .footer-inner{ flex-direction: column; text-align:center; }
+      .footer-nav{ justify-content: center; gap: 8px 12px; }
+      .footer-brand{ flex-direction: column; gap: 4px; }
+      .headerNav{ justify-content: flex-end; }
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <header class="pageHeader" role="banner">
-      <a class="brandLink" href="/" aria-label="CoinRader ホーム">
+      <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="assets/icons/logo_horizontal_v4.png" alt="CoinRader">
       </a>
+
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="index.html"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="about.html"><i class="fa-solid fa-user"></i><span>運営者情報</span></a>
+        <a href="disclaimer.html"><i class="fa-solid fa-triangle-exclamation"></i><span>免責事項</span></a>
+        <a href="contact.html"><i class="fa-solid fa-envelope"></i><span>お問い合わせ</span></a>
+      </nav>
     </header>
 
     <div class="card">
-      <span class="pill">透明性と客観性</span>
+      <span class="pill"><i class="fa-solid fa-shield-halved"></i>透明性 / Data Sources</span>
       <h1>データソース・分析ロジック</h1>
-      <p class="lead">CoinRaderは、信頼できる一次データに独自の論理的解析を加えることで、相場の「体温」を客観的に可視化しています。</p>
+      <p class="lead">
+        CoinRaderは、信頼できる一次データをベースに、指標を「比較しやすい形」に整えて表示しています。<br>
+        このページでは、利用しているデータ源と、ランキングや分析の考え方（方針）をまとめています。
+      </p>
 
       <div class="sec">
-        <h2>📊 一次データソース</h2>
+        <h2><i class="fa-solid fa-database"></i>一次データソース</h2>
         <ul class="list">
-          <li><strong>CoinGecko API</strong>：世界最大級のデータアグリゲーター。価格、時価総額、出来高、トレンド等の基盤データを取得しています。</li>
-          <li><strong>Binance API</strong>：世界最大級の取引所から、高精度なOHLC（日足）データを取得し、テクニカル指標の算出に活用しています。</li>
-          <li><strong>Alternative.me</strong>：市場の心理状態を示す「Crypto Fear & Greed Index」のソースとして利用しています。</li>
-        </ul>
-      </div>
-
-      <div class="sec">
-        <h2>🤖 独自分析アルゴリズム</h2>
-        <p class="muted">当サイトでは、公開データを単に表示するだけでなく、以下のロジックに基づいた加工・評価を行っています。</p>
-        
-        <div class="logic-card">
-          <strong>多角的センチメント解析</strong>
-          <p class="muted">
-            恐怖指数（心理面）、RSI（過熱感）、ドミナンス（資金の偏り）の3要素を統合。現在の市場が「どの程度の熱を帯びているか」を独自のウェイト付けによってスコア化し、相場の全体像を判定しています。
-          </p>
-        </div>
-
-        <div class="logic-card">
-          <strong>トレンド構造分析（MAクロス距離）</strong>
-          <p class="muted">
-            50日および200日の長期移動平均線（SMA）の距離をリアルタイム算出。トレンドの勢いや、反転の予兆を数学的な乖離率（%）として定量的に示唆し、ゴールデンクロス/デッドクロスの接近を可視化します。
-          </p>
-        </div>
-
-        <div class="logic-card">
-          <strong>自動解析インサイト・エンジン</strong>
-          <p class="muted">
-            複数のテクニカル指標の相関関係を瞬時に判別し、現在の市場構造（レンジ、過熱、弱気など）をテキストで解説。複雑なデータを「読む」時間を短縮し、直感的な状況把握を支援します。
-          </p>
-        </div>
-      </div>
-
-      <div class="sec">
-        <h2>⚖️ ランキングの選定基準</h2>
-        <ul class="list">
-          <li><strong>上昇率ランキング</strong>：市場のノイズを排除するため、ステーブルコインを除外し、かつ一定以上の流動性（出来高）を持つ銘柄を優先して抽出しています。</li>
-          <li><strong>出来高分析（アルト）</strong>：市場全体の支配力を持つBTC、ETH、および価格固定型のステーブルコインを除外。純粋なアルトコイン市場への資金流入を測定します。</li>
-        </ul>
-      </div>
-
-      <div class="sec">
-        <h2>⏱️ 更新頻度とデータ品質</h2>
-        <ul class="list">
-          <li><strong>市場価格・指標</strong>：約3分〜15分間隔での自動同期。</li>
-          <li><strong>AIインサイト</strong>：市場データの更新に合わせて自動再解析。</li>
+          <li><strong>CoinGecko API</strong>：価格、時価総額、出来高、トレンド等の基盤データを取得しています。</li>
+          <li><strong>Binance API</strong>：OHLC（日足等）の取得と、テクニカル指標算出に活用しています。</li>
+          <li><strong>Alternative.me</strong>：市場心理の参考指標として「Crypto Fear & Greed Index」を利用しています。</li>
         </ul>
         <div class="note">
-          APIの制限や通信環境により、一時的にデータが欠損する場合があります。その際は直近の有効な値を保持するか、再取得まで待機状態となります。
+          <i class="fa-solid fa-circle-info" style="color:#38bdf8; margin-right:8px;"></i>
+          APIの仕様変更やレート制限により、まれに一時的な欠損・遅延が発生する場合があります。
         </div>
       </div>
 
-      <div class="noteBox" style="margin-top:40px;">
-        ※CoinRaderは投資助言を行いません。提供されるデータは過去の統計に基づいたものであり、将来の成果を保証するものではありません。最終的な投資判断は必ずご自身の責任において行ってください。
+      <div class="sec">
+        <h2><i class="fa-solid fa-robot"></i>独自分析（考え方）</h2>
+        <p class="text-block">
+          当サイトでは、公開データを単に表示するだけでなく、複数の指標を並べて「状況を掴みやすい」形に整理します。
+          ここでいう“独自分析”は、投資助言ではなく、相場の状態を理解するための補助情報です。
+        </p>
+
+        <div class="logic-card">
+          <div class="title"><i class="fa-solid fa-temperature-three-quarters"></i>市場の温度感（心理 × 過熱 × 資金の偏り）</div>
+          <div class="body">
+            心理（Fear &amp; Greed）、過熱（RSI）、資金の偏り（Dominance）などを同じ画面で比較し、
+            “いまの空気感”を読み取りやすくします。
+          </div>
+        </div>
+
+        <div class="logic-card">
+          <div class="title"><i class="fa-solid fa-chart-line"></i>トレンド構造（MAクロス距離の可視化）</div>
+          <div class="body">
+            長期移動平均線（例：SMA50 / SMA200）の距離を確認し、トレンドの勢い・反転の兆しを把握しやすくします。
+            （計算式や採用期間は更新で変更される場合があります）
+          </div>
+        </div>
+
+        <div class="logic-card">
+          <div class="title"><i class="fa-solid fa-wand-magic-sparkles"></i>自動要約（インサイト）</div>
+          <div class="body">
+            主要な指標の組み合わせから、現在の市場構造（例：弱気/レンジ/過熱など）を短い文章で要約し、
+            “読む時間”を削減します。
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2><i class="fa-solid fa-ranking-star"></i>ランキングの選定基準</h2>
+        <ul class="list">
+          <li><strong>上昇率ランキング</strong>：ステーブルコインを除外し、極端なノイズを避けるため流動性（出来高）も考慮します。</li>
+          <li><strong>出来高（アルト）</strong>：BTC/ETH/ステーブル系を除外し、アルト市場への資金流入を観察しやすくします。</li>
+          <li><strong>トレンド</strong>：話題性（トレンド入り）と短期変動（24h）を並置し、勢いと値動きを同時に確認できるようにします。</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <h2><i class="fa-solid fa-rotate"></i>更新頻度とデータ品質</h2>
+        <ul class="list">
+          <li><strong>市場データ</strong>：目安として約3分〜15分間隔で自動更新（APIの状況により変動）。</li>
+          <li><strong>自動要約</strong>：市場データの更新に合わせて再生成。</li>
+        </ul>
+        <div class="note">
+          <i class="fa-solid fa-triangle-exclamation" style="color:#fbbf24; margin-right:8px;"></i>
+          欠損時は直近の有効値を保持する／一時的に「データ取得中」表示となる場合があります。
+        </div>
+      </div>
+
+      <div class="finalNote">
+        <i class="fa-solid fa-circle-check"></i>
+        CoinRaderは投資助言を行いません。最終的な投資判断は、必ずご自身の責任において行ってください。
       </div>
     </div>
+  </div>
 
-<footer class="site-footer">
+  <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-brand">
-            <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
-            <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
-        </div>
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="index.html">ホーム</a>
+        <a href="data-sources.html">データソース</a>
+        <a href="about.html">運営者情報</a>
+        <a href="disclaimer.html">免責事項</a>
+        <a href="contact.html">お問い合わせ</a>
+      </div>
     </div>
     <div class="footer-copyright">
-        &copy; 2026 CoinRader. All rights reserved.
+      &copy; 2026 CoinRader. All rights reserved.
     </div>
-</footer>
-  </div>
+  </footer>
 </body>
 </html>
