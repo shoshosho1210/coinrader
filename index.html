@@ -3947,6 +3947,41 @@ white-space:nowrap; word-break:keep-all; }
   .ai-regime-card{ margin-top: 6px !important; }
 }
 
+
+/* v44: further mobile first-view compaction */
+@media (max-width: 520px){
+  /* macro ticker: shave a bit more */
+  .macro-ticker{ padding:5px 10px !important; margin-bottom:6px !important; }
+  .macro-ticker .macro-item{ padding:0 8px !important; }
+  /* section title */
+  .section-title{ margin:10px 0 10px !important; font-size:24px !important; line-height:1.15 !important; }
+  /* AI HUD panel */
+  .hud-panel{ padding:10px !important; }
+  .hud-header{ margin-bottom:8px !important; }
+  .hud-header .ai-label{ font-size:16px !important; }
+  .hud-header .verdict-pill{ padding:10px 12px !important; font-size:18px !important; }
+  .hud-metrics{ grid-gap:8px !important; margin-bottom:8px !important; }
+  .hud-metric{ padding:8px 10px !important; }
+  .hud-metric .metric-top{ margin-bottom:4px !important; }
+  /* "AIの判断理由を見る" button */
+  .ai-expand-btn{ padding:10px 12px !important; min-height:44px !important; }
+  /* expanded report: compress spacing between blocks */
+  .ai-detail{ margin-top:10px !important; }
+  .regime-card{ padding:10px 12px !important; }
+  .regime-card .kicker{ margin-bottom:2px !important; }
+  .regime-card .regime-title{ line-height:1.1 !important; }
+  .reasons-card{ padding:10px 12px !important; }
+  .strategy-card{ padding:10px 12px !important; }
+  .strategy-card h4{ margin-bottom:6px !important; }
+  .strategy-card ul{ margin-top:4px !important; }
+}
+/* ultra-small phones */
+@media (max-width: 380px){
+  .section-title{ font-size:22px !important; }
+  .hud-header .verdict-pill{ font-size:17px !important; }
+  .ai-expand-btn{ min-height:42px !important; padding:9px 10px !important; }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
