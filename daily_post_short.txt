@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (02/03)
+🤖 CoinRader 市場速報 (02/04)
 分析: 中立
 
-🔹 Bitcoin 📈
-価格: ¥1226万
-前日比: +2.4%
-RSI(14): 60.8
-心理指数: 14 (Extreme Fear)
+🔹 Bitcoin 📉
+価格: ¥1189万
+前日比: -2.0%
+RSI(14): 29.6
+心理指数: 17 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: HYPE, ZAMA, RIVER
-急上昇銘柄: RIVER (29%↑)
+トレンド入り: BTC, HYPE, SOL
+急上昇銘柄: JUP (9%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260203.html
+https://coinrader.net/share/20260204.html
 
 #CoinRader #ビットコイン #暗号資産
