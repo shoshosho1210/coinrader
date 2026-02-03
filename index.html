@@ -1937,50 +1937,6 @@ section[id] {
 /* 既存の箇条書きスタイルをリセット */
 .summary-ol { list-style: none !important; padding: 0 !important; margin: 0 !important; }
 
-/* --- System Data Reference (指標解説) --- */
-.data-reference-bar {
-    margin: 0 4px 18px;
-    padding: 12px 16px;
-    background: rgba(15, 23, 42, 0.4); /* 背景をさらに透過させ馴染ませる */
-    border: 1px solid rgba(56, 189, 248, 0.15);
-    border-left: 3px solid #38bdf8; /* 左端にアクセント線 */
-    border-radius: 8px;
-    font-size: 11px;
-    line-height: 1.6;
-    color: #94a3b8;
-}
-
-.ref-title {
-    font-weight: 800;
-    color: #38bdf8; /* テーマカラー */
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.ref-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 12px;
-}
-
-.ref-item strong {
-    color: #e2e8f0;
-    font-weight: 700;
-    margin-right: 4px;
-}
-
-.ref-footer {
-    margin-top: 8px;
-    padding-top: 6px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 10px;
-    color: #64748b;
-}
-
 /* --- Sticky Navigation: Premium Tab Style --- */
 .sticky-nav {
     background: rgba(15, 23, 42, 0.85) !important;
@@ -4362,7 +4318,7 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 </div>
 <details class="kpi-details">
-<summary class="kpi-details-summary">📌 主要指標（KPI）を表示</summary>
+<summary class="kpi-details-summary"><i class="fa-solid fa-thumbtack"></i> 主要指標（KPI）を表示</summary>
 <div class="summary-kpis" id="summaryKpis">
 <div class="kpi-tile kpi-sent">
 <div class="kpi-tile-title"><i class="fa-solid fa-gauge-high"></i><span class="kpi-title-stack"><span class="kpi-title-main">SENTIMENT</span><span class="kpi-title-sub">市場心理</span></span></div>
@@ -4472,7 +4428,7 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 <div class="cta-note">※当サイトは広告収益により運営されています（景品表示法に基づくPR表記）。</div>
 </section>
-<!-- data-reference-bar removed -->
+
 </section>
 <section id="sec-gainers">
 <div class="section-header">
