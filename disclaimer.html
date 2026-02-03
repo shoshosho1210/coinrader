@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>免責事項・広告開示について - CoinRader</title>
-  <meta name="description" content="CoinRader（コインレーダー）の利用規約、免責事項、リスク表記、および広告掲載に関する方針（ステマ規制対応）について。">
-  <link rel="canonical" href="https://coinrader.net/disclaimer">
-  
+  <title>免責事項・広告開示 - CoinRader</title>
+  <meta name="description" content="CoinRader（コインレーダー）の免責事項、暗号資産投資のリスク、広告（アフィリエイト）開示、外部リンクと著作権に関する方針。">
+  <link rel="canonical" href="https://coinrader.net/disclaimer.html">
+
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -17,83 +18,143 @@
 
   <link rel="stylesheet" href="_page_style.css" />
 
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+
   <style>
-    /* サイト全体のトーンに合わせたプロフェッショナルな配色 */
-    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
-    .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
-            background: rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); color:#f59e0b; margin-bottom: 8px;}
-    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); pt: 24px; }
-    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; }
-    .text-block { color:#cbd5e1; line-height:1.8; font-size:14px; margin-bottom: 20px; }
-    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
-            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
-            color:#94a3b8; font-size:13px; line-height:1.6; }
-
-    .pageHeader {
+    /* Header */
+    .pageHeader{
       display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
-      border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+      padding:12px 16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      margin: 18px 0 18px;
+      gap: 12px;
     }
-    .brandLogo { height:36px; }
-/* --- Final Slim Footer (Consistency Update) --- */
-.site-footer {
-    background: rgba(10, 16, 28, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 20px 16px;
-    margin-top: 60px;
-    width: 100%;
-}
+    .brandLogo{ height:36px; width:auto; }
+    .headerNav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a{
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .headerNav a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.06);
+    }
 
-.footer-inner {
-    max-width: 1000px; /* start.htmlの幅に合わせた微調整 */
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+    /* Content */
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      background: rgba(245,158,11,.10);
+      border:1px solid rgba(245,158,11,.28);
+      color:#fbbf24;
+      margin-bottom: 10px;
+    }
+    .lead{ color:#cbd5e1; line-height:1.9; margin: 12px 0 22px; font-size: 15px; }
 
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .sec{ margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 18px; }
+    .sec h2{
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: #fff;
+      display:flex; align-items:center; gap:10px;
+      letter-spacing: .2px;
+    }
+    .sec h2 i{
+      color:#fbbf24;
+      filter: drop-shadow(0 0 10px rgba(245,158,11,.14));
+    }
 
-.footer-logo { height: 36px !important; width: auto; opacity: 0.8; }
-.footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
+    .text-block{ color:#cbd5e1; line-height:1.9; font-size:14px; margin: 0 0 14px; }
+    .note{
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.08);
+      color:#94a3b8;
+      font-size:13px;
+      line-height:1.7;
+    }
 
-.footer-nav {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+    .riskList{
+      padding-left: 18px;
+      margin: 0;
+    }
+    .riskList li{ margin: 8px 0; }
+    .riskList strong{ color:#e2e8f0; }
 
-.footer-nav a {
-    color: #94a3b8;
-    font-size: 11.5px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s;
-}
+    .finalNote{
+      margin-top: 18px;
+      border: 1px solid rgba(56,189,248,.18);
+      background: rgba(56,189,248,.05);
+      border-radius: 14px;
+      padding: 14px;
+      color:#cbd5e1;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .finalNote i{ color:#38bdf8; margin-right: 8px; }
 
-.footer-nav a:hover { color: #38bdf8; }
-
-.footer-copyright {
-    max-width: 1000px;
-    margin: 12px auto 0;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    text-align: center;
-    font-size: 10px;
-    color: #475569;
-}
-
-@media (max-width: 768px) {
-    .footer-inner { flex-direction: column; text-align: center; }
-    .footer-nav { justify-content: center; gap: 8px 12px; }
-    .footer-brand { flex-direction: column; gap: 4px; }
-}
+    /* Footer (consistent) */
+    .site-footer{
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px 16px;
+      margin-top: 60px;
+      width: 100%;
+    }
+    .footer-inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .footer-brand{ display:flex; align-items:center; gap:10px; }
+    .footer-logo{ height: 36px !important; width:auto; opacity: .85; }
+    .footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a{
+      color:#94a3b8;
+      font-size: 11.5px;
+      text-decoration:none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .footer-nav a:hover{ color:#38bdf8; }
+    .footer-copyright{
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
+    }
+    @media (max-width: 768px){
+      .footer-inner{ flex-direction: column; text-align:center; }
+      .footer-nav{ justify-content: center; gap: 8px 12px; }
+      .footer-brand{ flex-direction: column; gap: 4px; }
+      .headerNav{ justify-content: flex-end; }
+    }
   </style>
 </head>
 
@@ -103,65 +164,87 @@
       <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="assets/icons/logo_horizontal_v4.png" alt="CoinRader">
       </a>
+
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="index.html"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="about.html"><i class="fa-solid fa-user"></i><span>運営者情報</span></a>
+        <a href="contact.html"><i class="fa-solid fa-envelope"></i><span>お問い合わせ</span></a>
+      </nav>
     </header>
 
     <div class="card">
-      <span class="pill">重要事項</span>
+      <span class="pill"><i class="fa-solid fa-triangle-exclamation"></i>重要事項</span>
       <h1>免責事項・広告開示</h1>
-      <p class="lead">CoinRader（以下「当サイト」）をご利用いただく際は、以下の免責事項およびリスクについて必ずご確認ください。</p>
+      <p class="lead">
+        CoinRader（以下「当サイト」）をご利用いただく際は、以下の内容をご確認ください。
+        当サイトは投資助言ではなく、情報提供を目的としています。
+      </p>
 
       <div class="sec">
-        <h2>📢 広告の表示（アフィリエイトについて）</h2>
-        <div class="text-block">
-          当サイトは、アクセストレード等のアフィリエイトプログラムに参加しており、提携している取引所等の広告を掲載しています。<br>
-          掲載されているリンクを経由して口座開設や取引が行われた場合、当サイトは広告主から報酬を得ることがあります。ただし、これによりユーザー様に追加の費用が発生することは一切ありません。
-        </div>
+        <h2><i class="fa-solid fa-bullhorn"></i>広告の表示（アフィリエイトについて）</h2>
+        <p class="text-block">
+          当サイトはアフィリエイトプログラムに参加しており、提携している取引所等の広告を掲載しています。
+          掲載リンクを経由して口座開設や取引が行われた場合、当サイトが広告主から報酬を得ることがあります。
+          ただし、これによりユーザー様に追加の費用が発生することはありません。
+        </p>
         <div class="note">
-          ※2023年10月施行の景品表示法（通称：ステマ規制）を遵守し、広告が含まれるページには「PR」または「広告」の表記を行っています。
+          <i class="fa-solid fa-circle-info" style="color:#fbbf24; margin-right:8px;"></i>
+          景品表示法（いわゆるステマ規制）を踏まえ、広告が含まれるページでは「PR」または「広告」の表記を行います。
         </div>
       </div>
 
       <div class="sec">
-        <h2>⚖️ 免責事項</h2>
-        <div class="text-block">
-          当サイトに掲載されている情報（価格、ランキング、AI分析、GARCH予測モデル等）は、あくまで一般的な情報の提供を目的としたものであり、特定の金融商品の売買を勧誘するものではありません。<br>
-          当サイトの分析結果は、統計的・論理的推測に基づいたものであり、将来の運用成果を示唆・保証するものではありません。情報の正確性には万全を期していますが、その内容を保証するものではなく、情報の利用によって生じたいかなる損害についても、当サイト運営者は一切の責任を負いません。
-        </div>
+        <h2><i class="fa-solid fa-scale-balanced"></i>免責事項</h2>
+        <p class="text-block">
+          当サイトに掲載される情報（価格、ランキング、AI分析、各種モデル等）は、一般的な情報提供を目的としたものであり、
+          特定の金融商品の売買を勧誘するものではありません。分析結果は統計的・論理的推測に基づくもので、将来の成果を保証しません。
+        </p>
+        <p class="text-block">
+          情報の正確性には配慮しますが、その内容を保証するものではありません。
+          当サイトの情報利用により生じたいかなる損害についても、当サイト運営者は責任を負いません。
+        </p>
       </div>
 
       <div class="sec">
-        <h2>⚠️ 暗号資産投資のリスク</h2>
-        <ul class="text-block" style="padding-left: 20px;">
-          <li><strong>価格変動リスク：</strong>暗号資産はボラティリティが極めて高く、短期間に大きな損失を被る可能性があります。</li>
-          <li><strong>レバレッジリスク：</strong>レバレッジ取引（CFD等）は、預け入れた証拠金以上の損失が発生するリスクがあります。</li>
-          <li><strong>流動性・システムリスク：</strong>市場環境や通信障害により、意図した価格で取引できない場合があります。</li>
-          <li><strong>法規制・セキュリティリスク：</strong>各国の法規制やサイバー攻撃等により、資産価値が影響を受ける可能性があります。</li>
+        <h2><i class="fa-solid fa-shield-halved"></i>暗号資産投資のリスク</h2>
+        <ul class="text-block riskList">
+          <li><strong>価格変動リスク：</strong>暗号資産はボラティリティが高く、短期間に大きな損失を被る可能性があります。</li>
+          <li><strong>レバレッジリスク：</strong>レバレッジ取引では、証拠金以上の損失が発生する場合があります。</li>
+          <li><strong>流動性・システムリスク：</strong>市場環境や通信障害等により、意図した価格で取引できない場合があります。</li>
+          <li><strong>法規制・セキュリティリスク：</strong>各国の法規制変更やサイバー攻撃等により、資産価値が影響を受ける可能性があります。</li>
         </ul>
       </div>
 
       <div class="sec">
-        <h2>🔗 外部サイトおよび著作権</h2>
-        <div class="text-block">
-          当サイトからリンクしている外部サイト（各取引所等）の内容については、リンク先の責任において管理されるものであり、当サイトが関与するものではありません。また、当サイト内の独自の分析データやコンテンツの無断転載・複製は固く禁じます。
-        </div>
+        <h2><i class="fa-solid fa-link"></i>外部サイトおよび著作権</h2>
+        <p class="text-block">
+          当サイトからリンクしている外部サイトの内容は、リンク先の責任において管理されるものであり、当サイトは関与しません。
+          また、当サイト内の独自の分析データやコンテンツの無断転載・複製は固く禁じます。
+        </p>
       </div>
 
-      <div class="noteBox" style="margin-top:40px;">
-        ※最終的な投資判断は、必ずご自身の責任において行っていただきますようお願い申し上げます。
+      <div class="finalNote">
+        <i class="fa-solid fa-circle-check"></i>
+        最終的な投資判断は、必ずご自身の責任において行ってください。
       </div>
     </div>
+  </div>
 
-<footer class="site-footer">
+  <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-brand">
-            <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
-            <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
-        </div>
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="index.html">ホーム</a>
+        <a href="about.html">運営者情報</a>
+        <a href="contact.html">お問い合わせ</a>
+      </div>
     </div>
     <div class="footer-copyright">
-        &copy; 2026 CoinRader. All rights reserved.
+      &copy; 2026 CoinRader. All rights reserved.
     </div>
-</footer>
-  </div>
+  </footer>
 </body>
 </html>
