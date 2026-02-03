@@ -2471,13 +2471,17 @@ body {
   color: rgba(229,231,235,.65);
   letter-spacing: .02em;
 }
+
+.ai-reasons-grid .h:nth-child(2){ text-align:right; }
+.ai-reasons-grid .h:nth-child(3){ text-align:left; }
+.ai-reasons-grid .h:nth-child(4){ text-align:right; }
 .ai-reasons-grid .c{
   font-size: 13px;
   color: rgba(229,231,235,.90);
 }
 .ai-reasons-grid .c.value{ font-variant-numeric: tabular-nums; text-align:right; }
-.ai-reasons-grid .c.th{ color: rgba(229,231,235,.72); }
-.ai-reasons-grid .c.sig{ text-align:right; font-weight:700; }
+.ai-reasons-grid .c.th{ color: rgba(229,231,235,.72); text-align:right; font-variant-numeric: tabular-nums; }
+.ai-reasons-grid .c.sig{ text-align:left; font-weight:700; }
 .ai-reasons-grid .row{ display: contents; }
 .ai-reasons-grid .tag{ display:inline-flex; align-items:center; gap:6px; font-weight:700; }
 .ai-reasons-grid .dot{ width:7px;height:7px;border-radius:999px; background: rgba(56,189,248,.9); box-shadow: 0 0 0 3px rgba(56,189,248,.15); }
@@ -3832,6 +3836,28 @@ white-space:nowrap; word-break:keep-all; }
   }
 }
 .summary-card-title .fa-solid{ margin-right:6px; opacity:.95; }
+
+
+/* v37: AI詳細レポート（スマホ）を縦に詰めて“見切れ”を減らす */
+@media (max-width: 520px){
+  .ai-mini{ gap: 8px; }
+  .ai-regime-hero{ padding: 10px 12px; border-radius: 12px; }
+  .ai-regime-kicker{ font-size: 11px; margin-bottom: 1px; }
+  .ai-regime-main{ font-size: 15px; }
+  .ai-regime-meta{ font-size: 11px; }
+  .ai-mini-block{ padding: 8px 10px; border-radius: 12px; }
+  .ai-mini-title{ margin-bottom: 4px; }
+  .ai-reasons-grid{
+    grid-template-columns: 72px 70px 76px 1fr;
+    gap: 4px 8px;
+    padding-top: 4px;
+  }
+  .ai-reasons-grid .h{ font-size: 10px; }
+  .ai-reasons-grid .c{ font-size: 12px; }
+  .ai-mini-ul{ font-size: 12px; line-height: 1.45; }
+  .ai-mini-ul li{ margin: 3px 0; }
+  .ai-kw{ padding: 1px 6px; }
+}
 
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
@@ -7516,7 +7542,7 @@ const reasonRows = [
 ];
 const reasonGridHtml = `
   <div class="ai-reasons-grid" role="table" aria-label="判断理由">
-    <div class="h">指標</div><div class="h" style="text-align:right;">現在値</div><div class="h" style="text-align:right;">判定</div><div class="h">目安</div>
+    <div class="h">指標</div><div class="h">現在値</div><div class="h">判定</div><div class="h">目安</div>
     ${reasonRows.map(r=>{
       const tone=_aiSigTone(r.sig);
       return `
