@@ -2501,60 +2501,42 @@ body {
 }
 
 .ai-reasons-grid{
-  margin-top: 8px;
-  width: 100%;
-}
-
-.ai-reasons-grid .hdr,
-.ai-reasons-grid .r{
-  display: grid;
-  grid-template-columns: 96px 60px 86px minmax(78px, 1fr);
-  column-gap: 10px;
+  display:grid;
+  width:100%;
+  box-sizing:border-box;
+  overflow:hidden;
+  grid-template-columns: 84px 56px 1fr minmax(72px, 92px);
+  gap: 6px 8px;
   align-items: center;
+  padding-top: 4px;
+}
+.ai-reasons-grid .c.ind{min-width:0; overflow:hidden;}
+.ai-reasons-grid .c.ind span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.ai-reasons-grid > *{ min-width:0; }
+
+.ai-reasons-grid .h{
+  font-size: 11px;
+  color: rgba(229,231,235,.65);
+  letter-spacing: .02em;
 }
 
-.ai-reasons-grid .hdr{
-  color: rgba(226,232,240,0.65);
-  font-size: 12px;
-  padding: 0 0 6px 0;
-}
-
-.ai-reasons-grid .r{
-  padding: 6px 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-
+.ai-reasons-grid .h:nth-child(2){ text-align:right; }
+.ai-reasons-grid .h:nth-child(3){ text-align:left; }
+.ai-reasons-grid .h:nth-child(4){ text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ai-reasons-grid .value{ text-align:right; }
+.ai-reasons-grid .th{ text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .ai-reasons-grid .c{
   font-size: 13px;
-  min-width: 0;
+  color: rgba(229,231,235,.90);
 }
-
-.ai-reasons-grid .c.value,
-.ai-reasons-grid .c.sig,
-.ai-reasons-grid .c.th{
-  justify-self: end;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.ai-reasons-grid .tag{
-  max-width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 520px){
-  .ai-reasons-grid .hdr,
-  .ai-reasons-grid .r{
-    grid-template-columns: 88px 52px 74px minmax(74px, 1fr);
-    column-gap: 8px;
-  }
-  .ai-reasons-grid .c{ font-size: 12px; }
-  .ai-reasons-grid .hdr{ font-size: 11px; }
-}
-
+.ai-reasons-grid .c.value{ font-variant-numeric: tabular-nums; text-align:right; }
+.ai-reasons-grid .c.th{ color: rgba(229,231,235,.72); text-align:right; font-variant-numeric: tabular-nums; ; white-space:nowrap;}
+.ai-reasons-grid .c.sig{ text-align:left; font-weight:700; }
+.ai-reasons-grid .row{ display: contents; }
+.ai-reasons-grid .tag{ display:inline-flex; align-items:center; gap:6px; font-weight:700; }
+.ai-reasons-grid .dot{ width:7px;height:7px;border-radius:999px; background: rgba(56,189,248,.9); box-shadow: 0 0 0 3px rgba(56,189,248,.15); }
+.ai-reasons-grid .dot.bear{ background: rgba(239,68,68,.95); box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
+.ai-reasons-grid .dot.bull{ background: rgba(34,197,94,.95); box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
 
 .ai-kw{
   padding: 0 6px;
@@ -3425,25 +3407,6 @@ body {
 .pill-label{ font-weight:800; font-size:11px; letter-spacing:.08em; color:#38bdf8; }
 .pill-sub{ font-size:10px; opacity:0.75; }
 .pill-value{ font-weight:800; font-size:14px; }
-
-
-/* Mobile: stack pill labels into 2 lines (avoid ellipsis like "SE...") */
-@media (max-width: 520px){
-  .pill-top{ align-items: flex-start; }
-  .pill-labelwrap{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-  }
-  .pill-label,
-  .pill-sub{
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-  }
-  .pill-label{ font-size: 10.5px; letter-spacing: .06em; }
-  .pill-sub{ font-size: 10px; opacity: .8; margin-left: 0; }
-}
 
 .pill-bar-bg{
   margin-top: 6px;
@@ -7855,24 +7818,17 @@ const reasonRows = [
   }
 ];
 const reasonGridHtml = `
-  <div class="ai-reasons-grid" aria-label="判断理由">
-    <div class="hdr">
-      <div class="c">指標</div>
-      <div class="c value">現在値</div>
-      <div class="c sig">判定</div>
-      <div class="c th">目安</div>
-    </div>
+  <div class="ai-reasons-grid" role="table" aria-label="判断理由">
+    <div class="h">指標</div><div class="h">現在値</div><div class="h">判定</div><div class="h">目安</div>
     ${reasonRows.map(r=>{
       const tone=_aiSigTone(r.sig);
       return `
-        <div class="r">
+        <div class="row" role="row">
           <div class="c"><span class="tag"><span class="dot ${tone}"></span>${r.k}</span></div>
           <div class="c value">${r.v}</div>
           <div class="c sig">${r.sig}</div>
           <div class="c th">${r.th}</div>
         </div>`;
-    }).join('')}
-  </div>`;
     }).join('')}
   </div>`;
 
@@ -7976,11 +7932,10 @@ textEl.innerHTML = htmlContent;
         textEl.style.opacity = '1'; 
     }, 50);
 
-    } catch (e) {
-      console.warn('AI insight failed', e);
-      if (textEl) textEl.textContent = 'AI insight unavailable';
+    if (noteEl) noteEl.style.opacity = "0.8";
+    _ai_thinking = false;
+
     } finally {
-      if (noteEl) noteEl.style.opacity = "0.8";
       _ai_thinking = false;
     }
 }
