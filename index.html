@@ -643,7 +643,23 @@
   body{ padding-left: var(--dock-w); }
   .sideMenuOverlay{ display:none !important; }
   .iconBtn.menuBtn{ display:none; }
-  #menuCloseBtn{ display:inline-flex; }
+  #menuCloseBtn{
+  width:32px; height:32px;
+  display:grid; place-items:center;
+  border-radius:999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  color: rgba(229,231,235,.95);
+  transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+#menuCloseBtn i{ font-size:14px; line-height:1; }
+#menuCloseBtn:hover{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(56,189,248,.28);
+  box-shadow: 0 6px 18px rgba(0,0,0,.22);
+  transform: translateY(-1px);
+}
+#menuCloseBtn:active{ transform: translateY(0); }
   .sideMenu{ transform:none !important; opacity:1 !important; pointer-events:auto !important; }
 }
 
@@ -3796,7 +3812,7 @@ white-space:nowrap; word-break:keep-all; }
 <aside aria-hidden="true" class="sideMenu" id="sideMenu">
 <div class="sideMenuHeader">
 <div class="sideMenuTitle">メニュー</div>
-<button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button">×</button>
+<button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
 </div>
 <nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
 <div class="sideMenuFooter">
