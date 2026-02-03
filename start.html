@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>暗号資産投資の始め方 - CoinRader | データ分析から選ぶ取引所ガイド</title>
-  <meta name="description" content="CoinRader（コインレーダー）による暗号資産投資の始め方。データ分析の視点から、2026年最新の国内取引所を厳選解説します。">
-  <link rel="canonical" href="https://coinrader.net/start">
-  
+  <title>暗号資産の始め方 - CoinRader</title>
+  <meta name="description" content="CoinRader（コインレーダー）による暗号資産の始め方ガイド。口座選び、セキュリティ、データ分析、損益管理まで4ステップで解説します。">
+  <link rel="canonical" href="https://coinrader.net/start.html">
+
   <meta property="og:site_name" content="CoinRader">
-  <meta property="og:title" content="暗号資産投資の始め方 | CoinRader">
-  <meta property="og:description" content="分析者が選ぶ「現物」と「分析トレード」の最適解。損益管理まで網羅した4ステップ。">
+  <meta property="og:title" content="暗号資産の始め方 | CoinRader">
+  <meta property="og:description" content="口座選び→セキュリティ→データ分析→損益管理。最短で「迷わない」4ステップ。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png">
   <meta name="twitter:card" content="summary_large_image">
 
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -22,294 +23,342 @@
     gtag('config', 'G-TDEBXC7DH6');
   </script>
 
-  <link rel="stylesheet" href="/_page_style.css" />
+  <link rel="stylesheet" href="_page_style.css" />
+
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
 
   <style>
-    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
-    .pill { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;
-            background: rgba(56, 189, 248, 0.1); border:1px solid rgba(56, 189, 248, 0.3); color:#38bdf8; margin-bottom: 8px;}
-    .section { margin-top: 40px; }
-    .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin-top:16px; }
-    
-    .xcard { 
-      background: linear-gradient(145deg, #111827, #1f2937); 
-      border:1px solid rgba(255,255,255,.1); 
-      border-radius:16px; padding:24px;
+    /* Header (consistent) */
+    .pageHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      margin: 18px 0 18px;
+      gap: 12px;
+    }
+    .brandLogo{ height:36px; width:auto; }
+    .headerNav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a{
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .headerNav a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.06);
+    }
+
+    /* Content */
+    .lead { color:#cbd5e1; line-height:1.9; margin: 14px 0 22px; font-size: 15px; }
+    .pill {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:5px 10px; border-radius:999px; font-size:11px; font-weight:900;
+      background: rgba(56, 189, 248, 0.10); border:1px solid rgba(56, 189, 248, 0.22);
+      color:#7dd3fc; margin-bottom: 10px;
+    }
+
+    .section { margin-top: 34px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 18px; }
+    .section h2{
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: #fff;
+      display:flex; align-items:center; gap:10px;
+      letter-spacing: .2px;
+    }
+    .section h2 i{ color:#38bdf8; filter: drop-shadow(0 0 10px rgba(56,189,248,.10)); }
+
+    .muted { color:#94a3b8; font-size:13px; line-height:1.7; }
+    .text-block { color:#cbd5e1; line-height:1.9; font-size:14px; margin: 0 0 14px; }
+
+    .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-top:16px; }
+
+    .xcard {
+      background: linear-gradient(145deg, #111827, #1f2937);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:16px; padding:22px;
       transition: all 0.2s ease;
-      display: flex; flex-direction: column;
+      display:flex; flex-direction:column;
+      overflow:hidden;
     }
-    .xcard:hover { transform: translateY(-4px); border-color: #38bdf8; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); }
-    .xcard h3 { margin:0 0 8px; font-size:20px; color:#fff; }
-    .xcard .badge { font-size: 11px; padding: 3px 10px; border-radius: 4px; background: #2563eb; color: #fff; margin-bottom: 12px; display: inline-block; font-weight: bold;}
-    
-    .muted { color:#94a3b8; font-size:13px; line-height:1.6; }
-    .list { margin:16px 0; padding-left: 20px; color:#cbd5e1; line-height:1.8; flex-grow: 1; }
-    
+    .xcard:hover { transform: translateY(-3px); border-color: rgba(56,189,248,.55); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); }
+    .xcard h3 { margin:0 0 8px; font-size:18px; color:#fff; display:flex; align-items:center; gap:10px; }
+    .xcard h3 i{ color:#a78bfa; }
+    .xcard .badge { font-size: 11px; padding: 3px 10px; border-radius: 999px; background: rgba(37,99,235,.9); color: #fff; margin-bottom: 12px; display: inline-flex; align-items:center; gap:8px; font-weight: 900;}
+
+    .list { margin:14px 0 0; padding-left: 20px; color:#cbd5e1; line-height:1.85; flex-grow:1; font-size: 13.5px; }
+    .list li{ margin: 8px 0; }
+
     .btn-primary{
-      display:flex; align-items:center; justify-content:center;
-      width: 100%; padding:14px; border-radius:12px;
-      background:#2563eb; color:#fff; font-weight:800; text-decoration:none;
-      transition: background 0.2s;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width: 100%; padding:13px 14px; border-radius:12px;
+      background:#2563eb; color:#fff; font-weight:900; text-decoration:none !important;
+      transition: transform .15s, filter .15s, background .2s;
+      margin-top: 14px;
+      border: 1px solid rgba(37,99,235,1);
     }
-    .btn-primary:hover{ background:#3b82f6; }
+    .btn-primary:hover{ background:#3b82f6; transform: translateY(-1px); filter: brightness(1.02); }
 
     .expert-box {
       border: 1px solid rgba(56, 189, 248, 0.2);
       background: rgba(56, 189, 248, 0.05);
-      padding: 20px; border-radius: 12px; margin: 24px 0;
-      display: flex; gap: 15px; align-items: flex-start;
+      padding: 18px; border-radius: 14px; margin: 18px 0;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .expert-ico{
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(56,189,248,.12);
+      border:1px solid rgba(56,189,248,.22);
+      color:#7dd3fc;
+      flex: 0 0 auto;
     }
 
-    .pageHeader{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.1);
-      background:rgba(15, 23, 42, 0.8);
+    .noteBox{
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.08);
+      color:#94a3b8;
+      font-size:13px;
+      line-height:1.8;
     }
-    .brandLogo{ height:26px; }
+    .noteBox i{ color:#fbbf24; margin-right: 8px; }
 
-    /* プロ仕様：クリプタクト専用モジュール */
-    .tax-card {
-      background: rgba(15, 23, 42, 0.6); 
-      border: 1px solid rgba(16, 185, 129, 0.3); 
-      border-radius: 16px; 
-      padding: 28px; 
-      margin: 24px 0;
-      position: relative;
+    /* Tax card (Cryptact) */
+    .tax-card-final {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 16px;
+      padding: 22px;
+      transition: all 0.2s ease;
+      text-align: left;
     }
-    .tax-btn {
-      display: inline-block;
+    .tax-card-final:hover {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+      transform: translateY(-2px);
+    }
+    .tax-btn-final {
       background: #10b981;
       color: #fff;
-      padding: 14px 28px;
-      border-radius: 8px;
-      font-weight: 800;
-      text-decoration: none;
-      font-size: 14px;
-      transition: all 0.2s;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 900;
       text-align: center;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display:flex; align-items:center; justify-content:center; gap:10px;
     }
-    .tax-btn:hover { background: #059669; transform: scale(1.02); }
 
-    /* --- Final Slim Footer --- */
-    .site-footer { background: rgba(10, 16, 28, 0.4); border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 20px 16px; margin-top: 60px; width: 100%; }
-    .footer-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-    .footer-logo { height: 36px !important; width: auto; opacity: 0.8; }
-    .footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
-    .footer-nav { display: flex; gap: 12px; flex-wrap: wrap; }
-    .footer-nav a { color: #94a3b8; font-size: 11.5px; text-decoration: none !important; transition: color 0.2s; }
-    .footer-nav a:hover { color: #38bdf8; }
-    .footer-copyright { max-width: 1000px; margin: 12px auto 0; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.02); text-align: center; font-size: 10px; color: #475569; }
+    /* Footer (consistent) */
+    .site-footer{
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px 16px;
+      margin-top: 60px;
+      width: 100%;
+    }
+    .footer-inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .footer-brand{ display:flex; align-items:center; gap:10px; }
+    .footer-logo{ height: 36px !important; width:auto; opacity: 0.85; }
+    .footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a{
+      color:#94a3b8;
+      font-size: 11.5px;
+      text-decoration:none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .footer-nav a:hover{ color:#38bdf8; }
+    .footer-copyright{
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
+    }
+
+    @media (max-width: 768px){
+      .footer-inner{ flex-direction: column; text-align:center; }
+      .footer-nav{ justify-content: center; gap: 8px 12px; }
+      .footer-brand{ flex-direction: column; gap: 4px; }
+      .headerNav{ justify-content: flex-end; }
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <header class="pageHeader" role="banner">
-      <a class="brandLink" href="/" aria-label="CoinRader ホーム">
+      <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="assets/icons/logo_horizontal_v4.png" alt="CoinRader">
       </a>
+
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="index.html"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="guide.html"><i class="fa-solid fa-book-open"></i><span>ガイド</span></a>
+        <a href="privacy.html"><i class="fa-solid fa-shield"></i><span>プライバシー</span></a>
+        <a href="disclaimer.html"><i class="fa-solid fa-triangle-exclamation"></i><span>免責事項</span></a>
+        <a href="contact.html"><i class="fa-solid fa-envelope"></i><span>お問い合わせ</span></a>
+      </nav>
     </header>
 
     <div class="card">
-      <span class="pill">投資ガイド</span>
-      <h1>暗号資産投資の始め方</h1>
-      
+      <span class="pill"><i class="fa-solid fa-flag-checkered"></i>Start</span>
+      <h1>暗号資産の始め方</h1>
+
       <p class="lead">
-        CoinRaderはデータに基づいた投資判断を支援するプラットフォームです。<br>
-        「分析を利益に変える」ために必要な取引環境と、資産を守るためのステップを解説します。
+        最初にやることは「どこで売買するか」ではなく、<b>守り（セキュリティ）</b>と<b>判断（データ）</b>の型を作ることです。<br>
+        ここでは、迷わず始めるための4ステップをまとめます。
       </p>
 
-<div class="expert-box">
-  <div style="font-size: 24px;">📡</div>
-  <div>
-    <strong style="color:#38bdf8;">CoinRaderの分析方針:</strong><br>
-    <span class="muted">
-      当サイトは、個人の主観や感情的な煽りを排除し、AIによるニュース解析と統計的なテクニカル指標を用いて構築されています。
-      「市場をありのままに数字化して見る」ためのツールとして、開発者自身が投資判断の参考にするための厳格な基準を採用しています。
-    </span>
-  </div>
-</div>
+      <div class="expert-box">
+        <div class="expert-ico" aria-hidden="true"><i class="fa-solid fa-radar" style="font-size:18px;"></i></div>
+        <div>
+          <strong style="color:#38bdf8;">CoinRaderの分析方針</strong><br>
+          <span class="muted">
+            主観や煽りを避け、公開データと指標の組み合わせで「市場の温度感」を整理します。<br>
+            目的は“当てる”よりも、<b>判断を早く・ブレなく</b>することです。
+          </span>
+        </div>
+      </div>
 
       <div class="noteBox">
-        <span class="pill" style="background:rgba(255,255,255,0.05); color:#94a3b8;">広告・PR</span><br>
-        当サイトは広告収益により運営されています。本ページを経由した口座開設等により収益が発生することがありますが、ユーザー様への追加費用は一切ございません。
+        <i class="fa-solid fa-bullhorn"></i>
+        本ページには広告・PRリンクが含まれる場合があります。リンク経由で申込等が行われると当サイトに報酬が発生することがありますが、ユーザーの追加費用はありません。
       </div>
 
       <div class="section">
-        <h2>ステップ1：目的に合う「口座」を持つ</h2>
-        <p class="muted">まずは、自分の投資スタイルに合わせて最適な窓口を選びましょう。</p>
+        <h2><i class="fa-solid fa-circle-1"></i>ステップ1：目的に合う「口座」を持つ</h2>
+        <p class="muted">まずは自分のスタイルに合う窓口を用意します。ここでは「初心者向け」「トレード/分析向け」の2枠に整理しました。</p>
 
         <div class="cards">
-          <div class="xcard" style="border-top: 4px solid #00d2ff;">
-            <span class="badge">人気No.1・初心者向け</span>
-            <h3>コインチェック</h3>
-            <div class="muted">アプリダウンロード数国内No.1</div>
+          <div class="xcard" style="border-top: 4px solid rgba(56,189,248,.9);">
+            <span class="badge"><i class="fa-solid fa-star"></i>初心者向け</span>
+            <h3><i class="fa-solid fa-mobile-screen-button"></i>コインチェック</h3>
+            <div class="muted">まず1口座作るなら、迷わない操作性を優先</div>
             <ul class="list">
-              <li>スマホアプリが抜群に使いやすく、最初の1口座に最適。</li>
-              <li>マネックスグループによる強固なセキュリティ基盤。</li>
-              <li><strong>分析視点:</strong> ユーザー数が多いため、国内の市場心理を反映しやすい。</li>
+              <li>スマホ中心で始める人は、操作性の良さが継続率に直結します。</li>
+              <li>最初は「現物の少額」から慣れるのがおすすめです。</li>
+              <li><b>分析視点:</b> 大衆の流れに近い動きが出やすい点を観察できます。</li>
             </ul>
-            <div class="btnrow">
-              <a class="btn-primary" href="ここにコインチェックのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cc_open">
-                コインチェック 公式サイト
-              </a>
-            </div>
+            <a class="btn-primary" href="ここにコインチェックのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_cc_open">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>公式サイトへ
+            </a>
           </div>
 
-          <div class="xcard" style="border-top: 4px solid #3b82f6;">
-            <span class="badge" style="background:#1e40af;">トレード・分析重視</span>
-            <h3>みんなのコイン / FXTF</h3>
-            <div class="muted">レバレッジ取引 / 高機能ツール</div>
+          <div class="xcard" style="border-top: 4px solid rgba(99,102,241,.9);">
+            <span class="badge" style="background: rgba(99,102,241,.9);"><i class="fa-solid fa-chart-line"></i>トレード/分析向け</span>
+            <h3><i class="fa-solid fa-screwdriver-wrench"></i>みんなのコイン / FXTF</h3>
+            <div class="muted">レバレッジ / 高機能ツール（検証・運用向き）</div>
             <ul class="list">
-              <li><strong>みんなのコイン:</strong> 各種手数料0円でレバレッジ取引が可能。</li>
-              <li><strong>FXTF:</strong> 唯一無二の「MT4」対応。独自インジケーターの検証に。</li>
-              <li>高度な分析を実際の利益に変えるための「攻め」の口座。</li>
+              <li><b>みんなのコイン:</b> 手数料を抑えてレバレッジ取引を検討したい人向け。</li>
+              <li><b>FXTF:</b> MT4対応。インジケーター検証やルール化をしたい人向け。</li>
+              <li>「攻め」の口座は、<b>損切りルール</b>とセットで運用するのが前提です。</li>
             </ul>
-            <div class="btnrow">
-              <a class="btn-primary" href="ここにみんなのコインのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_minna_open" style="background:#1d4ed8;">
-                トレード専用口座を開く
-              </a>
-            </div>
+            <a class="btn-primary" href="ここにみんなのコインのSSLリンクURL" target="_blank" rel="noopener noreferrer" data-ga="ex_minna_open" style="background:#1d4ed8; border-color:#1d4ed8;">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>トレード口座を見る
+            </a>
           </div>
+        </div>
 
-          <div class="xcard" style="border-top: 4px solid #64748b;">
-            <span class="badge" style="background:#475569;">信頼・低コスト重視</span>
-            <h3>GMOコイン / BITPOINT</h3>
-            <div class="muted">手数料の安さ国内トップクラス</div>
-            <ul class="list">
-              <li><strong>GMOコイン:</strong> 即時入金・送金手数料が無料。オリコン満足度No.1。</li>
-              <li><strong>BITPOINT:</strong> 板取引の手数料が無料。SBIグループが運営。</li>
-              <li>長期保有（ガチホ）で資産を確実に積み上げる「守り」の口座。</li>
-            </ul>
-            <div class="btnrow">
-              <a class="btn-primary" href="ここにGMOコインのSSLリンクURL" target="_blank" rel="noopener noreferrer" style="background:#475569;">
-                詳細を公式サイトで見る
-              </a>
-            </div>
-          </div>
+        <div class="noteBox" style="margin-top:16px;">
+          <i class="fa-solid fa-circle-info"></i>
+          取引所の選定は「一発で最適」を狙わず、<b>少額で試して合う所を残す</b>のが安全です。
         </div>
       </div>
 
       <div class="section">
-        <h2>ステップ2：セキュリティの徹底</h2>
+        <h2><i class="fa-solid fa-circle-2"></i>ステップ2：セキュリティを固める</h2>
         <div class="text-block muted">
-          暗号資産は自分の手で守るものです。以下の2点は必ず設定しましょう。
+          暗号資産は「自分の資産を自分で守る」要素が強い分野です。最低限、次の2点は必ず設定してください。
         </div>
         <ul class="list">
-          <li><strong>2段階認証の必須化:</strong> SMS認証ではなく、Google Authenticator等の専用アプリを使いましょう。</li>
-          <li><strong>資産の分散管理:</strong> 一つの取引所に全財産を置かず、用途（売買用・長期保存用）で分けましょう。</li>
+          <li><b>2段階認証</b>：SMSではなく、認証アプリ（Authenticator等）を推奨。</li>
+          <li><b>資産の分散</b>：売買用と保管用で分け、1つに集中させない。</li>
         </ul>
       </div>
 
-<div class="section" style="position: relative; z-index: 100;">
-  <h2>ステップ3：客観的なデータ分析（当サイトの活用）</h2>
-  <div class="text-block muted">
-    注文を出す前に、必ず <a href="/" style="color: #38bdf8; text-decoration: underline; font-weight: bold;">CoinRader ホーム</a> で市場の「検温」を行ってください。
-  </div>
-  <ul class="list">
-    <li><strong>AIセンチメント:</strong> 市場がパニックや総楽観になっていないか。</li>
-    <li><strong>RSI:</strong> 統計的に「買われすぎ」ていないか。</li>
-  </ul>
-</div>
+      <div class="section">
+        <h2><i class="fa-solid fa-circle-3"></i>ステップ3：データで「検温」してから注文する</h2>
+        <div class="text-block muted">
+          注文前に、<a href="index.html" style="color:#38bdf8; text-decoration: underline; font-weight: 900;">CoinRader ホーム</a>で、
+          「心理・過熱・トレンド」を見て状況を整えてください。
+        </div>
+        <ul class="list">
+          <li><b>心理（Fear &amp; Greed）</b>：市場が極端に恐怖/楽観に偏っていないか</li>
+          <li><b>RSI（過熱感）</b>：短期的に買われすぎ/売られすぎになっていないか</li>
+          <li><b>ランキング</b>：資金が集まっている銘柄を確認（話題・出来高・上昇）</li>
+        </ul>
+      </div>
 
-<div class="section" style="position: relative; z-index: 100;">
-  <h2>ステップ4：損益管理・税金対策（必須）</h2>
-  <p class="muted">複数の口座を持つなら、自動計算ツールの導入は必須です。</p>
-  
-  <a href="https://h.accesstrade.net/sp/cc?rk=0100pdy600onmg" target="_blank" rel="noopener noreferrer" 
-     style="display: block; text-decoration: none; position: relative; z-index: 999; pointer-events: auto; margin: 24px 0;">
-    
-    <div class="tax-card-final">
-      <div style="color: #10b981; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px;">PROFESSIONAL TOOL</div>
-      <h3 style="color: #fff; margin: 0 0 12px; font-size: 20px;">正確な損益計算を「自動化」する</h3>
-      <p class="muted" style="font-size: 14px; margin-bottom: 20px;">取引履歴をアップロードするだけで、AIとツールが含み益や税金を1円単位で可視化。</p>
-      <div class="tax-btn-final">無料で損益計算を試す →</div>
-    </div>
-  </a>
-</div>
+      <div class="section" style="position: relative; z-index: 100;">
+        <h2><i class="fa-solid fa-circle-4"></i>ステップ4：損益管理・税金対策</h2>
+        <p class="muted">複数口座や頻繁な売買をするなら、損益計算の自動化はほぼ必須です。</p>
 
-<style>
-  /* 判定を確実にするためのスタイル */
-  .tax-card-final {
-    background: rgba(16, 185, 129, 0.08);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 16px;
-    padding: 24px;
-    transition: all 0.2s ease;
-    text-align: left;
-  }
-  
-  /* マウスを乗せた時の挙動：カード全体を少し明るくして「押せる」ことを明示 */
-  .tax-card-final:hover {
-    background: rgba(16, 185, 129, 0.15);
-    border-color: #10b981;
-    transform: translateY(-2px);
-  }
+        <a href="https://h.accesstrade.net/sp/cc?rk=0100pdy600onmg" target="_blank" rel="noopener noreferrer"
+           style="display:block; text-decoration:none; position: relative; z-index: 999; pointer-events: auto; margin: 18px 0;">
+          <div class="tax-card-final">
+            <div style="color:#10b981; font-size: 11px; font-weight: 900; letter-spacing: 0.1em; margin-bottom: 8px;">PROFESSIONAL TOOL</div>
+            <h3 style="color:#fff; margin: 0 0 12px; font-size: 18px; display:flex; align-items:center; gap:10px;">
+              <i class="fa-solid fa-receipt" style="color:#10b981;"></i>正確な損益計算を「自動化」する
+            </h3>
+            <p class="muted" style="font-size: 14px; margin-bottom: 16px;">
+              取引履歴をアップロードするだけで、損益や税金の見通しを可視化できます。
+            </p>
+            <div class="tax-btn-final"><i class="fa-solid fa-arrow-up-right-from-square"></i>無料で試す</div>
+          </div>
+        </a>
 
-  .tax-btn-final {
-    background: #10b981;
-    color: #fff;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: 800;
-    text-align: center;
-    font-size: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-</style>
-
-<style>
-  .tax-card-interactive {
-    background: rgba(16, 185, 129, 0.06); 
-    border: 1px solid rgba(16, 185, 129, 0.3); 
-    border-radius: 16px; 
-    padding: 28px; 
-    margin: 24px 0;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* 滑らかな動き */
-    cursor: pointer;
-    position: relative;
-  }
-
-  /* マウスを乗せた時の「最高精度」の反応 */
-  .tax-card-interactive:hover {
-    transform: translateY(-5px); /* 上に浮かせる */
-    background: rgba(16, 185, 129, 0.12); /* 背景を少し明るく */
-    border-color: rgba(16, 185, 129, 0.8); /* 枠線を強調 */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.2); /* 影と光の演出 */
-  }
-
-  .tax-tag { color: #10b981; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 8px; }
-  .tax-title { color: #fff; margin: 0 0 12px; font-size: 20px; }
-  .tax-desc { color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-  .tax-action-label {
-    display: block;
-    background: #10b981;
-    color: #fff;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: 800;
-    text-align: center;
-    font-size: 15px;
-  }
-  .tax-card-interactive:hover .tax-action-label {
-    background: #059669; /* ボタン部分も色を変えて「反応」を強調 */
-  }
-</style>
-      <div class="noteBox" style="margin-top: 50px;">
-        ※本ページの内容は投資勧誘を目的としたものではありません。提供情報の正確性には細心の注意を払っておりますが、最終的な投資判断はご自身の責任で行ってください。
+        <div class="noteBox">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          本ページは投資勧誘を目的としません。情報の正確性には配慮していますが、最終判断はご自身の責任で行ってください。
+        </div>
       </div>
     </div>
 
     <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
-                <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
-            </div>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
+          <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
         </div>
-        <div class="footer-copyright">
-            &copy; 2026 CoinRader. All rights reserved.
+        <div class="footer-nav">
+          <a href="index.html">ホーム</a>
+          <a href="guide.html">ガイド</a>
+          <a href="start.html">始め方</a>
+          <a href="ads-pr.html">広告PR</a>
+          <a href="privacy.html">プライバシー</a>
+          <a href="disclaimer.html">免責事項</a>
+          <a href="contact.html">お問い合わせ</a>
         </div>
+      </div>
+      <div class="footer-copyright">
+        &copy; 2026 CoinRader. All rights reserved.
+      </div>
     </footer>
   </div>
 
