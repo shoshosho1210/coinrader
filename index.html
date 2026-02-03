@@ -4184,8 +4184,9 @@ white-space:nowrap; word-break:keep-all; }
 .ai-reasons-grid{ overflow: visible !important; }
 @media (max-width: 560px){
   .ai-reasons-grid{
-    grid-template-columns: minmax(0,1fr) 56px 74px 92px !important;
-    column-gap: 10px !important;
+    /* v57: keep indicator column from collapsing to 0 on very narrow screens */
+    grid-template-columns: minmax(56px,1fr) 52px 70px 82px !important;
+    column-gap: 8px !important;
   }
   .ai-reasons-grid .h{ grid-template-columns: minmax(0,1fr) 56px 74px 92px !important; }
   .ai-reasons-grid .r{ grid-template-columns: minmax(0,1fr) 56px 74px 92px !important; }
