@@ -4325,17 +4325,17 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 <div class="summary-lists">
 <div class="summary-card summary-trend">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">（24h変動）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">24h変動</span></div>
 <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#grid-trend">TOP5</a></div>
 </div>
 <div class="summary-card summary-up">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-rocket"></i> 上昇TOP3</span><span class="summary-card-note-inline">（24h変動）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-rocket"></i> 上昇TOP3</span><span class="summary-card-note-inline">24h変動</span></div>
 <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
 </div>
 <div class="summary-card summary-mcap">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">（24h/7d変動）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">24h/7d変動</span></div>
 <ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
 </div>
@@ -8183,8 +8183,11 @@ textEl.innerHTML = htmlContent;
       if (typeof btcDom === 'number' && isFinite(btcDom)) {
         let deltaDom = null;
         try{
-          const prev = Number(localStorage.getItem('prev_btc_dom'));
-          if (isFinite(prev)) deltaDom = btcDom - prev;
+          const prevStr = localStorage.getItem('prev_btc_dom');
+          if (prevStr !== null && prevStr !== '') {
+            const prev = Number(prevStr);
+            if (isFinite(prev)) deltaDom = btcDom - prev;
+          }
           localStorage.setItem('prev_btc_dom', String(btcDom));
         }catch(_e){}
         const d = _fmtArrowDelta(deltaDom, 1, 'pt');
@@ -8206,8 +8209,11 @@ textEl.innerHTML = htmlContent;
           const cur = Math.round(fgScore);
           let delta = null;
           try{
-            const prev = Number(localStorage.getItem('prev_fng'));
-            if (isFinite(prev)) delta = cur - prev;
+            const prevStr = localStorage.getItem('prev_fng');
+            if (prevStr !== null && prevStr !== '') {
+              const prev = Number(prevStr);
+              if (isFinite(prev)) delta = cur - prev;
+            }
             localStorage.setItem('prev_fng', String(cur));
           }catch(_e){}
           const d = _fmtArrowDelta(delta, 0, '');
