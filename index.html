@@ -4077,6 +4077,36 @@ white-space:nowrap; word-break:keep-all; }
   .ai-regime-card + .ai-mini-block{ margin-top: 8px !important; }
 }
 
+
+/* ===== v51 mobile first-page fixes ===== */
+/* Remove regime hint row (was redundant with Strategy Memo) */
+.ai-update-hint{ display:none !important; }
+
+/* Fix: AI JUDGE mini-meter value clipping (e.g., TREND -11.5%) */
+.mini-meter{ overflow: visible !important; }
+.mini-meter .mm-top{ display:flex !important; justify-content:space-between !important; gap:10px !important; min-width:0 !important; }
+.mini-meter .mm-val{ white-space:nowrap !important; flex:0 0 auto !important; padding-left:6px !important; }
+
+/* Fix: Reason table threshold clipping */
+.ai-reasons-grid{ overflow: visible !important; }
+@media (max-width: 560px){
+  .ai-reasons-grid{
+    grid-template-columns: minmax(0,1fr) 56px 74px 92px !important;
+    column-gap: 10px !important;
+  }
+  .ai-reasons-grid .h{ grid-template-columns: minmax(0,1fr) 56px 74px 92px !important; }
+  .ai-reasons-grid .r{ grid-template-columns: minmax(0,1fr) 56px 74px 92px !important; }
+  .ai-reasons-grid .c-thr{ white-space:nowrap !important; font-size:12px !important; }
+}
+
+/* Safety: if any inner reason rows were overflow hidden */
+.ai-reasons-grid .h, .ai-reasons-grid .r{ overflow: visible !important; }
+
+/* Slightly tighten header spacing (real-time title area) */
+@media (max-width: 560px){
+  .section-title{ margin: 10px 0 8px !important; }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -7818,11 +7848,11 @@ if (regimeCls === 'regime-bear') {
 }
 
 // 地合い目安（次に見るポイント）
-let updateHint = '地合い目安：TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
+let updateHint = 'TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
 if (regimeCls === 'regime-bull') {
-  updateHint = '地合い目安：RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
+  updateHint = 'RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
 } else if (regimeCls === 'regime-neutral') {
-  updateHint = '地合い目安：TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
+  updateHint = 'TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
 }
 
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
