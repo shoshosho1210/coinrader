@@ -3708,6 +3708,40 @@ white-space:nowrap; word-break:keep-all; }
   }
 }
 
+
+@media (min-width: 900px){
+  .summary-up .summary-card-title,
+  .summary-mcap .summary-card-title{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+  }
+  .summary-up .summary-title-main,
+  .summary-mcap .summary-title-main{
+    white-space:nowrap;
+    word-break:keep-all !important;
+    overflow-wrap:normal !important;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:100%;
+    line-height:1.15;
+  }
+  .summary-up .summary-card-note-inline,
+  .summary-mcap .summary-card-note-inline{
+    white-space:nowrap;
+    word-break:keep-all !important;
+    overflow-wrap:normal !important;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:100%;
+    opacity:.75;
+    font-size:12px;
+    line-height:1.1;
+  }
+}
+.summary-card-title .fa-solid{ margin-right:6px; opacity:.95; }
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -3822,17 +3856,17 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 <div class="summary-lists">
 <div class="summary-card summary-trend">
-<div class="summary-card-title"><span class="summary-title-main">🔥 トレンドTOP3</span><span class="summary-card-note-inline">（話題・右は24h変動）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">（話題・右は24h変動）</span></div>
 <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#grid-trend">TOP5</a></div>
 </div>
 <div class="summary-card summary-up">
-<div class="summary-card-title"><span class="summary-title-main">🚀 上昇TOP3</span><span class="summary-card-note-inline">（24h変動）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-rocket"></i> 上昇TOP3</span><span class="summary-card-note-inline">（24h変動）</span></div>
 <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
 </div>
 <div class="summary-card summary-mcap">
-<div class="summary-card-title"><span class="summary-title-main">🏆 時価総額TOP5</span><span class="summary-card-note-inline">（24h / 7d）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">（24h / 7d）</span></div>
 <ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
 </div>
