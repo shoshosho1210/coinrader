@@ -8202,17 +8202,9 @@ textEl.innerHTML = htmlContent;
         if (total>0) btcDom = (Number(btc.market_cap)/total)*100;
       }
       if (typeof btcDom === 'number' && isFinite(btcDom)) {
-        let deltaDom = null;
-        try{
-          const prevStr = localStorage.getItem('prev_btc_dom');
-          if (prevStr !== null && prevStr !== '') {
-            const prev = Number(prevStr);
-            if (isFinite(prev)) deltaDom = btcDom - prev;
-          }
-          localStorage.setItem('prev_btc_dom', String(btcDom));
-        }catch(_e){}
-        const d = _fmtArrowDelta(deltaDom, 1, 'pt');
-        _setHTML('tickerBtcDom', `${btcDom.toFixed(1)}%${d ? ' ' + d : ''}`);
+        // BTC.D: 差分(▲/▼)は表示しない（値のみ）
+        _setText('tickerBtcDom', `${btcDom.toFixed(1)}%`);
+        try{ localStorage.setItem('prev_btc_dom', String(btcDom)); }catch(_e){}
       } else {
         _setText('tickerBtcDom', '--%');
       }
