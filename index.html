@@ -3982,6 +3982,48 @@ white-space:nowrap; word-break:keep-all; }
   .ai-expand-btn{ min-height:42px !important; padding:9px 10px !important; }
 }
 
+
+/* v47: mobile first-page compact for AI JUDGE + detail */
+@media (max-width: 520px){
+  /* remove fixed height that steals viewport */
+  .ai-insight-box{ min-height: auto !important; padding: 12px 14px !important; margin: 8px 0 10px !important; }
+
+  /* tighten section title spacing */
+  .section-header{ margin: 0 0 6px !important; }
+  .ai-section-title{ margin-bottom: 4px !important; padding-bottom: 2px !important; }
+
+  /* tighten AI header + verdict */
+  .ai-head{ gap: 10px !important; padding-bottom: 10px !important; }
+  .ai-head .ai-judge-label{ font-size: 18px !important; letter-spacing: .06em !important; }
+  .ai-head .ai-verdict{ padding: 10px 12px !important; font-size: 22px !important; }
+
+  /* meters become shorter */
+  .mini-meters{ gap: 8px !important; }
+  .mini-meter{ padding: 8px 10px !important; min-height: 54px !important; }
+  .mini-meter .mm-top{ margin-bottom: 6px !important; }
+  .mini-meter .mm-title{ font-size: 12px !important; }
+  .mini-meter .mm-val{ font-size: 16px !important; }
+  .mini-meter .mm-sub{ font-size: 12px !important; }
+
+  /* expand button shorter */
+  .ai-reason-toggle{ padding: 10px 12px !important; margin-top: 8px !important; }
+
+  /* detail blocks tighter */
+  .ai-detail{ margin-top: 8px !important; }
+  .ai-regime-card{ padding: 10px 12px !important; }
+  .ai-regime-card .regime-title{ font-size: 12px !important; }
+  .ai-regime-card .regime-main{ font-size: 24px !important; line-height: 1.15 !important; }
+  .ai-regime-card .regime-sub{ font-size: 12px !important; }
+
+  .ai-reason-card, .ai-strategy-card{ padding: 10px 12px !important; }
+  .ai-reason-card .table-head{ font-size: 12px !important; }
+  .ai-reason-card .table-row{ padding: 6px 0 !important; }
+  .ai-strategy-card ul{ margin-top: 6px !important; }
+  .ai-strategy-card li{ margin: 6px 0 !important; line-height: 1.35 !important; }
+
+  .ai-hint-line{ margin-top: 8px !important; font-size: 13px !important; line-height: 1.35 !important; }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
