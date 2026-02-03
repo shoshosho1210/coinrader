@@ -608,6 +608,37 @@
   .ai-mini-title{ margin-bottom:3px; }
 }
 
+/* ===== v42: Mobile first-page further tightening (detail expanded) ===== */
+@media (max-width: 520px){
+  /* toggle button a bit slimmer */
+  .hud-summary-btn{ padding:6px 8px; font-size:10px; border-radius:8px; }
+  .hud-summary-btn .btn-text{ letter-spacing: .6px; }
+  /* reduce space around AI detail blocks */
+  .hud-details[open] .hud-content-text{ margin-top:6px; }
+  /* market regime card slimmer */
+  .ai-regime-hero{ margin:0 0 6px; padding:8px 10px; }
+  .ai-regime-kicker{ margin-bottom:2px; font-size:11px; }
+  .ai-regime-main{ font-size:16px; line-height:1.08; }
+  .ai-regime-meta{ font-size:11px; line-height:1.15; }
+  /* reason + strategy blocks tighter */
+  .ai-mini-block{ padding:6px 8px; border-radius:12px; }
+  .ai-mini-title{ margin-bottom:4px; font-size:11px; }
+  .ai-reasons-grid .h{ font-size:11px; }
+  .ai-reasons-grid .c{ font-size:12px; }
+  .ai-mini-ul{ font-size:12px; line-height:1.45; padding-left:16px; }
+  .ai-mini-ul li{ margin:2px 0; }
+  .ai-mini-note{ font-size:12px; line-height:1.45; }
+  /* big saving: strategy title top margin was large */
+  .ai-section-title{ margin-bottom:6px; padding-bottom:3px; }
+  .ai-section-title.strategy{ margin-top:12px; }
+}
+
+/* slightly tighter on very small phones */
+@media (max-width: 380px){
+  .ai-regime-hero{ padding:7px 9px; }
+  .ai-regime-main{ font-size:15px; }
+}
+
 
 /* ===== Side menu + compact header ===== */
 :root{ --hdr-h: 64px; }
