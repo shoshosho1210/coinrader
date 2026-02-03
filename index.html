@@ -3528,6 +3528,45 @@ html, body { overflow-x: hidden; }
   .summary-lists > .summary-card > .summary-ol{ flex: 1 1 auto; }
 }
 
+
+/* === v20 PC layout tweak: narrow Trend/Gainers, make Mcap list 2-column, avoid equal-height wasted space === */
+@media (min-width: 900px){
+  /* Make left cards a bit narrower, give Mcap more room */
+  .summary-lists{
+    display: grid;
+    grid-template-columns: minmax(260px, 0.9fr) minmax(260px, 0.9fr) minmax(420px, 1.2fr);
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* Ensure cards are not forced to equal height (prevents wasted empty areas inside cards) */
+  .summary-lists .card{
+    height: auto !important;
+    align-self: start;
+  }
+
+  /* Mcap TOP5: 2-column list to reduce height and balance the row */
+  #summaryMcapTopList{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 14px;
+    row-gap: 0px;
+  }
+  #summaryMcapTopList .top5-item{
+    margin: 0;
+  }
+  /* Prevent long names/values from pushing width */
+  #summaryMcapTopList .top5-name{
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #summaryMcapTopList .top5-val{
+    white-space: nowrap;
+  }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
