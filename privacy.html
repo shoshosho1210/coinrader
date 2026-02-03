@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>プライバシーポリシー - CoinRader</title>
   <meta name="description" content="CoinRader（コインレーダー）のプライバシーポリシー。個人情報の取り扱い、Cookie（クッキー）の使用、アクセス解析および広告配信に関する方針について。">
-  <link rel="canonical" href="https://coinrader.net/privacy">
+  <link rel="canonical" href="https://coinrader.net/privacy.html">
 
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -17,80 +18,153 @@
 
   <link rel="stylesheet" href="_page_style.css" />
 
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+
   <style>
-    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
-    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
-    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; }
-    .text-block { color:#cbd5e1; line-height:1.8; font-size:14px; margin-bottom: 20px; }
-    .list { padding-left: 20px; margin-bottom: 16px; color:#cbd5e1; }
-    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
-            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
-            color:#94a3b8; font-size:13px; line-height:1.6; }
-    .pageHeader {
+    /* Header */
+    .pageHeader{
       display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
-      border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+      padding:12px 16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      margin: 18px 0 18px;
+      gap: 12px;
     }
-    .brandLogo { height:36px; }
-/* --- Final Slim Footer (Consistency Update) --- */
-.site-footer {
-    background: rgba(10, 16, 28, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 20px 16px;
-    margin-top: 60px;
-    width: 100%;
-}
+    .brandLogo{ height:36px; width:auto; }
+    .headerNav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a{
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .headerNav a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.06);
+    }
 
-.footer-inner {
-    max-width: 1000px; /* start.htmlの幅に合わせた微調整 */
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+    /* Content */
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      background: rgba(34,197,94,.10);
+      border:1px solid rgba(34,197,94,.26);
+      color:#86efac;
+      margin-bottom: 10px;
+    }
+    .lead{
+      color:#cbd5e1;
+      line-height:1.9;
+      margin: 12px 0 22px;
+      font-size: 15px;
+    }
 
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .sec{ margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 18px; }
+    .sec h2{
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: #fff;
+      display:flex; align-items:center; gap:10px;
+      letter-spacing: .2px;
+    }
+    .sec h2 i{
+      color:#22c55e;
+      filter: drop-shadow(0 0 10px rgba(34,197,94,.12));
+    }
 
-.footer-logo { height: 36px !important; width: auto; opacity: 0.8; }
-.footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
+    .text-block{ color:#cbd5e1; line-height:1.9; font-size:14px; margin: 0 0 14px; }
+    .list{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.9; font-size:14px; }
+    .list li{ margin: 8px 0; }
+    .list a{ color:#60a5fa; text-decoration: none; }
+    .list a:hover{ text-decoration: underline; }
 
-.footer-nav {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+    .note{
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.08);
+      color:#94a3b8;
+      font-size:13px;
+      line-height:1.8;
+    }
+    .note i{ color:#22c55e; margin-right: 8px; }
 
-.footer-nav a {
-    color: #94a3b8;
-    font-size: 11.5px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s;
-}
+    .miniCard{
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(34,197,94,.05);
+      border:1px solid rgba(34,197,94,.16);
+      color:#cbd5e1;
+      font-size: 13px;
+      line-height: 1.85;
+    }
+    .miniCard .title{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      color:#e2e8f0;
+    }
+    .miniCard .title i{ color:#22c55e; }
 
-.footer-nav a:hover { color: #38bdf8; }
-
-.footer-copyright {
-    max-width: 1000px;
-    margin: 12px auto 0;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    text-align: center;
-    font-size: 10px;
-    color: #475569;
-}
-
-@media (max-width: 768px) {
-    .footer-inner { flex-direction: column; text-align: center; }
-    .footer-nav { justify-content: center; gap: 8px 12px; }
-    .footer-brand { flex-direction: column; gap: 4px; }
-}
+    /* Footer (consistent) */
+    .site-footer{
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px 16px;
+      margin-top: 60px;
+      width: 100%;
+    }
+    .footer-inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .footer-brand{ display:flex; align-items:center; gap:10px; }
+    .footer-logo{ height: 36px !important; width:auto; opacity: .85; }
+    .footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a{
+      color:#94a3b8;
+      font-size: 11.5px;
+      text-decoration:none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .footer-nav a:hover{ color:#38bdf8; }
+    .footer-copyright{
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
+    }
+    @media (max-width: 768px){
+      .footer-inner{ flex-direction: column; text-align:center; }
+      .footer-nav{ justify-content: center; gap: 8px 12px; }
+      .footer-brand{ flex-direction: column; gap: 4px; }
+      .headerNav{ justify-content: flex-end; }
+    }
   </style>
 </head>
 
@@ -100,77 +174,119 @@
       <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="assets/icons/logo_horizontal_v4.png" alt="CoinRader">
       </a>
+
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="index.html"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="about.html"><i class="fa-solid fa-user"></i><span>運営者情報</span></a>
+        <a href="disclaimer.html"><i class="fa-solid fa-triangle-exclamation"></i><span>免責事項</span></a>
+        <a href="contact.html"><i class="fa-solid fa-envelope"></i><span>お問い合わせ</span></a>
+      </nav>
     </header>
 
     <div class="card">
+      <span class="pill"><i class="fa-solid fa-shield"></i>プライバシー / Privacy</span>
       <h1>プライバシーポリシー</h1>
-      <p class="lead">CoinRader（以下「当サイト」）は、ユーザーの個人情報の重要性を認識し、その保護に努めるとともに、以下の通りプライバシーポリシーを定めます。</p>
+      <p class="lead">
+        CoinRader（以下「当サイト」）は、ユーザーの個人情報の重要性を認識し、その保護に努めます。
+        本ページでは、取得する情報・利用目的・第三者サービス・Cookieの扱いについて説明します。
+      </p>
+
+      <div class="miniCard">
+        <div class="title"><i class="fa-solid fa-circle-info"></i>要点</div>
+        <div>
+          当サイトは、アクセス解析や広告効果測定のためにCookie等を利用することがあります。
+          取得データは原則として匿名で収集され、個人を特定する目的では使用しません。
+        </div>
+      </div>
 
       <div class="sec">
-        <h2>1. 個人情報の取得</h2>
+        <h2><i class="fa-solid fa-id-card"></i>1. 取得する情報</h2>
         <div class="text-block">
-          当サイトでは、お問い合わせの際にご入力いただくメールアドレスや氏名（ハンドルネーム）、またアクセス解析や広告配信のためにCookie（クッキー）等を通じて以下の情報を自動的に取得する場合があります。
+          当サイトでは、お問い合わせ時に入力される情報、ならびにアクセス解析・広告配信のためにCookie等を通じて、以下の情報を取得する場合があります。
         </div>
         <ul class="list">
+          <li>メールアドレス、氏名（ハンドルネーム）など（お問い合わせ時）</li>
           <li>IPアドレス、ブラウザ情報、端末情報</li>
-          <li>サイト内での閲覧履歴、滞在時間、参照元URL</li>
+          <li>閲覧履歴、滞在時間、参照元URL など</li>
         </ul>
       </div>
 
       <div class="sec">
-        <h2>2. 個人情報の利用目的</h2>
-        <div class="text-block">
-          取得した情報は、以下の目的で利用いたします。
-        </div>
+        <h2><i class="fa-solid fa-bullseye"></i>2. 利用目的</h2>
+        <div class="text-block">取得した情報は、以下の目的で利用します。</div>
         <ul class="list">
-          <li>サイトの利用状況の分析およびサービス向上のため</li>
-          <li>ユーザーからのお問い合わせに対応するため</li>
-          <li>広告の配信およびその効果測定のため</li>
-          <li>不正アクセスの防止およびセキュリティ対策のため</li>
+          <li>利用状況の分析およびサービス向上のため</li>
+          <li>お問い合わせ対応のため</li>
+          <li>広告配信および効果測定のため</li>
+          <li>不正アクセス防止およびセキュリティ対策のため</li>
         </ul>
       </div>
 
       <div class="sec">
-        <h2>3. アクセス解析および広告配信について</h2>
-        <div class="text-block">
-          当サイトでは、以下の第三者サービスを利用しています。
-        </div>
+        <h2><i class="fa-solid fa-chart-line"></i>3. アクセス解析・広告配信</h2>
+        <div class="text-block">当サイトでは、以下の第三者サービスを利用しています。</div>
         <ul class="list">
-          <li><strong>Googleアナリティクス</strong>：トラフィックデータの収集のためにCookieを使用しています。データは匿名で収集されており、個人を特定するものではありません。詳細はGoogleの「<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" style="color:#60a5fa;">ユーザーが Google パートナーのサイトやアプリを使用する際の Google によるデータ使用</a>」をご覧ください。</li>
-          <li><strong>アフィリエイトプログラム</strong>：当サイトはアクセストレード等のアフィリエイトプログラムに参加しています。第三者がコンテンツおよび宣伝を提供し、ユーザーから直接情報を収集し、ブラウザにCookieを設定したり、認識したりする場合があります。</li>
+          <li>
+            <strong>Google アナリティクス</strong>：トラフィックデータ収集のためにCookieを使用します。データは匿名で収集され、個人を特定するものではありません。<br>
+            詳細：<a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">ユーザーが Google パートナーのサイトやアプリを使用する際の Google によるデータ使用</a>
+          </li>
+          <li>
+            <strong>アフィリエイトプログラム</strong>：第三者がコンテンツおよび宣伝を提供し、Cookieを設定または認識する場合があります。
+          </li>
         </ul>
-      </div>
-
-      <div class="sec">
-        <h2>4. Cookieの無効化について</h2>
-        <div class="text-block">
-          Cookieは、ブラウザの設定により無効化することができます。ただし、Cookieを無効にした場合、当サイトの一部の機能が正しく動作しない可能性があります。設定方法は各ブラウザのヘルプ等をご確認ください。
+        <div class="note">
+          <i class="fa-solid fa-lock"></i>
+          収集された情報は、サービス提供・品質改善・広告効果測定の範囲で利用されます。Cookieの無効化により一部機能が正しく動作しない場合があります。
         </div>
       </div>
 
       <div class="sec">
-        <h2>5. 免責事項</h2>
+        <h2><i class="fa-solid fa-cookie-bite"></i>4. Cookieの無効化</h2>
         <div class="text-block">
-          当サイトからリンクやバナーなどによって他のサイトに移動された場合、移動先サイトで提供される情報、サービス等について一切の責任を負いません。また、当サイトの掲載情報によって生じた損害についても一切の責任を負いかねます。
+          Cookieは、ブラウザの設定により無効化できます。設定方法は各ブラウザのヘルプ等をご確認ください。
+          なお、Cookieを無効にすると、一部の機能や表示が正しく動作しない可能性があります。
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2><i class="fa-solid fa-link"></i>5. 外部リンク</h2>
+        <div class="text-block">
+          当サイトからリンクやバナー等によって他サイトへ移動した場合、移動先サイトで提供される情報・サービス等について当サイトは責任を負いません。
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2><i class="fa-solid fa-pen-to-square"></i>6. ポリシーの変更</h2>
+        <div class="text-block">
+          本ポリシーは、法令の改正等に応じて予告なく変更される場合があります。最新のプライバシーポリシーは常に本ページにて公開いたします。
         </div>
       </div>
 
       <div class="note">
-        ※本ポリシーは、法令の改正等に応じて予告なく変更される場合があります。最新のプライバシーポリシーは常に本ページにて公開いたします。
+        <i class="fa-solid fa-envelope-open-text"></i>
+        ご不明点がある場合は <a href="contact.html" style="color:#60a5fa; text-decoration:none;">お問い合わせ</a> よりご連絡ください。
       </div>
     </div>
+  </div>
 
-<footer class="site-footer">
+  <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-brand">
-            <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
-            <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
-        </div>
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="index.html">ホーム</a>
+        <a href="privacy.html">プライバシー</a>
+        <a href="data-sources.html">データソース</a>
+        <a href="about.html">運営者情報</a>
+        <a href="disclaimer.html">免責事項</a>
+        <a href="contact.html">お問い合わせ</a>
+      </div>
     </div>
     <div class="footer-copyright">
-        &copy; 2026 CoinRader. All rights reserved.
+      &copy; 2026 CoinRader. All rights reserved.
     </div>
-</footer>
-  </div>
+  </footer>
 </body>
 </html>
