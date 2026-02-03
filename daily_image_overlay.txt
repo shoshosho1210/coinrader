@@ -3,13 +3,13 @@ Please overlay the following market data onto the right-side highlighted area in
 Ensure the text has a subtle neon glow and is perfectly integrated into the background theme.
 
 --- DATA TO OVERLAY ---
-DATE: [ 02/02 ]
+DATE: [ 02/03 ]
 SENTIMENT: [ 14 (Extreme Fear) ]
-BTC RSI: [ 37.4 ]
-STATUS: [ 分析: 悲観 / やや売られすぎ ]
-FOCUS: [ 特定アルト(ULTIMA)への強い買い需要 ]
+BTC RSI: [ 60.8 ]
+STATUS: [ 分析: 中立 / やや買われすぎ ]
+FOCUS: [ 特定アルト(RIVER)への強い買い需要 ]
 
 --- DESIGN INSTRUCTION ---
 Use high-tech digital font. Highlight the SENTIMENT value with a '赤色(Neon Red)' glow. 
 Maintain a clean, sophisticated atmosphere for institutional traders.
-GENERATED: [ 14:08:49 ]
+GENERATED: [ 09:09:38 ]
