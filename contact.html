@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>お問い合わせ - CoinRader</title>
   <meta name="description" content="CoinRader（コインレーダー）へのご意見、ご要望、不具合報告、お仕事のご依頼はこちらから。">
-  <link rel="canonical" href="https://coinrader.net/contact">
-  
+  <link rel="canonical" href="https://coinrader.net/contact.html">
+
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -20,95 +21,172 @@
 
   <link rel="stylesheet" href="_page_style.css" />
 
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+
   <style>
-    .lead { color:#cbd5e1; line-height:1.8; margin: 16px 0 24px; font-size: 15px; }
-    .sec { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; }
-    .sec h2 { margin: 24px 0 12px; font-size: 18px; color: #fff; }
-    .text-block { color:#cbd5e1; line-height:1.8; font-size:14px; margin-bottom: 20px; }
-    
-    .btn-contact {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 14px 24px; border-radius: 12px;
-      background: #2563eb; color: #fff; font-weight: 700; text-decoration: none;
-      transition: background 0.2s; border: none; cursor: pointer;
-    }
-    .btn-contact:hover { background: #3b82f6; }
-    
-    .x-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      color: #60a5fa; text-decoration: none; font-weight: 600;
-    }
-    .x-link:hover { text-decoration: underline; }
-
-    .note { margin-top: 12px; padding: 14px; border-radius: 12px;
-            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
-            color:#94a3b8; font-size:13px; line-height:1.6; }
-
-    .pageHeader {
+    /* Header (consistent) */
+    .pageHeader{
       display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
-      border-radius:14px; background:rgba(255,255,255,.02); margin-bottom: 20px;
+      padding:12px 16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      margin: 18px 0 18px;
+      gap: 12px;
     }
-    .brandLogo { height:36px; }
-/* --- Final Slim Footer (Consistency Update) --- */
-.site-footer {
-    background: rgba(10, 16, 28, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 20px 16px;
-    margin-top: 60px;
-    width: 100%;
-}
+    .brandLogo{ height:36px; width:auto; }
+    .headerNav{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a{
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:800;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .headerNav a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.06);
+    }
 
-.footer-inner {
-    max-width: 1000px; /* start.htmlの幅に合わせた微調整 */
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+    /* Content */
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:11px; font-weight:900;
+      background: rgba(147,51,234,.10);
+      border:1px solid rgba(147,51,234,.26);
+      color:#d8b4fe;
+      margin-bottom: 10px;
+    }
 
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .lead { color:#cbd5e1; line-height:1.9; margin: 12px 0 22px; font-size: 15px; }
 
-.footer-logo { height: 36px !important; width: auto; opacity: 0.8; }
-.footer-tagline { font-size: 11px; color: #64748b; white-space: nowrap; }
+    .sec { margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 18px; }
+    .sec h2{
+      margin: 18px 0 10px;
+      font-size: 16px;
+      color: #fff;
+      display:flex; align-items:center; gap:10px;
+      letter-spacing: .2px;
+    }
+    .sec h2 i{
+      color:#a78bfa;
+      filter: drop-shadow(0 0 10px rgba(147,51,234,.12));
+    }
 
-.footer-nav {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+    .text-block { color:#cbd5e1; line-height:1.9; font-size:14px; margin: 0 0 14px; }
 
-.footer-nav a {
-    color: #94a3b8;
-    font-size: 11.5px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s;
-}
+    .btn-contact{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(56,189,248,1);
+      color: #0b1220 !important;
+      font-weight: 900;
+      text-decoration: none !important;
+      transition: transform .15s, filter .15s;
+      border: 1px solid rgba(56,189,248,1);
+      font-size: 13px;
+    }
+    .btn-contact:hover{ transform: translateY(-1px); filter: brightness(1.02); }
 
-.footer-nav a:hover { color: #38bdf8; }
+    .x-link{
+      display:inline-flex; align-items:center; gap:10px;
+      color:#60a5fa; text-decoration:none; font-weight:800;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+    }
+    .x-link:hover{
+      transform: translateY(-1px);
+      border-color: rgba(96,165,250,.35);
+      background: rgba(96,165,250,.06);
+    }
 
-.footer-copyright {
-    max-width: 1000px;
-    margin: 12px auto 0;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    text-align: center;
-    font-size: 10px;
-    color: #475569;
-}
+    .note{
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.08);
+      color:#94a3b8;
+      font-size:13px;
+      line-height:1.8;
+    }
 
-@media (max-width: 768px) {
-    .footer-inner { flex-direction: column; text-align: center; }
-    .footer-nav { justify-content: center; gap: 8px 12px; }
-    .footer-brand { flex-direction: column; gap: 4px; }
-}
+    .topicList{ margin: 0; padding-left: 18px; color:#cbd5e1; line-height:1.9; font-size:14px; }
+    .topicList li{ margin: 8px 0; }
+
+    .quickTips{
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(56,189,248,.05);
+      border:1px solid rgba(56,189,248,.16);
+      color:#cbd5e1;
+      font-size: 13px;
+      line-height: 1.85;
+    }
+    .quickTips .title{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 900; margin-bottom: 6px;
+      color:#e2e8f0;
+    }
+    .quickTips .title i{ color:#38bdf8; }
+
+    /* Footer (consistent) */
+    .site-footer{
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 20px 16px;
+      margin-top: 60px;
+      width: 100%;
+    }
+    .footer-inner{
+      max-width: 1000px;
+      margin: 0 auto;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .footer-brand{ display:flex; align-items:center; gap:10px; }
+    .footer-logo{ height: 36px !important; width:auto; opacity: .85; }
+    .footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
+    .footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a{
+      color:#94a3b8;
+      font-size: 11.5px;
+      text-decoration:none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .footer-nav a:hover{ color:#38bdf8; }
+    .footer-copyright{
+      max-width: 1000px;
+      margin: 12px auto 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
+    }
+    @media (max-width: 768px){
+      .footer-inner{ flex-direction: column; text-align:center; }
+      .footer-nav{ justify-content: center; gap: 8px 12px; }
+      .footer-brand{ flex-direction: column; gap: 4px; }
+      .headerNav{ justify-content: flex-end; }
+    }
   </style>
 </head>
 
@@ -118,60 +196,91 @@
       <a class="brandLink" href="index.html" aria-label="CoinRader ホーム">
         <img class="brandLogo" src="assets/icons/logo_horizontal_v4.png" alt="CoinRader">
       </a>
+
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="index.html"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="about.html"><i class="fa-solid fa-user"></i><span>運営者情報</span></a>
+        <a href="privacy.html"><i class="fa-solid fa-shield"></i><span>プライバシー</span></a>
+        <a href="disclaimer.html"><i class="fa-solid fa-triangle-exclamation"></i><span>免責事項</span></a>
+      </nav>
     </header>
 
     <div class="card">
+      <span class="pill"><i class="fa-solid fa-envelope-open-text"></i>Contact</span>
       <h1>お問い合わせ</h1>
-      <p class="lead">当サイトへのご意見、不具合の報告、その他のお問い合わせはこちらから受け付けております。</p>
+      <p class="lead">
+        ご意見・改善提案・不具合報告・お仕事のご相談などを受け付けています。<br>
+        可能な範囲で確認し、必要に応じて対応します。
+      </p>
 
       <div class="sec">
-        <h2>📝 お問い合わせフォーム</h2>
+        <h2><i class="fa-solid fa-pen-to-square"></i>お問い合わせフォーム</h2>
         <div class="text-block">
-          以下のGoogleフォームよりメッセージをお送りいただけます。返信が必要な内容については、フォーム内の連絡先項目にご記入をお願いいたします。
+          以下のGoogleフォームよりメッセージをお送りいただけます。返信が必要な場合は、フォーム内の連絡先項目にご記入ください。
         </div>
-        <div style="margin: 20px 0;">
+
+        <div style="margin: 18px 0;">
           <a class="btn-contact" href="https://forms.gle/TwFZdiG7PKmiN8J38" target="_blank" rel="noopener">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
             Googleフォームを開く
           </a>
         </div>
+
+        <div class="quickTips">
+          <div class="title"><i class="fa-solid fa-bolt"></i>スムーズに対応するために</div>
+          <div>
+            不具合報告の場合は「ページURL」「端末（iPhone/Android/PC）」「スクリーンショット」「発生時刻（目安）」があると、原因特定が速くなります。
+          </div>
+        </div>
+
         <div class="note">
-          ※個人運営のため、全てのお問い合わせへの返信をお約束するものではありません。あらかじめご了承ください。
+          <i class="fa-solid fa-circle-info" style="color:#a78bfa; margin-right:8px;"></i>
+          個人運営のため、すべてのお問い合わせに返信できない場合があります。あらかじめご了承ください。
         </div>
       </div>
 
       <div class="sec">
-        <h2>📱 X (旧Twitter)</h2>
+        <h2><i class="fa-brands fa-x-twitter"></i>X（旧Twitter）</h2>
         <div class="text-block">
-          最新の更新情報や市場分析についてはXでも発信しています。軽いご質問やフィードバックなどは、リプライやDMでも受け付けております。
+          更新情報や市場メモをXでも発信しています。軽いフィードバックはリプライやDMでも大丈夫です。
         </div>
+
         <a class="x-link" href="https://x.com/RCoin99326" target="_blank" rel="noopener">
+          <i class="fa-brands fa-x-twitter"></i>
           <span>CoinRader 公式アカウント (@RCoin99326)</span>
         </a>
       </div>
 
       <div class="sec">
-        <h2>💡 このような時にご連絡ください</h2>
-        <ul class="text-block" style="padding-left: 20px;">
+        <h2><i class="fa-solid fa-lightbulb"></i>このような時にご連絡ください</h2>
+        <ul class="topicList">
           <li>サイト内の数値やデータの間違いの指摘</li>
           <li>表示崩れや機能の不具合報告</li>
           <li>「こんなデータが見たい」という新機能の要望</li>
           <li>広告掲載や相互リンクに関するご提案</li>
+          <li>取材・コラボ・制作のご相談</li>
         </ul>
       </div>
-
     </div>
+  </div>
 
-<footer class="site-footer">
+  <footer class="site-footer">
     <div class="footer-inner">
-        <div class="footer-brand">
-            <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
-            <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
-        </div>
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="assets/icons/logo_horizontal_v4.png"/>
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="index.html">ホーム</a>
+        <a href="data-sources.html">データソース</a>
+        <a href="about.html">運営者情報</a>
+        <a href="privacy.html">プライバシー</a>
+        <a href="disclaimer.html">免責事項</a>
+      </div>
     </div>
     <div class="footer-copyright">
-        &copy; 2026 CoinRader. All rights reserved.
+      &copy; 2026 CoinRader. All rights reserved.
     </div>
-</footer>
-  </div>
+  </footer>
 </body>
 </html>
