@@ -630,6 +630,10 @@
 .sideNavLink{ display:flex; align-items:center; gap:8px; padding: 9px 10px; border-radius: 12px; color:#e5e7eb; text-decoration:none; font-size: 13px; }
 .sideNavLink:hover{ background: rgba(255,255,255,.06); }
 
+
+.sideNavLink i{ width:16px; text-align:center; opacity:.9; }
+.sideNavLink span{ display:inline-block; }
+
 @media (max-width: 1200px){
   .sideMenu{ left: 12px; transform: translateX(-110%); transition: transform .22s ease; }
   .sideMenu.is-open{ transform: translateX(0); }
@@ -639,7 +643,7 @@
   body{ padding-left: var(--dock-w); }
   .sideMenuOverlay{ display:none !important; }
   .iconBtn.menuBtn{ display:none; }
-  #menuCloseBtn{ display:none; }
+  #menuCloseBtn{ display:inline-flex; }
   .sideMenu{ transform:none !important; opacity:1 !important; pointer-events:auto !important; }
 }
 
@@ -3760,22 +3764,16 @@ white-space:nowrap; word-break:keep-all; }
 <div class="sideMenuTitle">メニュー</div>
 <button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button">×</button>
 </div>
-<nav aria-label="ページ内メニュー" class="sideMenuNav">
-<div style="padding:10px; font-size:12px; color:#64748b;">
-    各データへのアクセスは<br/>画面上部のタブが便利です。
-  </div>
-</nav>
+<nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
 <div class="sideMenuFooter">
-<a class="sideNavLink" href="#" onclick="openPageModal('guide.html', '📖 CoinRader 活用ガイド'); return false;" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;">
-    📖 サイトの見かたガイド
-  </a>
-<a class="sideNavLink" href="#" onclick="openPageModal('start.html', '🔰 暗号資産の始め方'); return false;">🔰 暗号資産の始め方</a>
-<a class="sideNavLink" href="#" onclick="openPageModal('about.html', 'ℹ️ 運営者情報'); return false;">ℹ️ 運営者情報</a>
-<a class="sideNavLink" href="#" onclick="openPageModal('disclaimer.html', '⚠️ 免責事項'); return false;">⚠️ 免責事項</a>
-<a class="sideNavLink" href="#" onclick="openPageModal('data-sources.html', '📊 データソース'); return false;">📊 データソース</a>
-<a class="sideNavLink" href="#" onclick="openPageModal('ads-pr.html', '📢 広告・PR表記'); return false;">📢 広告・PR表記</a>
-<a class="sideNavLink" href="#" onclick="openPageModal('privacy.html', '🔒 プライバシーポリシー'); return false;">🔒 プライバシーポリシー</a>
-<a class="sideNavLink" href="#" onclick="openPageModal('contact.html', '📩 お問い合わせ'); return false;">📩 お問い合わせ</a>
+<a class="sideNavLink" href="#" onclick="openPageModal('guide.html', '📖 CoinRader 活用ガイド'); return false;" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>サイトの見かたガイド</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('start.html', '暗号資産の始め方'); return false;"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>暗号資産の始め方</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('about.html', '運営者情報'); return false;"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>運営者情報</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('disclaimer.html', '免責事項'); return false;"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>免責事項</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('data-sources.html', 'データソース'); return false;"><i class="fa-solid fa-database" aria-hidden="true"></i><span>データソース</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('ads-pr.html', '広告・PR表記'); return false;"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>広告・PR表記</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('privacy.html', 'プライバシーポリシー'); return false;"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>プライバシーポリシー</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('contact.html', 'お問い合わせ'); return false;"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>お問い合わせ</span></a>
 </div>
 </aside>
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
@@ -6868,7 +6866,19 @@ function setupSideMenu() {
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('sideMenu');
   const overlay = document.getElementById('sideMenuOverlay');
-  const closeBtn = document.getElementById('menuCloseBtn');
+  
+  const isDesktop = window.matchMedia('(min-width: 1201px)').matches;
+  // Desktop: allow collapsing the docked menu (remember preference)
+  const applyDesktopState = (collapsed) => {
+    document.body.classList.toggle('menuCollapsed', !!collapsed);
+    try{ localStorage.setItem('cr_menuCollapsed', collapsed ? '1' : '0'); }catch(e){}
+  };
+  if (isDesktop){
+    let saved = null;
+    try{ saved = localStorage.getItem('cr_menuCollapsed'); }catch(e){}
+    if (saved === '1') applyDesktopState(true);
+  }
+const closeBtn = document.getElementById('menuCloseBtn');
   
   if (!btn || !menu || !overlay) return;
 
