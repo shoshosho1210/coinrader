@@ -2434,6 +2434,14 @@ body {
     color: #e2e8f0;
     font-weight: 700;
 }
+.t-delta{
+    margin-left: 6px;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.01em;
+}
+.t-delta.up{ color:#4ade80; }
+.t-delta.down{ color:#f87171; }
 /* 変動率の色（JSで制御するための基本クラス） */
 .text-up { color: #4ade80; }
 .text-down { color: #f87171; }
@@ -4317,7 +4325,7 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 <div class="summary-lists">
 <div class="summary-card summary-trend">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">（話題・右は24h変動）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">（24h変動）</span></div>
 <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#grid-trend">TOP5</a></div>
 </div>
@@ -4327,7 +4335,7 @@ white-space:nowrap; word-break:keep-all; }
 <div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
 </div>
 <div class="summary-card summary-mcap">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">（24h / 7d）</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">（24h/7d変動）</span></div>
 <ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
 </div>
@@ -8117,6 +8125,24 @@ textEl.innerHTML = htmlContent;
     const el = document.getElementById(id);
     if (el) el.textContent = (txt==null? '--' : String(txt));
   }
+  function _setHTML(id, html){
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = (html==null? '--' : String(html));
+  }
+  function _fmtArrowPct(n, digits=1){
+    if (typeof n !== 'number' || !isFinite(n)) return '';
+    const up = n >= 0;
+    const sym = up ? '▲' : '▼';
+    const cls = up ? 'up' : 'down';
+    return `<span class="t-delta ${cls}">${sym}${Math.abs(n).toFixed(digits)}%</span>`;
+  }
+  function _fmtArrowDelta(n, digits=1, suffix=''){
+    if (typeof n !== 'number' || !isFinite(n) || Math.abs(n) < 1e-9) return '';
+    const up = n >= 0;
+    const sym = up ? '▲' : '▼';
+    const cls = up ? 'up' : 'down';
+    return `<span class="t-delta ${cls}">${sym}${Math.abs(n).toFixed(digits)}${suffix}</span>`;
+  }
   async function updateMacroTicker(){
     try{
       // BTC / ETH JPY from marketsTop (preferred)
@@ -8131,10 +8157,18 @@ textEl.innerHTML = htmlContent;
           if (!eth && sp?.ethereum?.jpy!=null) eth = { current_price: Number(sp.ethereum.jpy) };
         }catch(_e){}
       }
-      if (btc?.current_price!=null) _setText('tickerBtcPrice', formatJPY(Number(btc.current_price)));
-      else _setText('tickerBtcPrice', '--');
-      if (eth?.current_price!=null) _setText('tickerEthPrice', formatJPY(Number(eth.current_price)));
-      else _setText('tickerEthPrice', '--');
+      if (btc?.current_price!=null) {
+        const chg = (btc.price_change_percentage_24h_in_currency ?? btc.price_change_percentage_24h);
+        _setHTML('tickerBtcPrice', `${formatJPY(Number(btc.current_price))}${_fmtArrowPct(chg,1) ? ' ' + _fmtArrowPct(chg,1) : ''}`);
+      } else {
+        _setText('tickerBtcPrice', '--');
+      }
+      if (eth?.current_price!=null) {
+        const chg = (eth.price_change_percentage_24h_in_currency ?? eth.price_change_percentage_24h);
+        _setHTML('tickerEthPrice', `${formatJPY(Number(eth.current_price))}${_fmtArrowPct(chg,1) ? ' ' + _fmtArrowPct(chg,1) : ''}`);
+      } else {
+        _setText('tickerEthPrice', '--');
+      }
 
       // BTC Dominance
       let btcDom = null;
@@ -8146,8 +8180,18 @@ textEl.innerHTML = htmlContent;
         const total = marketsTop.reduce((s,c)=>s+(Number(c?.market_cap)||0),0);
         if (total>0) btcDom = (Number(btc.market_cap)/total)*100;
       }
-      if (typeof btcDom === 'number' && isFinite(btcDom)) _setText('tickerBtcDom', btcDom.toFixed(1) + '%');
-      else _setText('tickerBtcDom', '--%');
+      if (typeof btcDom === 'number' && isFinite(btcDom)) {
+        let deltaDom = null;
+        try{
+          const prev = Number(localStorage.getItem('prev_btc_dom'));
+          if (isFinite(prev)) deltaDom = btcDom - prev;
+          localStorage.setItem('prev_btc_dom', String(btcDom));
+        }catch(_e){}
+        const d = _fmtArrowDelta(deltaDom, 1, 'pt');
+        _setHTML('tickerBtcDom', `${btcDom.toFixed(1)}%${d ? ' ' + d : ''}`);
+      } else {
+        _setText('tickerBtcDom', '--%');
+      }
 
       // Fear & Greed Index
       let fgScore = null, fgClass = '';
@@ -8158,8 +8202,19 @@ textEl.innerHTML = htmlContent;
       }catch(_e){}
       const fgEl = document.getElementById('tickerFgScore');
       if (fgEl){
-        if (typeof fgScore === 'number' && isFinite(fgScore)) fgEl.textContent = String(Math.round(fgScore));
-        else fgEl.textContent = '--';
+        if (typeof fgScore === 'number' && isFinite(fgScore)) {
+          const cur = Math.round(fgScore);
+          let delta = null;
+          try{
+            const prev = Number(localStorage.getItem('prev_fng'));
+            if (isFinite(prev)) delta = cur - prev;
+            localStorage.setItem('prev_fng', String(cur));
+          }catch(_e){}
+          const d = _fmtArrowDelta(delta, 0, '');
+          fgEl.innerHTML = `${cur}${d ? ' ' + d : ''}`;
+        } else {
+          fgEl.textContent = '--';
+        }
         if (fgClass) fgEl.title = `恐怖&強欲指数: ${fgClass}`;
       }
 
