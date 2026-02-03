@@ -4055,6 +4055,28 @@ white-space:nowrap; word-break:keep-all; }
   .ai-hint-line{margin-top:6px !important; font-size:12px !important; line-height:1.25 !important;}
 }
 
+
+/* v50 (v48-based): tighter mobile header + regime + inter-card spacing */
+.section-title{ margin:0; }
+.section-sub{ margin:0; }
+
+@media (max-width: 520px){
+  /* "リアルタイム市場分析" 周り */
+  .summary-block{ padding: 12px 12px !important; margin-top: 6px !important; }
+  .section-header{ margin: 0 0 4px !important; }
+  .section-title{ margin: 0 !important; line-height: 1.10 !important; }
+  .section-sub{ margin: 0 !important; line-height: 1.25 !important; }
+
+  /* 市場局面カード */
+  .ai-detail{ margin-top: 4px !important; }
+  .ai-regime-card{ padding: 8px 10px !important; margin: 2px 0 6px !important; }
+  .ai-regime-hero{ padding: 8px 10px !important; margin: 2px 0 6px !important; gap: 10px !important; }
+
+  /* 判断理由カードとの詰め */
+  .ai-mini-block{ padding: 10px 12px !important; }
+  .ai-regime-card + .ai-mini-block{ margin-top: 8px !important; }
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
