@@ -2566,6 +2566,10 @@ body {
 .ai-reasons-grid .c.sig{ text-align:left; font-weight:700; }
 .ai-reasons-grid .row{ display: contents; }
 .ai-reasons-grid .tag{ display:inline-flex; align-items:center; gap:6px; font-weight:700; }
+.ai-reasons-grid .c.ind{ overflow:hidden; }
+.ai-reasons-grid .c.ind .tag{ min-width:0; max-width:100%; overflow:hidden; }
+.ai-reasons-grid .c.ind .label{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; }
+.ai-reasons-grid .c.ind .dot{ flex:0 0 auto; }
 .ai-reasons-grid .dot{ width:7px;height:7px;border-radius:999px; background: rgba(56,189,248,.9); box-shadow: 0 0 0 3px rgba(56,189,248,.15); }
 .ai-reasons-grid .dot.bear{ background: rgba(239,68,68,.95); box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
 .ai-reasons-grid .dot.bull{ background: rgba(34,197,94,.95); box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
@@ -7878,7 +7882,7 @@ const reasonGridHtml = `
       const tone=_aiSigTone(r.sig);
       return `
         <div class="row" role="row">
-          <div class="c"><span class="tag"><span class="dot ${tone}"></span>${r.k}</span></div>
+          <div class="c ind"><span class="tag"><span class="dot ${tone}"></span><span class="label">${r.k}</span></span></div>
           <div class="c value">${r.v}</div>
           <div class="c sig">${r.sig}</div>
           <div class="c th">${r.th}</div>
