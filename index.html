@@ -2389,6 +2389,14 @@ body {
 .ai-mini-ul li{ margin:4px 0; }
 .ai-mini-note{ font-size:13px; color: rgba(226,232,240,0.9); line-height:1.55; }
 .ai-mini-links{ display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
+.ai-mini-foot{
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed rgba(148,163,184,.28);
+  font-size:12px;
+  color:#a1b3c7;
+  line-height:1.45;
+}
 .ai-mini-link{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius: 999px; border:1px solid rgba(56,189,248,0.22); background: rgba(56,189,248,0.08); color: rgba(229,231,235,0.92); text-decoration:none; font-size:12px; }
 .ai-mini-link:hover{ background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.32); }
 /* AI details v15 additions */
@@ -7263,22 +7271,36 @@ const reasonTrend = (maNum === null)
 
 const reasons = [reasonRsi, reasonFg, reasonTrend];
 
-// 戦略メモ（煽り／指示を避ける・運用の注意と観測ポイント）
-let memo = '結論に寄せすぎず、反応を見ながら段階的に判断。分割・逆指値などリスク管理を優先。';
-if ((rsiNum !== null && rsiNum <= 30) || (fgNum !== null && fgNum <= 30)) {
-  memo = '恐怖優勢・売られすぎ寄り。反発は出やすい一方、戻り売りも出やすいので「強い銘柄の選別」＋分割前提が無難。';
-}
-if (maNum !== null && maNum <= -2.0) {
-  memo = 'トレンドが下向き寄り。反発局面でも追いかけず、出来高の伴う戻り（またはレンジ化）を確認してからが安全。';
-}
-if (btcChgNum !== null && btcChgNum <= -4) {
-  memo = '急落局面はスプレッド拡大・滑りが出やすい。成行を避け、指値/逆指値の前提を点検。';
+// 戦略メモ（30秒テンプレ：2行。ポジション指示/煽りは避ける）
+let memoLines = [
+  '方向感はまだ不安定。急反発が出ても戻り売りが出やすく、値動きが荒くなりがち。',
+  '注目：Fear&Greedの改善（25超/45超）や、TRENDが0付近へ戻るか。'
+];
+
+// 地合いに応じて微調整
+if (regimeCls === 'regime-bear') {
+  memoLines = [
+    'リスクオフ優勢。急反発が出ても戻り売りが出やすい局面。',
+    '注目：Fear&Greedが25超へ回復、TRENDが0付近へ戻るか（戻れば警戒度が下がりやすい）。'
+  ];
+} else if (regimeCls === 'regime-bull') {
+  memoLines = [
+    'リスクオン寄り。伸びやすい一方、過熱サインが出ると巻き戻しも速い。',
+    '注目：RSIが70接近 / Fear&Greedが75超 / TRENDが鈍化しないか。'
+  ];
+} else {
+  memoLines = [
+    'レンジ気味。強弱が混在しやすいので「強い銘柄の選別」になりやすい。',
+    '注目：TRENDが±2%を明確に超えて推移するか、Fear&Greedが45〜55から外れるか。'
+  ];
 }
 
-// 今後の展望（“何を見て判断を更新するか”）
-let outlook = '注目：Fear&Greedの改善、TRENDのゼロ超え、反発時の出来高（弱い反発は失速しやすい）。';
-if (verdictTxt.includes('強気')) {
-  outlook = '注目：過熱（RSI/FG上振れ）の兆候が出たら利確優先の空気になりやすい。急な反転に備えて管理を。';
+// 更新の目安（「次に何を見れば地合いが変わるか」だけ提示）
+let updateHint = '更新の目安：TRENDが0付近へ回復し、Fear&Greedが25超/45超へ改善すると警戒度が下がりやすい。';
+if (regimeCls === 'regime-bull') {
+  updateHint = '更新の目安：RSIが70超 or Fear&Greedが75超で過熱注意。TREND鈍化が同時に出ると反落しやすい。';
+} else if (regimeCls === 'regime-neutral') {
+  updateHint = '更新の目安：TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
 }
 
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
@@ -7294,8 +7316,8 @@ const trendPos = (maNum === null) ? 0.5 : (trendClamp + 10) / 20; // 0..1 with 0
 const htmlContent = `
   <div class="ai-mini">
     <div class="ai-mini-head">
-      <span class="ai-mini-chip ${regimeCls}">地合い：${regime}</span>
-      <span class="ai-mini-meta">BTC 24h：${btcChgNum===null?'—':(btcChgNum>=0?'+':'')+btcChgNum.toFixed(2)+'%'} / BTC.D：${(dom===null||dom===undefined)?'—':Number(dom).toFixed(1)+'%'}</span>
+      <span class="ai-mini-chip ${regimeCls}">市場局面：${regime}</span>
+      <span class="ai-mini-meta">BTC 24h：${fmtPct(btcChgNum)} / BTC.D：${(dom===null||dom===undefined)?'—':Number(dom).toFixed(1)+'%'}</span>
     </div>
 
     <div class="ai-mini-meters">
@@ -7307,17 +7329,17 @@ const htmlContent = `
         <div class="ai-meter-top"><span>Fear&Greed</span><span class="ai-meter-val">${fmtInt(fgNum)}</span></div>
         <div class="ai-meter-track"><div class="ai-meter-fill" style="width:${pct01(fgFill)}"></div></div>
       </div>
-      <div class="ai-meter">
-        <div class="ai-meter-top"><span>TREND</span><span class="ai-meter-val">${fmtPct(maNum)}</span></div>
-        <div class="ai-meter-track ai-meter-track-center">
+      <div class="ai-meter ai-meter-trend">
+        <div class="ai-meter-top"><span>TREND</span><span class="ai-meter-val">${fmtPct(maNum,1)}</span></div>
+        <div class="ai-meter-track2">
           <div class="ai-meter-zero"></div>
-          <div class="ai-meter-fill2" style="left:${pct01(trendPos)}"></div>
+          <div class="ai-meter-fill2" style="left:0; width:${pct01(trendPos)}"></div>
         </div>
       </div>
     </div>
 
     <div class="ai-mini-block">
-      <div class="ai-mini-title">判断理由</div>
+      <div class="ai-mini-title">判断理由（しきい値つき）</div>
       <ul class="ai-mini-ul">
         <li>${reasons[0]}</li>
         <li>${reasons[1]}</li>
@@ -7327,8 +7349,12 @@ const htmlContent = `
 
     <div class="ai-mini-block">
       <div class="ai-mini-title">戦略メモ</div>
-      <div class="ai-mini-note">${memo}</div>
-      <div class="ai-mini-note2">今後の展望：${outlook}</div>
+      <ul class="ai-mini-ul">
+        <li>${memoLines[0]}</li>
+        <li>${memoLines[1]}</li>
+      </ul>
+      <div class="ai-mini-foot">${updateHint}</div>
+
       <div class="ai-mini-links">
         <a class="ai-mini-link" href="#sec-trend">トレンド</a>
         <a class="ai-mini-link" href="#sec-gainers">上昇</a>
