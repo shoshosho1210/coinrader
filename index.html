@@ -3526,6 +3526,37 @@ html, body { overflow-x: hidden; }
 }
 .summary-jump:hover{ color: #e2e8f0; }
 
+/* === PC: tighten whitespace by moving TOP links into card header, soften per-row arrow === */
+@media (min-width: 900px){
+  .summary-card{ position: relative; }
+  .summary-card-title{ padding-right: 92px; } /* room for TOP link */
+  .summary-footer{
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-top: 0 !important;
+    justify-content: flex-end;
+  }
+  .summary-jump{
+    font-size: 11px;
+    opacity: .78;
+    letter-spacing: .2px;
+  }
+  .summary-jump:hover{ opacity: 1; }
+
+  /* per-item external arrow: keep but make it visually lighter; show on hover */
+  .summary-ext{
+    opacity: .32;
+    transform: scale(.92);
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .top5-item:hover .summary-ext{
+    opacity: .85;
+    transform: scale(1.0);
+  }
+}
 @media (max-width: 820px){
   /* keep first-view height tight */
   .summary-footer{ display:none !important; }
