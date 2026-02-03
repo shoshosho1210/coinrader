@@ -806,12 +806,18 @@
   width:26px;
   height:22px;
   border-radius:8px;
-  border:1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.10);
+  background: transparent;
   font-size: 12px;
-  opacity:.9;
+  opacity:.35;
+  transition: opacity .15s ease, background .15s ease, border-color .15s ease;
 }
-.summary-ext:hover{ background: rgba(255,255,255,0.06); }
+.summary-li:hover .summary-ext,
+.summary-ext:hover{
+  opacity:.85;
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.05);
+}
 .flash{
   outline: 2px solid rgba(125,211,252,0.9);
   outline-offset: 2px;
@@ -3523,7 +3529,8 @@ html, body { overflow-x: hidden; }
   font-size: 12px;
   color: rgba(148,163,184,0.95);
   text-decoration: none;
-}
+white-space:nowrap; word-break:keep-all; }
+
 .summary-jump:hover{ color: #e2e8f0; }
 
 /* === PC: tighten whitespace by moving TOP links into card header, soften per-row arrow === */
@@ -3819,17 +3826,17 @@ html, body { overflow-x: hidden; }
 <div class="summary-card summary-trend">
 <div class="summary-card-title"><span class="summary-title-main">🔥 トレンドTOP3</span><span class="summary-card-note-inline">（話題・右は24h変動）</span></div>
 <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
-<div class="summary-footer"><a class="summary-jump" href="#grid-trend">トレンドTOP5へ →</a></div>
+<div class="summary-footer"><a class="summary-jump" href="#grid-trend">TOP5</a></div>
 </div>
 <div class="summary-card summary-up">
-<div class="summary-card-title">🚀 上昇 TOP3（24h）</div>
+<div class="summary-card-title"><span class="summary-title-main">🚀 上昇TOP3</span><span class="summary-card-note-inline">（24h変動）</span></div>
 <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
-<div class="summary-footer"><a class="summary-jump" href="#grid-gainers">上昇TOP5へ →</a></div>
+<div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
 </div>
 <div class="summary-card summary-mcap">
-<div class="summary-card-title">🏆 時価総額 TOP5（24h / 7d）</div>
+<div class="summary-card-title"><span class="summary-title-main">🏆 時価総額TOP5</span><span class="summary-card-note-inline">（24h / 7d）</span></div>
 <ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
-<div class="summary-footer"><a class="summary-jump" href="#sec-mcap">時価総額TOP20へ →</a></div>
+<div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
 </div>
 </div>
 <details class="kpi-details">
