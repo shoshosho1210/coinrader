@@ -3573,6 +3573,54 @@ html, body { overflow-x: hidden; }
   }
 }
 
+
+/* ===== v22 PC tuning: give Mcap more width + keep symbol visible ===== */
+@media (min-width: 900px){
+  /* Narrow Trend/Gainers a bit, give more space to Mcap */
+  .summary-lists{
+    grid-template-columns: minmax(220px, 0.8fr) minmax(220px, 0.8fr) minmax(420px, 1.4fr) !important;
+  }
+
+  /* Mcap list: 2 columns without pushing content outside, and keep the coin symbol visible */
+  #summaryMcapTopList{
+    padding-left: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 12px !important;
+    row-gap: 10px !important;
+  }
+
+  /* Make each row a grid so the name never collapses to zero */
+  #summaryMcapTopList > li,
+  #summaryMcapTopList .top5-item{
+    display: grid !important;
+    grid-template-columns: 28px minmax(44px, 1fr) auto 28px !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #summaryMcapTopList .top5-name{
+    min-width: 44px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  #summaryMcapTopList .top5-val{
+    white-space: nowrap !important;
+    text-align: right !important;
+  }
+}
+/* ===== /v22 ===== */
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
