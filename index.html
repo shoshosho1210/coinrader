@@ -7320,24 +7320,7 @@ const htmlContent = `
       <span class="ai-mini-meta">BTC 24h：${fmtPct(btcChgNum)} / BTC.D：${(dom===null||dom===undefined)?'—':Number(dom).toFixed(1)+'%'}</span>
     </div>
 
-    <div class="ai-mini-meters">
-      <div class="ai-meter">
-        <div class="ai-meter-top"><span>RSI</span><span class="ai-meter-val">${fmtInt(rsiNum)}</span></div>
-        <div class="ai-meter-track"><div class="ai-meter-fill" style="width:${pct01(rsiFill)}"></div></div>
-      </div>
-      <div class="ai-meter">
-        <div class="ai-meter-top"><span>Fear&Greed</span><span class="ai-meter-val">${fmtInt(fgNum)}</span></div>
-        <div class="ai-meter-track"><div class="ai-meter-fill" style="width:${pct01(fgFill)}"></div></div>
-      </div>
-      <div class="ai-meter ai-meter-trend">
-        <div class="ai-meter-top"><span>TREND</span><span class="ai-meter-val">${fmtPct(maNum,1)}</span></div>
-        <div class="ai-meter-track2">
-          <div class="ai-meter-zero"></div>
-          <div class="ai-meter-fill2" style="left:0; width:${pct01(trendPos)}"></div>
-        </div>
-      </div>
-    </div>
-
+    
     <div class="ai-mini-block">
       <div class="ai-mini-title">判断理由（しきい値つき）</div>
       <ul class="ai-mini-ul">
