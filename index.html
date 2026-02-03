@@ -2509,6 +2509,8 @@ body {
   align-items: center;
   padding-top: 4px;
 }
+.ai-reasons-grid .c.ind{min-width:0; overflow:hidden;}
+.ai-reasons-grid .c.ind span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 .ai-reasons-grid > *{ min-width:0; }
 
 .ai-reasons-grid .h{
@@ -2563,9 +2565,9 @@ body {
 
 .ai-mini-meters{display:grid; grid-template-columns:1fr; gap:10px;}
 @media (min-width: 520px){ .ai-mini-meters{grid-template-columns:repeat(3,1fr);} }
-.ai-meter{border:1px solid rgba(255,255,255,0.06); background:rgba(15,23,42,0.35); border-radius:12px; padding:8px 10px;}
-.ai-meter-top{display:flex; justify-content:space-between; align-items:center; font-size:12px; color:rgba(226,232,240,0.9); margin-bottom:6px;}
-.ai-meter-val{font-variant-numeric:tabular-nums; color:rgba(229,231,235,0.95);}
+.ai-meter{border:1px solid rgba(255,255,255,0.06); background:rgba(15,23,42,0.35); border-radius:12px; padding:8px 12px 8px 10px; min-width:0; overflow:visible;}
+.ai-meter-top{display:flex; align-items:center; gap:8px; justify-content:space-between; min-width:0;}
+.ai-meter-val{font-variant-numeric:tabular-nums; color:rgba(229,231,235,0.95); white-space:nowrap; margin-left:auto; flex:0 0 auto;}
 .ai-meter-track{position:relative; height:8px; border-radius:999px; background:rgba(148,163,184,0.15); overflow:hidden;}
 .ai-meter-fill{height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(56,189,248,0.9), rgba(34,211,238,0.65));}
 .ai-meter-track-center{overflow:visible;}
@@ -7887,7 +7889,7 @@ const htmlContent = `
         <li>${hlMemo(memoLines[0])}</li>
         <li>${hlMemo(memoLines[1])}</li>
       </ul>
-      <div class="ai-mini-foot">${hlMemo(updateHint)}</div>
+      <div class="ai-mini-foot"></div>
     </div>
   </div>
 `;
