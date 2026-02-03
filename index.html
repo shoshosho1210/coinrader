@@ -313,6 +313,38 @@
     letter-spacing: .02em;
     font-weight: 600;
   }
+  /* --- KPI title two-line stack (mobile-friendly) --- */
+  .kpi-tile-title{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    min-width:0;
+  }
+  .kpi-title-stack{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:0;
+    line-height:1.05;
+  }
+  .kpi-title-main{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.04em;
+    white-space:nowrap;
+  }
+  .kpi-title-sub{
+    font-size:10px;
+    color: rgba(148,163,184,0.95);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  @media (max-width: 520px){
+    /* very narrow phones: allow sub label to wrap instead of truncating */
+    .kpi-title-sub{ white-space:normal; }
+  }
+
 
   .kpi-tile-big {
     margin-top: 6px;
@@ -2578,6 +2610,19 @@ body {
   .ai-regime-main{ font-size: 15px; }
   .ai-regime-meta{ white-space: normal; text-align:right; }
 }
+
+@media (max-width: 420px){
+  /* ultra-narrow phones: shrink columns so "指標" と "現在値" が重ならない */
+  .ai-reasons-grid{
+    grid-template-columns: minmax(64px,0.9fr) minmax(46px,0.65fr) minmax(0,1.2fr) minmax(62px,0.85fr);
+    gap: 6px 8px;
+  }
+  .ai-reasons-grid .h{ font-size:10px; }
+  .ai-reasons-grid .c{ font-size:12px; }
+  .ai-reasons-grid .c.sig{ padding-left:4px; }
+  .ai-reasons-grid .c.value{ padding-right:0; }
+}
+
 .ai-mini-link{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius: 999px; border:1px solid rgba(56,189,248,0.22); background: rgba(56,189,248,0.08); color: rgba(229,231,235,0.92); text-decoration:none; font-size:12px; }
 .ai-mini-link:hover{ background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.32); }
 /* AI details v15 additions */
@@ -3404,6 +3449,15 @@ body {
 .pill-label{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .pill-sub{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .pill-value{ flex:0 0 auto; white-space:nowrap; padding-right:2px; }
+
+@media (max-width: 520px){
+  /* AI JUDGE pills: show label/sub on 2 lines to avoid ellipsis */
+  .pill-top{ align-items:flex-start; }
+  .pill-labelwrap{ flex-direction:column; align-items:flex-start; gap:1px; }
+  .pill-label{ font-size:10px; letter-spacing:.06em; text-overflow:clip; }
+  .pill-sub{ font-size:10px; opacity:0.85; text-overflow:clip; }
+}
+
 .pill-label{ font-weight:800; font-size:11px; letter-spacing:.08em; color:#38bdf8; }
 .pill-sub{ font-size:10px; opacity:0.75; }
 .pill-value{ font-weight:800; font-size:14px; }
@@ -4231,7 +4285,7 @@ white-space:nowrap; word-break:keep-all; }
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
 </div><div class="hud-shortline" id="aiInsightShort">—</div>
-<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
+<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENTIMENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
 <details class="hud-details">
 <summary class="hud-summary-btn">
 <span class="btn-text">AIの判断理由を見る（30秒）</span>
@@ -4269,7 +4323,7 @@ white-space:nowrap; word-break:keep-all; }
 <summary class="kpi-details-summary">📌 主要指標（KPI）を表示</summary>
 <div class="summary-kpis" id="summaryKpis">
 <div class="kpi-tile kpi-sent">
-<div class="kpi-tile-title"><i class="fa-solid fa-gauge-high"></i> SENTIMENT</div>
+<div class="kpi-tile-title"><i class="fa-solid fa-gauge-high"></i><span class="kpi-title-stack"><span class="kpi-title-main">SENTIMENT</span><span class="kpi-title-sub">市場心理</span></span></div>
 <div class="kpi-value-row">
 <div class="kpi-tile-big" id="sumSentMain">-</div>
 <div class="kpi-tile-sub inline" id="sumSentSub">-</div>
@@ -4285,7 +4339,7 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 </div>
 <div class="kpi-tile kpi-rsi">
-<div class="kpi-tile-title"><i class="fa-solid fa-wave-square"></i> BTC RSI</div>
+<div class="kpi-tile-title"><i class="fa-solid fa-wave-square"></i><span class="kpi-title-stack"><span class="kpi-title-main">RSI</span><span class="kpi-title-sub">過熱感</span></span></div>
 <div class="kpi-value-row">
 <div class="kpi-tile-big" id="sumRsiMain">-</div>
 <div class="kpi-tile-sub inline" id="sumRsiSub">-</div>
@@ -4332,7 +4386,7 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 </div>
 <div class="kpi-tile kpi-ma">
-<div class="kpi-tile-title"><i class="fa-solid fa-arrow-trend-up"></i> TREND (MA)</div>
+<div class="kpi-tile-title"><i class="fa-solid fa-arrow-trend-up"></i><span class="kpi-title-stack"><span class="kpi-title-main">TREND</span><span class="kpi-title-sub">強度</span></span></div>
 <div class="kpi-value-row">
 <div class="kpi-tile-big" id="sumMaMain">-</div>
 <div class="kpi-tile-sub inline" id="sumMaSub">-</div>
