@@ -13,7 +13,7 @@ CoinRader: data/daily/*.json から daily/ 配下のHTMLを自動生成します
 from __future__ import annotations
 import os, re, json, glob, datetime
 from pathlib import Path
-
+import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]  # repo root想定: scripts/ の1つ上
 DATA_DIR = ROOT / "data" / "daily"
 OUT_DIR  = ROOT / "daily"
@@ -117,6 +117,97 @@ def escape_html(s: str) -> str:
     return (s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
              .replace('"',"&quot;").replace("'","&#39;"))
 
+def _strip_ns(tag: str) -> str:
+    return tag.split("}", 1)[-1] if "}" in tag else tag
+
+def read_existing_sitemap(path: Path) -> list[dict]:
+    """
+    既存の sitemap.xml があれば読み込み、url要素を dict として返します。
+    - daily配下は後で生成し直すので、ここでは「そのまま返す」だけ
+    """
+    if not path.exists():
+        return []
+    try:
+        tree = ET.parse(path)
+        root = tree.getroot()
+    except Exception:
+        return []
+
+    urls: list[dict] = []
+    for url_el in list(root):
+        if _strip_ns(url_el.tag) != "url":
+            continue
+        item = {"loc": None, "lastmod": None, "changefreq": None, "priority": None}
+        for child in list(url_el):
+            k = _strip_ns(child.tag)
+            if k in item:
+                item[k] = (child.text or "").strip()
+        if item["loc"]:
+            urls.append(item)
+    return urls
+
+def write_sitemap(dated: list[str], out_path: Path) -> None:
+    """
+    - 既存 sitemap.xml の「daily以外」を可能な限り維持
+    - daily/ と daily/latest.html と daily/YYYYMMDD.html（直近N日）を追記/更新
+    """
+    today_iso = datetime.date.today().isoformat()
+    existing = read_existing_sitemap(out_path)
+
+    # 既存のURLを維持（daily以外）
+    kept = []
+    for u in existing:
+        loc = (u.get("loc") or "").rstrip("/")
+        # daily は生成し直す
+        if "/daily" in loc:
+            continue
+        kept.append(u)
+
+    # latest（日次の最新日付があればそれを lastmod に）
+    latest_ymd = dated[-1] if dated else None
+    latest_iso = yyyymmdd_to_iso(latest_ymd) if latest_ymd else today_iso
+
+    # 日次URLは多すぎるとクロールが重くなるので、直近N日だけ
+    max_days = int(os.environ.get("CR_SITEMAP_DAILY_DAYS", "90"))
+    last_n = dated[-max_days:] if len(dated) > max_days else dated
+
+    daily_entries = [
+        {"loc": f"{SITE_ORIGIN}/daily/", "lastmod": latest_iso, "changefreq": "daily", "priority": "0.9"},
+        {"loc": f"{SITE_ORIGIN}/daily/latest.html", "lastmod": latest_iso, "changefreq": "daily", "priority": "0.9"},
+    ]
+    for ymd in reversed(last_n):
+        daily_entries.append({
+            "loc": f"{SITE_ORIGIN}/daily/{ymd}.html",
+            "lastmod": yyyymmdd_to_iso(ymd),
+            "changefreq": "daily",
+            "priority": "0.8",
+        })
+
+    # 既存が空なら、最低限トップも入れておく（安全策）
+    if not kept:
+        kept = [{"loc": f"{SITE_ORIGIN}/", "lastmod": today_iso, "changefreq": "daily", "priority": "1.0"}]
+
+    urls = kept + daily_entries
+
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u in urls:
+        loc = u.get("loc")
+        if not loc:
+            continue
+        lines.append("  <url>")
+        lines.append(f"    <loc>{loc}</loc>")
+        # lastmod が無い既存URLは today で埋める（任意）
+        lastmod = u.get("lastmod") or today_iso
+        lines.append(f"    <lastmod>{lastmod}</lastmod>")
+        if u.get("changefreq"):
+            lines.append(f"    <changefreq>{u['changefreq']}</changefreq>")
+        if u.get("priority"):
+            lines.append(f"    <priority>{u['priority']}</priority>")
+        lines.append("  </url>")
+    lines.append("</urlset>")
+    write_text(out_path, "\n".join(lines) + "\n")
+
 def main():
     tmpl = read_text(TEMPL_DIR / "daily_template.html")
     tmpl_index = read_text(TEMPL_DIR / "daily_index_template.html")
@@ -194,6 +285,9 @@ def main():
     latest_url = f"/daily/{latest}.html" if latest else "/"
     latest_html = tmpl_latest.replace("{{LATEST_URL}}", latest_url)
     write_text(OUT_DIR / "latest.html", latest_html)
+
+    # sitemap.xml（リポ直下）を更新（dailyを追記/更新）
+    write_sitemap(dated, ROOT / "sitemap.xml")
 
     print(f"[ok] generated: {len(dated)} pages, latest={latest}")
 
