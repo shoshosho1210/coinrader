@@ -4399,6 +4399,71 @@ html, body{
     max-width: 100%;
   }
 }
+
+  /* ===== v85: Modal A11y + Scroll lock, Mobile overflow menu ===== */
+  html.modal-open, body.modal-open { overflow: hidden; }
+
+  /* keep modal content scroll smooth on iOS */
+  .info-modal { -webkit-overflow-scrolling: touch; }
+
+  /* Mobile section-actions overflow menu */
+  .section-actions{ position: relative; }
+  .more-menu-btn{
+    display:none;
+    width:44px; height:44px;
+    border-radius:999px;
+    border:1px solid #374151;
+    background:#111827;
+    color:#e5e7eb;
+    cursor:pointer;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    line-height:1;
+  }
+  .more-menu-btn:active{ transform: scale(0.98); }
+
+  .more-menu-popover{
+    display:none;
+    position:absolute;
+    right:0;
+    top: calc(100% + 8px);
+    min-width: 180px;
+    max-width: 260px;
+    background: #0b1220;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    box-shadow: 0 18px 46px rgba(0,0,0,0.55);
+    padding: 8px;
+    z-index: 1200;
+  }
+  .more-menu-popover.open{ display:block; }
+  .more-menu-popover a, .more-menu-popover button{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color:#e5e7eb;
+    font-size:12px;
+    cursor:pointer;
+    text-decoration:none;
+  }
+  .more-menu-popover a:hover, .more-menu-popover button:hover{
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* Mobile-only behavior: show ⋯ button and hide overflowed actions */
+  @media (max-width: 640px){
+    .more-menu-btn{ display:inline-flex; }
+    .section-actions .is-overflowed{ display:none !important; }
+  }
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -8486,7 +8551,7 @@ textEl.innerHTML = htmlContent;
 <div class="info-modal" onclick="event.stopPropagation()">
 <div class="info-header">
 <div class="info-title" id="pageModalTitle">タイトル</div>
-<button class="info-close" onclick="closePageModal()">×</button>
+<button class="info-close" id="pageModalCloseBtn" onclick="closePageModal()" aria-label="閉じる">×</button>
 </div>
 <div class="info-body" id="pageModalBody">
 <div style="text-align:center; padding:40px; color:#94a3b8;">
@@ -8498,44 +8563,116 @@ textEl.innerHTML = htmlContent;
 <script>
   // ▼▼▼ 外部HTML読み込みスクリプト ▼▼▼
   
+  
+  // ▼▼▼ 外部HTML読み込みスクリプト ▼▼▼
+
+  let __crModalLastFocus = null;
+  let __crModalKeyHandler = null;
+
+  function __crLockScroll(){
+    document.documentElement.classList.add('modal-open');
+    document.body.classList.add('modal-open');
+  }
+  function __crUnlockScroll(){
+    document.documentElement.classList.remove('modal-open');
+    document.body.classList.remove('modal-open');
+  }
+
+  function __crGetFocusable(container){
+    const sel = [
+      'a[href]',
+      'button:not([disabled])',
+      'textarea:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+    return Array.from(container.querySelectorAll(sel))
+      .filter(el => !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length));
+  }
+
+  function __crSetupModalKeyHandling(){
+    const overlay = document.getElementById('pageModalOverlay');
+    const modal = overlay.querySelector('.info-modal');
+
+    // Remove previous handler if any
+    if (__crModalKeyHandler) document.removeEventListener('keydown', __crModalKeyHandler);
+
+    __crModalKeyHandler = function(e){
+      if (!overlay.classList.contains('open')) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closePageModal();
+        return;
+      }
+
+      if (e.key !== 'Tab') return;
+
+      const focusables = __crGetFocusable(modal);
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+
+      if (e.shiftKey) {
+        if (active === first || active === modal) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', __crModalKeyHandler);
+  }
+
   async function openPageModal(url, title) {
     const overlay = document.getElementById('pageModalOverlay');
     const titleEl = document.getElementById('pageModalTitle');
     const bodyEl = document.getElementById('pageModalBody');
-    
-    // 1. モーダルを開く（まずは「読み込み中」を表示）
+    const closeBtn = document.getElementById('pageModalCloseBtn');
+
+    // Remember focus to restore later
+    __crModalLastFocus = document.activeElement;
+
+    // 1) Open modal immediately with loading state
     titleEl.textContent = title;
     bodyEl.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#94a3b8;">読み込み中...</div>';
     overlay.classList.add('open');
 
-    // サイドメニューが開いていれば閉じる
+    // Scroll lock + key handling + focus
+    __crLockScroll();
+    __crSetupModalKeyHandling();
+    if (closeBtn) closeBtn.focus({ preventScroll:true });
+
+    // Close side menu if open
     const menu = document.getElementById('sideMenu');
     const menuOverlay = document.getElementById('sideMenuOverlay');
     if(menu) menu.classList.remove('is-open');
     if(menuOverlay) menuOverlay.hidden = true;
 
     try {
-      // 2. ファイルを取得 (Fetch)
-      // キャッシュを防ぐために ?v=... をつけるのがコツです
       const res = await fetch(url + '?v=' + Date.now());
-      
-      if (!res.ok) {
-        throw new Error('ページが見つかりませんでした (' + res.status + ')');
-      }
+      if (!res.ok) throw new Error('ページが見つかりませんでした (' + res.status + ')');
 
-      // 3. テキストとして取得
       const text = await res.text();
-
-      // 4. HTMLから <body> の中身だけを簡易的に抽出する（フルHTMLの場合）
-      // ※もし start.html がパーツのみなら text そのままでOK
       const parser = new DOMParser();
       const doc = parser.parseFromString(text, 'text/html');
-      
-      // bodyがあればその中身、なければ全体を表示
+
       const content = doc.body ? doc.body.innerHTML : text;
-      
       bodyEl.innerHTML = content;
 
+      // Ensure focus remains inside modal after content swap
+      const focusables = __crGetFocusable(overlay.querySelector('.info-modal'));
+      if (focusables.length && document.activeElement === document.body) {
+        focusables[0].focus({ preventScroll:true });
+      }
     } catch (e) {
       console.error(e);
       bodyEl.innerHTML = `<div style="padding:20px;text-align:center;color:#f87171;">
@@ -8546,8 +8683,106 @@ textEl.innerHTML = htmlContent;
   }
 
   function closePageModal() {
-    document.getElementById('pageModalOverlay').classList.remove('open');
+    const overlay = document.getElementById('pageModalOverlay');
+    overlay.classList.remove('open');
+
+    // Remove key handler
+    if (__crModalKeyHandler) {
+      document.removeEventListener('keydown', __crModalKeyHandler);
+      __crModalKeyHandler = null;
+    }
+
+    __crUnlockScroll();
+
+    // Restore focus
+    try{
+      if (__crModalLastFocus && typeof __crModalLastFocus.focus === 'function') {
+        __crModalLastFocus.focus({ preventScroll:true });
+      }
+    }catch(_e){}
+    __crModalLastFocus = null;
   }
+
+  // ▼▼▼ Mobile section-actions overflow menu (… menu) ▼▼▼
+  let __crOverflowGlobalBound = false;
+  function setupSectionOverflowMenus(){
+    const headers = document.querySelectorAll('.section-header');
+    headers.forEach(h => {
+      const actions = h.querySelector('.section-actions');
+      if (!actions) return;
+
+      // Clean up old menu if re-running
+      const oldBtn = actions.querySelector(':scope > .more-menu-btn');
+      const oldPop = actions.querySelector(':scope > .more-menu-popover');
+      if (oldBtn) oldBtn.remove();
+      if (oldPop) oldPop.remove();
+
+      const items = Array.from(actions.children)
+        .filter(el => el.classList && !el.classList.contains('more-menu-btn') && !el.classList.contains('more-menu-popover'));
+
+      // Remove previous overflow marking
+      items.forEach(el => el.classList.remove('is-overflowed'));
+
+      // Only activate when 3+ actions exist
+      if (items.length <= 2) return;
+
+      // Mark overflow items (3rd+)
+      const overflow = items.slice(2);
+      overflow.forEach(el => el.classList.add('is-overflowed'));
+
+      // Create menu button
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'more-menu-btn';
+      btn.setAttribute('aria-label', 'その他の操作');
+      btn.innerText = '⋯';
+
+      // Create popover
+      const pop = document.createElement('div');
+      pop.className = 'more-menu-popover';
+      pop.setAttribute('role', 'menu');
+
+      // Clone overflow nodes into popover
+      overflow.forEach(el => {
+        const clone = el.cloneNode(true);
+        // Ensure full width style in popover
+        clone.classList.remove('linkbtn'); // we style via popover css
+        // If it's an <a>, keep it as is; if button/div, keep but ensure it's a button-like
+        pop.appendChild(clone);
+      });
+
+      actions.appendChild(btn);
+      actions.appendChild(pop);
+
+      // Toggle open/close
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = pop.classList.contains('open');
+        document.querySelectorAll('.more-menu-popover.open').forEach(p => p.classList.remove('open'));
+        if (!isOpen) pop.classList.add('open');
+      });
+
+      // Close on any click inside popover (after action)
+      pop.addEventListener('click', (e) => {
+        pop.classList.remove('open');
+      });
+    });
+    // Global click closes any open popover (bind once)
+    if (!__crOverflowGlobalBound) {
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.more-menu-popover.open').forEach(p => p.classList.remove('open'));
+      });
+      __crOverflowGlobalBound = true;
+    }
+  }
+
+  // Run once now (script is at end of body), and on resize
+  setupSectionOverflowMenus();
+  let __crOverflowResizeT = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(__crOverflowResizeT);
+    __crOverflowResizeT = setTimeout(setupSectionOverflowMenus, 120);
+  });
 // (X share removed)
 
 function renderAiHud(data) {
