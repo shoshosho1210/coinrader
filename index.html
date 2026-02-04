@@ -1969,7 +1969,18 @@ section[id] {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     text-align: right;
+    white-space: nowrap;
+    min-width: 0;
 }
+
+/* v86.2: MCAP summary value (24h/7d) as spans for responsive control */
+.mcap-val{
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+}
+.mcap-sep{ opacity: 0.6; }
 
 /* 色の定義 */
 .val-up { color: #4ade80; }
@@ -3565,6 +3576,25 @@ body {
   }
   .top5-item{ padding: 6px 8px; }
   .top5-name{ font-size: 12px; }
+  /* v86.1: keep ticker readable on mobile (avoid BTC -> B...) */
+  .top5-name{
+    flex: 0 0 6ch;      /* reserve room for ticker */
+    min-width: 6ch;
+    max-width: 6ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* v86.1: MCAP value as spans; hide 7d on mobile to keep rows compact */
+  .mcap-val{
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .mcap-sep{ opacity: 0.6; }
+  }
+
   .summary-right-wrap{ gap: 6px; }
   .summary-ext{ display:none; } /* first-view focus */
   .hud-guide-btn{ display:none !important; } /* AI card shorter */
@@ -3918,6 +3948,16 @@ white-space:nowrap; word-break:keep-all; }
   }
   #summaryMcapTopList .top5-val{
     white-space: nowrap;
+  }
+}
+
+
+
+/* v86.1: Hide 7d in MCAP TOP5 on small screens to keep rows compact */
+@media (max-width: 540px){
+  #summaryMcapTopList .mcap-chg7,
+  #summaryMcapTopList .mcap-sep{
+    display: none;
   }
 }
 
@@ -4642,7 +4682,7 @@ html, body{
 <div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
 </div>
 <div class="summary-card summary-mcap">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">24h/7d変動</span></div>
+<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline">24h変動</span></div>
 <ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
 <div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
 </div>
@@ -7487,13 +7527,15 @@ function makeLineChart(canvasId, labels, series, opts){
         
         
         if (isMcapSection) {
-            // 時価総額TOP: 24h / 7d を並べて表示
+            // 時価総額TOP: 24h / 7d を分離して表示（CSSでモバイルは7dを非表示にできる）
             const chg24 = coin.price_change_percentage_24h_in_currency ?? coin.price_change_percentage_24h ?? 0;
             const chg7  = coin.price_change_percentage_7d_in_currency ?? coin.price_change_percentage_7d ?? 0;
             const s24 = (chg24 >= 0 ? '+' : '') + (Number.isFinite(chg24) ? chg24.toFixed(1) : '0.0') + '%';
             const s7  = (chg7  >= 0 ? '+' : '') + (Number.isFinite(chg7)  ? chg7.toFixed(1)  : '0.0') + '%';
-            val.textContent = `${s24} / ${s7}`;
+            val.classList.add('mcap-val');
+            val.innerHTML = `<span class="mcap-chg24">${s24}</span><span class="mcap-sep">/</span><span class="mcap-chg7">${s7}</span>`;
         } else if (isGainSection) {
+
             // 上昇TOP: 24h比
             val.textContent = (isUp ? '+' : '') + (chg ? chg.toFixed(1) : '0') + '%';
         } else if (listId === 'summaryVolAltList') {
