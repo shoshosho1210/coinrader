@@ -4464,6 +4464,62 @@ html, body{
     .section-actions .is-overflowed{ display:none !important; }
   }
 
+
+/* ===== v86 polish: visual hierarchy + chart spacing + Top5 overlap fixes ===== */
+
+/* Visual hierarchy: make the "main number" pop, keep labels quieter */
+.kpi-value{ letter-spacing: .01em; }
+.kpi-tile-title .kpi-title-main{ font-weight: 850; }
+.kpi-tile-title .kpi-title-sub{ opacity: .78; }
+
+/* Chart spacing / consistency */
+.card .sparkline{
+  height: 76px !important;
+  min-height: 76px !important;
+}
+.rank-table .sparkline, .rank-table canvas.sparkline{
+  height: 36px !important;
+  min-height: 36px !important;
+}
+
+/* --- Fix: Mcap TOP5 ↗ overlaps / overflows on 2-column grid --- */
+#summaryMcapTopList{
+  column-gap: 18px !important;
+}
+
+/* Let the value wrap (break at spaces around "/") so the row never overflows into the other column */
+#summaryMcapTopList .summary-right-wrap{
+  white-space: normal !important;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  row-gap: 2px;
+  max-width: 100%;
+}
+
+/* Slightly tighter value so it fits comfortably in a column */
+#summaryMcapTopList .top5-val{
+  font-size: 11px;
+  line-height: 1.15;
+  white-space: normal !important;
+  text-align: right;
+}
+
+/* Keep the ↗ button inside the card even on narrow widths */
+#summaryMcapTopList .summary-ext{
+  width: 24px;
+  height: 20px;
+}
+
+/* Ensure items themselves never paint into the next column */
+#summaryMcapTopList .top5-item{
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-right: 12px;
+  overflow: hidden;
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -5239,7 +5295,9 @@ async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
           }
         }
 
-        throw new Error(`HTTP ${res.status}`);
+        const err = new Error(`HTTP ${res.status}`);
+        err.httpStatus = res.status;
+        throw err;
 
       } catch(e){
         lastErr = e;
