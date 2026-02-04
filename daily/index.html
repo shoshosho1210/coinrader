@@ -19,24 +19,36 @@
     .date{font-weight:800}
     .meta{color:var(--muted);font-size:12px}
 /* 行全体をカード化 */
+/* meta を 右に余白作って矢印置き場にする */
 .rowlink{
+  position: relative;
   border: 1px solid rgba(255,255,255,.06);
 }
+
 .rowlink:hover{
   border-color: rgba(255,255,255,.14);
 }
+
+/* 矢印：右端に固定、被り防止 */
 .rowlink::after{
   content:"›";
-  float:right;
-  opacity:.5;
-  font-size:20px;
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  opacity:.55;
+  font-size:22px;
   line-height:1;
-  margin-top:-28px; /* 見た目調整 */
+  pointer-events:none;
+}
+
+/* 右端の矢印ぶんだけ meta 側に余白を確保 */
+.rowlink .meta{
+  padding-right:34px;
 }
 
 /* 日付＋チップ */
 .rowlink .date{ font-weight:700; margin-bottom:8px; }
-.rowlink .meta{ display:flex; flex-wrap:wrap; gap:8px; line-height:1.2; }
 
 /* チップ */
 .pill{
