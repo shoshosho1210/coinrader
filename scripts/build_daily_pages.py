@@ -427,9 +427,11 @@ def shorten_one_line(s: str, max_len: int = 70) -> str:
 
 
 def build_reason_1line(payload: Dict[str, Any]) -> str:
-    """daily/index.html 用の「理由1行要約」"""
-    reasons: List[str] = []
-
+    """
+    daily/index.html 用の「理由1行要約」。
+    単調になりやすいFGI文言だけに寄らないように、指標/トレンド/上昇銘柄も優先して散らす。
+    """
+    # 1) まずはJSONに明示されている理由を最優先で使う
     for path in [
         "ai.reasons",
         "ai.reason_lines",
@@ -443,48 +445,109 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
         v = get_path(payload, path, default=None)
         if isinstance(v, list) and v:
             reasons = [str(x).strip() for x in v if str(x).strip()]
-            break
+            if reasons:
+                return shorten_one_line(reasons[0])
         if isinstance(v, str) and v.strip():
-            reasons = [v.strip()]
-            break
+            return shorten_one_line(v.strip())
 
-    if not reasons:
-        fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
-        fgi_label = get_path(payload, "summary.fgi.label", default="")
-        btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
-        ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
-                              default=get_path(payload, "summary.technical.ma_distance",
-                                  default=get_path(payload, "btc_ma_distance",
-                                      default=get_path(payload, "ma_distance", default=""))))
-        if isinstance(ma_dist, (list, dict)):
-            ma_dist = ""
+    # 2) 明示理由がない場合は候補を複数作り、優先度で選ぶ
+    candidates: List[str] = []
 
-        fgi = to_float(fgi_value)
-        rsi = to_float(btc_rsi)
-        mad = to_float(ma_dist)
+    judge = str(get_path(payload, "summary.judge", default=get_path(payload, "judge", default="")) or "").upper()
 
-        # クリック率に効きやすい順に優先（恐怖/過熱 → RSI → MA距離）
-        if fgi is not None:
-            if fgi < 25:
-                label = fgi_label or "Extreme Fear"
-                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で強い悲観。")
-            elif fgi >= 75:
-                label = fgi_label or "Extreme Greed"
-                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で過熱気味。")
+    # 指標値
+    fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
+    fgi_label = get_path(payload, "summary.fgi.label", default="")
+    btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
+    ma_dist   = get_path(
+        payload,
+        "summary.technical.btc_ma_distance",
+        default=get_path(
+            payload,
+            "summary.technical.ma_distance",
+            default=get_path(
+                payload,
+                "btc_ma_distance",
+                default=get_path(payload, "ma_distance", default=""),
+            ),
+        ),
+    )
 
-        if not reasons and rsi is not None:
-            if rsi < 30:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で売られ過ぎ水準。")
-            elif rsi >= 70:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で買われ過ぎ水準。")
+    if isinstance(ma_dist, (list, dict)):
+        ma_dist = ""
 
-        if not reasons and mad is not None:
-            if mad <= -3:
-                reasons.append(f"MA距離が {fmt_num(mad)}% で弱含み。")
-            elif mad >= 3:
-                reasons.append(f"MA距離が {fmt_num(mad)}% で上向き。")
+    fgi = to_float(fgi_value)
+    rsi = to_float(btc_rsi)
+    mad = to_float(ma_dist)
 
-    return shorten_one_line(reasons[0] if reasons else "")
+    # トレンド/上昇トップ（あれば短文化）
+    trending = normalize_symbol_list(
+        get_path(payload, "summary.trending",
+            default=get_path(payload, "trending",
+                default=get_path(payload, "trend", default=[])))
+    )
+    top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default=None))
+    tg_text = ""
+    if isinstance(top_gainer, dict):
+        sym = str(top_gainer.get("symbol", "")).strip().upper()
+        ch = top_gainer.get("change", None)
+        ch_s = ""
+        try:
+            if ch is not None and ch != "":
+                ch_s = f"{float(ch):.2f}".rstrip("0").rstrip(".")
+        except Exception:
+            ch_s = str(ch).strip() if ch is not None else ""
+        if sym and ch_s:
+            tg_text = f"{sym} +{ch_s}%"
+        elif sym:
+            tg_text = sym
+
+    # ---- 優先順位（散らすためFGIは後ろ） ----
+    if rsi is not None:
+        if rsi < 30:
+            candidates.append(f"BTC RSI が {fmt_num(rsi)} で売られ過ぎ水準。")
+        elif rsi >= 70:
+            candidates.append(f"BTC RSI が {fmt_num(rsi)} で買われ過ぎ水準。")
+
+    if mad is not None:
+        if mad <= -3:
+            candidates.append(f"MA距離が {fmt_num(mad)}% で弱含み。")
+        elif mad >= 3:
+            candidates.append(f"MA距離が {fmt_num(mad)}% で上向き。")
+
+    if tg_text:
+        candidates.append(f"上昇トップは {tg_text} で強い動き。")
+
+    if trending:
+        top3 = "/".join(trending[:3])
+        candidates.append(f"注目トレンドは {top3}。")
+
+    if fgi is not None:
+        if fgi < 25:
+            label = fgi_label or "Extreme Fear"
+            # judge を軽く混ぜて同じ文面になりにくくする
+            if judge == "BEAR":
+                candidates.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で強い悲観。")
+            else:
+                candidates.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で警戒ムード。")
+        elif fgi >= 75:
+            label = fgi_label or "Extreme Greed"
+            if judge == "BULL":
+                candidates.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で過熱気味。")
+            else:
+                candidates.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で楽観優勢。")
+
+    if judge:
+        # 最終フォールバック（指標欠けの日でも破綻しない）
+        if judge == "WAIT":
+            candidates.append("材料が揃わず、いったん様子見。")
+        elif judge == "BEAR":
+            candidates.append("反発弱く、戻り売りに注意。")
+        elif judge == "BULL":
+            candidates.append("上向き基調だが、急変には注意。")
+
+    return shorten_one_line(candidates[0] if candidates else "")
+
 
 
 
