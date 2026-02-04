@@ -1604,6 +1604,16 @@
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
   text-shadow: 0 0 5px rgba(56, 189, 248, 0.4);
 }
+
+/* --- 時価総額TOP20：TOP10デフォルト（折りたたみ） --- */
+#sec-mcap.mcap-collapsed .col-optional{ display:none !important; }
+#sec-mcap.mcap-collapsed tr.mcap-row-extra{ display:none !important; }
+
+/* トグルボタン（見た目は既存linkbtnに統一） */
+#btnMcapToggle{ white-space: nowrap; }
+
+/* 折りたたみ時は横幅を少し節約（任意） */
+#sec-mcap.mcap-collapsed .rank-table{ min-width: 560px; }
 /* ▼▼▼ 追加：スマホ表示の最適化 ▼▼▼ */
 /* ▼▼▼ 追加：スマホ表示の最適化（統合版） ▼▼▼ */
 @media (max-width: 640px) {
@@ -4550,13 +4560,14 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 <div class="grid" id="grid-alt-volume"><div class="msg">データ取得中…</div></div>
 </section>
-<section id="sec-mcap">
+<section id="sec-mcap" class="mcap-collapsed">
 <div class="section-header">
 <div>
 <div class="section-title">時価総額 TOP20</div>
 <div class="section-sub">時価総額上位20銘柄の市場状況一覧</div>
 </div>
 <div class="section-actions">
+<button class="linkbtn" id="btnMcapToggle" type="button" aria-expanded="false">TOP20を表示</button>
 <a class="linkbtn" data-ga="ext_coingecko_home" data-partner="coingecko" data-placement="index_mcap_header" data-pr="0" href="https://www.coingecko.com/ja" rel="noopener" target="_blank">もっと見る</a>
 </div>
 </div>
@@ -4566,7 +4577,7 @@ white-space:nowrap; word-break:keep-all; }
 <tr>
 <th class="th-sym">銘柄</th>
 <th class="th-price">現在値</th>
-<th class="th-chg">前日比</th> <th class="th-chg">7日比</th> <th class="th-mcap">時価総額</th> <th class="th-rsi">RSI</th>
+<th class="th-chg">前日比</th> <th class="th-chg col-optional">7日比</th> <th class="th-mcap">時価総額</th> <th class="th-rsi col-optional">RSI</th>
 <th class="th-chart" style="width:120px; text-align:center;">7d推移</th>
 <th class="th-vol">24h出来高</th>
 </tr>
@@ -7322,6 +7333,7 @@ function renderRankTable(coins) {
 
         // --- 4. 行(TR)の生成 ---
         const tr = document.createElement('tr');
+        if (i >= 10) tr.classList.add('mcap-row-extra');
         tr.innerHTML = `
             <td class="td-sym">
                 <div class="sym-wrap">
@@ -7332,9 +7344,9 @@ function renderRankTable(coins) {
             </td>
             <td>${price}</td>
             <td class="${chg24Class}">${chg24Str}</td> 
-            <td class="${chg7dClass}">${chg7dStr}</td> 
+            <td class="${chg7dClass} col-optional">${chg7dStr}</td> 
             <td>${mcap}</td> 
-            <td class="td-rsi">${rsiHtml}</td>
+            <td class="td-rsi col-optional">${rsiHtml}</td>
             <td class="td-chart">${chartHtml}</td>
             <td>${vol}</td>
         `;
@@ -8116,8 +8128,39 @@ textEl.innerHTML = htmlContent;
     }
   }
 
-  // 初回ロード
+  // --- Market Cap table: TOP10 default, expand to TOP20 (show extra columns) ---
+  function setupMcapToggle(){
+    const sec = document.getElementById('sec-mcap');
+    const btn = document.getElementById('btnMcapToggle');
+    if (!sec || !btn) return;
 
+    const KEY = 'cr_mcap_expand_v1';
+    let open = (localStorage.getItem(KEY) === '1');
+
+    const apply = () => {
+      sec.classList.toggle('mcap-collapsed', !open);
+      btn.textContent = open ? '閉じる' : 'TOP20を表示';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      try{ syncHeaderHeight(); }catch(_e){}
+    };
+
+    apply();
+    btn.addEventListener('click', () => {
+      open = !open;
+      localStorage.setItem(KEY, open ? '1' : '0');
+      apply();
+    });
+
+    // expose for debugging
+    window.__setMcapOpen = (v) => {
+      open = !!v;
+      localStorage.setItem(KEY, open ? '1' : '0');
+      apply();
+    };
+  }
+
+
+  // 初回ロード
   // --- Market Overview: detail toggle (charts on/off) ---
   function setupOverviewToggle(){
     const btn = document.getElementById('btnOverviewToggle');
@@ -8284,7 +8327,7 @@ textEl.innerHTML = htmlContent;
 
 
 (async function boot(){
-    try{ syncHeaderHeight(); setupOverviewToggle(); setupSideMenu(); }catch(_e){}
+    try{ syncHeaderHeight(); setupOverviewToggle(); setupMcapToggle(); setupSideMenu(); }catch(_e){}
     
     tickRefreshButton();
 
