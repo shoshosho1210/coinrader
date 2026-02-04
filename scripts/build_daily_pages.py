@@ -59,6 +59,67 @@ def escape_html(s: str) -> str:
               .replace("'", "&#39;"))
 
 
+def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi, trend, trending: List[str], top_gainer=None) -> Dict[str, str]:
+    # title/description は検索結果でのクリック率を意識して具体的な数値を含める
+    try:
+        rsi_s = f"{float(btc_rsi):.2f}" if btc_rsi is not None else "-"
+    except Exception:
+        rsi_s = "-"
+    try:
+        trend_s = f"{float(trend):.1f}" if trend is not None else "-"
+    except Exception:
+        trend_s = "-"
+    fgi_s = str(sentiment_value) if sentiment_value is not None else "-"
+    trend_str = "/".join([t.upper() for t in (trending or [])][:3])
+    gain_str = ""
+    if isinstance(top_gainer, dict) and top_gainer.get("symbol"):
+        ch = top_gainer.get("change")
+        try:
+            ch_s = f"{float(ch):.2f}" if ch is not None else ""
+        except Exception:
+            ch_s = str(ch) if ch is not None else ""
+        gain_str = f" 上昇トップ:{top_gainer.get('symbol').upper()}(+{ch_s}%)" if ch_s else f" 上昇トップ:{top_gainer.get('symbol').upper()}"
+
+    title = f"BTC AI分析 {date_iso}｜Fear&Greed {fgi_s} / RSI {rsi_s} / Trend {trend_s}（CoinRader）"
+    desc = f"{date_iso}のBTCをAIが日次分析。市場心理(Fear&Greed)={fgi_s}、RSI={rsi_s}、Trend={trend_s}。総合判断={judge}。注目トレンド:{trend_str}.{gain_str}".strip()
+    og_title = f"BTC AI分析 {date_iso}｜AI判定 {judge}"
+    og_desc = f"Fear&Greed={fgi_s} / RSI={rsi_s} / Trend={trend_s}。注目:{trend_str}"
+    canonical = f"https://coinrader.net/daily/{ymd}.html"
+    return {
+        "TITLE": title,
+        "DESCRIPTION": desc,
+        "OG_TITLE": og_title,
+        "OG_DESCRIPTION": og_desc,
+        "CANONICAL": canonical,
+    }
+
+
+def build_jsonld(canonical: str, title: str, description: str, date_iso: str, updated_at_jst: str) -> str:
+    # 日次ページは Article として扱う
+    # updated_at_jst: 'YYYY-MM-DD 09:00' のような文字列を想定
+    def to_iso(dt_s: str) -> str:
+        try:
+            # allow 'YYYY-MM-DD HH:MM' (JST)
+            dt = datetime.datetime.strptime(dt_s, "%Y-%m-%d %H:%M")
+            # JST +09:00
+            return dt.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=9))).isoformat()
+        except Exception:
+            return date_iso + "T09:00:00+09:00"
+
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "description": description,
+        "datePublished": date_iso + "T09:00:00+09:00",
+        "dateModified": to_iso(updated_at_jst),
+        "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
+        "publisher": {"@type": "Organization", "name": "CoinRader"},
+    }
+    return json.dumps(data, ensure_ascii=False)
+
+
+
 def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -> str:
     # 直近n日（現在日を含む）へのリンクチップを生成
     if current_ymd not in dated_all:
@@ -281,6 +342,8 @@ def main() -> None:
                 date_iso = ymd
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
+        seo_meta = build_seo_meta(date_iso, ymd, judge, sentiment_value, btc_rsi, trend, trending, top_gainer=top_gainer)
+        jsonld = build_jsonld(seo_meta.get("CANONICAL",""), seo_meta.get("TITLE",""), seo_meta.get("DESCRIPTION",""), date_iso, updated_at)
 
         # 指標抽出（summary.* を優先）
         fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
