@@ -452,55 +452,55 @@ def main() -> None:
             "trend": trend,
         })
 
-# 一覧 index.html
-# - 新テンプレ: {{ROWS}} を想定（daily_index.html）
-# - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
-pages_desc = list(reversed(pages))  # 最新→過去
+    # 一覧 index.html
+    # - 新テンプレ: {{ROWS}} を想定（daily_index.html）
+    # - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
+    pages_desc = list(reversed(pages))  # 最新→過去
 
-def _fmt_meta(p: dict) -> str:
-    parts = []
-    if p.get("judge"):
-        parts.append(f"AI {p['judge']}")
-    if p.get("fgi") is not None:
-        parts.append(f"FGI {p['fgi']}")
-    if p.get("btc_rsi") is not None:
-        parts.append(f"RSI {p['btc_rsi']}")
-    if p.get("trend") is not None:
-        parts.append(f"Trend {p['trend']}")
-    return " · ".join(parts)
+    def _fmt_meta(p: dict) -> str:
+        parts = []
+        if p.get("judge"):
+            parts.append(f"AI {p['judge']}")
+        if p.get("fgi") is not None:
+            parts.append(f"FGI {p['fgi']}")
+        if p.get("btc_rsi") is not None:
+            parts.append(f"RSI {p['btc_rsi']}")
+        if p.get("trend") is not None:
+            parts.append(f"Trend {p['trend']}")
+        return " · ".join(parts)
 
-rows_html = "\n".join([
-    "<div class='row'>"
-    "<div>"
-    f"<div class='date'><a href='{escape_html(p['href'])}'>{escape_html(p['date_iso'])}</a></div>"
-    f"<div class='meta'>{escape_html(_fmt_meta(p))}</div>"
-    "</div>"
-    "</div>"
-    for p in pages_desc
-])
+    rows_html = "\n".join([
+        "<div class='row'>"
+        "<div>"
+        f"<div class='date'><a href='{escape_html(p['href'])}'>{escape_html(p['date_iso'])}</a></div>"
+        f"<div class='meta'>{escape_html(_fmt_meta(p))}</div>"
+        "</div>"
+        "</div>"
+        for p in pages_desc
+    ])
 
-# 旧テンプレ用の簡易liも残す（互換）
-items_html = "\n".join([
-    f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
-    for p in pages_desc
-])
+    # 旧テンプレ用の簡易liも残す（互換）
+    items_html = "\n".join([
+        f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
+        for p in pages_desc
+    ])
 
-index_html = tmpl_index
-if "{{ROWS}}" in index_html:
-    index_html = index_html.replace("{{ROWS}}", rows_html)
-if "{{ITEMS}}" in index_html:
-    index_html = index_html.replace("{{ITEMS}}", items_html)
-    # 最新ページへの導線が必要ならテンプレ側で {{LATEST_HREF}} を利用可能に
-    index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
-    write_text(OUT_DIR / "index.html", index_html)
+    index_html = tmpl_index
+    if "{{ROWS}}" in index_html:
+        index_html = index_html.replace("{{ROWS}}", rows_html)
+    if "{{ITEMS}}" in index_html:
+        index_html = index_html.replace("{{ITEMS}}", items_html)
+        # 最新ページへの導線が必要ならテンプレ側で {{LATEST_HREF}} を利用可能に
+        index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
+        write_text(OUT_DIR / "index.html", index_html)
 
-    # latest.html（最新ページへリダイレクト/案内）
-    latest_target = f"{latest_ymd}.html"
-    latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
-    latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
-    write_text(OUT_DIR / "latest.html", latest_html)
+        # latest.html（最新ページへリダイレクト/案内）
+        latest_target = f"{latest_ymd}.html"
+        latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
+        latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
+        write_text(OUT_DIR / "latest.html", latest_html)
 
-    print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
+        print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
 
 if __name__ == "__main__":
