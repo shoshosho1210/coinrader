@@ -368,13 +368,18 @@ def main() -> None:
                 date_iso = ymd
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
-        seo_meta = build_seo_meta(date_iso, ymd, judge, sentiment_value, btc_rsi, trend, trending, top_gainer=top_gainer)
-        jsonld = build_jsonld(seo_meta.get("CANONICAL",""), seo_meta.get("TITLE",""), seo_meta.get("DESCRIPTION",""), date_iso, updated_at)
 
         # 指標抽出（summary.* を優先）
         fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
         btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
         ma_dist   = get_path(payload, "summary.technical.btc_ma_distance", default=get_path(payload, "trend", default=""))
+        trending = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=[]))
+        if not isinstance(trending, list):
+            trending = []
+        top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default={}))
+        if not isinstance(top_gainer, dict):
+            top_gainer = {}
+
 
         # judge
         judge = get_path(payload, "ai_judge", default=get_path(payload, "ai.judge", default=""))
@@ -386,16 +391,19 @@ def main() -> None:
         if not str(updated_at).strip():
             updated_at = f"{date_iso} 09:00"
 
+        # SEO meta（title/description/canonical）
+        seo_meta = build_seo_meta(date_iso, ymd, judge, fgi_value, btc_rsi, ma_dist, trending, top_gainer=top_gainer)
+        jsonld = build_jsonld(seo_meta.get("CANONICAL",""), seo_meta.get("TITLE",""), seo_meta.get("DESCRIPTION",""), date_iso, str(updated_at))
+
         # 表示用
         sent = fmt_num(fgi_value, 0) if fmt_num(fgi_value, 0) != "" else str(fgi_value)
         rsi  = fmt_num(btc_rsi, 2) if fmt_num(btc_rsi, 2) != "" else str(btc_rsi)
         trend = fmt_num(ma_dist, 1) if fmt_num(ma_dist, 1) != "" else str(ma_dist)
 
         # メタ情報
-        title = f"BTC AI分析（{date_iso}）"
-        desc  = f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
-        canonical = f"{SITE_ORIGIN}/daily/{ymd}.html"
-
+        title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
+        desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
+        canonical = seo_meta.get("CANONICAL") or f"{SITE_ORIGIN}/daily/{ymd}.html"
         why_html = build_reason_html(payload)
 
         html = tmpl
@@ -403,6 +411,7 @@ def main() -> None:
             "{{TITLE}}": title,
             "{{DESCRIPTION}}": desc,
             "{{CANONICAL}}": canonical,
+            "{{JSONLD}}": jsonld,
             "{{OG_TITLE}}": title,
             "{{OG_DESCRIPTION}}": desc,
             "{{DATE}}": date_iso,
