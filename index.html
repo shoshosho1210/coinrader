@@ -40,7 +40,14 @@
   gtag('js', new Date());
   gtag('config', 'G-TDEBXC7DH6');
 </script>
-</link></head>
+</link>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "WebSite", "name": "CoinRader", "url": "https://coinrader.net/", "inLanguage": "ja", "description": "暗号資産市場の主要指標をまとめ、AIで相場状況の示唆を提供するダッシュボード。"}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "CoinRaderのAI判断は何を見ていますか？", "acceptedAnswer": {"@type": "Answer", "text": "主にRSI、恐怖指数（Fear & Greed）、トレンド指標などの代表的なシグナルから、買い・売り・様子見の示唆を表示します。"}}, {"@type": "Question", "name": "更新頻度はどれくらいですか？", "acceptedAnswer": {"@type": "Answer", "text": "ページ上の更新表示に従い、一定間隔でデータを取得して表示を更新します。"}}, {"@type": "Question", "name": "投資助言サービスですか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。表示内容は情報提供を目的としており、投資判断はご自身の責任で行ってください。"}}, {"@type": "Question", "name": "今日のAIレポートはどこで見られますか？", "acceptedAnswer": {"@type": "Answer", "text": "AI JUDGEの下にある「今日のAIレポート」から確認できます。"}}]}
+</script>
+</head>
 <style>
   .hero{padding:28px 0 16px;}
   .hero-inner{max-width:1600px;margin:0 auto;padding:0 18px;}
@@ -4815,7 +4822,14 @@ html, body{
 <button class="hud-guide-btn" onclick="openPageModal('guide.html', 'CoinRader 活用ガイド');">
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
-</div><div class="hud-shortline" id="aiInsightShort">—</div>
+</div>
+<div class="hud-shortline" id="aiInsightShort">—</div>
+<div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
+  <a href="daily/latest.html" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
+     aria-label="今日のAIレポート">今日のAIレポート</a>
+  <a href="daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
+     aria-label="過去AIレポート一覧">過去AIレポート一覧</a>
+</div>
 <div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENTIMENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
 <details class="hud-details">
 <summary class="hud-summary-btn">
@@ -8838,7 +8852,28 @@ textEl.innerHTML = htmlContent;
 
   // ※注: 元々あった document.addEventListener('DOMContentLoaded', ...) の updateMacroTicker 呼び出しは
   // 重複してエラーの元になるため削除してください。
-;
+
+  // --- PV/SEO改善: 通常のhrefリンクを維持しつつ、通常クリック時のみモーダル表示 ---
+  function wireModalLinks(){
+    document.querySelectorAll('a[data-modal-title]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        // 新規タブ/特殊クリックは通常遷移（SEO/UX両立）
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        try{
+          openPageModal(a.getAttribute('href'), a.dataset.modalTitle || '');
+        }catch(err){
+          // フェイルセーフ: モーダルが開けない場合は通常遷移
+          location.href = a.getAttribute('href');
+        }
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    try{ wireModalLinks(); }catch(_e){}
+  });
+
 </script>
 <div class="info-modal-overlay" id="pageModalOverlay" onclick="closePageModal()">
 <div class="info-modal" onclick="event.stopPropagation()">
@@ -9278,13 +9313,13 @@ function createSparkline(prices, isUp) {
 <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
 </div>
 <nav class="footer-nav">
-<a href="#" onclick="openPageModal('guide.html', '📖 活用ガイド'); return false;">活用ガイド</a>
-<a href="#" onclick="openPageModal('start.html', '🔰 始め方'); return false;">始め方</a>
-<a href="#" onclick="openPageModal('data-sources.html', '📊 データ'); return false;">データ</a>
-<a href="#" onclick="openPageModal('about.html', 'ℹ️ 運営'); return false;">運営</a>
-<a href="#" onclick="openPageModal('contact.html', '📩 連絡'); return false;">連絡</a>
-<a href="#" onclick="openPageModal('disclaimer.html', '⚠️ 免責'); return false;">免責</a>
-<a href="#" onclick="openPageModal('privacy.html', '🔒 法務'); return false;">法務</a>
+<a href="guide.html" data-modal-title="📖 活用ガイド">活用ガイド</a>
+<a href="start.html" data-modal-title="🔰 始め方">始め方</a>
+<a href="data-sources.html" data-modal-title="📊 データ">データ</a>
+<a href="about.html" data-modal-title="ℹ️ 運営">運営</a>
+<a href="contact.html" data-modal-title="📩 連絡">連絡</a>
+<a href="disclaimer.html" data-modal-title="⚠️ 免責">免責</a>
+<a href="privacy.html" data-modal-title="🔒 法務">法務</a>
 </nav>
 </div>
 <div class="footer-copyright">
