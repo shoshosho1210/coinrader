@@ -495,19 +495,25 @@ def main() -> None:
 
     index_html = tmpl_index
 
-    # {{ROWS}} / {{ITEMS}} のどちらでも動くように置換
-    if "{{ROWS}}" in index_html:
-        index_html = index_html.replace("{{ROWS}}", rows_html)
-    if "{{ITEMS}}" in index_html:
-        index_html = index_html.replace("{{ITEMS}}", rows_html)
+    # {{ROWS}} / {{ITEMS}} など表記ゆれ（空白あり）でも置換できるようにする
+    #   - {{ROWS}}   or {{ ROWS }}
+    #   - {{ITEMS}}  or {{ ITEMS }}
+    rows_pat = re.compile(r"\{\{\s*ROWS\s*\}\}")
+    items_pat = re.compile(r"\{\{\s*ITEMS\s*\}\}")
+    latest_pat = re.compile(r"\{\{\s*LATEST_HREF\s*\}\}")
 
-    # latest へのリンク（テンプレ側に {{LATEST_HREF}} がある想定）
-    index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
+    before = index_html
+    index_html, n_rows = rows_pat.subn(rows_html, index_html)
+    index_html, n_items = items_pat.subn(items_html, index_html)
+    index_html, n_latest = latest_pat.subn(f"{latest_ymd}.html", index_html)
 
-    # 置換漏れ検知（デバッグ用）
+    # 置換漏れ検知（CIで気づけるように）
     if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", index_html):
-        print("[WARN] daily_index.html: placeholder が残っています（{{ROWS}}/{{ITEMS}}/{{LATEST_HREF}}）")
+        raise RuntimeError("daily_index.html: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
 
+    # 何も置換されなかった場合はテンプレ側のプレースホルダーが違う可能性が高い
+    if (n_rows + n_items + n_latest) == 0:
+        raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
     write_text(OUT_DIR / "index.html", index_html)
 
     # latest.html（最新ページへリダイレクト/案内）
