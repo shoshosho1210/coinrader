@@ -469,8 +469,7 @@ def _fmt_meta(p: dict) -> str:
         parts.append(f"Trend {p['trend']}")
     return " · ".join(parts)
 
-rows_html = "
-".join([
+rows_html = "\n".join([
     "<div class='row'>"
     "<div>"
     f"<div class='date'><a href='{escape_html(p['href'])}'>{escape_html(p['date_iso'])}</a></div>"
@@ -481,8 +480,7 @@ rows_html = "
 ])
 
 # 旧テンプレ用の簡易liも残す（互換）
-items_html = "
-".join([
+items_html = "\n".join([
     f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
     for p in pages_desc
 ])
