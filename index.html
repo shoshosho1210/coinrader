@@ -420,6 +420,41 @@
 @media (max-width: 520px){ .overview-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));} .kpi-tile-big{font-size:16px;} }
 
   .kpi-sub{ margin-top:6px; font-size:11px; color:#9ca3af; line-height:1.35; }
+
+/* --- v69: Market Overview typography + icon polish --- */
+#overviewWrap .overview-card .kpi-label{
+  font-size: 12px !important;
+  letter-spacing: .2px;
+}
+#overviewWrap .overview-card .kpi-sub{
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+#overviewWrap .overview-card .kpi-value{
+  font-size: 18px !important;
+}
+#overviewWrap .overview-card i.fa-solid,
+#overviewWrap .overview-card i.fa-brands{
+  margin-right: 8px;
+  opacity: .95;
+}
+#overviewWrap .ov-title{
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: #e5e7eb !important;
+  letter-spacing: .2px;
+}
+#overviewWrap .ov-sub{
+  font-size: 12px !important;
+  margin-top: 4px !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+}
+#overviewWrap .ov-main{
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  color: #f9fafb !important;
+}
 #kpiBreadthCard .kpi-meta{ margin-top:4px; }
 #kpiBreadthCard .kpi-sub{ margin-top:4px; }
 #kpiBreadthCard .kpi-canvas.tall{ height:62px; }
@@ -4577,10 +4612,10 @@ white-space:nowrap; word-break:keep-all; }
 <div class="overview-card" id="domCard">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
 <div>
-<div style="font-size:13px; font-weight:700; color:#e5e7eb;"><i class="fa-solid fa-chart-pie"></i>市場の資金シェア</div>
-<div id="domPhaseLabel" style="font-size: 11px; margin-top: 4px; font-weight: 600;">-</div>
+<div class="ov-title"><i class="fa-solid fa-chart-pie"></i>市場の資金シェア</div>
+<div id="domPhaseLabel" class="ov-sub">-</div>
 </div>
-<div id="domMainPct" style="font-size: 20px; font-weight: 800; color: #facc15;">-</div>
+<div id="domMainPct" class="ov-main">-</div>
 </div>
 <div class="donut-wrap" style="position: relative;">
 <canvas id="domChart"></canvas>
@@ -5861,10 +5896,10 @@ function renderOverview(){
         const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
         let sign = '';
         if (upPct >= 70) sign = '🚀 全面高の気配';
-        else if (upPct >= 55) sign = '📈 上昇が優勢';
-        else if (upPct <= 30) sign = '🚨 全面安の警戒';
-        else if (upPct <= 45) sign = '📉 下落が優勢';
-        else sign = '⚖️ 方向感を模索中';
+        else if (upPct >= 55) sign = '<i class="fa-solid fa-arrow-trend-up"></i>上昇が優勢';
+        else if (upPct <= 30) sign = '<i class="fa-solid fa-triangle-exclamation"></i>全面安の警戒';
+        else if (upPct <= 45) sign = '<i class="fa-solid fa-arrow-trend-down"></i>下落が優勢';
+        else sign = '<i class="fa-solid fa-scale-balanced"></i>方向感を模索中';
         kpiB.innerHTML = `<span style="color:${(o.up >= o.down)? '#4ade80' : '#f87171'}">${sign}</span> <span style="font-size:12px; opacity:0.8;">(上昇率: ${upPct}%)</span>`;
     }
 
@@ -5920,9 +5955,9 @@ function renderOverview(){
             const rsiEl = document.getElementById('kpiRsi');
             if (rsiEl && lastRsiVal != null) {
                 let status = '中立', color = '#cbd5e1';
-                if (lastRsiVal >= 70) { status = '⚠️ 買われすぎ圏'; color = '#f87171'; }
-                else if (lastRsiVal <= 30) { status = '⚠️ 売られすぎ圏'; color = '#38bdf8'; }
-                else if (lastRsiVal >= 60) { status = '↗️ やや過熱'; color = '#fca5a5'; }
+                if (lastRsiVal >= 70) { status = '<i class="fa-solid fa-triangle-exclamation"></i>買われすぎ圏'; color = '#f87171'; }
+                else if (lastRsiVal <= 30) { status = '<i class="fa-solid fa-triangle-exclamation"></i>売られすぎ圏'; color = '#38bdf8'; }
+                else if (lastRsiVal >= 60) { status = '<i class="fa-solid fa-arrow-up-right-dots"></i>やや過熱'; color = '#fca5a5'; }
                 else if (lastRsiVal <= 40) { status = '↘️ やや低水準'; color = '#7dd3fc'; }
 
                 // 1. 上段（大きな数字）を更新
@@ -5932,7 +5967,7 @@ function renderOverview(){
                 // 2. 下段（ステータス：以前 "-" が出ていた場所）を更新
                 const metaEl = document.getElementById('kpiRsiMeta');
                 if (metaEl) {
-                    metaEl.textContent = status;
+                    metaEl.innerHTML = status;
                     metaEl.style.color = color;
                     metaEl.style.opacity = "0.9";
                 }
@@ -5952,11 +5987,11 @@ function renderOverview(){
     if (sentMainEl && sentScore != null) {
         const s = Math.round(sentScore);
         let color = '#f8fafc', detailedLabel = '';
-        if (s >= 80) { color = '#4ade80'; detailedLabel = '📈 楽観的な市場'; }
-        else if (s >= 60) { color = '#86efac'; detailedLabel = '☀️ やや前向き'; }
+        if (s >= 80) { color = '#4ade80'; detailedLabel = '<i class="fa-solid fa-arrow-trend-up"></i>楽観的な市場'; }
+        else if (s >= 60) { color = '#86efac'; detailedLabel = '<i class="fa-solid fa-sun"></i>やや前向き'; }
         else if (s >= 40) { color = '#cbd5e1'; detailedLabel = '→ 中立的'; }
-        else if (s >= 20) { color = '#fca5a5'; detailedLabel = '⚠️ やや警戒感'; }
-        else { color = '#f87171'; detailedLabel = '📉 慎重な市場'; }
+        else if (s >= 20) { color = '#fca5a5'; detailedLabel = '<i class="fa-solid fa-triangle-exclamation"></i>やや警戒感'; }
+        else { color = '#f87171'; detailedLabel = '<i class="fa-solid fa-arrow-trend-down"></i>慎重な市場'; }
         sentMainEl.textContent = s;
         sentMainEl.className = "kpi-main-label";
         sentMainEl.style.color = color;
@@ -5976,9 +6011,9 @@ function renderOverview(){
         let color = '#cbd5e1', statusLabel = '', glow = 'none';
         if (r >= 70) { color = '#f87171'; statusLabel = '📊 買われすぎ圏'; glow = '0 0 12px rgba(248, 113, 113, 0.5)'; }
         else if (r >= 60) { color = '#fca5a5'; statusLabel = '↗️ 上昇継続中'; }
-        else if (r <= 30) { color = '#38bdf8'; statusLabel = '📉 売られすぎ圏'; glow = '0 0 12px rgba(56, 189, 248, 0.6)'; }
+        else if (r <= 30) { color = '#38bdf8'; statusLabel = '<i class="fa-solid fa-triangle-exclamation"></i>売られすぎ圏'; glow = '0 0 12px rgba(56, 189, 248, 0.6)'; }
         else if (r <= 40) { color = '#7dd3fc'; statusLabel = '↘️ 下落継続中'; }
-        else { color = '#cbd5e1'; statusLabel = '→ 中立レンジ'; }
+        else { color = '#cbd5e1'; statusLabel = '<i class="fa-solid fa-arrows-left-right"></i>中立レンジ'; }
         rsiMainEl.textContent = r;
         rsiMainEl.className = "kpi-main-label";
         rsiMainEl.style.color = color;
@@ -6011,11 +6046,11 @@ function renderOverview(){
         if (marketAvg <= -5) { 
             color = '#ef4444'; statusLabel = '全面安'; icon = '📉';
         } else if (marketAvg <= -2) { 
-            color = '#f87171'; statusLabel = '軟調'; icon = '↘️';
+            color = '#f87171'; statusLabel = '軟調'; icon = '<i class="fa-solid fa-arrow-trend-down"></i>';
         } else if (marketAvg >= 5) { 
             color = '#22c55e'; statusLabel = '全面高'; icon = '🚀';
         } else if (marketAvg >= 2) { 
-            color = '#4ade80'; statusLabel = '堅調'; icon = '↗️';
+            color = '#4ade80'; statusLabel = '堅調'; icon = '<i class="fa-solid fa-arrow-up-right-dots"></i>';
         } else { 
             color = '#cbd5e1'; statusLabel = 'もみ合い'; icon = '➡️';
         }
@@ -6087,7 +6122,7 @@ function renderOverview(){
         if (btcPct >= 55) { phaseLabel = '🔷 BTC集中'; phaseColor = '#facc15'; }
         else if (btcPct <= 45) { phaseLabel = '🌐 アルト分散'; phaseColor = '#4ade80'; }
         else if (btcPct <= 50) { phaseLabel = '💫 アルト優勢'; phaseColor = '#86efac'; }
-        else { phaseLabel = '⚖️ バランス型'; phaseColor = '#cbd5e1'; }
+        else { phaseLabel = '<i class="fa-solid fa-scale-balanced"></i>バランス型'; phaseColor = '#cbd5e1'; }
         domMainEl.textContent = btcPct.toFixed(1) + '%';
         domMainEl.className = "kpi-main-label";
         domMainEl.style.color = phaseColor;
@@ -6280,12 +6315,12 @@ function renderOverview(){
                 if (elDist) {
                     let st = '';
                     // ★ご指定の絵文字ロジックを適用
-                    if (lastAvg >= 5) st = "📈 好調な推移";
-                    else if (lastAvg >= 0) st = "↗️ プラス圏推移";
-                    else if (lastAvg >= -5) st = "↘️ マイナス圏推移";
-                    else st = "📉 軟調な推移";
+                    if (lastAvg >= 5) st = '<i class="fa-solid fa-arrow-trend-up"></i>好調な推移';
+                    else if (lastAvg >= 0) st = '<i class="fa-solid fa-arrow-up"></i>プラス圏推移';
+                    else if (lastAvg >= -5) st = '<i class="fa-solid fa-arrow-down"></i>マイナス圏推移';
+                    else st = '<i class="fa-solid fa-arrow-trend-down"></i>軟調な推移';
                     
-                    elDist.textContent = st; 
+                    elDist.innerHTML = st; 
                     elDist.style.color = color;
                 }
             }
@@ -6299,9 +6334,9 @@ function renderOverview(){
     if (listEl && domValues.length > 0) {
         if (mainPctEl) mainPctEl.textContent = btcPct.toFixed(1) + '%';
         if (centerValEl) centerValEl.textContent = btcPct.toFixed(1) + '%';
-        if (btcPct > 55) { phaseEl.textContent = "🛡️ BTC独歩高（守りの相場）"; phaseEl.style.color = "#facc15"; noteEl.textContent = "資金がBTCに還流中。"; }
-        else if (btcPct < 45) { phaseEl.textContent = "🚀 アルトシーズン（攻めの相場）"; phaseEl.style.color = "#4ade80"; noteEl.textContent = "資金がアルトへ分散中。"; }
-        else { phaseEl.textContent = "⚖️ 市場転換・均衡フェーズ"; phaseEl.style.color = "#38bdf8"; noteEl.textContent = "資金の行き先を模索中。"; }
+        if (btcPct > 55) { phaseEl.innerHTML = '<i class="fa-solid fa-shield-halved"></i>BTC優勢フェーズ'; phaseEl.style.color = "#facc15"; noteEl.textContent = "資金がBTCに還流中。"; }
+        else if (btcPct < 45) { phaseEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>アルト分散フェーズ'; phaseEl.style.color = "#4ade80"; noteEl.textContent = "資金がアルトへ分散中。"; }
+        else { phaseEl.innerHTML = '<i class="fa-solid fa-scale-balanced"></i>均衡・転換フェーズ'; phaseEl.style.color = "#38bdf8"; noteEl.textContent = "資金の行き先を模索中。"; }
         const colors = ['#facc15', '#60a5fa', '#34d399', '#94a3b8'];
         listEl.innerHTML = domLabels.map((lab, i) => `<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #cbd5e1;"><span style="width: 8px; height: 8px; border-radius: 2px; background: ${colors[i]};"></span><span style="flex: 1;">${lab}</span><span style="font-weight: 700; color: #fff;">${(domValues[i]/totalM*100).toFixed(1)}%</span></div>`).join('');
     }
@@ -7609,11 +7644,11 @@ async function updateAiInsight() {
             sentMainEl.textContent = sent;
             
             let color = '#f8fafc', label = '';
-            if (sent >= 80) { color = '#4ade80'; label = '📈 楽観的な市場'; }
-            else if (sent >= 60) { color = '#86efac'; label = '☀️ やや前向き'; }
+            if (sent >= 80) { color = '#4ade80'; label = '<i class="fa-solid fa-arrow-trend-up"></i>楽観的な市場'; }
+            else if (sent >= 60) { color = '#86efac'; label = '<i class="fa-solid fa-sun"></i>やや前向き'; }
             else if (sent >= 40) { color = '#cbd5e1'; label = '→ 中立的'; }
-            else if (sent >= 20) { color = '#fca5a5'; label = '⚠️ やや警戒感'; }
-            else { color = '#f87171'; label = '📉 慎重な市場'; }
+            else if (sent >= 20) { color = '#fca5a5'; label = '<i class="fa-solid fa-triangle-exclamation"></i>やや警戒感'; }
+            else { color = '#f87171'; label = '<i class="fa-solid fa-arrow-trend-down"></i>慎重な市場'; }
             
             sentMainEl.style.color = color;
             if (sentSubEl) {
