@@ -4569,6 +4569,55 @@ html, body{
   .summary-card-note-mobile{ display:inline; }
 }
 
+
+
+  /* ===== v87 graph card standardization ===== */
+  :root{
+    --spark-h-grid: 44px;
+    --spark-h-card: 56px;
+    --spark-h-rank: 35px;
+    --spark-mt-grid: 8px;
+    --spark-mt-card: 10px;
+  }
+
+  /* Default sparkline canvas */
+  canvas.sparkline, .sparkline{
+    width: 100% !important;
+    display: block;
+  }
+
+  /* Cards: consistent chart height + spacing */
+  .card canvas.sparkline{
+    height: var(--spark-h-card) !important;
+    min-height: var(--spark-h-card) !important;
+    margin-top: var(--spark-mt-card) !important;
+    max-width: 100%;
+  }
+
+  /* Grid coin cards: keep compact */
+  .grid .card canvas.sparkline{
+    height: var(--spark-h-grid) !important;
+    min-height: var(--spark-h-grid) !important;
+    margin-top: var(--spark-mt-grid) !important;
+    flex: 0 0 var(--spark-h-grid);
+  }
+
+  /* Tables: keep tight */
+  .rank-table canvas.sparkline,
+  .rank-table .sparkline{
+    height: var(--spark-h-rank) !important;
+    min-height: var(--spark-h-rank) !important;
+    margin-top: 0 !important;
+  }
+
+  /* Card header spacing: align across chart cards */
+  .card-header{
+    align-items: flex-start;
+  }
+  .card .price{
+    line-height: 1.15;
+  }
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
