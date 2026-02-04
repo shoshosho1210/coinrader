@@ -104,7 +104,7 @@
   .grid{
     display:grid;
     gap:12px;
-    align-items:stretch;
+    align-items:start;
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   }
 
@@ -138,27 +138,6 @@
     overflow:hidden;
     min-width:0;
   }
-  /* ===== Card height / bottom alignment (index grids) ===== */
-  .grid .card{
-    display:flex;
-    flex-direction:column;
-    height:100%;
-  }
-
-  /* 上部（ヘッダー/テキスト）は上に寄せたまま */
-  .grid .card .card-header{
-    flex:0 0 auto;
-  }
-
-  /* スパークライン（カード内のcanvas）を常に下端に寄せる */
-  .grid .card canvas{
-    margin-top:auto !important;
-  }
-
-  /* 念のため：余白を統一（カード内の最後が詰まり過ぎないように） */
-  .grid .card canvas{
-    margin-bottom:2px;
-  }
 
   .card:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.5); }
 
@@ -185,8 +164,6 @@
   .change{ font-size:12px; text-align:right; margin-top:2px; }
   .positive{ color:#4ade80; }
   .negative{ color:#f87171; }
-
-  canvas{ display:block; width:100% !important; height:48px !important; margin-top:6px; }
 
   .msg{ grid-column:1 / -1; padding:10px 8px; color:#9ca3af; }
   .msg.err{ color:#f87171; }
@@ -614,8 +591,8 @@
   }
 
   /* sparkline (Chart.js) */
-  .sparkline{width:100% !important; height:48px !important; display:block; margin-top:10px;}
-  .grid .card canvas.sparkline{height:48px !important; min-height:48px; flex:0 0 48px;}
+  .sparkline{width:100% !important; height:44px !important; display:block; margin-top:8px;}
+  .grid .card canvas.sparkline{height:44px !important; min-height:44px; flex:0 0 44px;}
   .card canvas.sparkline{max-width:100%;}
 
 
@@ -1134,7 +1111,7 @@
   .kpi-with-donut{
     display:flex;
     flex-direction:column;
-    align-items:stretch;
+    align-items:start;
     justify-content:flex-start;
     gap: 2px;
   }
@@ -7072,7 +7049,7 @@ function makeLineChart(canvasId, labels, series, opts){
             ${kpiLineHtml}
           </div>
         </div>
-        <canvas id="${canvasId}" class="sparkline" style="height:48px; min-height:48px;" aria-label="price chart" role="img"></canvas>
+        <canvas id="${canvasId}" class="sparkline" style="height:44px; min-height:44px;" aria-label="price chart" role="img"></canvas>
       `;
 
       grid.appendChild(card);
