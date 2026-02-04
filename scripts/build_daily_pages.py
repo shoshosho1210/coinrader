@@ -704,32 +704,55 @@ def main() -> None:
     # - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
     pages_desc = sorted(pages, key=lambda p: p.get("ymd",""), reverse=True)  # 最新→過去
 
-    def _fmt_meta(p: dict) -> str:
+
+    def _pill(text: str, cls: str = "") -> str:
+        if not text:
+            return ""
+        cls_attr = ("pill " + cls).strip()
+        return f"<span class='{cls_attr}'>{escape_html(text)}</span>"
+
+    def _fmt_meta_html(p: dict) -> str:
         parts = []
-        if p.get("judge"):
-            parts.append(f"AI {p['judge']}")
+
+        # AI判定（強調）
+        j = (p.get("judge") or "").upper()
+        if j:
+            cls = "pill-ai"
+            if j == "BULL":
+                cls += " bull"
+            elif j == "BEAR":
+                cls += " bear"
+            elif j == "WAIT":
+                cls += " wait"
+            parts.append(_pill(f"AI {j}", cls))
+
+        # 指標
         if p.get("fgi") is not None:
-            parts.append(f"FGI {p['fgi']}")
+            parts.append(_pill(f"FGI {p['fgi']}", "pill-kpi"))
         if p.get("btc_rsi") is not None:
-            parts.append(f"RSI {p['btc_rsi']}")
+            parts.append(_pill(f"RSI {p['btc_rsi']}", "pill-kpi"))
         if p.get("trend") is not None:
-            parts.append(f"Trend {p['trend']}")
+            parts.append(_pill(f"Trend {p['trend']}", "pill-kpi"))
 
-        # クリック誘導の追記（無い日は出さない）
+        # クリック誘導（PV用）
         if p.get("trend_top3"):
-            parts.append(f"注目 {p['trend_top3']}")
+            parts.append(_pill(f"注目 {p['trend_top3']}", "pill-hot"))
         if p.get("top_gainer"):
-            parts.append(f"上昇 {p['top_gainer']}")
-        if p.get("reason_1line"):
-            parts.append(f"要約 {p['reason_1line']}")
+            parts.append(_pill(f"上昇 {p['top_gainer']}", "pill-up"))
 
-        return " · ".join(parts)
+        # 要約は短く（長いと一覧が単調＆読みにくい）
+        r = (p.get("reason_1line") or "").strip()
+        if r:
+            r = shorten_one_line(r, max_len=55)
+            parts.append(_pill(f"要約 {r}", "pill-reason"))
+
+        return "".join([x for x in parts if x])
 
     rows_html = "\n".join([
             "<div class='row'>"
             f"<a class='rowlink' href='{escape_html(p['href'])}'>"
             f"<div class='date'>{escape_html(p['date_iso'])}</div>"
-            f"<div class='meta'>{escape_html(_fmt_meta(p))}</div>"
+            f"<div class='meta'>{_fmt_meta_html(p)}</div>"
             "</a>"
             "</div>"
             for p in pages_desc
