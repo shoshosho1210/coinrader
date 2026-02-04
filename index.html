@@ -614,7 +614,8 @@
   }
 
   /* sparkline (Chart.js) */
-  .sparkline{width:100% !important; height:64px !important; display:block; margin-top:10px;}
+  .sparkline{width:100% !important; height:48px !important; display:block; margin-top:10px;}
+  .grid .card canvas.sparkline{height:48px !important; min-height:48px; flex:0 0 48px;}
   .card canvas.sparkline{max-width:100%;}
 
 
@@ -7018,14 +7019,15 @@ function makeLineChart(canvasId, labels, series, opts){
         ? `<span style="background:rgba(255,255,255,0.1); padding:0 4px; border-radius:3px; margin-left:4px; font-size:10px; color:#cbd5e1;">#${coin.market_cap_rank}</span>` 
         : '';
 
+      const chartIs24h = (sectionKey === 'gainers' || sectionKey === 'volume' || sectionKey === 'alt_volume');
+
       // 2. KPI行
+      let turnoverRate = null;
       let turnoverBadge = '';
       if (typeof coin.total_volume === 'number' && typeof coin.market_cap === 'number' && coin.market_cap > 0) {
-        const rate = (coin.total_volume / coin.market_cap) * 100;
-        // ラベル「回転率」を追加
-        turnoverBadge = `<span class="meta-badge" title="24h出来高÷時価総額：市場の活発さ">回転率 ${rate.toFixed(1)}%</span>`;
+        turnoverRate = (coin.total_volume / coin.market_cap) * 100;
+        turnoverBadge = `<span class="meta-badge" title="24h出来高÷時価総額：市場の活発さ">回転率 ${turnoverRate.toFixed(1)}%</span>`;
       }
-
       let athBadge = '';
       if (typeof coin.ath_change_percentage === 'number') {
         const ath = coin.ath_change_percentage;
@@ -7034,15 +7036,22 @@ function makeLineChart(canvasId, labels, series, opts){
       }
 
       let mainMetricHtml = '';
+      let volBadge = '';
       if (mode === 'mcap') {
         mainMetricHtml = `<span class="meta-val">Cap ${yenLarge(coin.market_cap)}</span>`;
       } else {
-        const val = (typeof coin.total_volume === 'number') ? yenLarge(coin.total_volume) : '-';
-        mainMetricHtml = `<span class="meta-val">Vol ${val}</span>`;
+        const volVal = (typeof coin.total_volume === 'number') ? yenLarge(coin.total_volume) : '-';
+        // 回転率を前に出す（ある場合は main / ない場合はVolをmain）
+        if (Number.isFinite(turnoverRate)) {
+          mainMetricHtml = `<span class="meta-val">回転率 ${turnoverRate.toFixed(1)}%</span>`;
+          volBadge = `<span class="meta-badge" title="24h出来高">Vol ${volVal}</span>`;
+        } else {
+          mainMetricHtml = `<span class="meta-val">Vol ${volVal}</span>`;
+        }
       }
 
-      const kpiLineHtml = `<div class="meta-row" style="flex-wrap:wrap; justify-content:flex-end; gap:6px;">${mainMetricHtml} ${turnoverBadge} ${athBadge}</div>`;
-
+      const chartBadge = `<span class="meta-badge" title="カード内チャートの期間">Chart ${chartIs24h ? '24h' : '7d'}</span>`;
+      const kpiLineHtml = `<div class="meta-row" style="flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:6px;">${mainMetricHtml} ${volBadge} ${turnoverBadge} ${chartBadge} ${athBadge}</div>`;
       const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
 
       // HTML生成（画像最適化入り）
@@ -7063,7 +7072,7 @@ function makeLineChart(canvasId, labels, series, opts){
             ${kpiLineHtml}
           </div>
         </div>
-        <canvas id="${canvasId}" class="sparkline" aria-label="price chart" role="img"></canvas>
+        <canvas id="${canvasId}" class="sparkline" style="height:48px; min-height:48px;" aria-label="price chart" role="img"></canvas>
       `;
 
       grid.appendChild(card);
@@ -7084,7 +7093,7 @@ function makeLineChart(canvasId, labels, series, opts){
       };
 
       try{
-        const use24h = (sectionKey === 'gainers' || sectionKey === 'volume');
+        const use24h = chartIs24h;
         if (use24h){
           const sp7 = coin?.sparkline_in_7d?.price;
           const sp24 = derive24hFrom7d(sp7);
