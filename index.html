@@ -4264,6 +4264,33 @@ white-space:nowrap; word-break:keep-all; }
 /* v58: keep summary titles from breaking mid-word on small screens */
 .summary-title-main{ display:inline-flex; align-items:center; flex-wrap:nowrap; }
 
+
+
+/* ===== Mobile fix: Quick Summary title overlap (Trend TOP3 etc.) ===== */
+@media (max-width: 640px){
+  /* Prevent title text from bleeding into the right note label */
+  .summary-card-title{
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .summary-title-main{
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .summary-card-note-inline{
+    flex: 0 0 auto;
+    font-size: 10px;
+  }
+}
+@media (max-width: 380px){
+  /* If still tight, allow wrapping instead of overlap */
+  .summary-card-title{
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+}
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
