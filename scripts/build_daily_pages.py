@@ -121,17 +121,43 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
 
 
 def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -> str:
-    # 直近n日（現在日を含む）へのリンクチップを生成
+    """直近n件のチップを生成（前後も含めて回遊しやすくする）
+    - 可能なら「当日(=最新)」も同じ列に含める
+    - 重複表示を避け、日付は small に、ラベルは必要なときだけ表示
+    """
+    if not dated_all:
+        return ""
     if current_ymd not in dated_all:
         return ""
+
+    latest_ymd = dated_all[-1]
     idx = dated_all.index(current_ymd)
-    slice_ymd = list(reversed(dated_all[max(0, idx - (n - 1)) : idx + 1]))
+
+    # 基本は「前3・後3（計7）」を狙う。端は自動で寄せる。
+    half = n // 2
+    start = max(0, idx - half)
+    end = min(len(dated_all), idx + half + 1)
+    # 端で足りない分を反対側に寄せる
+    while (end - start) < n and start > 0:
+        start -= 1
+    while (end - start) < n and end < len(dated_all):
+        end += 1
+
+    window = dated_all[start:end]
+
     parts = []
-    for ymd in slice_ymd:
+    for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
-        label = "今日" if ymd == current_ymd else mmdd
+        if ymd == latest_ymd:
+            label = "今日"
+        elif ymd == current_ymd:
+            label = "現在"
+        else:
+            label = ""
         href = f"/daily/{ymd}.html"
-        parts.append(f"<a class='chip' href='{href}'><small>{mmdd}</small>{escape_html(label)}</a>")
+        inner = f"<small>{mmdd}</small>{escape_html(label)}" if label else f"<small>{mmdd}</small>"
+        parts.append(f"<a class='chip' href='{href}'>{inner}</a>")
+
     parts.append("<a class='chip' href='/daily/'><small>LIST</small>一覧</a>")
     parts.append("<a class='chip' href='/daily/latest.html'><small>NEW</small>最新</a>")
     return "\n      ".join(parts)
