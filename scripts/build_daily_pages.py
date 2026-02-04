@@ -47,6 +47,13 @@ TZ_NAME = "JST"
 def read_text(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
+def read_text_optional(paths: List[Path]) -> str:
+    """Return the content of the first existing file in paths."""
+    for p in paths:
+        if p.exists():
+            return read_text(p)
+    raise FileNotFoundError("None of the optional template files exist: " + ", ".join(str(x) for x in paths))
+
 def write_text(p: Path, s: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(s, encoding="utf-8")
@@ -332,7 +339,11 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
 # ---------- main ----------
 def main() -> None:
     tmpl = read_text(TEMPL_DIR / "daily_template.html")
-    tmpl_index = read_text(TEMPL_DIR / "daily_index_template.html")
+    # Index template: prefer daily_index.html (new), fallback to daily_index_template.html (old)
+    tmpl_index = read_text_optional([
+        TEMPL_DIR / "daily_index.html",
+        TEMPL_DIR / "daily_index_template.html",
+    ])
     tmpl_latest = read_text(TEMPL_DIR / "latest_template.html")
 
     files = sorted(glob.glob(str(DATA_DIR / "*.json")))
@@ -435,15 +446,52 @@ def main() -> None:
             "date_iso": date_iso,
             "title": title,
             "href": f"{ymd}.html",
+            "judge": str(judge),
+            "fgi": sent,
+            "btc_rsi": rsi,
+            "trend": trend,
         })
 
-    # 一覧 index.html
-    # テンプレ側で {{ITEMS}} を期待している想定（既存実装に合わせる）
-    items_html = "\n".join([
-        f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
-        for p in pages
-    ])
-    index_html = tmpl_index.replace("{{ITEMS}}", items_html)
+# 一覧 index.html
+# - 新テンプレ: {{ROWS}} を想定（daily_index.html）
+# - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
+pages_desc = list(reversed(pages))  # 最新→過去
+
+def _fmt_meta(p: dict) -> str:
+    parts = []
+    if p.get("judge"):
+        parts.append(f"AI {p['judge']}")
+    if p.get("fgi") is not None:
+        parts.append(f"FGI {p['fgi']}")
+    if p.get("btc_rsi") is not None:
+        parts.append(f"RSI {p['btc_rsi']}")
+    if p.get("trend") is not None:
+        parts.append(f"Trend {p['trend']}")
+    return " · ".join(parts)
+
+rows_html = "
+".join([
+    "<div class='row'>"
+    "<div>"
+    f"<div class='date'><a href='{escape_html(p['href'])}'>{escape_html(p['date_iso'])}</a></div>"
+    f"<div class='meta'>{escape_html(_fmt_meta(p))}</div>"
+    "</div>"
+    "</div>"
+    for p in pages_desc
+])
+
+# 旧テンプレ用の簡易liも残す（互換）
+items_html = "
+".join([
+    f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
+    for p in pages_desc
+])
+
+index_html = tmpl_index
+if "{{ROWS}}" in index_html:
+    index_html = index_html.replace("{{ROWS}}", rows_html)
+if "{{ITEMS}}" in index_html:
+    index_html = index_html.replace("{{ITEMS}}", items_html)
     # 最新ページへの導線が必要ならテンプレ側で {{LATEST_HREF}} を利用可能に
     index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
     write_text(OUT_DIR / "index.html", index_html)
