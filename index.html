@@ -4666,6 +4666,63 @@ html, body{
   color: var(--txt-faint) !important;
 }
 
+
+
+/* ===== v88.1 fix: unify card heights in summary-lists grids ===== */
+
+/* In summary grids, cards should stretch to the row height (avoid uneven card heights) */
+.summary-lists{
+  align-items: stretch;
+}
+.summary-lists .card{
+  align-self: stretch !important;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+/* Keep sparkline anchored; header/content takes remaining space */
+.summary-lists .card .card-header{
+  flex: 1 1 auto;
+}
+.summary-lists .card .sparkline{
+  margin-top: auto !important;
+}
+
+
+
+/* ===== v88.2 fix: truly unify card heights (summary-lists + section grids) ===== */
+/* 1) Top summary cards (Trend/Up/Mcap) are .summary-card (not .card) */
+.summary-lists{
+  align-items: stretch !important;
+}
+.summary-lists > .summary-card{
+  align-self: stretch !important;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+.summary-lists > .summary-card .summary-footer{
+  margin-top: auto; /* keep footer aligned across cards */
+}
+/* Desktop breakpoint previously forced start; override to keep uniform heights */
+@media (min-width: 900px){
+  .summary-lists{ align-items: stretch !important; }
+  .summary-lists > .summary-card{ align-self: stretch !important; height: 100% !important; }
+}
+
+/* 2) Section grids: stretch cards to row height so chart cards align cleanly */
+.grid{
+  align-items: stretch !important;
+}
+.grid > .card{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.grid > .card canvas.sparkline{
+  margin-top: auto; /* anchor sparkline at bottom when present */
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
