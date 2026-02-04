@@ -313,12 +313,11 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
     ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
                           default=get_path(payload, "summary.technical.ma_distance",
                               default=get_path(payload, "btc_ma_distance",
-                                  default=get_path(payload, "ma_distance",
-                                      default=get_path(payload, "trend", default="")))))
+                                  default=get_path(payload, "ma_distance", default=""))))
     # 旧フォーマットで trend が配列/辞書の場合があるため除外
     if isinstance(ma_dist, (list, dict)):
         ma_dist = ""
-    trending  = get_path(payload, "summary.trending", default=[])
+    trending  = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=get_path(payload, "trend", default=[])))
     top_gainer_symbol = get_path(payload, "summary.top_gainer.symbol", default="")
     top_gainer_change = get_path(payload, "summary.top_gainer.change", default="")
 
@@ -434,12 +433,14 @@ def main() -> None:
         ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
                           default=get_path(payload, "summary.technical.ma_distance",
                               default=get_path(payload, "btc_ma_distance",
-                                  default=get_path(payload, "ma_distance",
-                                      default=get_path(payload, "trend", default="")))))
+                                  default=get_path(payload, "ma_distance", default=""))))
         # 旧フォーマットで trend が配列/辞書の場合があるため除外
         if isinstance(ma_dist, (list, dict)):
             ma_dist = ""
-        trending_raw = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=[]))
+        # trending は新: summary.trending / 旧: trending / さらに旧: trend(配列) の可能性がある
+        trending_raw = get_path(payload, "summary.trending",
+                                default=get_path(payload, "trending",
+                                                default=get_path(payload, "trend", default=[])))
         trending = normalize_symbol_list(trending_raw)
         top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default={}))
         if not isinstance(top_gainer, dict):
