@@ -20,12 +20,19 @@
     .meta{color:var(--muted);font-size:12px}
 /* 行全体をカード化 */
 .rowlink{
-  display:block;
-  padding:14px 12px;
-  border-radius:12px;
-  text-decoration:none;
+  border: 1px solid rgba(255,255,255,.06);
 }
-.rowlink:hover{ background:rgba(255,255,255,.06); }
+.rowlink:hover{
+  border-color: rgba(255,255,255,.14);
+}
+.rowlink::after{
+  content:"›";
+  float:right;
+  opacity:.5;
+  font-size:20px;
+  line-height:1;
+  margin-top:-28px; /* 見た目調整 */
+}
 
 /* 日付＋チップ */
 .rowlink .date{ font-weight:700; margin-bottom:8px; }
