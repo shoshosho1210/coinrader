@@ -494,24 +494,29 @@ def main() -> None:
     ])
 
     index_html = tmpl_index
+
+    # {{ROWS}} / {{ITEMS}} のどちらでも動くように置換
     if "{{ROWS}}" in index_html:
         index_html = index_html.replace("{{ROWS}}", rows_html)
     if "{{ITEMS}}" in index_html:
-        index_html = index_html.replace("{{ITEMS}}", items_html)
-        # 最新ページへの導線が必要ならテンプレ側で {{LATEST_HREF}} を利用可能に
-        
-        if _re.search(r"\{\{\s*(ROWS|ITEMS)\s*\}\}", index_html):
-            print("[WARN] daily index still contains {{ROWS}}/{{ITEMS}} token after replacement. Check template placeholder.")
-index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
-        write_text(OUT_DIR / "index.html", index_html)
+        index_html = index_html.replace("{{ITEMS}}", rows_html)
 
-        # latest.html（最新ページへリダイレクト/案内）
-        latest_target = f"{latest_ymd}.html"
-        latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
-        latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
-        write_text(OUT_DIR / "latest.html", latest_html)
+    # latest へのリンク（テンプレ側に {{LATEST_HREF}} がある想定）
+    index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
 
-        print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
+    # 置換漏れ検知（デバッグ用）
+    if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", index_html):
+        print("[WARN] daily_index.html: placeholder が残っています（{{ROWS}}/{{ITEMS}}/{{LATEST_HREF}}）")
+
+    write_text(OUT_DIR / "index.html", index_html)
+
+    # latest.html（最新ページへリダイレクト/案内）
+    latest_target = f"{latest_ymd}.html"
+    latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
+    latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
+    write_text(OUT_DIR / "latest.html", latest_html)
+
+    print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
 
 if __name__ == "__main__":
