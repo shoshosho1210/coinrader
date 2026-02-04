@@ -73,8 +73,7 @@ def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -
         parts.append(f"<a class='chip' href='{href}'><small>{mmdd}</small>{escape_html(label)}</a>")
     parts.append("<a class='chip' href='/daily/'><small>LIST</small>一覧</a>")
     parts.append("<a class='chip' href='/daily/latest.html'><small>NEW</small>最新</a>")
-    return "
-      ".join(parts)
+    return "\n      ".join(parts)
 
 
 def get_path(obj: Any, path: str, default: Any = "") -> Any:
