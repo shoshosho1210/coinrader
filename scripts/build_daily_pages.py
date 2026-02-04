@@ -173,7 +173,6 @@ def write_sitemap(dated: list[str], out_path: Path) -> None:
 
     daily_entries = [
         {"loc": f"{SITE_ORIGIN}/daily/", "lastmod": latest_iso, "changefreq": "daily", "priority": "0.9"},
-        {"loc": f"{SITE_ORIGIN}/daily/latest.html", "lastmod": latest_iso, "changefreq": "daily", "priority": "0.9"},
     ]
     for ymd in reversed(last_n):
         daily_entries.append({
