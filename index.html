@@ -8134,9 +8134,7 @@ textEl.innerHTML = htmlContent;
     const btn = document.getElementById('btnMcapToggle');
     if (!sec || !btn) return;
 
-    const KEY = 'cr_mcap_expand_v1';
-    let open = (localStorage.getItem(KEY) === '1');
-
+    let open = false; // default: collapsed (TOP10)
     const apply = () => {
       sec.classList.toggle('mcap-collapsed', !open);
       btn.textContent = open ? '閉じる' : 'TOP20を表示';
@@ -8147,14 +8145,12 @@ textEl.innerHTML = htmlContent;
     apply();
     btn.addEventListener('click', () => {
       open = !open;
-      localStorage.setItem(KEY, open ? '1' : '0');
       apply();
     });
 
     // expose for debugging
     window.__setMcapOpen = (v) => {
       open = !!v;
-      localStorage.setItem(KEY, open ? '1' : '0');
       apply();
     };
   }
@@ -8191,13 +8187,11 @@ textEl.innerHTML = htmlContent;
 
     btn.addEventListener('click', () => {
       open = !open;
-      localStorage.setItem(KEY, open ? '1' : '0');
       apply(open, true);
     });
 
     window.__setOverviewOpen = (v) => {
       open = !!v;
-      localStorage.setItem(KEY, open ? '1' : '0');
       apply(open, true);
     };
   }
