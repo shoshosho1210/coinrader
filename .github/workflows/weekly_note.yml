@@ -31,20 +31,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Generate weekly intelligence report
-        env:
-          SITE_URL: "https://coinrader.net/"
-          WEEK_DAYS: "7"
+      - name: Generate weekly AI report
         run: |
           set -eux
           # データフォルダがあるか確認（初回などエラー回避）
           ls -R data/daily || echo "No data directory found yet"
-          
-          python generate_weekly_note.py
-          
+
+          python generate_ai_report.py \
+            --json data/latest.json \
+            --template ai_report_template_weekly_monthly.md \
+            --output weekly_ai_report.md
+
           # 生成確認
-          test -f weekly_note_draft.md
-          test -f weekly_summary.txt
+          test -f weekly_ai_report.md
 
       - name: Commit & Push report draft
         run: |
@@ -53,11 +52,11 @@ jobs:
           git config user.email "coinrader-bot@users.noreply.github.com"
 
           # 生成物のみをadd
-          git add weekly_note_draft.md weekly_summary.txt
+          git add weekly_ai_report.md
           
           # 変更がある場合のみコミット
           if ! git diff --cached --quiet; then
-            git commit -m "Update Weekly Intelligence Report Draft [skip ci]"
+            git commit -m "Update Weekly AI Report [skip ci]"
             git push
           else
             echo "No changes to commit."
