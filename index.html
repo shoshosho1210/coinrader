@@ -4326,6 +4326,79 @@ a:active{
   transform: translateY(1px) scale(0.99);
 }
 
+
+
+/* =========================
+   v84 UI polish (visual only)
+   - tabular numbers (reduce digit jitter)
+   - unified status message styling
+   - section header resilience on mobile
+   ========================= */
+
+/* 数字の桁ブレ防止（全体に適用） */
+html, body{
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Grid内の状態メッセージ（取得中/なし/失敗）を統一して“見た目”を安定化 */
+.grid > .msg{
+  grid-column: 1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px 12px;
+  border-radius:12px;
+  border:1px solid rgba(148,163,184,.18);
+  background: rgba(15,23,42,.55);
+  color:#cbd5e1;
+  backdrop-filter: blur(6px);
+  min-height: 52px;
+}
+
+/* エラー時（.msg.err は既存） */
+.grid > .msg.err{
+  border-color: rgba(248,113,113,.28);
+  background: rgba(127,29,29,.18);
+  color:#fecaca;
+}
+
+/* “更新中…” バッジの幅を固定し、表示切替時のガタつきを抑制 */
+.grid.refreshing::after{
+  min-width: 94px;
+  text-align: center;
+}
+
+/* セクションヘッダ：長いタイトル/ボタン増加でも崩れにくく（モバイル） */
+@media (max-width: 520px){
+  .section-header{
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .section-header > div:first-child{
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .section-title{
+    /* 2行まで表示して、それ以上は省略 */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .section-actions{
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  /* ボタンが増えた時も押し出されないように */
+  .section-actions .linkbtn{
+    max-width: 100%;
+  }
+}
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
