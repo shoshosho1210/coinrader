@@ -178,6 +178,41 @@ def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -
     return "\n      ".join(parts)
 
 
+def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ymd: str, n: int = 5) -> str:
+    """同じAI判定の日への内部リンク（チップ）を生成。
+    - current の前後を含めて最大 n 件
+    - judge が空、または対象日が不足なら空を返す
+    """
+    judge = (judge or "").strip()
+    if not judge or not judge_days_all or current_ymd not in judge_days_all:
+        return ""
+    # judge_days_all は昇順前提（YYYYMMDD）
+    idx = judge_days_all.index(current_ymd)
+    half = n // 2
+    start = max(0, idx - half)
+    end = min(len(judge_days_all), idx + half + 1)
+    while (end - start) < n and start > 0:
+        start -= 1
+    while (end - start) < n and end < len(judge_days_all):
+        end += 1
+
+    window = judge_days_all[start:end]
+
+    parts = []
+    # ラベル（非リンク）
+    parts.append(
+        f"<span class='chip' style='pointer-events:none;opacity:.75'><small>SAME</small>{escape_html(judge)}</span>"
+    )
+    for ymd in window:
+        mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
+        label = "" if ymd != current_ymd else "現在"
+        href = f"/daily/{ymd}.html"
+        inner = f"<small>{mmdd}</small>{escape_html(label)}" if label else f"<small>{mmdd}</small>"
+        parts.append(f"<a class='chip' href='{href}'>{inner}</a>")
+    return "\n      ".join(parts)
+
+
+
 def get_path(obj: Any, path: str, default: Any = "") -> Any:
     """
     dict のネストを "summary.technical.btc_rsi" のようなドット区切りで取得。
@@ -478,8 +513,10 @@ def main() -> None:
     # 最新日付
     latest_ymd = dated[-1]
 
-    # 各日付ページ生成
-    pages: List[Dict[str, str]] = []
+
+    # 各日付ページ生成（2パス）
+    # 1) 先に全JSONを読み込み、judge→日付リストを作る（同じ判定の日リンク用）
+    items: List[Dict[str, Any]] = []
     for ymd in reversed(dated):
         json_path = DATA_DIR / f"{ymd}.json"
         try:
@@ -495,8 +532,6 @@ def main() -> None:
             except Exception:
                 date_iso = ymd
 
-        recent_days_html = build_recent_days_html(dated, ymd, n=7)
-
         # 指標抽出（summary.* を優先）
         fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
         btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
@@ -507,15 +542,16 @@ def main() -> None:
         # 旧フォーマットで trend が配列/辞書の場合があるため除外
         if isinstance(ma_dist, (list, dict)):
             ma_dist = ""
+
         # trending は新: summary.trending / 旧: trending / さらに旧: trend(配列) の可能性がある
         trending_raw = get_path(payload, "summary.trending",
                                 default=get_path(payload, "trending",
                                                 default=get_path(payload, "trend", default=[])))
         trending = normalize_symbol_list(trending_raw)
+
         top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default={}))
         if not isinstance(top_gainer, dict):
             top_gainer = {}
-
 
         # judge
         judge = get_path(payload, "ai_judge", default=get_path(payload, "ai.judge", default=""))
@@ -529,17 +565,82 @@ def main() -> None:
 
         # SEO meta（title/description/canonical）
         seo_meta = build_seo_meta(date_iso, ymd, judge, fgi_value, btc_rsi, ma_dist, trending, top_gainer=top_gainer)
-        jsonld = build_jsonld(seo_meta.get("CANONICAL",""), seo_meta.get("TITLE",""), seo_meta.get("DESCRIPTION",""), date_iso, str(updated_at))
+        jsonld = build_jsonld(
+            seo_meta.get("CANONICAL",""),
+            seo_meta.get("TITLE",""),
+            seo_meta.get("DESCRIPTION",""),
+            date_iso,
+            str(updated_at),
+        )
 
         # 表示用
         sent = fmt_num(fgi_value, 0) if fmt_num(fgi_value, 0) != "" else str(fgi_value)
         rsi  = fmt_num(btc_rsi, 2) if fmt_num(btc_rsi, 2) != "" else str(btc_rsi)
         trend_num = fmt_num(ma_dist, 1)
         trend = trend_num if trend_num != "" else "—"
+
         # メタ情報
         title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
         desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
         canonical = seo_meta.get("CANONICAL") or f"{SITE_ORIGIN}/daily/{ymd}.html"
+
+        items.append({
+            "ymd": ymd,
+            "date_iso": date_iso,
+            "payload": payload,
+            "judge": str(judge),
+            "fgi_value": fgi_value,
+            "btc_rsi": btc_rsi,
+            "ma_dist": ma_dist,
+            "trending": trending,
+            "top_gainer": top_gainer,
+            "updated_at": updated_at,
+            "seo_meta": seo_meta,
+            "jsonld": jsonld,
+            "title": title,
+            "desc": desc,
+            "canonical": canonical,
+            "sent": sent,
+            "rsi": rsi,
+            "trend": trend,
+        })
+
+    # judge -> 日付（昇順）
+    judge_days: Dict[str, List[str]] = {}
+    for it in items:
+        j = (it.get("judge") or "").strip()
+        y = it.get("ymd") or ""
+        if j and y:
+            judge_days.setdefault(j, []).append(y)
+    for j in list(judge_days.keys()):
+        judge_days[j] = sorted(set(judge_days[j]))
+
+    # 2) ページ生成（同じ判定の日リンクを {{RECENT_DAYS}} に追加）
+    pages: List[Dict[str, str]] = []
+    for it in items:
+        ymd = it["ymd"]
+        date_iso = it["date_iso"]
+        payload = it["payload"]
+        judge = it["judge"]
+        sent = it["sent"]
+        rsi = it["rsi"]
+        trend = it["trend"]
+        updated_at = it["updated_at"]
+        title = it["title"]
+        desc = it["desc"]
+        canonical = it["canonical"]
+        jsonld = it["jsonld"]
+        trending = it["trending"]
+        top_gainer = it["top_gainer"]
+        fgi_value = it["fgi_value"]
+        btc_rsi = it["btc_rsi"]
+        ma_dist = it["ma_dist"]
+
+        recent_days_html = build_recent_days_html(dated, ymd, n=7)
+        same_judge_html = build_same_judge_days_html(judge, judge_days.get(judge, []), ymd, n=5)
+        if same_judge_html:
+            recent_days_html = recent_days_html + "\n      " + same_judge_html
+
         why_html = build_reason_html(payload)
 
         html = tmpl
@@ -555,10 +656,13 @@ def main() -> None:
             "{{UPDATED_AT}}": str(updated_at),
             "{{JUDGE}}": escape_html(str(judge)),
             "{{SENTIMENT_VALUE}}": escape_html(str(sent)),
+            "{{SENTIMENT}}": escape_html(str(sent)),
             "{{BTC_RSI}}": escape_html(str(rsi)),
             "{{TREND}}": escape_html(str(trend)),
             "{{WHY_HTML}}": why_html,
+            "{{WHY}}": why_html,
             "{{RECENT_DAYS_HTML}}": recent_days_html,
+            "{{RECENT_DAYS}}": recent_days_html,
         }
         for k, v in repl.items():
             html = html.replace(k, v)
@@ -595,7 +699,6 @@ def main() -> None:
             "top_gainer": top_gainer_label,
             "reason_1line": reason_1line,
         })
-
     # 一覧 index.html
     # - 新テンプレ: {{ROWS}} を想定（daily_index.html）
     # - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
