@@ -5477,15 +5477,44 @@ function readSnapshot(key){
   let LAST_HTTP_STATUS = 0;
 let LAST_FETCH_ERROR = '';
 let IN_AUTO_REFRESH = false;
+
+// ---- State message helpers (loading / empty / error) ----
+function _stateReason(){
+  const st = Number(LAST_HTTP_STATUS || 0);
+  const e = (LAST_FETCH_ERROR || '').toString();
+  if (st === 429) return { code:'rate', short:'API制限の可能性', long:'API制限の可能性があります。しばらく待ってから再読み込みしてください。' };
+  if (st === 403) return { code:'forbidden', short:'アクセス制限', long:'APIアクセスが制限されています。設定（APIキー等）をご確認ください。' };
+  if (st >= 500) return { code:'server', short:'提供元が混雑', long:'データ提供元が混雑しています。時間をおいて再読み込みしてください。' };
+  if (st > 0 && st !== 200) return { code:'http', short:`HTTP ${st}`, long:`データ取得に失敗しました（HTTP ${st}）。時間をおいて再読み込みしてください。` };
+  if (st === 0 && e){
+    if (e.includes('AbortError')) return { code:'timeout', short:'通信タイムアウト', long:'通信がタイムアウトしました。回線を確認して再読み込みしてください。' };
+    if (e.toLowerCase().includes('failed to fetch')) return { code:'network', short:'通信エラー', long:'通信エラーが発生しました。回線を確認して再読み込みしてください。' };
+    return { code:'network', short:'通信エラー', long:'通信エラーが発生しました。回線を確認して再読み込みしてください。' };
+  }
+  return { code:'loading', short:'準備中', long:'データを準備中です。' };
+}
+function stateMessageShort(){
+  const r = _stateReason();
+  return (r.code === 'loading') ? 'データ取得中…' : `${r.short}…`;
+}
+function stateMessageLong(prefix){
+  const r = _stateReason();
+  const p = prefix ? (prefix + '：') : '';
+  return (r.code === 'loading') ? (p + 'データを準備中です。') : (p + r.long);
+}
+// -----------------------------------------------
 async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
     let lastErr = null;
     for (let attempt=0; attempt<=retries; attempt++){
       try{
         const res = await fetchWithTimeout(url, timeoutMs);
-        if (res.ok) return await res.json();
+        // capture last HTTP status for UI messaging
+        LAST_HTTP_STATUS = res.status;
+        if (res.ok) { LAST_FETCH_ERROR = ''; return await res.json(); }
 
         let bodyText = '';
         try{ bodyText = await res.text(); }catch(e){}
+        LAST_FETCH_ERROR = bodyText ? bodyText.slice(0,200) : (res.statusText || '');
         console.warn('API not ok:', res.status, url, bodyText.slice(0,200));
 
         if (res.status === 429 || (res.status >= 500 && res.status <= 599)){
@@ -5501,8 +5530,9 @@ async function fetchJsonRetry(url, {timeoutMs=15000, retries=2} = {}){
         const err = new Error(`HTTP ${res.status}`);
         err.httpStatus = res.status;
         throw err;
-
       } catch(e){
+        LAST_HTTP_STATUS = 0;
+        LAST_FETCH_ERROR = (e && (e.name || e.message)) ? String(e.name || e.message) : 'fetch_error';
         lastErr = e;
         if (attempt < retries){
           await sleep(500 * (attempt+1));
@@ -6353,7 +6383,7 @@ function renderOverview(){
 
     if (!marketsTop || !marketsTop.length){
         msg.className = 'msg err';
-        msg.textContent = '概況データを準備中です。';
+        msg.textContent = stateMessageLong('概況データ');
         msg.style.display = 'block';
         return;
     }
@@ -7437,10 +7467,10 @@ function makeLineChart(canvasId, labels, series, opts){
     if (!coins || !coins.length){
       const hasError = (typeof SECTION_ERRORS !== 'undefined' && SECTION_ERRORS.trend);
       if (sectionKey === 'trend' && hasError){
-        grid.innerHTML = '<div class="msg">トレンドの取得に失敗しました（他のデータは表示しています）。時間をおいて再読み込みしてください。</div>';
+        grid.innerHTML = `<div class="msg err">${stateMessageLong('トレンド')}</div>`;
         return;
       }
-      grid.innerHTML = '<div class="msg">最新データの取得が遅れています。時間をおいて再読み込みしてください。</div>';
+      grid.innerHTML = `<div class="msg">${stateMessageLong('データ')}</div>`;
       return;
     }
 
@@ -7653,7 +7683,7 @@ function makeLineChart(canvasId, labels, series, opts){
       ol.innerHTML = '';
 
       if (!coins || !coins.length) {
-        ol.innerHTML = '<div style="padding:10px; opacity:0.5; font-size:12px;">データ取得中…</div>';
+        ol.innerHTML = `<div style="padding:10px; opacity:0.5; font-size:12px;">${stateMessageShort()}</div>`;
         return;
       }
 
@@ -7746,7 +7776,7 @@ function renderRankTable(coins) {
     tbody.innerHTML = '';
 
     if (!coins || !coins.length) {
-        tbody.innerHTML = '<tr><td colspan="8" style="padding:20px;text-align:center;color:#64748b;">データ取得中...</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="8" style="padding:20px;text-align:center;color:#64748b;">${stateMessageShort()}</td></tr>`;
         return;
     }
 
