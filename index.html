@@ -4788,14 +4788,14 @@ html, body{
 </div>
 <nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
 <div class="sideMenuFooter">
-<a class="sideNavLink" href="#" onclick="openPageModal('guide.html', '📖 CoinRader 活用ガイド'); return false;" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>サイトの見かたガイド</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('start.html', '暗号資産の始め方'); return false;"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>暗号資産の始め方</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('about.html', '運営者情報'); return false;"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>運営者情報</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('disclaimer.html', '免責事項'); return false;"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>免責事項</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('data-sources.html', 'データソース'); return false;"><i class="fa-solid fa-database" aria-hidden="true"></i><span>データソース</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('ads-pr.html', '広告・PR表記'); return false;"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>広告・PR表記</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('privacy.html', 'プライバシーポリシー'); return false;"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>プライバシーポリシー</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('contact.html', 'お問い合わせ'); return false;"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>お問い合わせ</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/guide', '📖 CoinRader 活用ガイド'); return false;" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>サイトの見かたガイド</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/start', '暗号資産の始め方'); return false;"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>暗号資産の始め方</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/about', '運営者情報'); return false;"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>運営者情報</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/disclaimer', '免責事項'); return false;"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>免責事項</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/data-sources', 'データソース'); return false;"><i class="fa-solid fa-database" aria-hidden="true"></i><span>データソース</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/ads-pr', '広告・PR表記'); return false;"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>広告・PR表記</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/privacy', 'プライバシーポリシー'); return false;"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>プライバシーポリシー</span></a>
+<a class="sideNavLink" href="#" onclick="openPageModal('/contact', 'お問い合わせ'); return false;"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>お問い合わせ</span></a>
 </div>
 </aside>
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
@@ -4819,7 +4819,7 @@ html, body{
 <span class="status-text">ANALYZING...</span>
 </div>
 </div>
-<button class="hud-guide-btn" onclick="openPageModal('guide.html', 'CoinRader 活用ガイド');">
+<button class="hud-guide-btn" onclick="openPageModal('/guide', 'CoinRader 活用ガイド');">
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
 </div>
@@ -4976,7 +4976,7 @@ html, body{
 <div class="cta-micro">shareページ：日付固定の共有ページ（例：/share/20260203.html）。ホーム：coinrader.net のトップページ。</div>
 </div>
 <div class="cta-actions">
-<a class="btn primary" href="/start.html" onclick="openPageModal('start.html', '🔰 暗号資産投資の始め方'); return false;" style="background: #1e88e5; border:none; padding: 10px 20px; font-weight: 700;">投資の準備を整える</a>
+<a class="btn primary" href="/start" onclick="openPageModal('/start', '🔰 暗号資産投資の始め方'); return false;" style="background: #1e88e5; border:none; padding: 10px 20px; font-weight: 700;">投資の準備を整える</a>
 </div>
 </div>
 <div class="cta-note">※当サイトは広告収益により運営されています（景品表示法に基づくPR表記）。</div>
@@ -9313,13 +9313,13 @@ function createSparkline(prices, isUp) {
 <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
 </div>
 <nav class="footer-nav">
-<a href="guide.html" data-modal-title="📖 活用ガイド">活用ガイド</a>
-<a href="start.html" data-modal-title="🔰 始め方">始め方</a>
-<a href="data-sources.html" data-modal-title="📊 データ">データ</a>
-<a href="about.html" data-modal-title="ℹ️ 運営">運営</a>
-<a href="contact.html" data-modal-title="📩 連絡">連絡</a>
-<a href="disclaimer.html" data-modal-title="⚠️ 免責">免責</a>
-<a href="privacy.html" data-modal-title="🔒 法務">法務</a>
+<a href="/guide" data-modal-title="📖 活用ガイド">活用ガイド</a>
+<a href="/start" data-modal-title="🔰 始め方">始め方</a>
+<a href="/data-sources" data-modal-title="📊 データ">データ</a>
+<a href="/about" data-modal-title="ℹ️ 運営">運営</a>
+<a href="/contact" data-modal-title="📩 連絡">連絡</a>
+<a href="/disclaimer" data-modal-title="⚠️ 免責">免責</a>
+<a href="/privacy" data-modal-title="🔒 法務">法務</a>
 </nav>
 </div>
 <div class="footer-copyright">
