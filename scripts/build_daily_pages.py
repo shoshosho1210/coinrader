@@ -209,6 +209,39 @@ def fmt_num(x: Any, ndigits: int = 2) -> str:
         return ""
     return f"{v:.{ndigits}f}".rstrip("0").rstrip(".")
 
+def normalize_symbol_list(items: Any) -> List[str]:
+    """trending等を「銘柄シンボルの文字列リスト」に正規化する。
+    - ["BTC","ETH"] -> ["BTC","ETH"]
+    - [{"symbol":"btc","label":"BTC"}, ...] -> ["BTC", ...]
+    - None/その他 -> []
+    """
+    if not isinstance(items, list):
+        return []
+    out: List[str] = []
+    for it in items:
+        s = ""
+        if isinstance(it, str):
+            s = it
+        elif isinstance(it, dict):
+            # よくあるキーを優先順で拾う
+            for k in ("symbol", "label", "name", "id"):
+                v = it.get(k)
+                if isinstance(v, str) and v.strip():
+                    s = v
+                    break
+        if s:
+            out.append(s.strip().upper())
+    # 重複除去（順序維持）
+    seen = set()
+    uniq: List[str] = []
+    for s in out:
+        if s in seen:
+            continue
+        seen.add(s)
+        uniq.append(s)
+    return uniq
+
+
 def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
     """
     JSONに明示的な ai_judge が無い場合の簡易判定。
@@ -277,7 +310,14 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
     fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
     fgi_label = get_path(payload, "summary.fgi.label", default="")
     btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
-    ma_dist   = get_path(payload, "summary.technical.btc_ma_distance", default=get_path(payload, "trend", default=""))
+    ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
+                          default=get_path(payload, "summary.technical.ma_distance",
+                              default=get_path(payload, "btc_ma_distance",
+                                  default=get_path(payload, "ma_distance",
+                                      default=get_path(payload, "trend", default="")))))
+    # 旧フォーマットで trend が配列/辞書の場合があるため除外
+    if isinstance(ma_dist, (list, dict)):
+        ma_dist = ""
     trending  = get_path(payload, "summary.trending", default=[])
     top_gainer_symbol = get_path(payload, "summary.top_gainer.symbol", default="")
     top_gainer_change = get_path(payload, "summary.top_gainer.change", default="")
@@ -391,10 +431,16 @@ def main() -> None:
         # 指標抽出（summary.* を優先）
         fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
         btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
-        ma_dist   = get_path(payload, "summary.technical.btc_ma_distance", default=get_path(payload, "trend", default=""))
-        trending = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=[]))
-        if not isinstance(trending, list):
-            trending = []
+        ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
+                          default=get_path(payload, "summary.technical.ma_distance",
+                              default=get_path(payload, "btc_ma_distance",
+                                  default=get_path(payload, "ma_distance",
+                                      default=get_path(payload, "trend", default="")))))
+        # 旧フォーマットで trend が配列/辞書の場合があるため除外
+        if isinstance(ma_dist, (list, dict)):
+            ma_dist = ""
+        trending_raw = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=[]))
+        trending = normalize_symbol_list(trending_raw)
         top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default={}))
         if not isinstance(top_gainer, dict):
             top_gainer = {}
@@ -417,8 +463,8 @@ def main() -> None:
         # 表示用
         sent = fmt_num(fgi_value, 0) if fmt_num(fgi_value, 0) != "" else str(fgi_value)
         rsi  = fmt_num(btc_rsi, 2) if fmt_num(btc_rsi, 2) != "" else str(btc_rsi)
-        trend = fmt_num(ma_dist, 1) if fmt_num(ma_dist, 1) != "" else str(ma_dist)
-
+        trend_num = fmt_num(ma_dist, 1)
+        trend = trend_num if trend_num != "" else "—"
         # メタ情報
         title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
         desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
@@ -463,7 +509,7 @@ def main() -> None:
     # 一覧 index.html
     # - 新テンプレ: {{ROWS}} を想定（daily_index.html）
     # - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
-    pages_desc = list(reversed(pages))  # 最新→過去
+    pages_desc = sorted(pages, key=lambda p: p.get("ymd",""), reverse=True)  # 最新→過去
 
     def _fmt_meta(p: dict) -> str:
         parts = []
