@@ -9,12 +9,32 @@ CoinRader: data/daily/*.json から daily/ 配下のHTMLを自動生成します
 前提:
 - JSONファイル名: data/daily/20260204.json のように8桁日付
 - JSON内に必要キーが無い場合でも、落ちないようにフォールバックします。
+
+2026-02: JSON構造が
+  {
+    "summary": {
+      "date": "YYYY-MM-DD",
+      "fgi": {"value": 14, "label": "Extreme Fear"},
+      "technical": {"btc_rsi": 46.63, "btc_ma_distance": -11.6},
+      "trending": ["HYPE","TRIA","BTC"],
+      ...
+    },
+    ...
+  }
+のようなネストになったため、summary.* から値を抽出するように対応。
 """
 from __future__ import annotations
-import os, re, json, glob, datetime
+
+import os
+import re
+import json
+import glob
+import datetime
 from pathlib import Path
-import xml.etree.ElementTree as ET
-ROOT = Path(__file__).resolve().parents[1]  # repo root想定: scripts/ の1つ上
+from typing import Any, Dict, List, Optional
+
+# scripts/ の1つ上を repo root として想定
+ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data" / "daily"
 OUT_DIR  = ROOT / "daily"
 TEMPL_DIR = ROOT / "templates"
@@ -22,18 +42,8 @@ TEMPL_DIR = ROOT / "templates"
 SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
 TZ_NAME = "JST"
 
-def get_path(obj, path, default=None):
-    """
-    path: "summary.technical.btc_rsi" のようなドット区切り
-    """
-    cur = obj
-    for key in path.split("."):
-        if isinstance(cur, dict) and key in cur:
-            cur = cur[key]
-        else:
-            return default
-    return cur
 
+# ---------- utils ----------
 def read_text(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
@@ -41,222 +51,242 @@ def write_text(p: Path, s: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(s, encoding="utf-8")
 
-def load_json(p: Path) -> dict:
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+def escape_html(s: str) -> str:
+    return (s.replace("&", "&amp;")
+              .replace("<", "&lt;")
+              .replace(">", "&gt;")
+              .replace('"', "&quot;")
+              .replace("'", "&#39;"))
 
-def yyyymmdd_to_iso(yyyymmdd: str) -> str:
-    return f"{yyyymmdd[0:4]}-{yyyymmdd[4:6]}-{yyyymmdd[6:8]}"
-
-def build_jsonld(date_iso: str, canonical: str, title: str, desc: str) -> str:
-    # Article + Breadcrumb (最小)
-    obj = [
-      {
-        "@context":"https://schema.org",
-        "@type":"BreadcrumbList",
-        "itemListElement":[
-          {"@type":"ListItem","position":1,"name":"CoinRader","item":f"{SITE_ORIGIN}/"},
-          {"@type":"ListItem","position":2,"name":"Daily","item":f"{SITE_ORIGIN}/daily/"},
-          {"@type":"ListItem","position":3,"name":date_iso,"item":canonical},
-        ]
-      },
-      {
-        "@context":"https://schema.org",
-        "@type":"Article",
-        "headline": title,
-        "datePublished": date_iso,
-        "dateModified": date_iso,
-        "mainEntityOfPage": canonical,
-        "publisher": {"@type":"Organization","name":"CoinRader"},
-        "description": desc
-      }
-    ]
-    return json.dumps(obj, ensure_ascii=False)
-
-def safe_get(d: dict, *keys, default=""):
-    cur = d
-    for k in keys:
-        if isinstance(cur, dict) and k in cur:
-            cur = cur[k]
+def get_path(obj: Any, path: str, default: Any = "") -> Any:
+    """
+    dict のネストを "summary.technical.btc_rsi" のようなドット区切りで取得。
+    """
+    cur = obj
+    for key in path.split("."):
+        if isinstance(cur, dict) and key in cur:
+            cur = cur[key]
         else:
             return default
     return cur if cur is not None else default
 
-def build_reason_html(payload: dict) -> str:
-    # 可能なら JSON内の説明テキストを使い、無ければ数値から簡易生成
-    # （キー名は将来変わっても良いように、いくつか探す）
-    reasons = []
+def to_float(x: Any) -> Optional[float]:
+    try:
+        if x is None:
+            return None
+        if isinstance(x, (int, float)):
+            return float(x)
+        s = str(x).strip()
+        if s == "":
+            return None
+        return float(s)
+    except Exception:
+        return None
+
+def fmt_num(x: Any, ndigits: int = 2) -> str:
+    v = to_float(x)
+    if v is None:
+        return ""
+    return f"{v:.{ndigits}f}".rstrip("0").rstrip(".")
+
+def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
+    """
+    JSONに明示的な ai_judge が無い場合の簡易判定。
+    - BULL / BEAR / WAIT を返す（テンプレ側のスタイル判定に使いやすい）
+    """
+    fgi = to_float(fgi_value)
+    rsi = to_float(btc_rsi)
+    mad = to_float(ma_dist)
+    if fgi is None or rsi is None or mad is None:
+        return "WAIT"
+
+    # 恐怖＋トレンド弱い -> 弱気寄り（ただし売られ過ぎならWAIT寄り）
+    if fgi <= 25 and mad <= -5:
+        if rsi <= 30:
+            return "WAIT"  # 売られ過ぎで即断を避ける
+        return "BEAR"
+
+    # 強欲＋トレンド強い -> 強気寄り
+    if fgi >= 75 and mad >= 5:
+        if rsi >= 70:
+            return "WAIT"  # 過熱で即断を避ける
+        return "BULL"
+
+    # RSIで補助
+    if rsi <= 30:
+        return "WAIT"
+    if rsi >= 70:
+        return "WAIT"
+
+    # トレンドで緩く
+    if mad >= 3:
+        return "BULL"
+    if mad <= -3:
+        return "BEAR"
+    return "WAIT"
+
+
+# ---------- reason builder ----------
+def build_reason_html(payload: Dict[str, Any]) -> str:
+    """
+    可能なら JSON内の説明テキストを使い、無ければ数値から簡易生成。
+    """
+    reasons: List[str] = []
+
+    # 将来、理由の配列/テキストが追加された時に拾えるように候補を複数
     for path in [
-        ("ai","reasons"),
-        ("ai","reason_lines"),
-        ("ai","bullets"),
-        ("insight","reasons"),
+        "ai.reasons",
+        "ai.reason_lines",
+        "ai.reason",
+        "reasons",
+        "reason_lines",
+        "reason",
+        "summary.reason_lines",
+        "summary.reason",
     ]:
-        v = safe_get(payload, *path, default=None)
+        v = get_path(payload, path, default=None)
         if isinstance(v, list) and v:
-            reasons = [str(x) for x in v if str(x).strip()]
+            reasons = [str(x).strip() for x in v if str(x).strip()]
+            break
+        if isinstance(v, str) and v.strip():
+            # 1文を1行に
+            reasons = [v.strip()]
             break
 
+    # summary.* から指標を取得
+    fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
+    fgi_label = get_path(payload, "summary.fgi.label", default="")
+    btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
+    ma_dist   = get_path(payload, "summary.technical.btc_ma_distance", default=get_path(payload, "trend", default=""))
+    trending  = get_path(payload, "summary.trending", default=[])
+    top_gainer_symbol = get_path(payload, "summary.top_gainer.symbol", default="")
+    top_gainer_change = get_path(payload, "summary.top_gainer.change", default="")
+
     if not reasons:
-        sent = safe_get(payload, "sentiment", default=safe_get(payload,"fear_greed",default=""))
-        rsi  = safe_get(payload, "btc_rsi", default=safe_get(payload,"rsi",default=""))
-        trend = safe_get(payload, "trend", default="")
-        # 最低限の“読める文章”
-        if sent != "":
-            try:
-                s = float(sent)
-                if s < 25: reasons.append(f"Fear & Greed が {sent} で極端に低く、市場心理は悲観に傾いています。")
-                elif s < 45: reasons.append(f"Fear & Greed が {sent} で弱気寄りです。")
-                else: reasons.append(f"Fear & Greed が {sent} で中立〜強気寄りです。")
-            except: pass
-        if rsi != "":
-            try:
-                x = float(rsi)
-                if x < 30: reasons.append(f"BTC RSI が {rsi} で売られすぎ圏です。")
-                elif x > 70: reasons.append(f"BTC RSI が {rsi} で買われすぎ圏です。")
-                else: reasons.append(f"BTC RSI は {rsi} で中立圏です。")
-            except: pass
-        if trend != "":
-            reasons.append(f"トレンド指標は「{trend}」です。")
-        if not reasons:
-            reasons.append("日次データから総合判断を生成しています。")
+        # Fear & Greed
+        fgi = to_float(fgi_value)
+        if fgi is not None:
+            if fgi < 25:
+                label = fgi_label or "Extreme Fear"
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で、市場心理は強い悲観に寄っています。")
+            elif fgi < 45:
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)} で弱気寄りです。")
+            elif fgi < 55:
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)} で中立付近です。")
+            elif fgi < 75:
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)} で強気寄りです。")
+            else:
+                label = fgi_label or "Extreme Greed"
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で過熱感があります。")
 
-    return "\n".join([f"<p>{escape_html(line)}</p>" for line in reasons])
+        # RSI
+        rsi = to_float(btc_rsi)
+        if rsi is not None:
+            if rsi < 30:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で売られ過ぎ水準です。")
+            elif rsi < 45:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で弱めです。")
+            elif rsi < 55:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で中立付近です。")
+            elif rsi < 70:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で堅調です。")
+            else:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で買われ過ぎ水準です。")
 
-def escape_html(s: str) -> str:
-    return (s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-             .replace('"',"&quot;").replace("'","&#39;"))
+        # MA distance (trend proxy)
+        mad = to_float(ma_dist)
+        if mad is not None:
+            if mad <= -8:
+                reasons.append(f"MA距離が {fmt_num(mad)}% と大きくマイナスで、下方向の圧力が強い状態です。")
+            elif mad <= -3:
+                reasons.append(f"MA距離が {fmt_num(mad)}% で、弱含みです。")
+            elif mad < 3:
+                reasons.append(f"MA距離が {fmt_num(mad)}% で、方向感は限定的です。")
+            elif mad < 8:
+                reasons.append(f"MA距離が {fmt_num(mad)}% で、上向きの勢いがあります。")
+            else:
+                reasons.append(f"MA距離が {fmt_num(mad)}% と大きくプラスで、上昇が加速しています。")
 
-def _strip_ns(tag: str) -> str:
-    return tag.split("}", 1)[-1] if "}" in tag else tag
+        # Trending
+        if isinstance(trending, list) and trending:
+            top3 = [str(x).strip().upper() for x in trending[:3] if str(x).strip()]
+            if top3:
+                reasons.append(f"注目トレンド: {' / '.join(top3)}")
 
-def read_existing_sitemap(path: Path) -> list[dict]:
-    """
-    既存の sitemap.xml があれば読み込み、url要素を dict として返します。
-    - daily配下は後で生成し直すので、ここでは「そのまま返す」だけ
-    """
-    if not path.exists():
-        return []
-    try:
-        tree = ET.parse(path)
-        root = tree.getroot()
-    except Exception:
-        return []
+        # Top gainer
+        if str(top_gainer_symbol).strip():
+            ch = to_float(top_gainer_change)
+            if ch is not None:
+                reasons.append(f"上昇トップ: {str(top_gainer_symbol).upper()}（+{fmt_num(ch)}%）")
 
-    urls: list[dict] = []
-    for url_el in list(root):
-        if _strip_ns(url_el.tag) != "url":
-            continue
-        item = {"loc": None, "lastmod": None, "changefreq": None, "priority": None}
-        for child in list(url_el):
-            k = _strip_ns(child.tag)
-            if k in item:
-                item[k] = (child.text or "").strip()
-        if item["loc"]:
-            urls.append(item)
-    return urls
+    # HTML
+    li = "\n".join([f"<li>{escape_html(x)}</li>" for x in reasons[:6]])
+    return f"<ul class='why-list'>{li}</ul>" if li else ""
 
-def write_sitemap(dated: list[str], out_path: Path) -> None:
-    """
-    - 既存 sitemap.xml の「daily以外」を可能な限り維持
-    - daily/ と daily/latest.html と daily/YYYYMMDD.html（直近N日）を追記/更新
-    """
-    today_iso = datetime.date.today().isoformat()
-    existing = read_existing_sitemap(out_path)
 
-    # 既存のURLを維持（daily以外）
-    kept = []
-    for u in existing:
-        loc = (u.get("loc") or "").rstrip("/")
-        # daily は生成し直す
-        if "/daily" in loc:
-            continue
-        kept.append(u)
-
-    # latest（日次の最新日付があればそれを lastmod に）
-    latest_ymd = dated[-1] if dated else None
-    latest_iso = yyyymmdd_to_iso(latest_ymd) if latest_ymd else today_iso
-
-    # 日次URLは多すぎるとクロールが重くなるので、直近N日だけ
-    max_days = int(os.environ.get("CR_SITEMAP_DAILY_DAYS", "90"))
-    last_n = dated[-max_days:] if len(dated) > max_days else dated
-
-    daily_entries = [
-        {"loc": f"{SITE_ORIGIN}/daily/", "lastmod": latest_iso, "changefreq": "daily", "priority": "0.9"},
-    ]
-    for ymd in reversed(last_n):
-        daily_entries.append({
-            "loc": f"{SITE_ORIGIN}/daily/{ymd}.html",
-            "lastmod": yyyymmdd_to_iso(ymd),
-            "changefreq": "daily",
-            "priority": "0.8",
-        })
-
-    # 既存が空なら、最低限トップも入れておく（安全策）
-    if not kept:
-        kept = [{"loc": f"{SITE_ORIGIN}/", "lastmod": today_iso, "changefreq": "daily", "priority": "1.0"}]
-
-    urls = kept + daily_entries
-
-    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for u in urls:
-        loc = u.get("loc")
-        if not loc:
-            continue
-        lines.append("  <url>")
-        lines.append(f"    <loc>{loc}</loc>")
-        # lastmod が無い既存URLは today で埋める（任意）
-        lastmod = u.get("lastmod") or today_iso
-        lines.append(f"    <lastmod>{lastmod}</lastmod>")
-        if u.get("changefreq"):
-            lines.append(f"    <changefreq>{u['changefreq']}</changefreq>")
-        if u.get("priority"):
-            lines.append(f"    <priority>{u['priority']}</priority>")
-        lines.append("  </url>")
-    lines.append("</urlset>")
-    write_text(out_path, "\n".join(lines) + "\n")
-
-def main():
+# ---------- main ----------
+def main() -> None:
     tmpl = read_text(TEMPL_DIR / "daily_template.html")
     tmpl_index = read_text(TEMPL_DIR / "daily_index_template.html")
     tmpl_latest = read_text(TEMPL_DIR / "latest_template.html")
 
     files = sorted(glob.glob(str(DATA_DIR / "*.json")))
-    dated = []
+    dated: List[str] = []
     for f in files:
         name = Path(f).stem
         if re.fullmatch(r"\d{8}", name):
             dated.append(name)
-
     dated = sorted(set(dated))
+    if not dated:
+        raise SystemExit(f"No daily json files found in: {DATA_DIR}")
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    rows = []
-    latest = dated[-1] if dated else None
+    # 最新日付
+    latest_ymd = dated[-1]
 
+    # 各日付ページ生成
+    pages: List[Dict[str, str]] = []
     for ymd in reversed(dated):
-        p = DATA_DIR / f"{ymd}.json"
-        payload = load_json(p)
+        json_path = DATA_DIR / f"{ymd}.json"
+        try:
+            payload = json.loads(json_path.read_text(encoding="utf-8"))
+        except Exception:
+            payload = {}
 
-        date_iso = yyyymmdd_to_iso(ymd)
-        canonical = f"{SITE_ORIGIN}/daily/{ymd}.html"
+        # YYYYMMDD -> YYYY-MM-DD
+        date_iso = get_path(payload, "summary.date", default="")
+        if not date_iso:
+            try:
+                date_iso = datetime.datetime.strptime(ymd, "%Y%m%d").strftime("%Y-%m-%d")
+            except Exception:
+                date_iso = ymd
 
-        # 値の取り出し（将来キーが変わっても落ちないように）
-        judge = safe_get(payload, "ai_judge", default=safe_get(payload,"ai", "judge", default="WAIT"))
-        sent = safe_get(payload, "sentiment", default=safe_get(payload,"fear_greed", default=""))
-        rsi  = safe_get(payload, "btc_rsi", default=safe_get(payload,"rsi", default=""))
-        trend = safe_get(payload, "trend", default=safe_get(payload,"ai","trend", default=""))
+        # 指標抽出（summary.* を優先）
+        fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
+        btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
+        ma_dist   = get_path(payload, "summary.technical.btc_ma_distance", default=get_path(payload, "trend", default=""))
 
-        updated_at = safe_get(payload, "updated_at", default=safe_get(payload,"timestamp", default=""))
-        if not updated_at:
+        # judge
+        judge = get_path(payload, "ai_judge", default=get_path(payload, "ai.judge", default=""))
+        if not str(judge).strip():
+            judge = compute_judge(fgi_value, btc_rsi, ma_dist)
+
+        # 更新時刻（無ければ毎朝9時）
+        updated_at = get_path(payload, "updated_at", default=get_path(payload, "timestamp", default=""))
+        if not str(updated_at).strip():
             updated_at = f"{date_iso} 09:00"
 
-        title = f"BTC AI分析（{date_iso}） | CoinRader"
-        desc = f"{date_iso}のCoinRader日次AIレポート。Fear & Greed={sent}、BTC RSI={rsi}、Trend={trend} をもとに総合判断を提示します。".strip()
-        jsonld = build_jsonld(date_iso, canonical, title, desc)
+        # 表示用
+        sent = fmt_num(fgi_value, 0) if fmt_num(fgi_value, 0) != "" else str(fgi_value)
+        rsi  = fmt_num(btc_rsi, 2) if fmt_num(btc_rsi, 2) != "" else str(btc_rsi)
+        trend = fmt_num(ma_dist, 1) if fmt_num(ma_dist, 1) != "" else str(ma_dist)
+
+        # メタ情報
+        title = f"BTC AI分析（{date_iso}）"
+        desc  = f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
+        canonical = f"{SITE_ORIGIN}/daily/{ymd}.html"
+
         why_html = build_reason_html(payload)
 
         html = tmpl
@@ -274,33 +304,39 @@ def main():
             "{{BTC_RSI}}": escape_html(str(rsi)),
             "{{TREND}}": escape_html(str(trend)),
             "{{WHY_HTML}}": why_html,
-            "{{JSONLD}}": jsonld,
         }
-        for k,v in repl.items():
+        for k, v in repl.items():
             html = html.replace(k, v)
 
-        out_path = OUT_DIR / f"{ymd}.html"
-        write_text(out_path, html)
+        out_file = OUT_DIR / f"{ymd}.html"
+        write_text(out_file, html)
 
-        rows.append(
-            f'<div class="row"><div><div class="date"><a href="/daily/{ymd}.html">{date_iso}</a></div>'
-            f'<div class="meta">AI JUDGE: {escape_html(str(judge))}</div></div>'
-            f'<div class="meta">F&G {escape_html(str(sent))} / RSI {escape_html(str(rsi))}</div></div>'
-        )
+        pages.append({
+            "ymd": ymd,
+            "date_iso": date_iso,
+            "title": title,
+            "href": f"{ymd}.html",
+        })
 
-    # index.html
-    index_html = tmpl_index.replace("{{ROWS}}", "\n".join(rows) if rows else '<div class="row"><div class="date">まだ日次データがありません</div></div>')
+    # 一覧 index.html
+    # テンプレ側で {{ITEMS}} を期待している想定（既存実装に合わせる）
+    items_html = "\n".join([
+        f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
+        for p in pages
+    ])
+    index_html = tmpl_index.replace("{{ITEMS}}", items_html)
+    # 最新ページへの導線が必要ならテンプレ側で {{LATEST_HREF}} を利用可能に
+    index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
     write_text(OUT_DIR / "index.html", index_html)
 
-    # latest.html
-    latest_url = f"/daily/{latest}.html" if latest else "/"
-    latest_html = tmpl_latest.replace("{{LATEST_URL}}", latest_url)
+    # latest.html（最新ページへリダイレクト/案内）
+    latest_target = f"{latest_ymd}.html"
+    latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
+    latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
     write_text(OUT_DIR / "latest.html", latest_html)
 
-    # sitemap.xml（リポ直下）を更新（dailyを追記/更新）
-    write_sitemap(dated, ROOT / "sitemap.xml")
+    print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
-    print(f"[ok] generated: {len(dated)} pages, latest={latest}")
 
 if __name__ == "__main__":
     main()
