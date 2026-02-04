@@ -22,6 +22,18 @@ TEMPL_DIR = ROOT / "templates"
 SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
 TZ_NAME = "JST"
 
+def get_path(obj, path, default=None):
+    """
+    path: "summary.technical.btc_rsi" のようなドット区切り
+    """
+    cur = obj
+    for key in path.split("."):
+        if isinstance(cur, dict) and key in cur:
+            cur = cur[key]
+        else:
+            return default
+    return cur
+
 def read_text(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
