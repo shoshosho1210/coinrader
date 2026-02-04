@@ -62,18 +62,17 @@ def determine_rsi_status(rsi):
     if rsi >= 60: return "やや買われすぎ"
     return "中立圏"
 
-def generate_market_topic(summary, current_rsi=None):
-    # 計算された最新のRSIがあれば優先使用
-    btc_rsi = current_rsi if current_rsi is not None else summary.get('technical', {}).get('btc_rsi')
-    
-    btc_dom = summary.get('btc_dominance', 0)
-    top_gainer = summary.get('top_gainer', {})
-    
-    if btc_rsi is not None and btc_rsi <= 25: return "パニック売り一巡、底打ち反転を模索中"
-    if btc_dom < 45: return "アルトへの資金循環。セクター別物色の兆候"
-    if top_gainer.get('change', 0) > 15:
-        return f"特定アルト({top_gainer.get('symbol', '').upper()})への強い買い需要"
-    return "主要指標は均衡、次のトレンド待ちの局面"
+def generate_market_topic(summary, btc_chg=None):
+    fgi_value = summary.get('fgi', {}).get('value')
+    is_bear = (fgi_value is not None and fgi_value <= 30) or (btc_chg is not None and btc_chg <= -3)
+    return "市場局面: リスクオフ（警戒）" if is_bear else "市場局面: リスクオン（選別）"
+
+def determine_ai_status(summary, btc_chg=None):
+    fgi_value = summary.get('fgi', {}).get('value')
+    if fgi_value is None and btc_chg is None:
+        return "分析: 中立", "neutral"
+    is_bear = (fgi_value is not None and fgi_value <= 30) or (btc_chg is not None and btc_chg <= -3)
+    return ("分析: 弱気 (BEAR)", "bear") if is_bear else ("分析: 強気 (BULL)", "bull")
 
 def format_price(price):
     if price is None: return "-"
@@ -92,7 +91,7 @@ def generate_sns_assets():
     git_force_tag = "\n"
     
     # JSON読み込み
-    target_files = [f"data/daily/{file_date}.json", "data/daily/latest.json"]
+    target_files = [f"data/daily/{file_date}.json", "data/latest.json"]
     json_path = next((p for p in target_files if os.path.exists(p)), None)
 
     if not json_path:
@@ -123,7 +122,7 @@ def generate_sns_assets():
                 spark_prices = raw_spark
     
     # 2. なければ latest.json を強制的に見に行く
-    fallback_path = "data/daily/latest.json"
+    fallback_path = "data/latest.json"
     if not spark_prices and json_path != fallback_path:
         if os.path.exists(fallback_path):
             print(f"⚠️ {os.path.basename(json_path)} にデータがないため、{fallback_path} を確認します...")
@@ -164,13 +163,13 @@ def generate_sns_assets():
     fgi = summary.get("fgi", {"value": 50, "label": "Neutral"})
     chg = btc.get('price_change_percentage_24h', 0) if btc else 0
     
-    ai_status_msg = "分析: 楽観" if chg > 3 else ("分析: 悲観" if chg < -3 else "分析: 中立")
+    ai_status_msg, _ = determine_ai_status(summary, chg)
     icon = "📈" if chg > 0 else "📉"
     trending_str = ", ".join(summary.get("trending", []))
     top_g = summary.get("top_gainer", {"symbol": "-", "change": 0})
     
     rsi_note = determine_rsi_status(btc_rsi)
-    market_topic = generate_market_topic(summary, btc_rsi) # 最新RSIを渡す
+    market_topic = generate_market_topic(summary, chg)
 
     # --- ① SNS投稿用テキスト (short) ---
     short_post = (
