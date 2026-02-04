@@ -69,7 +69,11 @@
 .pill-ai.wait{ border-color:rgba(234,179,8,.35); }
 .pill-hot{ border-color:rgba(56,189,248,.35); }
 .pill-up{ border-color:rgba(167,139,250,.35); }
-.pill-reason{ opacity:.95; }
+.pill-reason{
+  max-width: 520px;   /* PC */
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
 @media (max-width: 520px){
   .pill{ font-size:11px; padding:6px 8px; }
