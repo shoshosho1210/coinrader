@@ -383,6 +383,76 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
     return f"<ul class='why-list'>{li}</ul>" if li else ""
 
 
+def shorten_one_line(s: str, max_len: int = 70) -> str:
+    s = (s or "").strip()
+    if not s:
+        return ""
+    s = " ".join(s.split())
+    return (s[:max_len].rstrip() + "…") if len(s) > max_len else s
+
+
+def build_reason_1line(payload: Dict[str, Any]) -> str:
+    """daily/index.html 用の「理由1行要約」"""
+    reasons: List[str] = []
+
+    for path in [
+        "ai.reasons",
+        "ai.reason_lines",
+        "ai.reason",
+        "reasons",
+        "reason_lines",
+        "reason",
+        "summary.reason_lines",
+        "summary.reason",
+    ]:
+        v = get_path(payload, path, default=None)
+        if isinstance(v, list) and v:
+            reasons = [str(x).strip() for x in v if str(x).strip()]
+            break
+        if isinstance(v, str) and v.strip():
+            reasons = [v.strip()]
+            break
+
+    if not reasons:
+        fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
+        fgi_label = get_path(payload, "summary.fgi.label", default="")
+        btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
+        ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
+                              default=get_path(payload, "summary.technical.ma_distance",
+                                  default=get_path(payload, "btc_ma_distance",
+                                      default=get_path(payload, "ma_distance", default=""))))
+        if isinstance(ma_dist, (list, dict)):
+            ma_dist = ""
+
+        fgi = to_float(fgi_value)
+        rsi = to_float(btc_rsi)
+        mad = to_float(ma_dist)
+
+        # クリック率に効きやすい順に優先（恐怖/過熱 → RSI → MA距離）
+        if fgi is not None:
+            if fgi < 25:
+                label = fgi_label or "Extreme Fear"
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で強い悲観。")
+            elif fgi >= 75:
+                label = fgi_label or "Extreme Greed"
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で過熱気味。")
+
+        if not reasons and rsi is not None:
+            if rsi < 30:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で売られ過ぎ水準。")
+            elif rsi >= 70:
+                reasons.append(f"BTC RSI が {fmt_num(rsi)} で買われ過ぎ水準。")
+
+        if not reasons and mad is not None:
+            if mad <= -3:
+                reasons.append(f"MA距離が {fmt_num(mad)}% で弱含み。")
+            elif mad >= 3:
+                reasons.append(f"MA距離が {fmt_num(mad)}% で上向き。")
+
+    return shorten_one_line(reasons[0] if reasons else "")
+
+
+
 # ---------- main ----------
 def main() -> None:
     tmpl = read_text(TEMPL_DIR / "daily_template.html")
@@ -496,6 +566,22 @@ def main() -> None:
         out_file = OUT_DIR / f"{ymd}.html"
         write_text(out_file, html)
 
+        # 一覧で使う短い表示用（無い日は空にしておく）
+        trend_top3 = "/".join(trending[:3]) if trending else ""
+
+        top_gainer_label = ""
+        if isinstance(top_gainer, dict) and str(top_gainer.get("symbol","")).strip():
+            sym = str(top_gainer.get("symbol","")).strip().upper()
+            ch = top_gainer.get("change")
+            ch_s = ""
+            try:
+                ch_s = f"{float(ch):.2f}".rstrip("0").rstrip(".") if ch is not None else ""
+            except Exception:
+                ch_s = str(ch).strip() if ch is not None else ""
+            top_gainer_label = f"{sym} +{ch_s}%" if ch_s else sym
+
+        reason_1line = build_reason_1line(payload)
+
         pages.append({
             "ymd": ymd,
             "date_iso": date_iso,
@@ -505,6 +591,9 @@ def main() -> None:
             "fgi": sent,
             "btc_rsi": rsi,
             "trend": trend,
+            "trend_top3": trend_top3,
+            "top_gainer": top_gainer_label,
+            "reason_1line": reason_1line,
         })
 
     # 一覧 index.html
@@ -522,17 +611,26 @@ def main() -> None:
             parts.append(f"RSI {p['btc_rsi']}")
         if p.get("trend") is not None:
             parts.append(f"Trend {p['trend']}")
+
+        # クリック誘導の追記（無い日は出さない）
+        if p.get("trend_top3"):
+            parts.append(f"注目 {p['trend_top3']}")
+        if p.get("top_gainer"):
+            parts.append(f"上昇 {p['top_gainer']}")
+        if p.get("reason_1line"):
+            parts.append(f"要約 {p['reason_1line']}")
+
         return " · ".join(parts)
 
     rows_html = "\n".join([
-        "<div class='row'>"
-        "<div>"
-        f"<div class='date'><a href='{escape_html(p['href'])}'>{escape_html(p['date_iso'])}</a></div>"
-        f"<div class='meta'>{escape_html(_fmt_meta(p))}</div>"
-        "</div>"
-        "</div>"
-        for p in pages_desc
-    ])
+            "<div class='row'>"
+            f"<a class='rowlink' href='{escape_html(p['href'])}'>"
+            f"<div class='date'>{escape_html(p['date_iso'])}</div>"
+            f"<div class='meta'>{escape_html(_fmt_meta(p))}</div>"
+            "</a>"
+            "</div>"
+            for p in pages_desc
+        ])
 
     # 旧テンプレ用の簡易liも残す（互換）
     items_html = "\n".join([
