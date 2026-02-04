@@ -592,7 +592,13 @@
 
   /* sparkline (Chart.js) */
   .sparkline{width:100% !important; height:44px !important; display:block; margin-top:8px;}
-  .grid .card canvas.sparkline{height:44px !important; min-height:44px; flex:0 0 44px;}
+  
+
+/* Sparkline sizing: keep tables compact, give cards more vertical room */
+.card .sparkline{height:72px !important; min-height:72px !important; margin-top:10px !important;}
+.rank-table .sparkline, .rank-table canvas.sparkline{height:35px !important; min-height:35px !important; margin-top:0 !important;}
+
+.grid .card canvas.sparkline{height:44px !important; min-height:44px; flex:0 0 44px;}
   .card canvas.sparkline{max-width:100%;}
 
 
@@ -4494,6 +4500,20 @@ white-space:nowrap; word-break:keep-all; }
 </section>
 
 </section>
+
+<section id="sec-trend">
+  <div class="section-header">
+    <div>
+      <div class="section-title">トレンド TOP5</div>
+      <div class="section-sub">注目度の高い銘柄TOP5（CoinGecko）／カード内チャート：過去7日（7d）</div>
+    </div>
+    <div class="section-actions">
+      <a class="linkbtn" data-ga="ext_coingecko_trending" data-partner="coingecko" data-placement="index_trend_header" data-pr="0" href="https://www.coingecko.com/ja/highlights/trending-crypto" rel="noopener" target="_blank">もっと見る</a>
+    </div>
+  </div>
+  <div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>
+</section>
+
 <section id="sec-gainers">
 <div class="section-header">
 <div>
@@ -7014,21 +7034,34 @@ function makeLineChart(canvasId, labels, series, opts){
 
       let mainMetricHtml = '';
       let volBadge = '';
+
       if (mode === 'mcap') {
         mainMetricHtml = `<span class="meta-val">Cap ${yenLarge(coin.market_cap)}</span>`;
       } else {
         const volVal = (typeof coin.total_volume === 'number') ? yenLarge(coin.total_volume) : '-';
-        // 回転率を前に出す（ある場合は main / ない場合はVolをmain）
-        if (Number.isFinite(turnoverRate)) {
-          mainMetricHtml = `<span class="meta-val">回転率 ${turnoverRate.toFixed(1)}%</span>`;
-          volBadge = `<span class="meta-badge" title="24h出来高">Vol ${volVal}</span>`;
-        } else {
+
+        if (sectionKey === 'volume') {
+          // 出来高TOP: Volを主、回転率を補助
           mainMetricHtml = `<span class="meta-val">Vol ${volVal}</span>`;
+          if (Number.isFinite(turnoverRate)) {
+            volBadge = `<span class="meta-badge" title="24h出来高÷時価総額：市場の活発さ">回転率 ${turnoverRate.toFixed(1)}%</span>`;
+          }
+        } else {
+          // それ以外: 回転率を主（ある場合）、Volを補助（trendはVol非表示）
+          if (Number.isFinite(turnoverRate)) {
+            mainMetricHtml = `<span class="meta-val">回転率 ${turnoverRate.toFixed(1)}%</span>`;
+            if (sectionKey !== 'trend') {
+              volBadge = `<span class="meta-badge" title="24h出来高">Vol ${volVal}</span>`;
+            }
+          } else {
+            mainMetricHtml = `<span class="meta-val">Vol ${volVal}</span>`;
+          }
         }
       }
 
-      const chartBadge = `<span class="meta-badge" title="カード内チャートの期間">Chart ${chartIs24h ? '24h' : '7d'}</span>`;
-      const kpiLineHtml = `<div class="meta-row" style="flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:6px;">${mainMetricHtml} ${volBadge} ${turnoverBadge} ${chartBadge} ${athBadge}</div>`;
+      // KPIは1行に圧縮（チャート縦幅を確保）
+      const kpiLineHtml = `<div class="meta-row">${mainMetricHtml}${volBadge ? ' ' + volBadge : ''}</div>`;
+
       const canvasId = `sp_${sectionKey}_${(coin.id || coin.symbol || idx)}`;
 
       // HTML生成（画像最適化入り）
