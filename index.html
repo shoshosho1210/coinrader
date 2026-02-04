@@ -4618,6 +4618,54 @@ html, body{
     line-height: 1.15;
   }
 
+
+/* ===== v88: visual hierarchy polish (no logic changes) ===== */
+:root{
+  --txt-strong: rgba(248,250,252,.98);
+  --txt-main:   rgba(226,232,240,.92);
+  --txt-muted:  rgba(148,163,184,.72);
+  --txt-faint:  rgba(148,163,184,.58);
+}
+
+/* Labels / auxiliary text */
+.kpi-label,
+.pill-label,
+.muted{
+  color: var(--txt-muted) !important;
+  opacity: 1 !important; /* avoid stacking opacity */
+}
+
+/* Primary numbers */
+.kpi-value{
+  color: var(--txt-strong) !important;
+  font-weight: 800 !important;
+  letter-spacing: .2px;
+  font-size: 17px; /* subtle lift */
+}
+
+/* Secondary numbers (pills / small KPIs) */
+.pill-value{
+  color: var(--txt-strong) !important;
+  font-weight: 800 !important;
+  letter-spacing: .15px;
+}
+
+/* Keep pills crisp but not loud */
+.pill{
+  border-color: rgba(148,163,184,.26) !important;
+  background: rgba(17,24,39,.86) !important;
+}
+
+/* Section titles slightly softer than pure white */
+.section-title{
+  color: var(--txt-main) !important;
+}
+
+/* Reduce visual noise of micro labels inside cards if present */
+.kpi .sub, .kpi .unit, .kpi .hint, .kpi .small, .kpi .desc{
+  color: var(--txt-faint) !important;
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
