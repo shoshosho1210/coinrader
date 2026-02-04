@@ -7816,7 +7816,7 @@ async function updateAiInsight() {
     };
 
     const formattedComparison = highlightKeywords(comparisonText || "市場構造は緩やかな変化の中にあります。");
-    const const compactHtml = (s) => String(s || '')
+    const compactHtml = (s) => String(s || '')
         .replace(/\n+/g, ' ')
         .replace(/\s{2,}/g, ' ')
         .replace(/<br\s*\/?>\s*(<br\s*\/?>\s*)+/gi, '<br>')
