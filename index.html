@@ -1336,7 +1336,7 @@
     margin: 10px 0 16px;
     padding: 16px 20px;
     min-height: 280px !important;
-    display: flex,
+    display: flex;
     flex-direction: column;
     width: 100%;
     position: relative;
@@ -4281,6 +4281,49 @@ white-space:nowrap; word-break:keep-all; }
   .summary-card-note-inline{
     font-size: 10px !important;
   }
+}
+
+
+/* ===== FINAL OVERRIDES (v83 UI polish) ===== */
+:root{
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+/* Safe-area aware fixed header + body offset */
+body{
+  padding-top: calc(var(--hdr-h) + var(--safe-top));
+  padding-bottom: var(--safe-bot);
+}
+.appHeader{
+  top: var(--safe-top);
+}
+
+/* Touch ergonomics */
+.iconBtn,
+.info-close{
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card,
+.kpi-card,
+.tile,
+.overview-card,
+.market-card{
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Subtle press feedback on touch (kept gentle to avoid layout shift) */
+.card:active,
+.kpi-card:active,
+.tile:active,
+.overview-card:active,
+.market-card:active,
+button:active,
+a:active{
+  transform: translateY(1px) scale(0.99);
 }
 
 </style>
