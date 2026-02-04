@@ -58,6 +58,25 @@ def escape_html(s: str) -> str:
               .replace('"', "&quot;")
               .replace("'", "&#39;"))
 
+
+def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -> str:
+    # 直近n日（現在日を含む）へのリンクチップを生成
+    if current_ymd not in dated_all:
+        return ""
+    idx = dated_all.index(current_ymd)
+    slice_ymd = list(reversed(dated_all[max(0, idx - (n - 1)) : idx + 1]))
+    parts = []
+    for ymd in slice_ymd:
+        mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
+        label = "今日" if ymd == current_ymd else mmdd
+        href = f"/daily/{ymd}.html"
+        parts.append(f"<a class='chip' href='{href}'><small>{mmdd}</small>{escape_html(label)}</a>")
+    parts.append("<a class='chip' href='/daily/'><small>LIST</small>一覧</a>")
+    parts.append("<a class='chip' href='/daily/latest.html'><small>NEW</small>最新</a>")
+    return "
+      ".join(parts)
+
+
 def get_path(obj: Any, path: str, default: Any = "") -> Any:
     """
     dict のネストを "summary.technical.btc_rsi" のようなドット区切りで取得。
@@ -262,6 +281,8 @@ def main() -> None:
             except Exception:
                 date_iso = ymd
 
+        recent_days_html = build_recent_days_html(dated, ymd, n=7)
+
         # 指標抽出（summary.* を優先）
         fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
         btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
@@ -304,6 +325,7 @@ def main() -> None:
             "{{BTC_RSI}}": escape_html(str(rsi)),
             "{{TREND}}": escape_html(str(trend)),
             "{{WHY_HTML}}": why_html,
+            "{{RECENT_DAYS_HTML}}": recent_days_html,
         }
         for k, v in repl.items():
             html = html.replace(k, v)
