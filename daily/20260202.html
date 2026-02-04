@@ -38,6 +38,11 @@
     .faq .a{color:var(--muted);margin-top:6px;line-height:1.7}
     footer{margin-top:24px;color:var(--muted);font-size:12px}
     code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:8px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);font-size:12px;color:var(--fg)}
+    .chip small{color:var(--muted);font-weight:700;letter-spacing:.2px}
+    .chip:hover{text-decoration:none;filter:brightness(1.1)}
+
   </style>
   <script type="application/ld+json">
   {{JSONLD}}
@@ -52,6 +57,10 @@
 
     <div class="h1">BTC AI分析（2026-02-02）</div>
     <div class="meta">更新: 2026-02-02 09:00（JST）・このページは日次データから自動生成されています。</div>
+
+    <div class="chips">
+      {{RECENT_DAYS_HTML}}
+    </div>
 
     <div class="grid">
       <div class="card">
@@ -88,8 +97,8 @@
         <div class="badge">NAV</div>
         <div style="margin-top:10px;line-height:1.8">
           <div>・<a href="/">ダッシュボードへ</a></div>
-          <div>・<a href="/rankings/trending">トレンド</a>（作成予定）</div>
-          <div>・<a href="/indicators/rsi">RSIとは</a>（作成予定）</div>
+          <div>・<a href="/guide#trend">トレンドとは</a></div>
+          <div>・<a href="/guide#rsi">RSIとは</a></div>
         </div>
       </div>
     </div>
