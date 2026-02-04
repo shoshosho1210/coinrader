@@ -18,6 +18,44 @@
     .row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
     .date{font-weight:800}
     .meta{color:var(--muted);font-size:12px}
+/* 行全体をカード化 */
+.rowlink{
+  display:block;
+  padding:14px 12px;
+  border-radius:12px;
+  text-decoration:none;
+}
+.rowlink:hover{ background:rgba(255,255,255,.06); }
+
+/* 日付＋チップ */
+.rowlink .date{ font-weight:700; margin-bottom:8px; }
+.rowlink .meta{ display:flex; flex-wrap:wrap; gap:8px; line-height:1.2; }
+
+/* チップ */
+.pill{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  white-space:nowrap;
+}
+
+/* 種類別 */
+.pill-ai{ font-weight:700; }
+.pill-ai.bull{ border-color:rgba(34,197,94,.35); }
+.pill-ai.bear{ border-color:rgba(239,68,68,.35); }
+.pill-ai.wait{ border-color:rgba(234,179,8,.35); }
+.pill-hot{ border-color:rgba(56,189,248,.35); }
+.pill-up{ border-color:rgba(167,139,250,.35); }
+.pill-reason{ opacity:.95; }
+
+@media (max-width: 520px){
+  .pill{ font-size:11px; padding:6px 8px; }
+}
+
   </style>
 </head>
 <body>
