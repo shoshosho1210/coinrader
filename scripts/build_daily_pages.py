@@ -54,6 +54,14 @@ def read_text_optional(paths: List[Path]) -> str:
             return read_text(p)
     raise FileNotFoundError("None of the optional template files exist: " + ", ".join(str(x) for x in paths))
 
+
+def read_text_optional_with_path(paths: List[Path]) -> tuple[Path, str]:
+    """Return (path, text) for the first existing file in paths."""
+    for p in paths:
+        if p.exists():
+            return p, read_text(p)
+    raise FileNotFoundError("None of the optional template files exist: " + ", ".join(str(x) for x in paths))
+
 def write_text(p: Path, s: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(s, encoding="utf-8")
@@ -491,7 +499,10 @@ def main() -> None:
     if "{{ITEMS}}" in index_html:
         index_html = index_html.replace("{{ITEMS}}", items_html)
         # 最新ページへの導線が必要ならテンプレ側で {{LATEST_HREF}} を利用可能に
-        index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
+        
+        if _re.search(r"\{\{\s*(ROWS|ITEMS)\s*\}\}", index_html):
+            print("[WARN] daily index still contains {{ROWS}}/{{ITEMS}} token after replacement. Check template placeholder.")
+index_html = index_html.replace("{{LATEST_HREF}}", f"{latest_ymd}.html")
         write_text(OUT_DIR / "index.html", index_html)
 
         # latest.html（最新ページへリダイレクト/案内）
