@@ -5929,7 +5929,7 @@ function renderOverview(){
             mcap24hEl.textContent = "分析中...";
         } else {
             const pct = o.mcap7dPct;
-            const sign = pct >= 0 ? '🟢 Inflow' : '🔴 Outflow';
+            const sign = pct >= 0 ? '<i class="fa-solid fa-circle-arrow-up"></i> Inflow' : '<i class="fa-solid fa-circle-arrow-down"></i> Outflow';
             mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pct.toFixed(2)}%</span>`;
         }
     }
