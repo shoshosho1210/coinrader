@@ -37,8 +37,9 @@ jobs:
           # データフォルダがあるか確認（初回などエラー回避）
           ls -R data/daily || echo "No data directory found yet"
 
-          python generate_ai_report.py \
-            --json data/latest.json \
+          python generate_weekly_ai_report.py \
+            --days 7 \
+            --data-dir data/daily \
             --template ai_report_template_weekly_monthly.md \
             --output weekly_ai_report.md
 
