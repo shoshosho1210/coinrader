@@ -207,6 +207,12 @@
  
   .kpi{ border:1px solid #1f2937; border-radius:12px; padding:10px 12px; background:#0b1220; }
   .kpi-label{ font-size:11px; color:#9ca3af; }
+
+/* --- v68: KPI label icons --- */
+.kpi-label i, .kpi-tile-title i{
+  margin-right: 8px;
+  color: rgba(56,189,248,.95);
+}
   .kpi-value{ margin-top:6px; font-size:16px; font-weight:700; color:#f9fafb; }
 
   .kpi-canvas{ width:100% !important; height:70px !important; margin-top:8px; }
@@ -2554,6 +2560,18 @@ body {
 }
 .ai-reasons-grid .c.value{ font-variant-numeric: tabular-nums; text-align:right; }
 .ai-reasons-grid .c.th{ color: rgba(229,231,235,.72); text-align:right; font-variant-numeric: tabular-nums; ; white-space:nowrap;}
+
+/* --- v68: AI reasons alignment (PCも中央寄せ) --- */
+.ai-reasons-grid .h:nth-child(2),
+.ai-reasons-grid .h:nth-child(3){
+  text-align:center !important;
+}
+.ai-reasons-grid .c.value,
+.ai-reasons-grid .c.sig{
+  text-align:center !important;
+}
+/* keep indicator left */
+.ai-reasons-grid .c.ind{ text-align:left !important; }
 .ai-reasons-grid .c.sig{ text-align:left; font-weight:700; }
 
 /* reason-grid header alignment (override legacy nth-child rules) */
@@ -4559,7 +4577,7 @@ white-space:nowrap; word-break:keep-all; }
 <div class="overview-card" id="domCard">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
 <div>
-<div style="font-size:13px; font-weight:700; color:#e5e7eb;">市場の資金シェア (Dominance)</div>
+<div style="font-size:13px; font-weight:700; color:#e5e7eb;"><i class="fa-solid fa-chart-pie"></i>市場の資金シェア</div>
 <div id="domPhaseLabel" style="font-size: 11px; margin-top: 4px; font-weight: 600;">-</div>
 </div>
 <div id="domMainPct" style="font-size: 20px; font-weight: 800; color: #facc15;">-</div>
@@ -4574,33 +4592,33 @@ white-space:nowrap; word-break:keep-all; }
 <div class="dom-metrics-list" id="domMetricsList" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
 </div>
 <div class="overview-note" id="domNote" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-      資金がビットコインに集中しているか、アルトコインへ分散しているかを示します。
+      資金がBTCに寄っているか、アルトへ広がっているかの目安です。
     </div>
 </div>
 <div class="overview-card">
 <div class="kpi-grid">
 <div class="kpi" id="kpiBreadthCard">
-<div class="kpi-label">市場の地合い（騰落バランス / 7日間）</div>
+<div class="kpi-label"><i class="fa-solid fa-arrows-up-down"></i>市場の地合い（騰落バランス / 7日）</div>
 <div class="kpi-value" id="kpiBreadth">-</div>
 <div class="kpi-meta" id="kpiBreadthNow">-</div>
 <div class="kpi-meta" id="kpiBreadthMoves">-</div>
-<div class="kpi-sub" id="kpiBreadthSub">市場全体の「勢い」の推移。0より上（青）なら上昇銘柄が多く、活気がある状態を示します。</div>
+<div class="kpi-sub" id="kpiBreadthSub">上位250銘柄の「上昇 vs 下落」の偏り（7日）。0より上なら上昇が優勢です。</div>
 <canvas class="kpi-canvas tall" id="breadthLine"></canvas>
 </div>
 <div class="kpi" id="kpiAvgPulseCard">
-<div class="kpi-label">市場の平均期待収益 (7日間騰落率)</div>
+<div class="kpi-label"><i class="fa-solid fa-chart-line"></i>市場の平均期待収益（7日騰落率）</div>
 <div class="kpi-value" id="kpiAvgChange">-</div>
 <div class="kpi-meta" id="kpiAvgDist" style="font-weight: 600;">-</div>
-<div class="kpi-sub" id="kpiAvgSub">上位250銘柄の平均的な騰落状況。0%より上なら「多くの銘柄で含み益」が出やすい、地合いの良い状態を示します。</div>
+<div class="kpi-sub" id="kpiAvgSub">上位250銘柄の7日騰落率の平均。0%より上なら、全体として地合いが良い目安です。</div>
 <div style="background: rgba(255,255,255,0.02); border-radius: 8px; padding: 4px; border: 1px solid rgba(255,255,255,0.05); margin-top: 8px;">
 <canvas class="kpi-canvas" id="avgLine" style="height: 70px !important;"></canvas>
 </div>
 </div>
 <div class="kpi" id="kpiRsiCard">
-<div class="kpi-label">BTC RSI (相対力指数 / 7日間)</div>
+<div class="kpi-label"><i class="fa-solid fa-gauge-high"></i>BTC RSI（14 / 7日）</div>
 <div class="kpi-value" id="kpiRsi">-</div>
 <div class="kpi-meta" id="kpiRsiMeta" style="font-weight: 600;">-</div>
-<div class="kpi-sub" id="kpiRsiSub">相場の過熱感を0〜100で測定。70以上は「買いが強すぎ（天井圏）」、30以下は「売られすぎ（底値圏）」を示唆します。</div>
+<div class="kpi-sub" id="kpiRsiSub">相場の過熱感（0〜100）。70以上は買われすぎ、30以下は売られすぎの目安です。</div>
 <div class="rsi-chart-wrap" style="background: rgba(255,255,255,0.02); border-radius: 8px; padding: 4px; border: 1px solid rgba(255,255,255,0.05);">
 <div class="rsi-chart-area" style="position: relative; height: 70px;">
 <div style="position: absolute; top: 30%; bottom: 30%; left: 0; right: 0; background: rgba(56, 189, 248, 0.03); border-top: 1px dashed rgba(255,255,255,0.1); border-bottom: 1px dashed rgba(255,255,255,0.1); pointer-events: none;"></div>
@@ -4609,15 +4627,15 @@ white-space:nowrap; word-break:keep-all; }
 </div>
 </div>
 <div class="kpi kpi-stack" id="kpiFlowCard">
-<div class="kpi-label">資金フロー（市場規模 &amp; 流動性 / 7日間）</div>
+<div class="kpi-label"><i class="fa-solid fa-money-bill-trend-up"></i>資金フロー（市場規模 &amp; 流動性 / 7日）</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
 <div class="kpi-block">
-<div class="kpi-block-title" style="font-size: 11px; color: #94a3b8;">合計時価総額 (Market Cap)</div>
+<div class="kpi-block-title" style="font-size: 11px; color: #94a3b8;"><i class="fa-solid fa-layer-group" style="margin-right:8px; color: rgba(56,189,248,.95);"></i>合計時価総額</div>
 <div class="kpi-value" id="kpiTotalMcap" style="font-size: 18px;">-</div>
 <div class="kpi-meta" id="kpiMcap7d" style="font-size: 11px;">-</div>
 </div>
 <div class="kpi-block">
-<div class="kpi-block-title" style="font-size: 11px; color: #94a3b8;">24h 出来高 (Volume)</div>
+<div class="kpi-block-title" style="font-size: 11px; color: #94a3b8;"><i class="fa-solid fa-chart-column" style="margin-right:8px; color: rgba(56,189,248,.95);"></i>24h 出来高</div>
 <div class="kpi-value" id="kpiTotalVol" style="font-size: 18px;">-</div>
 <div class="kpi-meta" id="kpiAltVolRatio" style="font-size: 11px;">-</div>
 </div>
