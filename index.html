@@ -4577,7 +4577,7 @@ white-space:nowrap; word-break:keep-all; }
 <tr>
 <th class="th-sym">銘柄</th>
 <th class="th-price">現在値</th>
-<th class="th-chg">前日比</th> <th class="th-chg col-optional">7日比</th> <th class="th-mcap">時価総額</th> <th class="th-rsi col-optional">RSI</th>
+<th class="th-chg">前日比</th> <th class="th-chg">7日比</th> <th class="th-mcap">時価総額</th> <th class="th-rsi col-optional">RSI</th>
 <th class="th-chart" style="width:120px; text-align:center;">7d推移</th>
 <th class="th-vol">24h出来高</th>
 </tr>
@@ -7344,7 +7344,7 @@ function renderRankTable(coins) {
             </td>
             <td>${price}</td>
             <td class="${chg24Class}">${chg24Str}</td> 
-            <td class="${chg7dClass} col-optional">${chg7dStr}</td> 
+            <td class="${chg7dClass}">${chg7dStr}</td> 
             <td>${mcap}</td> 
             <td class="td-rsi col-optional">${rsiHtml}</td>
             <td class="td-chart">${chartHtml}</td>
