@@ -110,4 +110,10 @@ jobs:
           echo "---- grep api.coingecko.com ----"
           grep -n "api.coingecko.com" coins/btc/index.html || true
 
+      - name: Debug one snapshot JSON
+        run: |
+          echo "---- head data/coins/btc.json ----"
+          head -c 800 data/coins/btc.json; echo
+
+
 
