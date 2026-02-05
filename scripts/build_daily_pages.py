@@ -22,6 +22,12 @@ CoinRader: data/daily/*.json から daily/ 配下のHTMLを自動生成します
     ...
   }
 のようなネストになったため、summary.* から値を抽出するように対応。
+
+※ 2026-02-05 patch:
+- タグページ（bull/wait）が更新されないケースの対策として、
+  index.html と tags/*.html に build marker コメントを埋め込み、
+  「最新日付が進んだタイミング」で必ず差分が出るようにしています。
+  （最新日が変わらない日は差分が出ないので、無駄なコミット増加を避けます）
 """
 from __future__ import annotations
 
@@ -316,11 +322,6 @@ def fmt_num(x: Any, ndigits: int = 2) -> str:
     return f"{v:.{ndigits}f}".rstrip("0").rstrip(".")
 
 def normalize_symbol_list(items: Any) -> List[str]:
-    """trending等を「銘柄シンボルの文字列リスト」に正規化する。
-    - ["BTC","ETH"] -> ["BTC","ETH"]
-    - [{"symbol":"btc","label":"BTC"}, ...] -> ["BTC", ...]
-    - None/その他 -> []
-    """
     if not isinstance(items, list):
         return []
     out: List[str] = []
@@ -329,7 +330,6 @@ def normalize_symbol_list(items: Any) -> List[str]:
         if isinstance(it, str):
             s = it
         elif isinstance(it, dict):
-            # よくあるキーを優先順で拾う
             for k in ("symbol", "label", "name", "id"):
                 v = it.get(k)
                 if isinstance(v, str) and v.strip():
@@ -337,7 +337,6 @@ def normalize_symbol_list(items: Any) -> List[str]:
                     break
         if s:
             out.append(s.strip().upper())
-    # 重複除去（順序維持）
     seen = set()
     uniq: List[str] = []
     for s in out:
@@ -349,35 +348,23 @@ def normalize_symbol_list(items: Any) -> List[str]:
 
 
 def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
-    """
-    JSONに明示的な ai_judge が無い場合の簡易判定。
-    - BULL / BEAR / WAIT を返す（テンプレ側のスタイル判定に使いやすい）
-    """
     fgi = to_float(fgi_value)
     rsi = to_float(btc_rsi)
     mad = to_float(ma_dist)
     if fgi is None or rsi is None or mad is None:
         return "WAIT"
-
-    # 恐怖＋トレンド弱い -> 弱気寄り（ただし売られ過ぎならWAIT寄り）
     if fgi <= 25 and mad <= -5:
         if rsi <= 30:
-            return "WAIT"  # 売られ過ぎで即断を避ける
+            return "WAIT"
         return "BEAR"
-
-    # 強欲＋トレンド強い -> 強気寄り
     if fgi >= 75 and mad >= 5:
         if rsi >= 70:
-            return "WAIT"  # 過熱で即断を避ける
+            return "WAIT"
         return "BULL"
-
-    # RSIで補助
     if rsi <= 30:
         return "WAIT"
     if rsi >= 70:
         return "WAIT"
-
-    # トレンドで緩く
     if mad >= 3:
         return "BULL"
     if mad <= -3:
@@ -385,34 +372,21 @@ def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
     return "WAIT"
 
 
-# ---------- reason builder ----------
 def build_reason_html(payload: Dict[str, Any]) -> str:
-    """
-    可能なら JSON内の説明テキストを使い、無ければ数値から簡易生成。
-    """
     reasons: List[str] = []
-
-    # 将来、理由の配列/テキストが追加された時に拾えるように候補を複数
     for path in [
-        "ai.reasons",
-        "ai.reason_lines",
-        "ai.reason",
-        "reasons",
-        "reason_lines",
-        "reason",
-        "summary.reason_lines",
-        "summary.reason",
+        "ai.reasons","ai.reason_lines","ai.reason",
+        "reasons","reason_lines","reason",
+        "summary.reason_lines","summary.reason",
     ]:
         v = get_path(payload, path, default=None)
         if isinstance(v, list) and v:
             reasons = [str(x).strip() for x in v if str(x).strip()]
             break
         if isinstance(v, str) and v.strip():
-            # 1文を1行に
             reasons = [v.strip()]
             break
 
-    # summary.* から指標を取得
     fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
     fgi_label = get_path(payload, "summary.fgi.label", default="")
     btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
@@ -420,7 +394,6 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
                           default=get_path(payload, "summary.technical.ma_distance",
                               default=get_path(payload, "btc_ma_distance",
                                   default=get_path(payload, "ma_distance", default=""))))
-    # 旧フォーマットで trend が配列/辞書の場合があるため除外
     if isinstance(ma_dist, (list, dict)):
         ma_dist = ""
     trending  = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=get_path(payload, "trend", default=[])))
@@ -428,7 +401,6 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
     top_gainer_change = get_path(payload, "summary.top_gainer.change", default="")
 
     if not reasons:
-        # Fear & Greed
         fgi = to_float(fgi_value)
         if fgi is not None:
             if fgi < 25:
@@ -444,7 +416,6 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
                 label = fgi_label or "Extreme Greed"
                 reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で過熱感があります。")
 
-        # RSI
         rsi = to_float(btc_rsi)
         if rsi is not None:
             if rsi < 30:
@@ -458,7 +429,6 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
             else:
                 reasons.append(f"BTC RSI が {fmt_num(rsi)} で買われ過ぎ水準です。")
 
-        # MA distance (trend proxy)
         mad = to_float(ma_dist)
         if mad is not None:
             if mad <= -8:
@@ -472,19 +442,16 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
             else:
                 reasons.append(f"MA距離が {fmt_num(mad)}% と大きくプラスで、上昇が加速しています。")
 
-        # Trending
         if isinstance(trending, list) and trending:
             top3 = [str(x).strip().upper() for x in trending[:3] if str(x).strip()]
             if top3:
                 reasons.append(f"注目トレンド: {' / '.join(top3)}")
 
-        # Top gainer
         if str(top_gainer_symbol).strip():
             ch = to_float(top_gainer_change)
             if ch is not None:
                 reasons.append(f"上昇トップ: {str(top_gainer_symbol).upper()}（+{fmt_num(ch)}%）")
 
-    # HTML
     li = "\n".join([f"<li>{escape_html(x)}</li>" for x in reasons[:6]])
     return f"<ul class='why-list'>{li}</ul>" if li else ""
 
@@ -498,20 +465,10 @@ def shorten_one_line(s: str, max_len: int = 70) -> str:
 
 
 def build_reason_1line(payload: Dict[str, Any]) -> str:
-    """
-    daily/index.html 用の「理由1行要約」。
-    単調になりやすいFGI文言だけに寄らないように、指標/トレンド/上昇銘柄も優先して散らす。
-    """
-    # 1) まずはJSONに明示されている理由を最優先で使う
     for path in [
-        "ai.reasons",
-        "ai.reason_lines",
-        "ai.reason",
-        "reasons",
-        "reason_lines",
-        "reason",
-        "summary.reason_lines",
-        "summary.reason",
+        "ai.reasons","ai.reason_lines","ai.reason",
+        "reasons","reason_lines","reason",
+        "summary.reason_lines","summary.reason",
     ]:
         v = get_path(payload, path, default=None)
         if isinstance(v, list) and v:
@@ -521,12 +478,9 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
         if isinstance(v, str) and v.strip():
             return shorten_one_line(v.strip())
 
-    # 2) 明示理由がない場合は候補を複数作り、優先度で選ぶ
     candidates: List[str] = []
-
     judge = str(get_path(payload, "summary.judge", default=get_path(payload, "judge", default="")) or "").upper()
 
-    # 指標値
     fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
     fgi_label = get_path(payload, "summary.fgi.label", default="")
     btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
@@ -543,15 +497,9 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
             ),
         ),
     )
-
     if isinstance(ma_dist, (list, dict)):
         ma_dist = ""
 
-    fgi = to_float(fgi_value)
-    rsi = to_float(btc_rsi)
-    mad = to_float(ma_dist)
-
-    # トレンド/上昇トップ（あれば短文化）
     trending = normalize_symbol_list(
         get_path(payload, "summary.trending",
             default=get_path(payload, "trending",
@@ -573,7 +521,10 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
         elif sym:
             tg_text = sym
 
-    # ---- 優先順位（散らすためFGIは後ろ） ----
+    fgi = to_float(fgi_value)
+    rsi = to_float(btc_rsi)
+    mad = to_float(ma_dist)
+
     if rsi is not None:
         if rsi < 30:
             candidates.append(f"BTC RSI が {fmt_num(rsi)} で売られ過ぎ水準。")
@@ -596,7 +547,6 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
     if fgi is not None:
         if fgi < 25:
             label = fgi_label or "Extreme Fear"
-            # judge を軽く混ぜて同じ文面になりにくくする
             if judge == "BEAR":
                 candidates.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で強い悲観。")
             else:
@@ -609,7 +559,6 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
                 candidates.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で楽観優勢。")
 
     if judge:
-        # 最終フォールバック（指標欠けの日でも破綻しない）
         if judge == "WAIT":
             candidates.append("材料が揃わず、いったん様子見。")
         elif judge == "BEAR":
@@ -620,12 +569,8 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
     return shorten_one_line(candidates[0] if candidates else "")
 
 
-
-
-# ---------- main ----------
 def main() -> None:
     tmpl = read_text(TEMPL_DIR / "daily_template.html")
-    # Index template: prefer daily_index.html (new), fallback to daily_index_template.html (old)
     tmpl_index = read_text_optional([
         TEMPL_DIR / "daily_index.html",
         TEMPL_DIR / "daily_index_template.html",
@@ -644,12 +589,8 @@ def main() -> None:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # 最新日付
     latest_ymd = dated[-1]
 
-
-    # 各日付ページ生成（2パス）
-    # 1) 先に全JSONを読み込み、judge→日付リストを作る（同じ判定の日リンク用）
     items: List[Dict[str, Any]] = []
     for ymd in reversed(dated):
         json_path = DATA_DIR / f"{ymd}.json"
@@ -658,7 +599,6 @@ def main() -> None:
         except Exception:
             payload = {}
 
-        # YYYYMMDD -> YYYY-MM-DD
         date_iso = get_path(payload, "summary.date", default="")
         if not date_iso:
             try:
@@ -666,18 +606,15 @@ def main() -> None:
             except Exception:
                 date_iso = ymd
 
-        # 指標抽出（summary.* を優先）
         fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
         btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
         ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
                           default=get_path(payload, "summary.technical.ma_distance",
                               default=get_path(payload, "btc_ma_distance",
                                   default=get_path(payload, "ma_distance", default=""))))
-        # 旧フォーマットで trend が配列/辞書の場合があるため除外
         if isinstance(ma_dist, (list, dict)):
             ma_dist = ""
 
-        # trending は新: summary.trending / 旧: trending / さらに旧: trend(配列) の可能性がある
         trending_raw = get_path(payload, "summary.trending",
                                 default=get_path(payload, "trending",
                                                 default=get_path(payload, "trend", default=[])))
@@ -687,17 +624,14 @@ def main() -> None:
         if not isinstance(top_gainer, dict):
             top_gainer = {}
 
-        # judge
         judge = get_path(payload, "ai_judge", default=get_path(payload, "ai.judge", default=""))
         if not str(judge).strip():
             judge = compute_judge(fgi_value, btc_rsi, ma_dist)
 
-        # 更新時刻（無ければ毎朝9時）
         updated_at = get_path(payload, "updated_at", default=get_path(payload, "timestamp", default=""))
         if not str(updated_at).strip():
             updated_at = f"{date_iso} 09:00"
 
-        # SEO meta（title/description/canonical）
         seo_meta = build_seo_meta(date_iso, ymd, judge, fgi_value, btc_rsi, ma_dist, trending, top_gainer=top_gainer)
         jsonld = build_jsonld(
             seo_meta.get("CANONICAL",""),
@@ -707,13 +641,11 @@ def main() -> None:
             str(updated_at),
         )
 
-        # 表示用
         sent = fmt_num(fgi_value, 0) if fmt_num(fgi_value, 0) != "" else str(fgi_value)
         rsi  = fmt_num(btc_rsi, 2) if fmt_num(btc_rsi, 2) != "" else str(btc_rsi)
         trend_num = fmt_num(ma_dist, 1)
         trend = trend_num if trend_num != "" else "—"
 
-        # メタ情報
         title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
         desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
         canonical = seo_meta.get("CANONICAL") or f"{SITE_ORIGIN}/daily/{ymd}.html"
@@ -739,7 +671,6 @@ def main() -> None:
             "trend": trend,
         })
 
-    # judge -> 日付（昇順）
     judge_days: Dict[str, List[str]] = {}
     for it in items:
         j = (it.get("judge") or "").strip()
@@ -749,7 +680,6 @@ def main() -> None:
     for j in list(judge_days.keys()):
         judge_days[j] = sorted(set(judge_days[j]))
 
-    # 2) ページ生成（同じ判定の日リンクを {{RECENT_DAYS}} に追加）
     pages: List[Dict[str, str]] = []
     for it in items:
         ymd = it["ymd"]
@@ -766,9 +696,6 @@ def main() -> None:
         jsonld = it["jsonld"]
         trending = it["trending"]
         top_gainer = it["top_gainer"]
-        fgi_value = it["fgi_value"]
-        btc_rsi = it["btc_rsi"]
-        ma_dist = it["ma_dist"]
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
         same_judge_html = build_same_judge_days_html(judge, judge_days.get(judge, []), ymd, n=5)
@@ -804,7 +731,6 @@ def main() -> None:
         out_file = OUT_DIR / f"{ymd}.html"
         write_text(out_file, html)
 
-        # 一覧で使う短い表示用（無い日は空にしておく）
         trend_top3 = "/".join(trending[:3]) if trending else ""
 
         top_gainer_label = ""
@@ -833,11 +759,8 @@ def main() -> None:
             "top_gainer": top_gainer_label,
             "reason_1line": reason_1line,
         })
-    # 一覧 index.html
-    # - 新テンプレ: {{ROWS}} を想定（daily_index.html）
-    # - 旧テンプレ: {{ITEMS}} を想定（daily_index_template.html）
-    pages_desc = sorted(pages, key=lambda p: p.get("ymd",""), reverse=True)  # 最新→過去
 
+    pages_desc = sorted(pages, key=lambda p: p.get("ymd",""), reverse=True)
 
     def _pill(text: str, cls: str = "") -> str:
         if not text:
@@ -847,8 +770,6 @@ def main() -> None:
 
     def _fmt_meta_html(p: dict) -> str:
         parts = []
-
-        # AI判定（強調）
         j = (p.get("judge") or "").upper()
         if j:
             cls = "pill-ai"
@@ -859,82 +780,61 @@ def main() -> None:
             elif j == "WAIT":
                 cls += " wait"
             parts.append(_pill(f"AI {j}", cls))
-
-        # 指標
         if p.get("fgi") is not None:
             parts.append(_pill(f"FGI {p['fgi']}", "pill-kpi"))
         if p.get("btc_rsi") is not None:
             parts.append(_pill(f"RSI {p['btc_rsi']}", "pill-kpi"))
         if p.get("trend") is not None:
             parts.append(_pill(f"Trend {p['trend']}", "pill-kpi"))
-
-        # クリック誘導（PV用）
         if p.get("trend_top3"):
             parts.append(_pill(f"注目 {p['trend_top3']}", "pill-hot"))
         if p.get("top_gainer"):
             parts.append(_pill(f"上昇 {p['top_gainer']}", "pill-up"))
-
-        # 要約は短く（長いと一覧が単調＆読みにくい）
         r = (p.get("reason_1line") or "").strip()
         if r:
             r = shorten_one_line(r, max_len=55)
             parts.append(_pill(f"要約 {r}", "pill-reason"))
-
         return "".join([x for x in parts if x])
 
     rows_html = "\n".join([
-            "<div class='row'>"
-            f"<a class='rowlink' href='{escape_html(p['href'])}'>"
-            f"<div class='date'>{escape_html(p['date_iso'])}</div>"
-            f"<div class='meta'>{_fmt_meta_html(p)}</div>"
-            "</a>"
-            "</div>"
-            for p in pages_desc
-        ])
+        "<div class='row'>"
+        f"<a class='rowlink' href='{escape_html(p['href'])}'>"
+        f"<div class='date'>{escape_html(p['date_iso'])}</div>"
+        f"<div class='meta'>{_fmt_meta_html(p)}</div>"
+        "</a>"
+        "</div>"
+        for p in pages_desc
+    ])
 
-    # 旧テンプレ用の簡易liも残す（互換）
     items_html = "\n".join([
         f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
         for p in pages_desc
     ])
 
     index_html = tmpl_index
-
-    # {{ROWS}} / {{ITEMS}} など表記ゆれ（空白あり）でも置換できるようにする
-    #   - {{ROWS}}   or {{ ROWS }}
-    #   - {{ITEMS}}  or {{ ITEMS }}
     rows_pat = re.compile(r"\{\{\s*ROWS\s*\}\}")
     items_pat = re.compile(r"\{\{\s*ITEMS\s*\}\}")
     latest_pat = re.compile(r"\{\{\s*LATEST_HREF\s*\}\}")
 
-    before = index_html
     index_html, n_rows = rows_pat.subn(rows_html, index_html)
     index_html, n_items = items_pat.subn(items_html, index_html)
     index_html, n_latest = latest_pat.subn(f"{latest_ymd}.html", index_html)
 
-    # 置換漏れ検知（CIで気づけるように）
     if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", index_html):
         raise RuntimeError("daily_index.html: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
-
-    # 何も置換されなかった場合はテンプレ側のプレースホルダーが違う可能性が高い
     if (n_rows + n_items + n_latest) == 0:
         raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
+
+    # ★ build marker
+    index_html = index_html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
     write_text(OUT_DIR / "index.html", index_html)
 
-    # tag pages（同じAI判定の日をまとめた一覧）
-    #   - /daily/tags/bear.html, bull.html, wait.html
-    # 目的: 回遊・内部リンク強化（一覧→タグ→各日）
     tags_dir = OUT_DIR / "tags"
     tags_dir.mkdir(parents=True, exist_ok=True)
 
-    rows_pat = re.compile(r"\{\{\s*ROWS\s*\}\}")
-    items_pat = re.compile(r"\{\{\s*ITEMS\s*\}\}")
-    latest_pat = re.compile(r"\{\{\s*LATEST_HREF\s*\}\}")
     for judge_key in ["BEAR", "BULL", "WAIT"]:
         filtered = [p for p in pages_desc if str(p.get("judge","")).upper() == judge_key]
-        # 0件でもページは生成する（bull等が0件でも入口として残す）
 
-        # タグページは /daily/tags/ 配下なので、リンクは ../YYYYMMDD.html で辿れるようにする
         rows_html_tag = (
             f"<div class='taghead'>"
             f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
@@ -966,11 +866,9 @@ def main() -> None:
         tag_html, _ = items_pat.subn(items_html_tag, tag_html)
         tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
 
-        # placeholder 残り検知（タグページも同様）
         if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
             raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
 
-        # --- tag meta: title/description/canonical をタグ別に補正 ---
         tag_lower = judge_key.lower()
         tag_suffix = {"bear":"弱気局面", "bull":"強気局面", "wait":"様子見"}.get(tag_lower, "")
         new_title = f"AI {judge_key} の日一覧" + (f"（{tag_suffix}）" if tag_suffix else "") + " | CoinRader"
@@ -995,7 +893,6 @@ def main() -> None:
             tag_html
         )
 
-        # --- tag H1: ページ見出しもタグ用に合わせる ---
         tag_html = re.sub(
             r"<h1>.*?</h1>",
             f"<h1>AI {judge_key} の日一覧</h1>",
@@ -1003,40 +900,32 @@ def main() -> None:
             flags=re.DOTALL
         )
 
-        # tabs current（テンプレに tabs がある場合のみ）
         tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
-        tag_html = tag_html.replace(
-            f'class="tab tab-{tag_lower}"',
-            f'class="tab tab-{tag_lower} current"',
-            1
-        )
+        tag_html = tag_html.replace(f'class="tab tab-{tag_lower}"', f'class="tab tab-{tag_lower} current"', 1)
 
-        # --- tag JSON-LD を head に挿入 ---
         jsonld = build_tag_jsonld(SITE_ORIGIN, judge_key, filtered)
-        tag_html = tag_html.replace(
-            "</head>",
-            f'  <script type="application/ld+json">{jsonld}</script>\n</head>',
-            1
-        )
+        tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
+
+        # ★ build marker
+        tag_html = tag_html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
 
         out_path = tags_dir / f"{tag_lower}.html"
         write_text(out_path, tag_html)
 
-    # latest.html（最新ページへリダイレクト/案内）
     latest_target = f"{latest_ymd}.html"
     latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
     latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
     write_text(OUT_DIR / "latest.html", latest_html)
-    # sitemap.xml: daily/index・daily/latest・tags を確実に含める（既存があれば追記）
+
     ensure_sitemap_urls(
-    ROOT / "sitemap.xml",
-    [
-        f"{SITE_ORIGIN}/daily/index.html",
-        f"{SITE_ORIGIN}/daily/latest.html",
-        f"{SITE_ORIGIN}/daily/tags/bear.html",
-        f"{SITE_ORIGIN}/daily/tags/bull.html",
-        f"{SITE_ORIGIN}/daily/tags/wait.html",
-    ],
+        ROOT / "sitemap.xml",
+        [
+            f"{SITE_ORIGIN}/daily/index.html",
+            f"{SITE_ORIGIN}/daily/latest.html",
+            f"{SITE_ORIGIN}/daily/tags/bear.html",
+            f"{SITE_ORIGIN}/daily/tags/bull.html",
+            f"{SITE_ORIGIN}/daily/tags/wait.html",
+        ],
     )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
