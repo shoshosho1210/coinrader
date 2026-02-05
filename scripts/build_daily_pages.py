@@ -560,11 +560,6 @@ def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
             if top3:
                 reasons.append(f"注目トレンド: {' / '.join(top3)}")
 
-        if str(top_gainer_symbol).strip():
-            ch = to_float(top_gainer_change)
-            if ch is not None:
-                reasons.append(f"上昇トップ: {str(top_gainer_symbol).upper()}（+{fmt_num(ch,2)}%）")
-
     # --- ここが追加：結論1行 ---
     j = (judge or "").strip().upper()
     lead_map = {
@@ -826,6 +821,9 @@ def main() -> None:
         jsonld = it["jsonld"]
         trending = it["trending"]
         top_gainer = it["top_gainer"]
+        
+        fgi_label = get_path(payload, "summary.fgi.label", default="")
+        trend_top3 = " / ".join(trending[:3]) if trending else ""
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
         why_html = build_reason_html(payload, judge)
@@ -846,6 +844,8 @@ def main() -> None:
             "{{SENTIMENT}}": escape_html(str(sent)),
             "{{BTC_RSI}}": escape_html(str(rsi)),
             "{{TREND}}": escape_html(str(trend)),
+            "{{SENTIMENT_LABEL}}": escape_html(str(fgi_label)),
+            "{{TRENDING_TOP3}}": escape_html(str(trend_top3)),
             "{{WHY_HTML}}": why_html,
             "{{WHY}}": why_html,
             "{{RECENT_DAYS_HTML}}": recent_days_html,
