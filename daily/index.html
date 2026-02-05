@@ -6,21 +6,39 @@
   <title>Daily AIレポート一覧 | CoinRader</title>
   <meta name="description" content="CoinRaderの日次AIレポート一覧。最新日から過去へ遡って閲覧できます。" />
   <link rel="canonical" href="https://coinrader.net/daily/" />
+
   <style>
     :root{--bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--line:#1f2937;--accent:#38bdf8;}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--fg);}
-    .wrap{max-width:980px;margin:0 auto;padding:24px 16px 48px;}
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
-    h1{font-size:26px;margin:10px 0 6px}
-    .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
-    .list{border-top:1px solid var(--line)}
-    .row{padding:0;border-bottom:1px solid var(--line)}
-    .date{font-weight:800}
-    .meta{color:var(--muted);font-size:12px}
 
-    /* タグ（判定別）タブ */
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+    /* ---------- Header (sticky) ---------- */
+    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
+    .appHeader-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brandLogo{height:24px;width:auto;display:block}
+    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 12px;font-size:12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+      color:var(--fg);text-decoration:none
+    }
+    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
+    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
+
+    h1{font-size:22px;margin:12px 0 6px}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+
+    /* ---------- Tabs (judge) ---------- */
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 12px}
     .tab{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
          font-size:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
          color:var(--fg);text-decoration:none}
@@ -30,102 +48,159 @@
     .tab-bear{border-color:rgba(239,68,68,.35)}
     .tab-bull{border-color:rgba(34,197,94,.35)}
     .tab-wait{border-color:rgba(234,179,8,.35)}
-/* 行全体をカード化 */
-/* meta を 右に余白作って矢印置き場にする */
-.rowlink{
-  display:block;
-  position:relative;
-  padding:14px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.06);
-  text-decoration:none;
-  color:inherit;
-}
 
-.rowlink:hover{
-  border-color: rgba(255,255,255,.14);
-}
+    /* ---------- Controls (search + count) ---------- */
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+    .search{flex:1;min-width:240px}
+    .search input{
+      width:100%;padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);
+      color:var(--fg);outline:none
+    }
+    .search input::placeholder{color:rgba(148,163,184,.8)}
+    .count{color:var(--muted);font-size:12.5px;white-space:nowrap}
 
-/* 矢印：右端に固定、被り防止 */
-.rowlink::after{
-  content:"›";
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  opacity:.55;
-  font-size:22px;
-  line-height:1;
-  pointer-events:none;
-}
+    /* ---------- List / Rows ---------- */
+    .list{border-top:1px solid rgba(255,255,255,.06)}
+    .row{padding:0;border-bottom:0;margin:10px 0}
+    .date{font-weight:800}
+    .meta{color:var(--muted);font-size:12px}
 
-/* 右端の矢印ぶんだけ meta 側に余白を確保 */
-.rowlink .meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  line-height:1.2;
-  padding-right:34px;
-}
+    .rowlink{
+      display:block;
+      position:relative;
+      padding:14px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.03);
+      text-decoration:none;
+      color:inherit;
+    }
+    .rowlink:hover{border-color: rgba(255,255,255,.14);text-decoration:none;filter:brightness(1.04)}
 
-/* 日付＋チップ */
-.rowlink .date{ font-weight:700; margin-bottom:8px; }
+    .rowlink::after{
+      content:"›";
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      opacity:.55;
+      font-size:22px;
+      line-height:1;
+      pointer-events:none;
+    }
 
-/* チップ */
-.pill{
-  display:inline-flex;
-  align-items:center;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.04);
-  white-space:nowrap;
-}
+    .rowlink .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      line-height:1.2;
+      padding-right:34px;
+    }
 
-/* 種類別 */
-.pill-ai{ font-weight:700; }
-.pill-ai.bull{ border-color:rgba(34,197,94,.35); }
-.pill-ai.bear{ border-color:rgba(239,68,68,.35); }
-.pill-ai.wait{ border-color:rgba(234,179,8,.35); }
-.pill-hot{ border-color:rgba(56,189,248,.35); }
-.pill-up{ border-color:rgba(167,139,250,.35); }
-.pill-kpi{ opacity:.72; }
+    .rowlink .date{ font-weight:800; margin-bottom:8px; }
 
-@media (max-width: 520px){
-  .pill{ font-size:11px; padding:6px 8px; }
-}
-/* 要約だけ長文化しやすいので、横幅を制御して省略 */
-.pill-reason{
-  max-width: 520px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-@media (max-width: 900px){
-  .pill-reason{ max-width: 320px; }
-}
-@media (max-width: 520px){
-  .pill-reason{ max-width: 220px; }
-}
-@media (max-width: 520px){
-  .rowlink .meta{ gap:6px; }
-  .pill{ padding:5px 7px; }
-}
-</style>
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+
+    .pill-ai{ font-weight:800; letter-spacing:.2px }
+    .pill-ai.bull{ border-color:rgba(34,197,94,.35); }
+    .pill-ai.bear{ border-color:rgba(239,68,68,.35); }
+    .pill-ai.wait{ border-color:rgba(234,179,8,.35); }
+    .pill-hot{ border-color:rgba(56,189,248,.35); }
+    .pill-up{ border-color:rgba(167,139,250,.35); }
+    .pill-kpi{ opacity:.72; }
+
+    .pill-reason{
+      max-width: 520px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    @media (max-width: 900px){ .pill-reason{ max-width: 320px; } }
+    @media (max-width: 520px){ .pill-reason{ max-width: 220px; } }
+
+    @media (max-width: 520px){
+      .pill{ font-size:11px; padding:6px 8px; }
+      .rowlink .meta{ gap:6px; }
+      .pill{ padding:5px 7px; }
+      .appHeader-inner{align-items:flex-start}
+      .nav{justify-content:flex-start}
+      .search{min-width:100%}
+    }
+
+    /* ---------- Empty state ---------- */
+    .empty{
+      display:none;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      padding:14px;
+      border:1px dashed rgba(255,255,255,.12);
+      border-radius:14px;
+    }
+
+    /* ---------- Footer ---------- */
+    footer{
+      margin-top:22px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      border-top:1px solid rgba(255,255,255,.06);
+      padding-top:14px;
+    }
+    footer a{color:rgba(148,163,184,.95)}
+    footer a:hover{color:var(--accent);text-decoration:none}
+  </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div style="color:var(--muted);font-size:13px"><a href="/">CoinRader</a> / Daily</div>
+    <!-- Header -->
+    <header class="appHeader" role="banner">
+      <div class="appHeader-inner">
+        <div class="brand">
+          <!-- ロゴ画像があるならここを実ファイルに合わせて -->
+          <a href="/" aria-label="CoinRader ホーム">
+            <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
+          </a>
+          <div class="crumb"><a href="/">CoinRader</a> / Daily</div>
+        </div>
+        <nav class="nav" aria-label="主要リンク">
+          <a class="btn" href="/">ダッシュボード</a>
+          <a class="btn btn-primary" href="/daily/latest.html">最新</a>
+          <a class="btn" href="/daily/">一覧</a>
+          <a class="btn" href="/guide">ガイド</a>
+        </nav>
+      </div>
+    </header>
+
     <h1>Daily AIレポート一覧</h1>
-    <div class="sub">最新: <a href="/daily/latest.html">latest</a></div>
+    <div class="sub">最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。</div>
+
     <div class="tabs">
       <a class="tab current" href="/daily/"><small>ALL</small>一覧</a>
       <a class="tab tab-bear" href="/daily/tags/bear.html"><small>AI</small>BEAR</a>
       <a class="tab tab-bull" href="/daily/tags/bull.html"><small>AI</small>BULL</a>
       <a class="tab tab-wait" href="/daily/tags/wait.html"><small>AI</small>WAIT</a>
     </div>
-    <div class="list">
-      <div class='row'><a class='rowlink' href='20260206.html'><div class='date'>2026-02-06</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 12</span><span class='pill pill-kpi'>RSI 33.4</span><span class='pill pill-kpi'>Trend -11.8%</span><span class='pill pill-hot'>注目 BTC/RNBW/CHECK</span><span class='pill pill-up'>上昇 WHITEWHALE +20.33%</span><span class='pill pill-reason'>要約 MA距離が -11.82% で弱含み。</span></div></a></div>
+
+    <div class="controls">
+      <div class="search">
+        <input id="q" type="search" placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など" />
+      </div>
+      <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
+    </div>
+
+    <div class="list" id="list">
+      <div class='row'><a class='rowlink' href='20260206.html'><div class='date'>2026-02-06</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 12</span><span class='pill pill-kpi'>RSI 28.6</span><span class='pill pill-kpi'>Trend -11.9%</span><span class='pill pill-hot'>注目 BTC/SOL/HYPE</span><span class='pill pill-up'>上昇 SKR +41.56%</span><span class='pill pill-reason'>要約 BTC RSI が 28.59 で売られ過ぎ水準。</span></div></a></div>
 <div class='row'><a class='rowlink' href='20260205.html'><div class='date'>2026-02-05</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 12</span><span class='pill pill-kpi'>RSI 33.4</span><span class='pill pill-kpi'>Trend -11.8%</span><span class='pill pill-hot'>注目 BTC/SOL/HYPE</span><span class='pill pill-up'>上昇 WHITEWHALE +10.85%</span><span class='pill pill-reason'>要約 MA距離が -11.77% で弱含み。</span></div></a></div>
 <div class='row'><a class='rowlink' href='20260204.html'><div class='date'>2026-02-04</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 46.9</span><span class='pill pill-kpi'>Trend -11.6%</span><span class='pill pill-hot'>注目 BTC/ZAMA/SOL</span><span class='pill pill-up'>上昇 RIVER +27.72%</span><span class='pill pill-reason'>要約 MA距離が -11.62% で弱含み。</span></div></a></div>
 <div class='row'><a class='rowlink' href='20260203.html'><div class='date'>2026-02-03</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 17</span><span class='pill pill-kpi'>RSI 47.8</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>注目 HYPE/TRIA/PENGU</span><span class='pill pill-up'>上昇 STX +19.02%</span><span class='pill pill-reason'>要約 MA距離が -11.51% で弱含み。</span></div></a></div>
@@ -138,7 +213,45 @@
 <div class='row'><a class='rowlink' href='20260127.html'><div class='date'>2026-01-27</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI —</span><span class='pill pill-kpi'>RSI —</span><span class='pill pill-kpi'>Trend —</span><span class='pill pill-hot'>注目 ULTIMA/AXS/HYPE</span><span class='pill pill-reason'>要約 注目トレンドは ULTIMA/AXS/HYPE。</span></div></a></div>
 <div class='row'><a class='rowlink' href='20260126.html'><div class='date'>2026-01-26</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI —</span><span class='pill pill-kpi'>RSI —</span><span class='pill pill-kpi'>Trend —</span><span class='pill pill-hot'>注目 RIVER/TAIKO/BTC</span><span class='pill pill-reason'>要約 注目トレンドは RIVER/TAIKO/BTC。</span></div></a></div>
     </div>
+    <div class="empty" id="empty">該当するレポートがありません。</div>
+
+    <footer>
+      © CoinRader. <a href="/disclaimer">免責</a> / <a href="/privacy">プライバシー</a>
+    </footer>
   </div>
+
+  <script>
+    // --- page filter (client-side) ---
+    const q = document.getElementById('q');
+    const list = document.getElementById('list');
+    const empty = document.getElementById('empty');
+    const shownEl = document.getElementById('shown');
+    const totalEl = document.getElementById('total');
+
+    function normalize(s){
+      return (s || '').toLowerCase().replace(/\s+/g,' ').trim();
+    }
+
+    function apply(){
+      const term = normalize(q.value);
+      const rows = [...list.querySelectorAll('.row')];
+      totalEl.textContent = String(rows.length);
+
+      let shown = 0;
+      rows.forEach(row=>{
+        const text = normalize(row.innerText);
+        const ok = !term || text.includes(term);
+        row.style.display = ok ? '' : 'none';
+        if(ok) shown++;
+      });
+
+      shownEl.textContent = String(shown);
+      empty.style.display = shown ? 'none' : 'block';
+    }
+
+    q.addEventListener('input', apply);
+    window.addEventListener('DOMContentLoaded', apply);
+  </script>
 <!-- build:20260206 -->
 </body>
 </html>
