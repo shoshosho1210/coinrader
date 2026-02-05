@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{NAME}} ({{SYMBOL_UPPER}}) 今日の指標・市況まとめ | CoinRader</title>
+  <meta name="description" content="{{NAME}} ({{SYMBOL_UPPER}}) の価格・24h/7d変動・出来高・時価総額・RSI等をまとめて確認。毎日更新の市況メモも掲載。CoinRader。" />
+
+  <link rel="canonical" href="https://coinrader.net/coins/{{SYMBOL}}/" />
+
+  <style>
+    :root { color-scheme: dark; }
+    body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial; background:#0f172a; color:#e5e7eb; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px 40px; }
+    a { color:#7dd3fc; text-decoration:none; }
+    a:hover { text-decoration: underline; }
+    .muted { color:#94a3b8; }
+    .topbar { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom: 14px; }
+    .crumbs { font-size: 13px; color:#94a3b8; }
+    .h1 { font-size: 22px; font-weight: 800; margin: 10px 0 6px; }
+    .sub { font-size: 13px; color:#94a3b8; margin-bottom: 16px; }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; }
+    @media (max-width: 720px){ .grid { grid-template-columns: 1fr; } }
+    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(148,163,184,0.18); border-radius: 14px; padding: 14px; }
+    .k { font-size: 12px; color:#94a3b8; }
+    .v { font-size: 20px; font-weight: 800; margin-top: 6px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .pill { display:inline-flex; gap:6px; align-items:center; padding: 6px 10px; border-radius: 999px; background: rgba(56,189,248,0.10); border: 1px solid rgba(56,189,248,0.22); font-size: 12px; color:#e5e7eb; }
+    .note { line-height:1.7; font-size: 14px; }
+    .note p { margin: 0 0 8px; }
+    .btns { display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.06); border:1px solid rgba(148,163,184,0.18); color:#e5e7eb; font-size: 13px; }
+    .btn:hover { background: rgba(255,255,255,0.10); text-decoration:none; }
+    .small { font-size: 12px; }
+    .sep { height:1px; background: rgba(148,163,184,0.18); margin: 14px 0; }
+    .err { color: #fca5a5; font-size: 13px; white-space: pre-wrap; }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"CoinRader","item":"https://coinrader.net/"},
+      {"@type":"ListItem","position":2,"name":"Coins","item":"https://coinrader.net/coins/"},
+      {"@type":"ListItem","position":3,"name":"{{NAME}} ({{SYMBOL_UPPER}})","item":"https://coinrader.net/coins/{{SYMBOL}}/"}
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="/">トップ</a> / <a href="/coins/">Coins</a> / <span class="muted">{{SYMBOL_UPPER}}</span>
+      </div>
+      <div class="row">
+        <span class="pill">データ: CoinGecko</span>
+        <span class="pill" id="updated">更新: --</span>
+      </div>
+    </div>
+
+    <h1 class="h1">{{NAME}} ({{SYMBOL_UPPER}})</h1>
+    <div class="sub">
+      主要指標と今日の市況メモ。マーケット全体の最新まとめは
+      <a href="/daily/latest.html">/daily/latest.html</a> を参照。
+    </div>
+
+    <div class="grid" id="kpis">
+      <div class="card"><div class="k">価格 (JPY)</div><div class="v" id="price">--</div><div class="muted small" id="price_sub">--</div></div>
+      <div class="card"><div class="k">24h / 7d 変動</div><div class="v" id="chg">--</div><div class="muted small" id="chg_sub">--</div></div>
+      <div class="card"><div class="k">出来高 (24h)</div><div class="v" id="vol">--</div><div class="muted small">取引の活発度の目安</div></div>
+      <div class="card"><div class="k">時価総額</div><div class="v" id="mcap">--</div><div class="muted small">市場規模の目安</div></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="card">
+      <div class="k">今日の市況メモ</div>
+      <div class="note" id="memo">
+        <p class="muted">読み込み中…</p>
+      </div>
+      <div class="btns">
+        <a class="btn" href="/daily/latest.html">全体の最新まとめ</a>
+        <a class="btn" href="/coins/">Coins一覧</a>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="muted small">
+      ※ 本ページは静的HTMLで提供し、表示時にCoinGeckoから最新値を取得して反映します。
+    </div>
+  </div>
+
+  <script>
+    const COIN_ID = "{{COIN_ID}}";
+    const SYMBOL = "{{SYMBOL}}";
+    const NAME = "{{NAME}}";
+
+    const fmtJPY = (n) => {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return "--";
+      return Number(n).toLocaleString("ja-JP", { maximumFractionDigits: 0 }) + "円";
+    };
+    const fmtNum = (n, digits=2) => {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return "--";
+      return Number(n).toLocaleString("ja-JP", { maximumFractionDigits: digits, minimumFractionDigits: 0 });
+    };
+    const fmtPct = (n) => {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return "--";
+      const x = Number(n);
+      const s = x >= 0 ? "+" : "";
+      return s + x.toFixed(2) + "%";
+    };
+    const fmtJPYBig = (n) => {
+      if (n === null || n === undefined || Number.isNaN(Number(n))) return "--";
+      const x = Number(n);
+      if (x >= 1e12) return (x/1e12).toFixed(2) + "兆円";
+      if (x >= 1e9)  return (x/1e9).toFixed(2) + "十億円";
+      if (x >= 1e6)  return (x/1e6).toFixed(2) + "百万円";
+      return fmtNum(x,0) + "円";
+    };
+
+    async function fetchCoinMarkets() {
+      const url =
+        "https://api.coingecko.com/api/v3/coins/markets"
+        + "?vs_currency=jpy"
+        + "&ids=" + encodeURIComponent(COIN_ID)
+        + "&price_change_percentage=24h,7d";
+
+      const r = await fetch(url, { headers: { "accept": "application/json" } });
+      if (!r.ok) throw new Error("CoinGecko markets fetch failed: " + r.status);
+      const j = await r.json();
+      if (!Array.isArray(j) || !j[0]) throw new Error("CoinGecko markets empty");
+      return j[0];
+    }
+
+    function computeMemo(m) {
+      // “固有の洞察”は、まずは軽量ロジックでOK（後で強化）
+      const chg24 = m.price_change_percentage_24h;
+      const chg7d = m.price_change_percentage_7d_in_currency;
+
+      let tone = "様子見";
+      let why = [];
+
+      if (typeof chg24 === "number") {
+        if (chg24 >= 3) { tone = "強め"; why.push("24h上昇が大きい"); }
+        if (chg24 <= -3) { tone = "弱め"; why.push("24h下落が大きい"); }
+      }
+      if (typeof chg7d === "number") {
+        if (chg7d >= 8) why.push("7日で上向き");
+        if (chg7d <= -8) why.push("7日で下向き");
+      }
+
+      if (why.length === 0) why.push("変動が限定的");
+
+      const lines = [];
+      lines.push(`<p><b>総合:</b> ${tone}</p>`);
+      lines.push(`<p><b>ポイント:</b> ${why.join(" / ")}</p>`);
+      lines.push(`<p class="muted small">※ 本メモは価格変動ベースの簡易判定です。後で「出来高・RSI・市場全体」も統合して精度を上げられます。</p>`);
+      return lines.join("");
+    }
+
+    async function main() {
+      try {
+        const m = await fetchCoinMarkets();
+
+        const now = new Date();
+        document.getElementById("updated").textContent =
+          "更新: " + now.toLocaleString("ja-JP", { hour12: false });
+
+        document.getElementById("price").textContent = fmtJPY(m.current_price);
+        document.getElementById("price_sub").textContent =
+          "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
+
+        document.getElementById("chg").textContent =
+          fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
+
+        document.getElementById("chg_sub").textContent =
+          "ATH比: " + fmtPct(m.ath_change_percentage);
+
+        document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
+        document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+
+        document.getElementById("memo").innerHTML = computeMemo(m);
+      } catch (e) {
+        document.getElementById("err").textContent = String(e && e.message ? e.message : e);
+        document.getElementById("memo").innerHTML =
+          "<p class='muted'>データ取得に失敗しました。時間をおいて再表示してください。</p>";
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
