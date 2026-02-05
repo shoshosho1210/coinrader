@@ -933,9 +933,6 @@ def main() -> None:
             f"{SITE_ORIGIN}/daily/tags/bear",
             f"{SITE_ORIGIN}/daily/tags/bull",
             f"{SITE_ORIGIN}/daily/tags/wait",
-            f"{SITE_ORIGIN}/daily/tags/bear/",
-            f"{SITE_ORIGIN}/daily/tags/bull/",
-            f"{SITE_ORIGIN}/daily/tags/wait/",
         ],
     )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
