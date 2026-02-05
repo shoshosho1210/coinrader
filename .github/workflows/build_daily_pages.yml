@@ -21,6 +21,14 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
+      - name: Debug git status for tags
+        run: |
+          ls -la daily/tags || true
+          echo "--- git status --porcelain ---"
+          git status --porcelain
+          echo "--- check-ignore ---"
+          git check-ignore -v daily/tags/bear.html || echo "NOT ignored"
+
       - name: Commit generated pages
         run: |
           git config user.name "github-actions[bot]"
