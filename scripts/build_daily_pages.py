@@ -244,6 +244,8 @@ def rewrite_sitemap_with_daily_block(sitemap_path: Path, daily_entries: List[Dic
         xml,
         flags=re.IGNORECASE,
     )
+    # 連続する空行を潰して整形（見た目とdiff安定化）
+    xml_no_daily = re.sub(r"\n{3,}", "\n\n", xml_no_daily)
 
     if "<urlset" not in xml_no_daily:
         # 壊れている/異形式の場合は、dailyだけでも正しい形式で再生成
