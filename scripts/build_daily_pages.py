@@ -256,7 +256,7 @@ def build_tag_jsonld(site_origin: str, tag_key: str, rows: list[dict]) -> str:
     """/daily/tags/{tag}.html 用 JSON-LD（CollectionPage + ItemList）"""
     tag = (tag_key or "").lower()
     tag_u = (tag_key or "").upper()
-    url = f"{site_origin}/daily/tags/{tag}.html"
+    url = f"{site_origin}/daily/tags/{tag}"
 
     items = []
     for i, r in enumerate(rows, start=1):
@@ -886,7 +886,7 @@ def main() -> None:
             tag_html
         )
 
-        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}.html"
+        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}"
         tag_html = re.sub(
             r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
             f'<link rel="canonical" href="{escape_html(canon_url)}" />',
@@ -912,10 +912,13 @@ def main() -> None:
         out_path_html = tags_dir / f"{tag_lower}.html"
         write_text(out_path_html, tag_html)
 
-        # 追加：拡張子なし（Cloudflare 308 の飛び先）も同内容で生成
-        out_path_noext = tags_dir / f"{tag_lower}"
-        write_text(out_path_noext, tag_html)
+        # 追加: /daily/tags/{tag} (拡張子なし) 用にディレクトリ index.html を生成
+        out_dir_noext = tags_dir / tag_lower
+        out_dir_noext.mkdir(parents=True, exist_ok=True)
+        write_text(out_dir_noext / "index.html", tag_html)
 
+        # 互換: /daily/tags/{tag} をファイルとして読む環境向け（必要なら）
+        write_text(tags_dir / tag_lower, tag_html)
 
     latest_target = f"{latest_ymd}.html"
     latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
@@ -927,9 +930,17 @@ def main() -> None:
         [
             f"{SITE_ORIGIN}/daily/index.html",
             f"{SITE_ORIGIN}/daily/latest.html",
+
+            # 判定別タグ（.html と拡張子なし/ディレクトリ両対応）
             f"{SITE_ORIGIN}/daily/tags/bear.html",
             f"{SITE_ORIGIN}/daily/tags/bull.html",
             f"{SITE_ORIGIN}/daily/tags/wait.html",
+            f"{SITE_ORIGIN}/daily/tags/bear",
+            f"{SITE_ORIGIN}/daily/tags/bull",
+            f"{SITE_ORIGIN}/daily/tags/wait",
+            f"{SITE_ORIGIN}/daily/tags/bear/",
+            f"{SITE_ORIGIN}/daily/tags/bull/",
+            f"{SITE_ORIGIN}/daily/tags/wait/",
         ],
     )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
