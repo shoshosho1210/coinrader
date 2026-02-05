@@ -48,7 +48,7 @@
 
 <script>
   const COIN_ID = "ethereum";
-  const CG_KEY = "{{COINGECKO_KEY}}"; // ★ビルド時に埋め込み（空なら未設定）
+  const CG_KEY = ""; // ★ビルド時に埋め込み（空なら未設定）
 
   const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
   const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
@@ -67,7 +67,7 @@
         + "&price_change_percentage=24h,7d";
 
       const headers = {};
-      if (CG_KEY && CG_KEY !== "{{COINGECKO_KEY}}") {
+      if (CG_KEY && CG_KEY !== "") {
         headers["x-cg-demo-api-key"] = CG_KEY;
       }
 
