@@ -59,3 +59,9 @@ jobs:
           grep -n "/daily/" daily/tags/bear.html || true
           echo "---- show around taghead ----"
           awk 'NR>=1 && NR<=220 {print}' daily/tags/bear.html | sed -n '150,210p'
+
+      - name: Debug coin key injection
+        run: |
+          grep -n "CG_KEY" coins/btc/index.html || true
+          grep -n "x-cg-demo-api-key" coins/btc/index.html || true
+
