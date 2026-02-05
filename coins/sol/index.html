@@ -46,45 +46,54 @@
     </div>
   </div>
 
-  <script>
-    const COIN_ID = "solana";
+<script>
+  const COIN_ID = "solana";
+  const CG_KEY = "{{COINGECKO_KEY}}"; // ★ビルド時に埋め込み（空なら未設定）
 
-    const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
-    const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
-    const fmtJPYBig = (n) => {
-      if (n == null || isNaN(n)) return "--";
-      const x = Number(n);
-      if (x >= 1e12) return (x/1e12).toFixed(2) + "兆円";
-      if (x >= 1e9)  return (x/1e9).toFixed(2) + "十億円";
-      return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
-    };
+  const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
+  const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
+  const fmtJPYBig = (n) => {
+    if (n == null || isNaN(n)) return "--";
+    const x = Number(n);
+    if (x >= 1e12) return (x/1e12).toFixed(2) + "兆円";
+    if (x >= 1e9)  return (x/1e9).toFixed(2) + "十億円";
+    return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
+  };
 
-    async function main(){
-      try{
-        const url = "https://api.coingecko.com/api/v3/coins/markets"
-          + "?vs_currency=jpy&ids=" + encodeURIComponent(COIN_ID)
-          + "&price_change_percentage=24h,7d";
-        const r = await fetch(url);
-        if(!r.ok) throw new Error("CoinGecko fetch failed: " + r.status);
-        const j = await r.json();
-        if(!Array.isArray(j) || !j[0]) throw new Error("CoinGecko empty");
-        const m = j[0];
+  async function main(){
+    try{
+      const url = "https://api.coingecko.com/api/v3/coins/markets"
+        + "?vs_currency=jpy&ids=" + encodeURIComponent(COIN_ID)
+        + "&price_change_percentage=24h,7d";
 
-        document.getElementById("price").textContent = fmtJPY(m.current_price);
-        document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
-        document.getElementById("chg").textContent = fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
-        document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
-        document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
-        document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
-
-        const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
-        document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
-      }catch(e){
-        document.getElementById("err").textContent = String(e?.message || e);
-        document.getElementById("memo").textContent = "データ取得に失敗しました。";
+      const headers = {};
+      if (CG_KEY && CG_KEY !== "{{COINGECKO_KEY}}") {
+        headers["x-cg-demo-api-key"] = CG_KEY;
       }
+
+      const r = await fetch(url, { headers, cache: "no-store" });
+
+      if(!r.ok) throw new Error("CoinGecko fetch failed: " + r.status);
+      const j = await r.json();
+      if(!Array.isArray(j) || !j[0]) throw new Error("CoinGecko empty");
+      const m = j[0];
+
+      document.getElementById("price").textContent = fmtJPY(m.current_price);
+      document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
+      document.getElementById("chg").textContent = fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
+      document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
+      document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
+      document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+
+      const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
+      document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
+    }catch(e){
+      document.getElementById("err").textContent = String(e?.message || e);
+      document.getElementById("memo").textContent = "データ取得に失敗しました。";
     }
-    main();
-  </script>
+  }
+  main();
+</script>
 </body>
 </html>
+
