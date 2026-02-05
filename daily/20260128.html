@@ -84,6 +84,74 @@
   color:rgba(148,163,184,.8);
   font-weight:800;
 }
+/* === Header polish === */
+.topnav{
+  padding:10px 12px;
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:14px;
+  background:rgba(255,255,255,.02);
+  margin-bottom:14px;
+}
+
+.brand{
+  display:flex; align-items:center; gap:10px; min-width:0;
+}
+.brand .dot{
+  width:10px; height:10px; border-radius:999px;
+  background:rgba(56,189,248,.9);
+  box-shadow:0 0 0 4px rgba(56,189,248,.12);
+  flex:0 0 auto;
+}
+.crumb{
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+.actions{
+  display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+}
+.a-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:7px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.18);
+  background:rgba(255,255,255,.02);
+  color:var(--fg);
+  font-size:12px;
+  text-decoration:none;
+}
+.a-btn:hover{
+  border-color: rgba(56,189,248,.35);
+  filter:brightness(1.08);
+  text-decoration:none;
+}
+.a-btn.primary{
+  border-color: rgba(56,189,248,.35);
+  background: rgba(56,189,248,.10);
+}
+/* === Footer polish === */
+.footerbox{
+  margin-top:18px;
+  padding:14px 16px;
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:14px;
+  background:rgba(255,255,255,.02);
+}
+.footergrid{
+  display:grid; gap:10px;
+}
+@media(min-width:860px){
+  .footergrid{ grid-template-columns: 1.2fr .8fr; align-items:start; }
+}
+.footlinks{
+  display:flex; flex-wrap:wrap; gap:10px;
+  color:var(--muted); font-size:12px;
+}
+.footlinks a{ color:var(--muted); }
+.footlinks a:hover{ color:var(--fg); text-decoration:none; }
+.footnote{
+  color:rgba(148,163,184,.9);
+  font-size:12px; line-height:1.6;
+}
 
   </style>
   <script type="application/ld+json">
@@ -93,8 +161,21 @@
 <body>
   <div class="wrap">
     <div class="topnav">
-      <div class="crumb"><a href="/">CoinRader</a> / <a href="/daily/">Daily</a> / 2026-01-28</div>
-      <div class="crumb"><a href="/daily/latest.html">最新</a></div>
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <div class="crumb">
+          <a href="/">CoinRader</a> / <a href="/daily/">Daily</a> / 2026-01-28
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="a-btn" href="/">ダッシュボード</a>
+        <a class="a-btn" href="/daily/">一覧</a>
+        <a class="a-btn primary" href="/daily/latest.html">最新</a>
+        <a class="a-btn" href="/daily/tags/bull.html">BULL</a>
+        <a class="a-btn" href="/daily/tags/bear.html">BEAR</a>
+        <a class="a-btn" href="/daily/tags/wait.html">WAIT</a>
+      </div>
     </div>
 
     <div class="h1">BTC AI分析（2026-01-28）</div>
@@ -171,9 +252,29 @@
       </details>
     </div>
 
-    <footer>
-      <div>© CoinRader. / <a href="/disclaimer">免責</a> / <a href="/privacy">プライバシー</a></div>
+    <footer class="footerbox">
+      <div class="footergrid">
+        <div class="footnote">
+          <div>© CoinRader</div>
+          <div style="margin-top:6px;">
+            このページは日次データから自動生成されています。売買判断はご自身で行ってください。
+          </div>
+        </div>
+
+        <div class="footlinks" aria-label="footer links">
+          <a href="/">ダッシュボード</a>
+          <a href="/daily/">デイリー一覧</a>
+          <a href="/daily/latest.html">最新</a>
+          <a href="/daily/tags/bull.html">BULL</a>
+          <a href="/daily/tags/bear.html">BEAR</a>
+          <a href="/daily/tags/wait.html">WAIT</a>
+          <a href="/guide">指標の見方</a>
+          <a href="/disclaimer">免責</a>
+          <a href="/privacy">プライバシー</a>
+        </div>
+      </div>
     </footer>
+
   </div>
 </body>
 </html>
