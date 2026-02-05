@@ -76,4 +76,170 @@
       text-decoration:none;
       color:inherit;
     }
-    .rowlink:hover{border-color: rgba(255,255,255,.14);text-decoration:non
+    .rowlink:hover{border-color: rgba(255,255,255,.14);text-decoration:none;filter:brightness(1.04)}
+
+    .rowlink::after{
+      content:"›";
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      opacity:.55;
+      font-size:22px;
+      line-height:1;
+      pointer-events:none;
+    }
+
+    .rowlink .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      line-height:1.2;
+      padding-right:34px;
+    }
+
+    .rowlink .date{ font-weight:800; margin-bottom:8px; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+
+    .pill-ai{ font-weight:800; letter-spacing:.2px }
+    .pill-ai.bull{ border-color:rgba(34,197,94,.35); }
+    .pill-ai.bear{ border-color:rgba(239,68,68,.35); }
+    .pill-ai.wait{ border-color:rgba(234,179,8,.35); }
+    .pill-hot{ border-color:rgba(56,189,248,.35); }
+    .pill-up{ border-color:rgba(167,139,250,.35); }
+    .pill-kpi{ opacity:.72; }
+
+    .pill-reason{
+      max-width: 520px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    @media (max-width: 900px){ .pill-reason{ max-width: 320px; } }
+    @media (max-width: 520px){ .pill-reason{ max-width: 220px; } }
+
+    @media (max-width: 520px){
+      .pill{ font-size:11px; padding:6px 8px; }
+      .rowlink .meta{ gap:6px; }
+      .pill{ padding:5px 7px; }
+      .appHeader-inner{align-items:flex-start}
+      .nav{justify-content:flex-start}
+      .search{min-width:100%}
+    }
+
+    /* ---------- Empty state ---------- */
+    .empty{
+      display:none;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      padding:14px;
+      border:1px dashed rgba(255,255,255,.12);
+      border-radius:14px;
+    }
+
+    /* ---------- Footer ---------- */
+    footer{
+      margin-top:22px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      border-top:1px solid rgba(255,255,255,.06);
+      padding-top:14px;
+    }
+    footer a{color:rgba(148,163,184,.95)}
+    footer a:hover{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header class="appHeader" role="banner">
+      <div class="appHeader-inner">
+        <div class="brand">
+          <!-- ロゴ画像があるならここを実ファイルに合わせて -->
+          <a href="/" aria-label="CoinRader ホーム">
+            <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
+          </a>
+          <div class="crumb"><a href="/">CoinRader</a> / Daily</div>
+        </div>
+        <nav class="nav" aria-label="主要リンク">
+          <a class="btn" href="/">ダッシュボード</a>
+          <a class="btn btn-primary" href="/daily/latest.html">最新</a>
+          <a class="btn" href="/daily/">一覧</a>
+          <a class="btn" href="/guide">ガイド</a>
+        </nav>
+      </div>
+    </header>
+
+    <h1>Daily AIレポート一覧</h1>
+    <div class="sub">最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。</div>
+
+    <div class="tabs">
+      <a class="tab current" href="/daily/"><small>ALL</small>一覧</a>
+      <a class="tab tab-bear" href="/daily/tags/bear.html"><small>AI</small>BEAR</a>
+      <a class="tab tab-bull" href="/daily/tags/bull.html"><small>AI</small>BULL</a>
+      <a class="tab tab-wait" href="/daily/tags/wait.html"><small>AI</small>WAIT</a>
+    </div>
+
+    <div class="controls">
+      <div class="search">
+        <input id="q" type="search" placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など" />
+      </div>
+      <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
+    </div>
+
+    <div class="list" id="list">
+      {{ROWS}}
+    </div>
+    <div class="empty" id="empty">該当するレポートがありません。</div>
+
+    <footer>
+      © CoinRader. <a href="/disclaimer">免責</a> / <a href="/privacy">プライバシー</a>
+    </footer>
+  </div>
+
+  <script>
+    // --- page filter (client-side) ---
+    const q = document.getElementById('q');
+    const list = document.getElementById('list');
+    const empty = document.getElementById('empty');
+    const shownEl = document.getElementById('shown');
+    const totalEl = document.getElementById('total');
+
+    function normalize(s){
+      return (s || '').toLowerCase().replace(/\s+/g,' ').trim();
+    }
+
+    function apply(){
+      const term = normalize(q.value);
+      const rows = [...list.querySelectorAll('.row')];
+      totalEl.textContent = String(rows.length);
+
+      let shown = 0;
+      rows.forEach(row=>{
+        const text = normalize(row.innerText);
+        const ok = !term || text.includes(term);
+        row.style.display = ok ? '' : 'none';
+        if(ok) shown++;
+      });
+
+      shownEl.textContent = String(shown);
+      empty.style.display = shown ? 'none' : 'block';
+    }
+
+    q.addEventListener('input', apply);
+    window.addEventListener('DOMContentLoaded', apply);
+  </script>
+</body>
+</html>
