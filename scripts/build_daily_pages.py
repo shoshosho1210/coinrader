@@ -485,8 +485,7 @@ def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
         return "BEAR"
     return "WAIT"
 
-
-def build_reason_html(payload: Dict[str, Any]) -> str:
+def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
     reasons: List[str] = []
     for path in [
         "ai.reasons","ai.reason_lines","ai.reason",
@@ -533,28 +532,28 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
         rsi = to_float(btc_rsi)
         if rsi is not None:
             if rsi < 30:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で売られ過ぎ水準です。")
+                reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で売られ過ぎ水準です。")
             elif rsi < 45:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で弱めです。")
+                reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で弱めです。")
             elif rsi < 55:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で中立付近です。")
+                reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で中立付近です。")
             elif rsi < 70:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で堅調です。")
+                reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で堅調です。")
             else:
-                reasons.append(f"BTC RSI が {fmt_num(rsi)} で買われ過ぎ水準です。")
+                reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で買われ過ぎ水準です。")
 
         mad = to_float(ma_dist)
         if mad is not None:
             if mad <= -8:
-                reasons.append(f"MA距離が {fmt_num(mad)}% と大きくマイナスで、下方向の圧力が強い状態です。")
+                reasons.append(f"MA距離が {fmt_num(mad,1)}% と大きくマイナスで、下方向の圧力が強い状態です。")
             elif mad <= -3:
-                reasons.append(f"MA距離が {fmt_num(mad)}% で、弱含みです。")
+                reasons.append(f"MA距離が {fmt_num(mad,1)}% で、弱含みです。")
             elif mad < 3:
-                reasons.append(f"MA距離が {fmt_num(mad)}% で、方向感は限定的です。")
+                reasons.append(f"MA距離が {fmt_num(mad,1)}% で、方向感は限定的です。")
             elif mad < 8:
-                reasons.append(f"MA距離が {fmt_num(mad)}% で、上向きの勢いがあります。")
+                reasons.append(f"MA距離が {fmt_num(mad,1)}% で、上向きの勢いがあります。")
             else:
-                reasons.append(f"MA距離が {fmt_num(mad)}% と大きくプラスで、上昇が加速しています。")
+                reasons.append(f"MA距離が {fmt_num(mad,1)}% と大きくプラスで、上昇が加速しています。")
 
         if isinstance(trending, list) and trending:
             top3 = [str(x).strip().upper() for x in trending[:3] if str(x).strip()]
@@ -564,11 +563,24 @@ def build_reason_html(payload: Dict[str, Any]) -> str:
         if str(top_gainer_symbol).strip():
             ch = to_float(top_gainer_change)
             if ch is not None:
-                reasons.append(f"上昇トップ: {str(top_gainer_symbol).upper()}（+{fmt_num(ch)}%）")
+                reasons.append(f"上昇トップ: {str(top_gainer_symbol).upper()}（+{fmt_num(ch,2)}%）")
+
+    # --- ここが追加：結論1行 ---
+    j = (judge or "").strip().upper()
+    lead_map = {
+        "BEAR": "結論：弱気優勢（戻りは売られやすい局面）",
+        "BULL": "結論：強気優勢（押し目が買われやすい局面）",
+        "WAIT": "結論：様子見（方向感が弱い局面）",
+    }
+    lead = lead_map.get(j, "")
 
     li = "\n".join([f"<li>{escape_html(x)}</li>" for x in reasons[:6]])
-    return f"<ul class='why-list'>{li}</ul>" if li else ""
+    if not li and not lead:
+        return ""
 
+    lead_html = f"<div class='judge-lead'>{escape_html(lead)}</div>" if lead else ""
+    ul_html = f"<ul class='why-list'>{li}</ul>" if li else ""
+    return lead_html + ul_html
 
 def shorten_one_line(s: str, max_len: int = 70) -> str:
     s = (s or "").strip()
@@ -755,10 +767,14 @@ def main() -> None:
             str(updated_at),
         )
 
-        sent = fmt_num(fgi_value, 0) if fmt_num(fgi_value, 0) != "" else str(fgi_value)
-        rsi  = fmt_num(btc_rsi, 2) if fmt_num(btc_rsi, 2) != "" else str(btc_rsi)
-        trend_num = fmt_num(ma_dist, 1)
-        trend = trend_num if trend_num != "" else "—"
+        sent = fmt_num(fgi_value, 0)
+        sent = sent if sent != "" else "—"
+
+        rsi_num = fmt_num(btc_rsi, 1)          # RSIは小数1桁
+        rsi = rsi_num if rsi_num != "" else "—"
+
+        trend_num = fmt_num(ma_dist, 1)        # Trendは小数1桁
+        trend = (trend_num + "%") if trend_num != "" else "—"   # %を明示
 
         title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
         desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
@@ -812,7 +828,7 @@ def main() -> None:
         top_gainer = it["top_gainer"]
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
-        why_html = build_reason_html(payload)
+        why_html = build_reason_html(payload, judge)
 
         html = tmpl
         repl = {
