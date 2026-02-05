@@ -988,13 +988,13 @@ tag_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
                   f'<link rel="canonical" href="{escape_html(canon_url)}" />',
                   tag_html)
 
-# tabs current（テンプレに tabs がある場合のみ）
-tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
-tag_html = tag_html.replace(f'class="tab tab-{tag_lower}"', f'class="tab tab-{tag_lower} current"', 1)
+        # tabs current（テンプレに tabs がある場合のみ）
+        tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
+        tag_html = tag_html.replace(f'class="tab tab-{tag_lower}"', f'class="tab tab-{tag_lower} current"', 1)
 
-# --- tag JSON-LD を head に挿入 ---
-jsonld = build_tag_jsonld(SITE_ORIGIN, judge_key, filtered)
-tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
+        # --- tag JSON-LD を head に挿入 ---
+        jsonld = build_tag_jsonld(SITE_ORIGIN, judge_key, filtered)
+        tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
 
         out_path = tags_dir / f"{judge_key.lower()}.html"
         write_text(out_path, tag_html)
