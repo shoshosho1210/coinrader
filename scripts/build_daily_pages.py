@@ -110,19 +110,19 @@ def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi
 
 
 def build_jsonld(canonical: str, title: str, description: str, date_iso: str, updated_at_jst: str) -> str:
-    # 日次ページは Article として扱う
-    # updated_at_jst: 'YYYY-MM-DD 09:00' のような文字列を想定
+    """
+    JSON-LD を生成（Article + FAQPage）。
+    ※テンプレ側で <script type="application/ld+json">{{JSONLD}}</script> のように埋め込む前提。
+    """
+    # updated_at_jst: 'YYYY-MM-DD HH:MM'（JST）想定
     def to_iso(dt_s: str) -> str:
         try:
-            # allow 'YYYY-MM-DD HH:MM' (JST)
             dt = datetime.datetime.strptime(dt_s, "%Y-%m-%d %H:%M")
-            # JST +09:00
             return dt.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=9))).isoformat()
         except Exception:
             return date_iso + "T09:00:00+09:00"
 
-    data = {
-        "@context": "https://schema.org",
+    article = {
         "@type": "Article",
         "headline": title,
         "description": description,
@@ -130,6 +130,42 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
         "dateModified": to_iso(updated_at_jst),
         "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
         "publisher": {"@type": "Organization", "name": "CoinRader"},
+    }
+
+    # ページ下部にあるFAQ（固定文言）を構造化
+    faq = {
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "このAI判断は投資助言ですか？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "いいえ。参考情報であり、投資助言ではありません。最終判断はご自身で行ってください。"
+                },
+            },
+            {
+                "@type": "Question",
+                "name": "更新頻度は？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "原則として毎日更新します（データ取得状況により前後する場合があります）。"
+                },
+            },
+            {
+                "@type": "Question",
+                "name": "Fear & GreedやRSIが低いと「必ず買い」ですか？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "いいえ。単一指標だけで売買は決められません。複数の指標やリスク管理と併せて判断してください。"
+                },
+            },
+        ],
+    }
+
+    data = {
+        "@context": "https://schema.org",
+        "@graph": [article, faq],
     }
     return json.dumps(data, ensure_ascii=False)
 
