@@ -939,6 +939,11 @@ def main() -> None:
             f"<div class='taghead'>"
             f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
             f"<div class='tagsub'>全{len(filtered)}件</div>"
+            f"<div class='taglinks' style='margin-top:6px;font-size:12px;color:var(--muted)'>"
+            f"<a href='/daily/' style='margin-right:10px'>一覧</a>"
+            f"<a href='/daily/latest.html' style='margin-right:10px'>最新</a>"
+            f"<a href='/' style='margin-right:10px'>ダッシュボード</a>"
+            f"</div>"
             f"</div>\n"
             + "\n".join([
                 "<div class='row'>"
