@@ -21,6 +21,14 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
+      # ★追加：coinsページに危ないヘッダ送信が残ってないか確認
+      - name: Debug coin page CORS headers
+        run: |
+          echo "---- check for custom header usage in generated coin page ----"
+          grep -n "x-cg-demo-api-key" -n coins/btc/index.html || true
+          grep -n "fetch(url, { headers" -n coins/btc/index.html || true
+          grep -n "headers\\[" -n coins/btc/index.html || true
+
       # ★追加：coinsを生成
       - name: Generate coin pages
         env:
