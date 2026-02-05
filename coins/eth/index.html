@@ -47,8 +47,9 @@
   </div>
 
 <script>
-  const SYMBOL = "eth";     // btc / eth / sol / xrp
-  const COIN_ID = "ethereum";   // bitcoin etc
+  const SYMBOL = "eth";      // btc / eth / sol / xrp
+  const NAME = "Ethereum";
+  const COIN_ID = "ethereum";    // 使わなくてもOK（将来用）
 
   const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
   const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
@@ -60,62 +61,42 @@
     return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
   };
 
-  function apply(m){
-    document.getElementById("price").textContent = fmtJPY(m.current_price);
-    document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
-    document.getElementById("chg").textContent = fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
-    document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
-    document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
-    document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
-
-    const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
-    document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
-  }
-
-  async function fetchSnapshot(){
-    const snapUrl = `/data/coins/${SYMBOL}.json`;
-    const r = await fetch(snapUrl, { cache: "no-store" });
-    if(!r.ok) throw new Error("snapshot fetch failed: " + r.status);
-    const j = await r.json();
-    // fetch_coin_snapshots.py が markets配列で保存してる想定
-    const m = (j && j.markets && j.markets[0]) ? j.markets[0] : null;
-    if(!m) throw new Error("snapshot empty");
-    return m;
-  }
-
-  async function fetchFromAPI(){
-    const url = "https://api.coingecko.com/api/v3/coins/markets"
-      + "?vs_currency=jpy&ids=" + encodeURIComponent(COIN_ID)
-      + "&price_change_percentage=24h,7d";
-    const r = await fetch(url, { cache: "no-store" });
-    if(!r.ok) throw new Error("CoinGecko fetch failed: " + r.status);
-    const j = await r.json();
-    if(!Array.isArray(j) || !j[0]) throw new Error("CoinGecko empty");
-    return j[0];
-  }
+  // data/coins スナップショットを読む（キャッシュ回避）
+  const snapUrl = `/data/coins/${SYMBOL}.json?ts=${Date.now()}`;
 
   async function main(){
     try{
-      // まずスナップショット（安定）
-      const m = await fetchSnapshot();
-      apply(m);
-    }catch(e1){
-      try{
-        // ダメならAPI（保険）
-        const m = await fetchFromAPI();
-        apply(m);
-      }catch(e2){
-        document.getElementById("err").textContent = String(e2?.message || e2);
-        document.getElementById("memo").textContent = "データ取得に失敗しました。";
-      }
+      const r = await fetch(snapUrl, { cache: "no-store" });
+      if(!r.ok) throw new Error("snapshot fetch failed: " + r.status);
+
+      const m = await r.json();
+
+      // 想定フィールド（fetch_coin_snapshots.py がこの形で吐く前提）
+      // 例: current_price_jpy, high_24h_jpy, low_24h_jpy, chg_24h_pct, chg_7d_pct, total_volume_jpy, market_cap_jpy, ath_chg_pct
+      document.getElementById("price").textContent = fmtJPY(m.current_price_jpy);
+      document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h_jpy) + " / " + fmtJPY(m.low_24h_jpy);
+
+      document.getElementById("chg").textContent = fmtPct(m.chg_24h_pct) + " / " + fmtPct(m.chg_7d_pct);
+      document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_chg_pct);
+
+      document.getElementById("vol").textContent = fmtJPYBig(m.total_volume_jpy);
+      document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap_jpy);
+
+      const tone = (m.chg_24h_pct >= 0) ? "上向き" : "下向き";
+      document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
+      document.getElementById("err").textContent = "";
+    }catch(e){
+      document.getElementById("err").textContent = String(e?.message || e);
+      document.getElementById("memo").textContent = "データ取得に失敗しました。";
     }
   }
-
   main();
 </script>
 
+
 </body>
 </html>
+
 
 
 
