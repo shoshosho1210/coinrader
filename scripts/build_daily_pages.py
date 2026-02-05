@@ -111,10 +111,9 @@ def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi
 
 def build_jsonld(canonical: str, title: str, description: str, date_iso: str, updated_at_jst: str) -> str:
     """
-    JSON-LD を生成（Article + FAQPage）。
-    ※テンプレ側で <script type="application/ld+json">{{JSONLD}}</script> のように埋め込む前提。
+    日別ページの JSON-LD を生成（Article + FAQPage）。
+    updated_at_jst: 'YYYY-MM-DD HH:MM' (JST) を想定
     """
-    # updated_at_jst: 'YYYY-MM-DD HH:MM'（JST）想定
     def to_iso(dt_s: str) -> str:
         try:
             dt = datetime.datetime.strptime(dt_s, "%Y-%m-%d %H:%M")
@@ -132,7 +131,6 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
         "publisher": {"@type": "Organization", "name": "CoinRader"},
     }
 
-    # ページ下部にあるFAQ（固定文言）を構造化
     faq = {
         "@type": "FAQPage",
         "mainEntity": [
@@ -141,7 +139,7 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
                 "name": "このAI判断は投資助言ですか？",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "いいえ。参考情報であり、投資助言ではありません。最終判断はご自身で行ってください。"
+                    "text": "いいえ。参考情報であり、投資助言ではありません。最終判断はご自身で行ってください。",
                 },
             },
             {
@@ -149,7 +147,7 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
                 "name": "更新頻度は？",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "原則として毎日更新します（データ取得状況により前後する場合があります）。"
+                    "text": "原則として毎日更新します（データ取得状況により前後する場合があります）。",
                 },
             },
             {
@@ -157,17 +155,15 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
                 "name": "Fear & GreedやRSIが低いと「必ず買い」ですか？",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "いいえ。単一指標だけで売買は決められません。複数の指標やリスク管理と併せて判断してください。"
+                    "text": "いいえ。単一指標だけで売買は決められません。複数の指標やリスク管理と併せて判断してください。",
                 },
             },
         ],
     }
 
-    data = {
-        "@context": "https://schema.org",
-        "@graph": [article, faq],
-    }
-    return json.dumps(data, ensure_ascii=False)
+    data = {"@context": "https://schema.org", "@graph": [article, faq]}
+    s = json.dumps(data, ensure_ascii=False)
+    return s.replace("</", "<\\/")
 
 
 
@@ -237,7 +233,7 @@ def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ym
     parts = []
     # ラベル（非リンク）
     parts.append(
-        f"<a class='chip' href='/daily/tags/{escape_html(judge.lower())}.html' style='opacity:.75'><small>SAME</small>{escape_html(judge)}</a>"
+        f"<span class='chip' style='pointer-events:none;opacity:.75'><small>SAME</small>{escape_html(judge)}</span>"
     )
     for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
@@ -366,7 +362,6 @@ def ensure_sitemap_urls(sitemap_path: Path, urls: list[str]) -> None:
         return
 
     def _url_entry(u: str) -> str:
-        # lastmod は付けない（頻繁に変わると差分が大きくなるため）
         return f"  <url><loc>{escape_xml(u)}</loc></url>"
 
     if sitemap_path.exists():
@@ -375,24 +370,88 @@ def ensure_sitemap_urls(sitemap_path: Path, urls: list[str]) -> None:
         to_add = [u for u in urls if u not in existing]
         if not to_add:
             return
-
         entries = "\n".join(_url_entry(u) for u in to_add) + "\n"
         if "</urlset>" in xml:
             xml = xml.replace("</urlset>", entries + "</urlset>")
         else:
-            # 想定外フォーマット：末尾に追記
             if not xml.endswith("\n"):
                 xml += "\n"
             xml += entries
         write_text(sitemap_path, xml)
         return
 
-    # 無い場合は新規作成
     header = '<?xml version="1.0" encoding="UTF-8"?>\n'
     header += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     body = "\n".join(_url_entry(u) for u in urls) + "\n"
     footer = "</urlset>\n"
     write_text(sitemap_path, header + body + footer)
+
+
+def build_tag_jsonld(site_origin: str, tag: str, rows: list[dict]) -> str:
+    """
+    /daily/tags/{tag}.html 用の JSON-LD（CollectionPage + ItemList）
+    rows: pages_desc と同じ形式で、date_iso / href を含む想定
+    """
+    tag_u = (tag or "").upper()
+    url = f"{site_origin}/daily/tags/{tag}.html"
+
+    item_elems = []
+    for i, r in enumerate(rows, start=1):
+        href = r.get("href")  # 例: "20260205.html"
+        date_iso = r.get("date_iso")  # 例: "2026-02-05"
+        if not href or not date_iso:
+            continue
+        item_elems.append({
+            "@type": "ListItem",
+            "position": i,
+            "url": f"{site_origin}/daily/{href}",
+            "name": date_iso,
+        })
+
+    data = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": f"AI {tag_u} の日一覧（CoinRader）",
+        "description": f"CoinRaderのAI判定が{tag_u}の日をまとめた一覧ページ。",
+        "url": url,
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListOrder": "https://schema.org/ItemListOrderDescending",
+            "numberOfItems": len(item_elems),
+            "itemListElement": item_elems,
+        },
+        "publisher": {"@type": "Organization", "name": "CoinRader"},
+    }
+    s = json.dumps(data, ensure_ascii=False)
+    return s.replace("</", "<\\/")
+
+
+def insert_jsonld_into_head(html: str, jsonld_str: str) -> str:
+    if not jsonld_str:
+        return html
+    script = f'\n  <script type="application/ld+json">{jsonld_str}</script>\n'
+    if "</head>" in html:
+        return html.replace("</head>", script + "</head>")
+    return script + html
+
+
+def adjust_tabs_current(html: str, active_tag: str) -> str:
+    """
+    daily_index.html に ALL/BEAR/BULL/WAIT の tabs がある前提で、
+    tagページでは active_tag を current にする。
+    """
+    tag = (active_tag or "").lower().strip()
+    if not tag:
+        return html
+
+    # ALLの current を外す
+    html = html.replace('class="tab current" href="/daily/"', 'class="tab" href="/daily/"')
+
+    # 対象タグのリンクに current を付ける
+    # 例: class="tab tab-bear" href="/daily/tags/bear.html" → class="tab tab-bear current" ...
+    pat = re.compile(rf'class="tab\s+(tab-{re.escape(tag)})"(\s+href="/daily/tags/{re.escape(tag)}\.html")')
+    html = pat.sub(r'class="tab \1 current"\2', html)
+    return html
 
 # ---------- reason builder ----------
 def build_reason_html(payload: Dict[str, Any]) -> str:
@@ -930,87 +989,6 @@ def main() -> None:
         raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
     write_text(OUT_DIR / "index.html", index_html)
 
-    # tag pages（同じAI判定の日をまとめた一覧）
-    #   - /daily/tags/bear.html, bull.html, wait.html
-    # 目的: 回遊・内部リンク強化（一覧→タグ→各日）
-    tags_dir = OUT_DIR / "tags"
-    tags_dir.mkdir(parents=True, exist_ok=True)
-
-    rows_pat = re.compile(r"\{\{\s*ROWS\s*\}\}")
-    items_pat = re.compile(r"\{\{\s*ITEMS\s*\}\}")
-    latest_pat = re.compile(r"\{\{\s*LATEST_HREF\s*\}\}")
-
-    for judge_key in ["BEAR", "BULL", "WAIT"]:
-        filtered = [p for p in pages_desc if str(p.get("judge","")).upper() == judge_key]
-
-        # 該当が0件でもタグページは必ず生成する（SEO/回遊の入口を確保）
-        if not filtered:
-            rows_html_tag = (
-                f"<div class='taghead'>"
-                f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
-                f"<div class='tagsub'>全0件</div>"
-                f"</div>\n"
-                + "<div class='empty' style='margin:10px 0 18px;opacity:.8'>"
-                + "まだ該当する日がありません。"
-                + " <a href='../index.html'>一覧に戻る</a>"
-                + "</div>"
-            )
-            items_html_tag = ""
-
-            tag_html = tmpl_index
-            tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
-            tag_html, _ = items_pat.subn(items_html_tag, tag_html)
-            tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
-
-            # タブの current を該当判定へ移す（テンプレがALLをcurrentにしている想定）
-            tag_html = tag_html.replace('class="tab current" href="/daily/"', 'class="tab" href="/daily/"')
-            tag_html = tag_html.replace(f'class="tab tab-{judge_key.lower()}"', f'class="tab tab-{judge_key.lower()} current"')
-
-            if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
-                raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
-
-            out_path = tags_dir / f"{judge_key.lower()}.html"
-            write_text(out_path, tag_html)
-            continue
-
-        # タグページは /daily/tags/ 配下なので、リンクは ../YYYYMMDD.html で辿れるようにする
-        rows_html_tag = (
-            f"<div class='taghead'>"
-            f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
-            f"<div class='tagsub'>全{len(filtered)}件</div>"
-            f"</div>\n"
-            + "\n".join([
-                "<div class='row'>"
-                f"<a class='rowlink' href='../{escape_html(p['ymd'])}.html'>"
-                f"<div class='date'>{escape_html(p['date_iso'])}</div>"
-                f"<div class='meta'>{_fmt_meta_html(p)}</div>"
-                "</a>"
-                "</div>"
-                for p in filtered
-            ])
-        )
-
-        items_html_tag = "\n".join([
-            f"<li><a href='../{escape_html(p['ymd'])}.html'>{escape_html(p['title'])}</a></li>"
-            for p in filtered
-        ])
-
-        tag_html = tmpl_index
-        tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
-        tag_html, _ = items_pat.subn(items_html_tag, tag_html)
-        tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
-
-        # タブの current を該当判定へ移す（テンプレがALLをcurrentにしている想定）
-        tag_html = tag_html.replace('class="tab current" href="/daily/"', 'class="tab" href="/daily/"')
-        tag_html = tag_html.replace(f'class="tab tab-{judge_key.lower()}"', f'class="tab tab-{judge_key.lower()} current"')
-
-        # placeholder 残り検知（タグページも同様）
-        if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
-            raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
-
-        out_path = tags_dir / f"{judge_key.lower()}.html"
-        write_text(out_path, tag_html)
-
     # latest.html（最新ページへリダイレクト/案内）
     latest_target = f"{latest_ymd}.html"
     latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
@@ -1018,17 +996,51 @@ def main() -> None:
     write_text(OUT_DIR / "latest.html", latest_html)
 
 
-    # sitemap.xml: daily と tags を確実に含める（既存があれば追記、なければ生成）
+    # tags/*.html（判定別の一覧ページ）を生成
+    TAG_DIR = OUT_DIR / "tags"
+    TAG_DIR.mkdir(parents=True, exist_ok=True)
+
+    tags = ["bear", "bull", "wait"]
+    for tag in tags:
+        tag_u = tag.upper()
+        filtered = [p for p in pages_desc if (p.get("judge") or "").upper() == tag_u]
+        # 該当0件でもページは必ず生成
+        rows_tag = "\n".join([
+            f"<div class='row'><a class='rowlink' href='/daily/{escape_html(p['href'])}'><div class='date'>{escape_html(p['date_iso'])}</div><div class='meta'>{_fmt_meta_html(p)}</div></a></div>"
+            for p in filtered
+        ]) if filtered else "<div class='meta' style='padding:14px 0'>まだ該当する日がありません。</div>"
+
+        tag_items_html = "\n".join([
+            f"<li><a href='{escape_html(p['href'])}'>{escape_html(p['title'])}</a></li>"
+            for p in filtered
+        ])
+
+        tag_html = tmpl_index
+        tag_html = rows_pat.sub(rows_tag, tag_html)
+        tag_html = items_pat.sub(tag_items_html, tag_html)
+        tag_html = latest_pat.sub(f"{latest_ymd}.html", tag_html)
+
+        # タイトル/見出しを簡易に差し替え（テンプレ側が固定文言でも壊れないように軽め）
+        tag_html = re.sub(r"Daily AIレポート一覧", f"AI {tag_u} の日一覧", tag_html)
+
+        # tabs の current を tag に合わせる（テンプレに tabs がある場合のみ）
+        tag_html = adjust_tabs_current(tag_html, tag)
+
+        # JSON-LD（CollectionPage + ItemList）
+        tag_jsonld = build_tag_jsonld(SITE_ORIGIN, tag, filtered)
+        tag_html = insert_jsonld_into_head(tag_html, tag_jsonld)
+
+        write_text(TAG_DIR / f"{tag}.html", tag_html)
+
+    # sitemap.xml に tags を確実に含める
     sitemap_path = ROOT / "sitemap.xml"
-    urls = [
+    ensure_sitemap_urls(sitemap_path, [
         f"{SITE_ORIGIN}/daily/index.html",
         f"{SITE_ORIGIN}/daily/latest.html",
         f"{SITE_ORIGIN}/daily/tags/bear.html",
         f"{SITE_ORIGIN}/daily/tags/bull.html",
         f"{SITE_ORIGIN}/daily/tags/wait.html",
-    ]
-    ensure_sitemap_urls(sitemap_path, urls)
-
+    ])
 
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
