@@ -909,8 +909,13 @@ def main() -> None:
         # ★ build marker
         tag_html = tag_html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
 
-        out_path = tags_dir / f"{tag_lower}.html"
-        write_text(out_path, tag_html)
+        out_path_html = tags_dir / f"{tag_lower}.html"
+        write_text(out_path_html, tag_html)
+
+        # 追加：拡張子なし（Cloudflare 308 の飛び先）も同内容で生成
+        out_path_noext = tags_dir / f"{tag_lower}"
+        write_text(out_path_noext, tag_html)
+
 
     latest_target = f"{latest_ymd}.html"
     latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
