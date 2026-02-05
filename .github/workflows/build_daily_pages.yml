@@ -21,14 +21,6 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
-      # ★追加：coinsページに危ないヘッダ送信が残ってないか確認
-      - name: Debug coin page CORS headers
-        run: |
-          echo "---- check for custom header usage in generated coin page ----"
-          grep -n "x-cg-demo-api-key" -n coins/btc/index.html || true
-          grep -n "fetch(url, { headers" -n coins/btc/index.html || true
-          grep -n "headers\\[" -n coins/btc/index.html || true
-
       # ★追加：coinsを生成
       - name: Generate coin pages
         env:
@@ -36,6 +28,16 @@ jobs:
           CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
         run: |
           python scripts/build_coin_pages.py
+
+      - name: Debug coin page headers (after build)
+        run: |
+          echo "---- grep x-cg-demo-api-key ----"
+          grep -n "x-cg-demo-api-key" coins/btc/index.html || true
+          echo "---- grep fetch headers ----"
+          grep -n "fetch(url" coins/btc/index.html || true
+          grep -n "headers\\[" coins/btc/index.html || true
+          echo "---- grep CG_KEY ----"
+          grep -n "const CG_KEY" coins/btc/index.html || true
 
       - name: Debug env for coin build
         run: |
