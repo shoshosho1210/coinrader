@@ -15,14 +15,31 @@
     h1{font-size:26px;margin:10px 0 6px}
     .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
     .list{border-top:1px solid var(--line)}
-    .row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+    .row{padding:0;border-bottom:1px solid var(--line)}
     .date{font-weight:800}
     .meta{color:var(--muted);font-size:12px}
+
+    /* タグ（判定別）タブ */
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+    .tab{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+         font-size:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+         color:var(--fg);text-decoration:none}
+    .tab:hover{background:rgba(255,255,255,.06);text-decoration:none}
+    .tab small{opacity:.75;font-size:11px}
+    .tab.current{border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10);font-weight:700}
+    .tab-bear{border-color:rgba(239,68,68,.35)}
+    .tab-bull{border-color:rgba(34,197,94,.35)}
+    .tab-wait{border-color:rgba(234,179,8,.35)}
 /* 行全体をカード化 */
 /* meta を 右に余白作って矢印置き場にする */
 .rowlink{
-  position: relative;
-  border: 1px solid rgba(255,255,255,.06);
+  display:block;
+  position:relative;
+  padding:14px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.06);
+  text-decoration:none;
+  color:inherit;
 }
 
 .rowlink:hover{
@@ -44,6 +61,10 @@
 
 /* 右端の矢印ぶんだけ meta 側に余白を確保 */
 .rowlink .meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  line-height:1.2;
   padding-right:34px;
 }
 
@@ -69,11 +90,6 @@
 .pill-ai.wait{ border-color:rgba(234,179,8,.35); }
 .pill-hot{ border-color:rgba(56,189,248,.35); }
 .pill-up{ border-color:rgba(167,139,250,.35); }
-.pill-reason{
-  max-width: 520px;   /* PC */
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
 .pill-kpi{ opacity:.72; }
 
 @media (max-width: 520px){
@@ -95,19 +111,19 @@
   .rowlink .meta{ gap:6px; }
   .pill{ padding:5px 7px; }
 }
-.nav a.current{
-  border-color: rgba(56,189,248,.6);
-  background: rgba(56,189,248,.10);
-  font-weight: 700;
-}
-
-  </style>
+</style>
 </head>
 <body>
   <div class="wrap">
     <div style="color:var(--muted);font-size:13px"><a href="/">CoinRader</a> / Daily</div>
     <h1>Daily AIレポート一覧</h1>
     <div class="sub">最新: <a href="/daily/latest.html">latest</a></div>
+    <div class="tabs">
+      <a class="tab current" href="/daily/"><small>ALL</small>一覧</a>
+      <a class="tab tab-bear" href="/daily/tags/bear.html"><small>AI</small>BEAR</a>
+      <a class="tab tab-bull" href="/daily/tags/bull.html"><small>AI</small>BULL</a>
+      <a class="tab tab-wait" href="/daily/tags/wait.html"><small>AI</small>WAIT</a>
+    </div>
     <div class="list">
       {{ROWS}}
     </div>
