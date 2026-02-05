@@ -21,16 +21,23 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
+      # ★追加：coinsを生成
+      - name: Generate coin pages
+        env:
+          CR_SITE_ORIGIN: https://coinrader.net
+        run: |
+          python scripts/build_coin_pages.py
+
       - name: Commit generated pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # daily/tags が .gitignore 対象でも確実に含める
-          git add -A daily sitemap.xml
+          git add -A daily coins sitemap.xml
           git add -f daily/tags/*.html
 
-          git commit -m "chore: generate daily pages" || echo "No changes to commit"
+          git commit -m "chore: generate daily & coin pages" || echo "No changes to commit"
           git push
 
       - name: Debug bear.html snippet
