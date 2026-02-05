@@ -86,7 +86,9 @@ def main() -> None:
         write_text(OUT_COINS_DIR / c["symbol"] / "index.html", html)
 
     print(f"[OK] Generated coins pages: {OUT_COINS_DIR} (count={len(COINS)})")
+    print("[DEBUG] CR_COINGECKO_KEY length=", len(os.environ.get("CR_COINGECKO_KEY","")))
 
 if __name__ == "__main__":
     main()
+
 
