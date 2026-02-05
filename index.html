@@ -9339,27 +9339,6 @@ function createSparkline(prices, isUp) {
         <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
 }
-// --- Daily links: open in modal (no reload) ---
-(function(){
-  const latest = document.getElementById('aiDailyLatestLink');
-  const list   = document.getElementById('aiDailyListLink');
-
-  if (latest) {
-    latest.addEventListener('click', (ev) => {
-      ev.preventDefault();     // ← ページ遷移（リロード）を止める
-      ev.stopPropagation();    // ← 親要素のクリックを止める（念のため）
-      openPageModal('/daily/latest.html', '今日のAIレポート');
-    });
-  }
-
-  if (list) {
-    list.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      openPageModal('/daily/', '過去AIレポート一覧');
-    });
-  }
-})();
 
 </script>
 <footer class="site-footer">
