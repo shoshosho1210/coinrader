@@ -12,256 +12,228 @@
   <meta property="og:url" content="https://coinrader.net/daily/20260205.html" />
   <meta property="og:site_name" content="CoinRader" />
   <meta name="twitter:card" content="summary_large_image" />
+
   <style>
-    :root{--bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--card:#111827;--line:#1f2937;--accent:#38bdf8;}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--fg);}
-    .wrap{max-width:980px;margin:0 auto;padding:24px 16px 48px;}
+    :root{
+      --bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--card:#111827;--line:#1f2937;--accent:#38bdf8;
+    }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;
+      background:var(--bg);
+      color:var(--fg);
+    }
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
-    .topnav{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
-    .crumb{color:var(--muted);font-size:13px}
-    .h1{font-size:28px;font-weight:800;letter-spacing:.2px;margin:8px 0 6px}
-    .meta{color:var(--muted);font-size:13px;margin-bottom:18px}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:860px){.grid{grid-template-columns:1.2fr .8fr}}
-    .card{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:16px}
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .kpi{border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.02)}
-    .kpi .label{color:var(--muted);font-size:12px}
-    .kpi .val{font-size:18px;font-weight:800;margin-top:6px}
-    .badge{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);font-size:12px;color:var(--muted)}
-    .judge{font-size:22px;font-weight:900;margin:6px 0 10px}
-    .why p{margin:10px 0;line-height:1.7}
-    .faq h2{font-size:16px;margin:0 0 10px}
-    .faq details{border-top:1px solid var(--line);padding:10px 0}
-    .faq summary{cursor:pointer;color:var(--fg);font-weight:700}
-    .faq .a{color:var(--muted);margin-top:6px;line-height:1.7}
-    footer{margin-top:24px;color:var(--muted);font-size:12px}
-    code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:8px}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);font-size:12px;color:var(--fg)}
+
+    /* ---------- Header (same as daily_index) ---------- */
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
+    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
+    .appHeader-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brandLogo{height:24px;width:auto;display:block}
+    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 12px;font-size:12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+      color:var(--fg);text-decoration:none
+    }
+    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
+    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
+
+    /* ---------- Page heading ---------- */
+    .h1{font-size:26px;font-weight:800;letter-spacing:.2px;margin:12px 0 6px}
+    .meta{color:var(--muted);font-size:13px;margin:0 0 10px}
+
+    /* ---------- Chips ---------- */
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 10px}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      font-size:12px;color:var(--fg);
+    }
     .chip small{color:var(--muted);font-weight:700;letter-spacing:.2px}
     .chip:hover{text-decoration:none;filter:brightness(1.1)}
-/* === Top (red box) polish === */
 
-/* カードの密度・統一感 */
-.card{padding:18px}
-.grid{gap:14px}
+    /* ---------- Main grid/cards ---------- */
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:860px){.grid{grid-template-columns:1.2fr .8fr}}
 
-/* チップ列とカードの間の余白を少し詰める */
-.chips{margin:8px 0 8px}
+    .card{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:18px
+    }
+    .badge{
+      display:inline-block;
+      padding:4px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      font-size:12px;color:var(--muted)
+    }
+    .judge{font-size:22px;font-weight:900;margin:8px 0 10px;letter-spacing:.2px}
 
-/* AI JUDGE: 結論の迫力を維持しつつ読みやすく */
-.judge{letter-spacing:.2px}
-.why ul{margin:10px 0 0 18px; padding:0}
-.why li{margin:6px 0; line-height:1.6}
-.why li::marker{color:rgba(148,163,184,.65)}
+    /* WHY list */
+    .why ul{margin:10px 0 0 18px; padding:0}
+    .why li{margin:6px 0; line-height:1.6}
+    .why li::marker{color:rgba(148,163,184,.65)}
+    .judge-lead{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(56,189,248,.22);
+      background:rgba(56,189,248,.08);
+      color:var(--fg);
+      font-weight:800;
+      letter-spacing:.2px;
+    }
 
-/* KPI: 数字を少し強く、カード内の余白を整える */
-.kpis{gap:10px}
-.kpi{padding:12px}
-.kpi .label{letter-spacing:.06em; font-size:11px; opacity:.85}
-.kpi .val{font-size:20px; margin-top:5px}
+    /* KPI */
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .kpi{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      padding:12px;
+      background:rgba(255,255,255,.02)
+    }
+    .kpi .label{color:var(--muted);font-size:11px;letter-spacing:.06em;opacity:.85}
+    .kpi .val{font-size:20px;font-weight:900;margin-top:5px}
 
-/* NAV（右下リンク）を“押せる”UIに */
-.navlinks{margin-top:14px; display:grid; gap:10px}
-.navlink{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:10px 12px;
-  border:1px solid rgba(148,163,184,.18);
-  border-radius:12px;
-  background:rgba(255,255,255,.02);
-  color:var(--fg);
-  text-decoration:none;
-}
-.navlink:hover{
-  border-color: rgba(56,189,248,.35);
-  text-decoration:none;
-  filter:brightness(1.08);
-}
-.navlink::after{
-  content:"›";
-  color:rgba(148,163,184,.8);
-  font-weight:800;
-}
-/* === Header polish === */
-.topnav{
-  padding:10px 12px;
-  border:1px solid rgba(148,163,184,.16);
-  border-radius:14px;
-  background:rgba(255,255,255,.02);
-  margin-bottom:14px;
-}
+    /* NAV links (inside right card) */
+    .navlinks{margin-top:14px; display:grid; gap:10px}
+    .navlink{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 12px;
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:12px;
+      background:rgba(255,255,255,.02);
+      color:var(--fg);
+      text-decoration:none;
+    }
+    .navlink:hover{
+      border-color: rgba(56,189,248,.35);
+      text-decoration:none;
+      filter:brightness(1.08);
+    }
+    .navlink::after{
+      content:"›";
+      color:rgba(148,163,184,.8);
+      font-weight:900;
+    }
 
-.brand{
-  display:flex; align-items:center; gap:10px; min-width:0;
-}
-.brand .dot{
-  width:10px; height:10px; border-radius:999px;
-  background:rgba(56,189,248,.9);
-  box-shadow:0 0 0 4px rgba(56,189,248,.12);
-  flex:0 0 auto;
-}
-.crumb{
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
+    /* FAQ */
+    .faq h2{font-size:16px;margin:0 0 10px}
+    .faq details{border-top:1px solid rgba(255,255,255,.08);padding:10px 0}
+    .faq summary{cursor:pointer;color:var(--fg);font-weight:800}
+    .faq .a{color:var(--muted);margin-top:6px;line-height:1.7}
 
-.actions{
-  display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
-}
-.a-btn{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:7px 10px;
-  border-radius:999px;
-  border:1px solid rgba(148,163,184,.18);
-  background:rgba(255,255,255,.02);
-  color:var(--fg);
-  font-size:12px;
-  text-decoration:none;
-}
-.a-btn:hover{
-  border-color: rgba(56,189,248,.35);
-  filter:brightness(1.08);
-  text-decoration:none;
-}
-.a-btn.primary{
-  border-color: rgba(56,189,248,.35);
-  background: rgba(56,189,248,.10);
-}
-/* === Footer polish === */
-.footerbox{
-  margin-top:18px;
-  padding:14px 16px;
-  border:1px solid rgba(148,163,184,.16);
-  border-radius:14px;
-  background:rgba(255,255,255,.02);
-}
-.footergrid{
-  display:grid; gap:10px;
-}
-@media(min-width:860px){
-  .footergrid{ grid-template-columns: 1.2fr .8fr; align-items:start; }
-}
-.footlinks{
-  display:flex; flex-wrap:wrap; gap:10px;
-  color:var(--muted); font-size:12px;
-}
-.footlinks a{ color:var(--muted); }
-.footlinks a:hover{ color:var(--fg); text-decoration:none; }
-.footnote{
-  color:rgba(148,163,184,.9);
-  font-size:12px; line-height:1.6;
-}
-/* --- Daily Header (lightweight, consistent with index) --- */
-.appHeader{
-  position: sticky;
-  top: 12px;
-  z-index: 1000;
-  margin: 0 0 12px;
-}
-.appHeader-inner{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:10px 12px;
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:14px;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(10px);
-}
-.appHeader-left{ display:flex; align-items:center; gap:12px; min-width:0; }
-.appHeader-right{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    @media (max-width: 520px){
+      .appHeader-inner{align-items:flex-start}
+      .nav{justify-content:flex-start}
+      .kpi .val{font-size:18px}
+    }
 
-.brandLogo{ height:26px; width:auto; display:block; } /* indexの思想に寄せる */
-.crumb{ color: var(--muted); font-size: 13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-.headerNav{ display:flex; gap:8px; flex-wrap:wrap; }
-.btn.tab{
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:6px 12px;
-  font-size:12px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.04);
-  color: var(--fg);
-  text-decoration:none;
-}
-.btn.tab:hover{ border-color: rgba(56,189,248,.35); }
-
-@media (max-width: 820px){
-  .appHeader-inner{ align-items:flex-start; }
-  .appHeader-left{ flex-wrap:wrap; }
-  .appHeader-right{ width:100%; justify-content:flex-start; }
-}
-
-/* --- Footer (match index) --- */
-.site-footer{
-  background: rgba(10, 16, 28, 0.4);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 16px 12px;
-  margin-top: 30px;
-  width: 100%;
-}
-.footer-inner{
-  max-width: 980px; /* dailyのwrap幅に合わせるなら980でもOK */
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-.footer-brand{ display:flex; align-items:center; gap:10px; }
-.footer-logo{ height: 36px; width:auto; opacity: .8; }
-.footer-tagline{ font-size: 11px; color: #64748b; white-space: nowrap; }
-.footer-nav{ display:flex; gap:12px; flex-wrap:wrap; }
-.footer-nav a{ color:#94a3b8; font-size:11.5px; text-decoration:none; white-space:nowrap; }
-.footer-nav a:hover{ color:#38bdf8; }
-
-.footer-copyright{
-  max-width: 980px;
-  margin: 10px auto 0;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
-  text-align: center;
-  font-size: 10px;
-  color: #475569;
-}
-@media (max-width: 768px){
-  .footer-inner{ flex-direction: column; text-align:center; gap:12px; }
-  .footer-nav{ justify-content:center; gap: 8px 12px; }
-  .footer-brand{ flex-direction: column; gap:6px; }
-}
-
+    /* ---------- Footer (same as daily_index / daily_latest) ---------- */
+    .site-footer{
+      margin-top:28px;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:18px 0 10px;
+      color:var(--muted);
+    }
+    .footer-inner{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .footer-brand{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:220px;
+    }
+    .footer-logo{
+      height:26px;
+      width:auto;
+      max-width:220px;
+      object-fit:contain;
+      display:block;
+      image-rendering:auto;
+    }
+    .footer-tagline{
+      font-size:12px;
+      color:rgba(148,163,184,.9);
+      line-height:1.35;
+    }
+    .footer-nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 12px;
+      justify-content:flex-end;
+    }
+    .footer-nav a{
+      color:rgba(148,163,184,.95);
+      font-size:12px;
+      padding:6px 10px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      background:rgba(255,255,255,.03);
+      text-decoration:none;
+    }
+    .footer-nav a:hover{
+      border-color:rgba(56,189,248,.35);
+      filter:brightness(1.06);
+      text-decoration:none;
+    }
+    .footer-copyright{
+      margin-top:12px;
+      font-size:12px;
+      opacity:.85;
+    }
   </style>
+
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Article", "headline": "BTC AI分析 2026-02-05｜Fear&Greed 12 / RSI 33.37 / Trend -11.8（CoinRader）", "description": "2026-02-05のBTCをAIが日次分析。市場心理(Fear&Greed)=12、RSI=33.37、Trend=-11.8。総合判断=BEAR。注目トレンド:BTC/SOL/HYPE. 上昇トップ:WHITEWHALE(+10.85%)", "datePublished": "2026-02-05T09:00:00+09:00", "dateModified": "2026-02-05T09:00:00+09:00", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://coinrader.net/daily/20260205.html"}, "publisher": {"@type": "Organization", "name": "CoinRader"}}
   </script>
 </head>
+
 <body>
   <div class="wrap">
-<header class="appHeader" role="banner">
-  <div class="appHeader-inner">
-    <div class="appHeader-left">
-      <a class="brandLink" href="/" aria-label="CoinRader ホーム">
-        <img alt="CoinRader" class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" />
-      </a>
-      <div class="crumb">Daily / 2026-02-05</div>
-    </div>
 
-    <div class="appHeader-right">
-      <nav class="headerNav" aria-label="ページナビ">
-        <a class="btn tab" href="/">ダッシュボード</a>
-        <a class="btn tab" href="/daily/">一覧</a>
-        <a class="btn tab" href="/daily/latest.html">最新</a>
-        <a class="btn tab" href="/guide">ガイド</a>
-      </nav>
-    </div>
-  </div>
-</header>
+    <!-- Header -->
+    <header class="appHeader">
+      <div class="appHeader-inner">
+        <div class="brand">
+          <a href="/" aria-label="CoinRader">
+            <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
+          </a>
+          <div class="crumb">
+            <a href="/">CoinRader</a> / <a href="/daily/">Daily</a> / 2026-02-05
+          </div>
+        </div>
+        <nav class="nav" aria-label="Daily navigation">
+          <a class="btn" href="/daily/">一覧</a>
+          <a class="btn btn-primary" href="/daily/latest.html">最新</a>
+          <a class="btn" href="/guide">活用ガイド</a>
+        </nav>
+      </div>
+    </header>
 
-
+    <!-- Title -->
     <div class="h1">BTC AI分析（2026-02-05）</div>
     <div class="meta">更新: 2026-02-05 09:00（JST）・このページは日次データから自動生成されています。</div>
 
+    <!-- Date chips -->
     <div class="chips">
       <a class='chip chip-nav' href='/daily/20260204.html'>← 前日</a>
       <a class='chip chip-nav' href='/daily/20260206.html'>翌日 →</a>
@@ -276,8 +248,9 @@
       <a class='chip' href='/daily/latest.html'><small>NEW</small>最新</a>
     </div>
 
+    <!-- Main -->
     <div class="grid">
-      <div class="card">
+      <section class="card" aria-label="AI Judge">
         <div class="badge">AI JUDGE</div>
         <div class="judge">BEAR</div>
         <div class="why">
@@ -286,11 +259,12 @@
 <li>MA距離が -11.8% と大きくマイナスで、下方向の圧力が強い状態です。</li>
 <li>注目トレンド: BTC / SOL / HYPE</li></ul>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
+      <aside class="card" aria-label="Key metrics">
         <div class="badge">KEY METRICS</div>
         <div style="height:10px"></div>
+
         <div class="kpis">
           <div class="kpi">
             <div class="label">Fear &amp; Greed</div>
@@ -305,19 +279,16 @@
             <div class="val">-11.8%</div>
           </div>
         </div>
-<div class="kpi-note" style="margin-top:10px; font-size:12px; line-height:1.6; color: rgba(148,163,184,.85);">
-  <div>FGI: Extreme Fear</div>
-  <div>注目: BTC / SOL / HYPE</div>
-</div>
-        <div style="height:14px"></div>
+
         <div class="navlinks">
           <a class="navlink" href="/">ダッシュボードへ</a>
           <a class="navlink" href="/guide">指標の見方（Trend / RSI）</a>
         </div>
-      </div>
+      </aside>
     </div>
 
-    <div class="card faq" style="margin-top:12px">
+    <!-- FAQ -->
+    <section class="card faq" style="margin-top:12px" aria-label="FAQ">
       <h2>よくある質問</h2>
       <details>
         <summary>このAI判断は投資助言ですか？</summary>
@@ -331,27 +302,28 @@
         <summary>Fear &amp; GreedやRSIが低いと「必ず買い」？</summary>
         <div class="a">必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。</div>
       </details>
-    </div>
+    </section>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
-      <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
-    </div>
-    <nav class="footer-nav">
-      <a href="/guide">活用ガイド</a>
-      <a href="/start">始め方</a>
-      <a href="/coins/">Coins</a>
-      <a href="/data-sources">データ</a>
-      <a href="/about">運営</a>
-      <a href="/contact">連絡</a>
-      <a href="/disclaimer">免責</a>
-      <a href="/privacy">法務</a>
-    </nav>
-  </div>
-  <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
-</footer>
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
+          <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+        </div>
+        <nav class="footer-nav">
+          <a href="/guide">活用ガイド</a>
+          <a href="/start">始め方</a>
+          <a href="/coins/">Coins</a>
+          <a href="/data-sources">データ</a>
+          <a href="/about">運営</a>
+          <a href="/contact">連絡</a>
+          <a href="/disclaimer">免責</a>
+          <a href="/privacy">法務</a>
+        </nav>
+      </div>
+      <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
+    </footer>
 
   </div>
 </body>
