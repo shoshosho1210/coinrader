@@ -47,9 +47,7 @@
   </div>
 
 <script>
-  const SYMBOL = "xrp";      // btc / eth / sol / xrp
-  const NAME = "XRP";
-  const COIN_ID = "ripple";    // 使わなくてもOK（将来用）
+  const SYMBOL = "xrp"; // btc / eth / sol / xrp
 
   const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
   const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
@@ -61,7 +59,6 @@
     return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
   };
 
-  // data/coins スナップショットを読む（キャッシュ回避）
   const snapUrl = `/data/coins/${SYMBOL}.json?ts=${Date.now()}`;
 
   async function main(){
@@ -69,20 +66,24 @@
       const r = await fetch(snapUrl, { cache: "no-store" });
       if(!r.ok) throw new Error("snapshot fetch failed: " + r.status);
 
-      const m = await r.json();
+      const j = await r.json();
+      if(!j || !j.market) throw new Error("snapshot json missing 'market'");
 
-      // 想定フィールド（fetch_coin_snapshots.py がこの形で吐く前提）
-      // 例: current_price_jpy, high_24h_jpy, low_24h_jpy, chg_24h_pct, chg_7d_pct, total_volume_jpy, market_cap_jpy, ath_chg_pct
-      document.getElementById("price").textContent = fmtJPY(m.current_price_jpy);
-      document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h_jpy) + " / " + fmtJPY(m.low_24h_jpy);
+      const m = j.market;
 
-      document.getElementById("chg").textContent = fmtPct(m.chg_24h_pct) + " / " + fmtPct(m.chg_7d_pct);
-      document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_chg_pct);
+      document.getElementById("price").textContent = fmtJPY(m.current_price);
+      document.getElementById("price_sub").textContent =
+        "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
 
-      document.getElementById("vol").textContent = fmtJPYBig(m.total_volume_jpy);
-      document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap_jpy);
+      document.getElementById("chg").textContent =
+        fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
 
-      const tone = (m.chg_24h_pct >= 0) ? "上向き" : "下向き";
+      document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
+
+      document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
+      document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+
+      const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
       document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
       document.getElementById("err").textContent = "";
     }catch(e){
@@ -93,9 +94,9 @@
   main();
 </script>
 
-
 </body>
 </html>
+
 
 
 
