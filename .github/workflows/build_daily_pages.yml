@@ -21,14 +21,6 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
-      - name: Debug git status for tags
-        run: |
-          ls -la daily/tags || true
-          echo "--- git status --porcelain ---"
-          git status --porcelain
-          echo "--- check-ignore ---"
-          git check-ignore -v daily/tags/bear.html || echo "NOT ignored"
-
       - name: Commit generated pages
         run: |
           git config user.name "github-actions[bot]"
@@ -41,3 +33,11 @@ jobs:
           git commit -m "chore: generate daily pages" || echo "No changes to commit"
           git push
 
+      - name: Debug bear.html snippet
+        run: |
+          echo "---- grep taghead ----"
+          grep -n "taghead" -n daily/tags/bear.html || true
+          echo "---- grep /daily/ links ----"
+          grep -n "/daily/" daily/tags/bear.html || true
+          echo "---- show around taghead ----"
+          awk 'NR>=1 && NR<=220 {print}' daily/tags/bear.html | sed -n '150,210p'
