@@ -7738,6 +7738,10 @@ function makeLineChart(canvasId, labels, series, opts){
         name.href = '/coins/' + sym + '/';
         name.textContent = (coin.symbol || '').toUpperCase();
 
+        name.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+        });
+        
         // 3. 数値・アクション
         const rightWrap = document.createElement('div');
         rightWrap.className = 'summary-right-wrap';
@@ -7785,7 +7789,10 @@ const ext = document.createElement('span');
         item.appendChild(rightWrap);
 
         // クリックイベント（カードへスクロール）
-        item.onclick = () => {
+        item.onclick = (ev) => {
+          // 銘柄リンク（<a>）をクリックした場合は、スクロール処理をしない（=遷移だけ）
+          if (ev && ev.target && ev.target.closest && ev.target.closest('a')) return;
+
           if (typeof gridId === 'string' && gridId.startsWith('sec-')) scrollToId(gridId);
           else scrollToCoin(gridId, coin);
         };
