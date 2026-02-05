@@ -38,13 +38,17 @@ jobs:
           ls -la coins/btc/index.html || true
 
           echo "---- check ignore ----"
-          git check-ignore -v coins/btc/index.html || echo "coins/btc/index.html is NOT ignored"
+          git check-ignore -v coins/btc/index.html && echo "(ignored)" || echo "coins/btc/index.html is NOT ignored"
 
-          # daily/tags が .gitignore 対象でも確実に含める
           git add -A daily sitemap.xml
           git add -f daily/tags/*.html
+          git add -A coins
 
-          # ★coins が .gitignore 対
+          echo "---- status (porcelain) ----"
+          git status --porcelain
+
+          git commit -m "chore: generate daily & coin pages" || echo "No changes to commit"
+          git push
 
       - name: Debug bear.html snippet
         run: |
