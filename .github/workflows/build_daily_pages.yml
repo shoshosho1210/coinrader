@@ -67,9 +67,13 @@ jobs:
           git add -A daily sitemap.xml
           git add -f daily/tags/*.html
           git add -A coins
+          git add -A data/coins
 
           echo "---- status (porcelain) ----"
           git status --porcelain
+
+          echo "---- check ignore (data/coins) ----"
+          git check-ignore -v data/coins/*.json && echo "(ignored)" || echo "data/coins/*.json is NOT ignored"
 
           git commit -m "chore: generate daily & coin pages" || echo "No changes to commit"
           git push
