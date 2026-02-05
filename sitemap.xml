@@ -46,11 +46,105 @@
     <lastmod>2026-02-04</lastmod>
     <priority>0.8</priority>
   </url>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <url>
     <loc>https://coinrader.net/daily/</loc>
-    <lastmod>2026-02-04</lastmod>
+    <lastmod>2026-02-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/index.html</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/latest.html</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/bear.html</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/bull.html</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/wait.html</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/bear</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/bull</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/wait</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/bear/</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/bull/</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/tags/wait/</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/daily/20260205.html</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://coinrader.net/daily/20260204.html</loc>
@@ -112,16 +206,4 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
-  <url><loc>https://coinrader.net/daily/index.html</loc></url>
-  <url><loc>https://coinrader.net/daily/latest.html</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/bear.html</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/bull.html</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/wait.html</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/bear</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/bull</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/wait</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/bear/</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/bull/</loc></url>
-  <url><loc>https://coinrader.net/daily/tags/wait/</loc></url>
-  <url><loc>https://coinrader.net/daily/20260205.html</loc></url>
 </urlset>
