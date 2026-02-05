@@ -71,3 +71,9 @@ jobs:
           grep -n "CG_KEY" coins/btc/index.html || true
           grep -n "x-cg-demo-api-key" coins/btc/index.html || true
 
+      - name: Debug git diff (coins)
+        run: |
+          git status --porcelain
+          git diff --name-only || true
+          git diff -- coins/btc/index.html | head -n 80 || true
+
