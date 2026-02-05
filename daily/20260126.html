@@ -42,6 +42,48 @@
     .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.02);font-size:12px;color:var(--fg)}
     .chip small{color:var(--muted);font-weight:700;letter-spacing:.2px}
     .chip:hover{text-decoration:none;filter:brightness(1.1)}
+/* === Top (red box) polish === */
+
+/* カードの密度・統一感 */
+.card{padding:18px}
+.grid{gap:14px}
+
+/* チップ列とカードの間の余白を少し詰める */
+.chips{margin:8px 0 8px}
+
+/* AI JUDGE: 結論の迫力を維持しつつ読みやすく */
+.judge{letter-spacing:.2px}
+.why ul{margin:10px 0 0 18px; padding:0}
+.why li{margin:6px 0; line-height:1.6}
+.why li::marker{color:rgba(148,163,184,.65)}
+
+/* KPI: 数字を少し強く、カード内の余白を整える */
+.kpis{gap:10px}
+.kpi{padding:12px}
+.kpi .label{letter-spacing:.06em; font-size:11px; opacity:.85}
+.kpi .val{font-size:20px; margin-top:5px}
+
+/* NAV（右下リンク）を“押せる”UIに */
+.navlinks{margin-top:14px; display:grid; gap:10px}
+.navlink{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px;
+  border:1px solid rgba(148,163,184,.18);
+  border-radius:12px;
+  background:rgba(255,255,255,.02);
+  color:var(--fg);
+  text-decoration:none;
+}
+.navlink:hover{
+  border-color: rgba(56,189,248,.35);
+  text-decoration:none;
+  filter:brightness(1.08);
+}
+.navlink::after{
+  content:"›";
+  color:rgba(148,163,184,.8);
+  font-weight:800;
+}
 
   </style>
   <script type="application/ld+json">
@@ -100,11 +142,9 @@
         </div>
 
         <div style="height:14px"></div>
-        <div class="badge">NAV</div>
-        <div style="margin-top:10px;line-height:1.8">
-          <div>・<a href="/">ダッシュボードへ</a></div>
-          <div>・<a href="/guide#trend">トレンドとは</a></div>
-          <div>・<a href="/guide#rsi">RSIとは</a></div>
+        <div class="navlinks">
+          <a class="navlink" href="/">ダッシュボードへ</a>
+          <a class="navlink" href="/guide">指標の見方（Trend / RSI）</a>
         </div>
       </div>
     </div>
