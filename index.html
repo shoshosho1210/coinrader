@@ -165,6 +165,19 @@
   .coin-header{ display:flex; align-items:center; gap:8px; padding-left:36px; min-width:0; }
   .coin-icon{ width:28px; height:28px; border-radius:50%; }
   .coin-name{ font-weight:600; font-size:14px; color:#f9fafb; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px; }
+  /* coinsページへの内部リンク（グローバルaスタイルの影響を打ち消す） */
+  a.coin-link{
+    display:block;
+    gap:0;
+    flex-wrap:nowrap;
+    align-items:stretch;
+    margin:0;
+    color:inherit;
+    text-decoration:none;
+  }
+  a.coin-link:hover .coin-name{ text-decoration: underline; }
+
+
   .coin-symbol{ font-size:11px; color:#9ca3af; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .price{ font-size:15px; font-weight:600; color:#f9fafb; text-align:right; }
   .meta{ font-size:11px; color:#9ca3af; text-align:right; margin-top:2px; }
@@ -1969,6 +1982,19 @@ section[id] {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+/* top5-name を <a> にしても崩れないように */
+a.top5-name{
+  display:block;
+  gap:0;
+  flex-wrap:nowrap;
+  align-items:stretch;
+  margin:0;
+  color:inherit;
+  text-decoration:none;
+}
+a.top5-name:hover{ text-decoration: underline; }
+
+
 
 /* 右側の数値エリア */
 .top5-val {
@@ -4789,6 +4815,8 @@ html, body{
 <nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
 <div class="sideMenuFooter">
 <a class="sideNavLink" href="#" onclick="openPageModal('/guide', '📖 CoinRader 活用ガイド'); return false;" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>サイトの見かたガイド</span></a>
+<a class="sideNavLink" href="/coins/" style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;"><i class="fa-solid fa-coins" aria-hidden="true"></i><span>銘柄別ページ（Coins）</span></a>
+
 <a class="sideNavLink" href="#" onclick="openPageModal('/start', '暗号資産の始め方'); return false;"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>暗号資産の始め方</span></a>
 <a class="sideNavLink" href="#" onclick="openPageModal('/about', '運営者情報'); return false;"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>運営者情報</span></a>
 <a class="sideNavLink" href="#" onclick="openPageModal('/disclaimer', '免責事項'); return false;"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>免責事項</span></a>
@@ -7595,10 +7623,10 @@ function makeLineChart(canvasId, labels, series, opts){
           <div class="coin-header">
             <img class="coin-icon" src="${coin.image}" alt="${coin.name}" loading="lazy" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
             <div class="coin-icon-fallback" style="display:none;">${(coin.symbol||'?').charAt(0).toUpperCase()}</div>
-            <div>
+            <a class="coin-link" href="/coins/${(coin.symbol||'').toLowerCase()}/" data-ga="nav_coin" data-coin="${(coin.symbol||'').toLowerCase()}">
               <div class="coin-name">${coin.name}</div>
               <div class="coin-symbol">${(coin.symbol||'').toUpperCase()}${globalRankHtml}</div>
-            </div>
+            </a>
           </div>
           <div>
             <div class="price">${yen(coin.current_price)}</div>
@@ -7726,8 +7754,10 @@ function makeLineChart(canvasId, labels, series, opts){
         rank.textContent = idx + 1;
 
         // 2. 銘柄名
-        const name = document.createElement('div');
+        const name = document.createElement('a');
         name.className = 'top5-name';
+        const sym = (coin.symbol || '').toLowerCase();
+        name.href = sym ? (`/coins/${sym}/`) : '#';
         name.textContent = (coin.symbol || '').toUpperCase();
 
         // 3. 数値・アクション
@@ -9324,6 +9354,7 @@ function createSparkline(prices, isUp) {
 <a href="/guide" data-modal-title="📖 活用ガイド">活用ガイド</a>
 <a href="/start" data-modal-title="🔰 始め方">始め方</a>
 <a href="/data-sources" data-modal-title="📊 データ">データ</a>
+<a href="/coins/">Coins</a>
 <a href="/about" data-modal-title="ℹ️ 運営">運営</a>
 <a href="/contact" data-modal-title="📩 連絡">連絡</a>
 <a href="/disclaimer" data-modal-title="⚠️ 免責">免責</a>
