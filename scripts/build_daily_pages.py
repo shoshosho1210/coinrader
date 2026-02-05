@@ -314,6 +314,50 @@ def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
     return "WAIT"
 
 
+
+def escape_xml(s: str) -> str:
+    return (s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
+
+
+def ensure_sitemap_urls(sitemap_path: Path, urls: list[str]) -> None:
+    """
+    sitemap.xml に urls を確実に含める。
+    - 既存 sitemap があれば <loc> を重複チェックして不足分だけ追記
+    - 無ければ最小の urlset として新規作成
+    """
+    urls = [u.strip() for u in urls if u and str(u).strip()]
+    if not urls:
+        return
+
+    def _url_entry(u: str) -> str:
+        # lastmod は付けない（頻繁に変わると差分が大きくなるため）
+        return f"  <url><loc>{escape_xml(u)}</loc></url>"
+
+    if sitemap_path.exists():
+        xml = read_text(sitemap_path)
+        existing = set(re.findall(r"<loc>\s*([^<]+)\s*</loc>", xml))
+        to_add = [u for u in urls if u not in existing]
+        if not to_add:
+            return
+
+        entries = "\n".join(_url_entry(u) for u in to_add) + "\n"
+        if "</urlset>" in xml:
+            xml = xml.replace("</urlset>", entries + "</urlset>")
+        else:
+            # 想定外フォーマット：末尾に追記
+            if not xml.endswith("\n"):
+                xml += "\n"
+            xml += entries
+        write_text(sitemap_path, xml)
+        return
+
+    # 無い場合は新規作成
+    header = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    header += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    body = "\n".join(_url_entry(u) for u in urls) + "\n"
+    footer = "</urlset>\n"
+    write_text(sitemap_path, header + body + footer)
+
 # ---------- reason builder ----------
 def build_reason_html(payload: Dict[str, Any]) -> str:
     """
@@ -936,6 +980,19 @@ def main() -> None:
     latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
     latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
     write_text(OUT_DIR / "latest.html", latest_html)
+
+
+    # sitemap.xml: daily と tags を確実に含める（既存があれば追記、なければ生成）
+    sitemap_path = ROOT / "sitemap.xml"
+    urls = [
+        f"{SITE_ORIGIN}/daily/index.html",
+        f"{SITE_ORIGIN}/daily/latest.html",
+        f"{SITE_ORIGIN}/daily/tags/bear.html",
+        f"{SITE_ORIGIN}/daily/tags/bull.html",
+        f"{SITE_ORIGIN}/daily/tags/wait.html",
+    ]
+    ensure_sitemap_urls(sitemap_path, urls)
+
 
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
