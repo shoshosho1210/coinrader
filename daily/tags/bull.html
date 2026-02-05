@@ -182,11 +182,15 @@
   min-width:220px;
 }
 .site-footer .footer-logo{
-  height:28px;
-  width:auto;
+  height:28px !important;
+  width:auto !important;          /* 横伸びを強制停止 */
+  max-width:180px;                /* 念のため上限 */
   display:block;
   opacity:.95;
+  object-fit:contain;             /* 万一 width が付いても潰れない */
+  flex:0 0 auto;                  /* flexで引き伸ばされるのを防ぐ */
 }
+
 .site-footer .footer-tagline{
   color:var(--muted);
   font-size:12px;
