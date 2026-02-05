@@ -862,7 +862,35 @@ def main() -> None:
 
     for judge_key in ["BEAR", "BULL", "WAIT"]:
         filtered = [p for p in pages_desc if str(p.get("judge","")).upper() == judge_key]
+
+        # 該当が0件でもタグページは必ず生成する（SEO/回遊の入口を確保）
         if not filtered:
+            rows_html_tag = (
+                f"<div class='taghead'>"
+                f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
+                f"<div class='tagsub'>全0件</div>"
+                f"</div>\n"
+                + "<div class='empty' style='margin:10px 0 18px;opacity:.8'>"
+                + "まだ該当する日がありません。"
+                + " <a href='../index.html'>一覧に戻る</a>"
+                + "</div>"
+            )
+            items_html_tag = ""
+
+            tag_html = tmpl_index
+            tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
+            tag_html, _ = items_pat.subn(items_html_tag, tag_html)
+            tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
+
+            # タブの current を該当判定へ移す（テンプレがALLをcurrentにしている想定）
+            tag_html = tag_html.replace('class="tab current" href="/daily/"', 'class="tab" href="/daily/"')
+            tag_html = tag_html.replace(f'class="tab tab-{judge_key.lower()}"', f'class="tab tab-{judge_key.lower()} current"')
+
+            if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
+                raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
+
+            out_path = tags_dir / f"{judge_key.lower()}.html"
+            write_text(out_path, tag_html)
             continue
 
         # タグページは /daily/tags/ 配下なので、リンクは ../YYYYMMDD.html で辿れるようにする
@@ -891,6 +919,10 @@ def main() -> None:
         tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
         tag_html, _ = items_pat.subn(items_html_tag, tag_html)
         tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
+
+        # タブの current を該当判定へ移す（テンプレがALLをcurrentにしている想定）
+        tag_html = tag_html.replace('class="tab current" href="/daily/"', 'class="tab" href="/daily/"')
+        tag_html = tag_html.replace(f'class="tab tab-{judge_key.lower()}"', f'class="tab tab-{judge_key.lower()} current"')
 
         # placeholder 残り検知（タグページも同様）
         if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
