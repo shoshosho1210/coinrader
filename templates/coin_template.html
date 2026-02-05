@@ -66,12 +66,7 @@
         + "?vs_currency=jpy&ids=" + encodeURIComponent(COIN_ID)
         + "&price_change_percentage=24h,7d";
 
-      const headers = {};
-      if (CG_KEY && CG_KEY !== "") {
-         headers["x-cg-demo-api-key"] = CG_KEY;
-      }
-
-      const r = await fetch(url, { headers, cache: "no-store" });
+      const r = await fetch(url, {cache: "no-store" });
 
       if(!r.ok) throw new Error("CoinGecko fetch failed: " + r.status);
       const j = await r.json();
@@ -96,5 +91,6 @@
 </script>
 </body>
 </html>
+
 
 
