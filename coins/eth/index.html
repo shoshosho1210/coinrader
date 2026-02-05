@@ -47,9 +47,8 @@
   </div>
 
 <script>
-  // ★B案：ブラウザはCoinGeckoへ行かず、同一オリジンのJSONを見る
-  const SYMBOL = "eth";   // build_coin_pages.py が埋める
-  const COIN_ID = "ethereum"; // 互換用（表示等に使いたければ残せる）
+  const SYMBOL = "eth";     // btc / eth / sol / xrp
+  const COIN_ID = "ethereum";   // bitcoin etc
 
   const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
   const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
@@ -61,36 +60,63 @@
     return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
   };
 
+  function apply(m){
+    document.getElementById("price").textContent = fmtJPY(m.current_price);
+    document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
+    document.getElementById("chg").textContent = fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
+    document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
+    document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
+    document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+
+    const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
+    document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
+  }
+
+  async function fetchSnapshot(){
+    const snapUrl = `/data/coins/${SYMBOL}.json`;
+    const r = await fetch(snapUrl, { cache: "no-store" });
+    if(!r.ok) throw new Error("snapshot fetch failed: " + r.status);
+    const j = await r.json();
+    // fetch_coin_snapshots.py が markets配列で保存してる想定
+    const m = (j && j.markets && j.markets[0]) ? j.markets[0] : null;
+    if(!m) throw new Error("snapshot empty");
+    return m;
+  }
+
+  async function fetchFromAPI(){
+    const url = "https://api.coingecko.com/api/v3/coins/markets"
+      + "?vs_currency=jpy&ids=" + encodeURIComponent(COIN_ID)
+      + "&price_change_percentage=24h,7d";
+    const r = await fetch(url, { cache: "no-store" });
+    if(!r.ok) throw new Error("CoinGecko fetch failed: " + r.status);
+    const j = await r.json();
+    if(!Array.isArray(j) || !j[0]) throw new Error("CoinGecko empty");
+    return j[0];
+  }
+
   async function main(){
     try{
-      // 例: /data/coins/btc.json
-      const url = "/data/coins/" + encodeURIComponent(SYMBOL) + ".json";
-      const r = await fetch(url, { cache: "no-store" });
-      if(!r.ok) throw new Error("snapshot fetch failed: " + r.status);
-
-      const snap = await r.json();
-      const m = snap?.market;
-      if(!m) throw new Error("snapshot empty");
-
-      document.getElementById("price").textContent = fmtJPY(m.current_price);
-      document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
-      document.getElementById("chg").textContent = fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
-      document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
-      document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
-      document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
-
-      const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
-      document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
-    }catch(e){
-      document.getElementById("err").textContent = String(e?.message || e);
-      document.getElementById("memo").textContent = "データ取得に失敗しました。";
+      // まずスナップショット（安定）
+      const m = await fetchSnapshot();
+      apply(m);
+    }catch(e1){
+      try{
+        // ダメならAPI（保険）
+        const m = await fetchFromAPI();
+        apply(m);
+      }catch(e2){
+        document.getElementById("err").textContent = String(e2?.message || e2);
+        document.getElementById("memo").textContent = "データ取得に失敗しました。";
+      }
     }
   }
+
   main();
 </script>
 
 </body>
 </html>
+
 
 
 
