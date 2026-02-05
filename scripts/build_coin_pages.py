@@ -68,8 +68,7 @@ def render_coin_page(tmpl: str, c: dict) -> str:
     s = s.replace("{{SYMBOL_UPPER}}", c["symbol"].upper())
     s = s.replace("{{COIN_ID}}", c["coin_id"])
     s = s.replace("{{NAME}}", c["name"])
-    # CoinGecko API key（未設定なら空文字）
-    s = s.replace("{{COINGECKO_KEY}}", os.environ.get("CR_COINGECKO_KEY", ""))     
+    s = s.replace("{{COINGECKO_KEY}}", "")  # 常に空にする（公開しない）
     return s
 
 def main() -> None:
@@ -90,5 +89,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
