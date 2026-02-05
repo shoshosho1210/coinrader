@@ -25,6 +25,7 @@ jobs:
       - name: Generate coin pages
         env:
           CR_SITE_ORIGIN: https://coinrader.net
+          CR_COINGECKO_KEY: ${{ secrets.CR_COINGECKO_KEY }}
         run: |
           python scripts/build_coin_pages.py
 
