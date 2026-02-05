@@ -21,6 +21,13 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
+      - name: Fetch coin snapshots (for /coins/* pages)
+        env:
+          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
+        run: |
+          mkdir -p data/coins
+          python scripts/fetch_coin_snapshots.py
+
       # ★追加：coinsを生成
       - name: Generate coin pages
         env:
