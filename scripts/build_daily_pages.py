@@ -505,7 +505,7 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
             default=get_path(payload, "trending",
                 default=get_path(payload, "trend", default=[])))
     )
-    top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default=None))
+    top_gainer = get_path(payload, "summary.top_gainer", default=get_path(payload, "top_gainer", default=get_path(payload, "top_gainer", default=None)))
     tg_text = ""
     if isinstance(top_gainer, dict):
         sym = str(top_gainer.get("symbol", "")).strip().upper()
