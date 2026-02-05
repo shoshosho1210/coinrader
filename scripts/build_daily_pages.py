@@ -930,7 +930,6 @@ def main() -> None:
     rows_pat = re.compile(r"\{\{\s*ROWS\s*\}\}")
     items_pat = re.compile(r"\{\{\s*ITEMS\s*\}\}")
     latest_pat = re.compile(r"\{\{\s*LATEST_HREF\s*\}\}")
-
     for judge_key in ["BEAR", "BULL", "WAIT"]:
         filtered = [p for p in pages_desc if str(p.get("judge","")).upper() == judge_key]
         # 0件でもページは生成する（bull等が0件でも入口として残す）
@@ -966,37 +965,48 @@ def main() -> None:
         if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
             raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
 
+        # --- tag meta: title/description/canonical をタグ別に補正 ---
+        tag_lower = judge_key.lower()
+        tag_suffix = {"bear":"弱気局面", "bull":"強気局面", "wait":"様子見"}.get(tag_lower, "")
+        new_title = f"AI {judge_key} の日一覧" + (f"（{tag_suffix}）" if tag_suffix else "") + " | CoinRader"
+        tag_html = re.sub(r"<title>.*?</title>", f"<title>{escape_html(new_title)}</title>", tag_html, flags=re.DOTALL)
 
-# --- tag meta: title/description/canonical をタグ別に補正 ---
-tag_lower = judge_key.lower()
-tag_suffix = {"bear":"弱気局面", "bull":"強気局面", "wait":"様子見"}.get(tag_lower, "")
-new_title = f"AI {judge_key} の日一覧" + (f"（{tag_suffix}）" if tag_suffix else "") + " | CoinRader"
-tag_html = re.sub(r"<title>.*?</title>", f"<title>{escape_html(new_title)}</title>", tag_html, flags=re.DOTALL)
+        desc_map = {
+            "bear": "AI判定がBEARの日を一覧化。弱気局面の推移を日次で確認できます。",
+            "bull": "AI判定がBULLの日を一覧化。強気局面の推移を日次で確認できます。",
+            "wait": "AI判定がWAITの日を一覧化。様子見局面の推移を日次で確認できます。",
+        }
+        new_desc = desc_map.get(tag_lower, "CoinRaderの日次AIレポート一覧（判定別）。")
+        tag_html = re.sub(
+            r'<meta\s+name="description"\s+content="[^"]*"\s*/?>',
+            f'<meta name="description" content="{escape_html(new_desc)}" />',
+            tag_html
+        )
 
-desc_map = {
-    "bear": "AI判定がBEARの日を一覧化。弱気局面の推移を日次で確認できます。",
-    "bull": "AI判定がBULLの日を一覧化。強気局面の推移を日次で確認できます。",
-    "wait": "AI判定がWAITの日を一覧化。様子見局面の推移を日次で確認できます。",
-}
-new_desc = desc_map.get(tag_lower, "CoinRaderの日次AIレポート一覧（判定別）。")
-tag_html = re.sub(r'<meta\s+name="description"\s+content="[^"]*"\s*/?>',
-                  f'<meta name="description" content="{escape_html(new_desc)}" />',
-                  tag_html)
-
-canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}.html"
-tag_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
-                  f'<link rel="canonical" href="{escape_html(canon_url)}" />',
-                  tag_html)
+        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}.html"
+        tag_html = re.sub(
+            r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
+            f'<link rel="canonical" href="{escape_html(canon_url)}" />',
+            tag_html
+        )
 
         # tabs current（テンプレに tabs がある場合のみ）
         tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
-        tag_html = tag_html.replace(f'class="tab tab-{tag_lower}"', f'class="tab tab-{tag_lower} current"', 1)
+        tag_html = tag_html.replace(
+            f'class="tab tab-{tag_lower}"',
+            f'class="tab tab-{tag_lower} current"',
+            1
+        )
 
         # --- tag JSON-LD を head に挿入 ---
         jsonld = build_tag_jsonld(SITE_ORIGIN, judge_key, filtered)
-        tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
+        tag_html = tag_html.replace(
+            "</head>",
+            f'  <script type="application/ld+json">{jsonld}</script>\n</head>',
+            1
+        )
 
-        out_path = tags_dir / f"{judge_key.lower()}.html"
+        out_path = tags_dir / f"{tag_lower}.html"
         write_text(out_path, tag_html)
 
     # latest.html（最新ページへリダイレクト/案内）
@@ -1004,8 +1014,8 @@ tag_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
     latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
     latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
     write_text(OUT_DIR / "latest.html", latest_html)
-# sitemap.xml: daily/index・daily/latest・tags を確実に含める（既存があれば追記）
-ensure_sitemap_urls(
+    # sitemap.xml: daily/index・daily/latest・tags を確実に含める（既存があれば追記）
+    ensure_sitemap_urls(
     ROOT / "sitemap.xml",
     [
         f"{SITE_ORIGIN}/daily/index.html",
@@ -1014,10 +1024,7 @@ ensure_sitemap_urls(
         f"{SITE_ORIGIN}/daily/tags/bull.html",
         f"{SITE_ORIGIN}/daily/tags/wait.html",
     ],
-)
-
-
-
+    )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
 
