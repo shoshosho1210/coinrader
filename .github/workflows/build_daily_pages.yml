@@ -25,7 +25,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # daily/tags が .gitignore 対象でも確実に含める
           git add -A daily sitemap.xml
+          git add -f daily/tags/*.html
+
           git commit -m "chore: generate daily pages" || echo "No changes to commit"
           git push
 
