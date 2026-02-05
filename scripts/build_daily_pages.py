@@ -201,7 +201,7 @@ def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ym
     parts = []
     # ラベル（非リンク）
     parts.append(
-        f"<span class='chip' style='pointer-events:none;opacity:.75'><small>SAME</small>{escape_html(judge)}</span>"
+        f"<a class='chip' href='/daily/tags/{escape_html(judge.lower())}.html' style='opacity:.75'><small>SAME</small>{escape_html(judge)}</a>"
     )
     for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
@@ -849,6 +849,55 @@ def main() -> None:
     if (n_rows + n_items + n_latest) == 0:
         raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
     write_text(OUT_DIR / "index.html", index_html)
+
+    # tag pages（同じAI判定の日をまとめた一覧）
+    #   - /daily/tags/bear.html, bull.html, wait.html
+    # 目的: 回遊・内部リンク強化（一覧→タグ→各日）
+    tags_dir = OUT_DIR / "tags"
+    tags_dir.mkdir(parents=True, exist_ok=True)
+
+    rows_pat = re.compile(r"\{\{\s*ROWS\s*\}\}")
+    items_pat = re.compile(r"\{\{\s*ITEMS\s*\}\}")
+    latest_pat = re.compile(r"\{\{\s*LATEST_HREF\s*\}\}")
+
+    for judge_key in ["BEAR", "BULL", "WAIT"]:
+        filtered = [p for p in pages_desc if str(p.get("judge","")).upper() == judge_key]
+        if not filtered:
+            continue
+
+        # タグページは /daily/tags/ 配下なので、リンクは ../YYYYMMDD.html で辿れるようにする
+        rows_html_tag = (
+            f"<div class='taghead'>"
+            f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
+            f"<div class='tagsub'>全{len(filtered)}件</div>"
+            f"</div>\n"
+            + "\n".join([
+                "<div class='row'>"
+                f"<a class='rowlink' href='../{escape_html(p['ymd'])}.html'>"
+                f"<div class='date'>{escape_html(p['date_iso'])}</div>"
+                f"<div class='meta'>{_fmt_meta_html(p)}</div>"
+                "</a>"
+                "</div>"
+                for p in filtered
+            ])
+        )
+
+        items_html_tag = "\n".join([
+            f"<li><a href='../{escape_html(p['ymd'])}.html'>{escape_html(p['title'])}</a></li>"
+            for p in filtered
+        ])
+
+        tag_html = tmpl_index
+        tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
+        tag_html, _ = items_pat.subn(items_html_tag, tag_html)
+        tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
+
+        # placeholder 残り検知（タグページも同様）
+        if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
+            raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
+
+        out_path = tags_dir / f"{judge_key.lower()}.html"
+        write_text(out_path, tag_html)
 
     # latest.html（最新ページへリダイレクト/案内）
     latest_target = f"{latest_ymd}.html"
