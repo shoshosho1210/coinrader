@@ -92,14 +92,18 @@ jobs:
           set -eux
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # JSONフォルダのみを追加
+
           git add data/daily/
-          
-          # 💡 チェック対象を data/daily/ に限定することで、txtなどの変更を無視して正常終了させる
+
           if [ -n "$(git status --porcelain data/daily/)" ]; then
             git commit -m "Update hourly market JSON [skip ci]"
+
+            # ★重要：リモート更新を取り込んでからpush（競合回避）
+            git fetch origin main
+            git rebase origin/main
+
             git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
           else
             echo "No changes in JSON files. Skipping commit."
           fi
+
