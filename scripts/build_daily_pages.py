@@ -1024,9 +1024,9 @@ def main() -> None:
         write_text(tags_dir / tag_lower, tag_html)
 
     latest_target = f"{latest_ymd}.html"
-    latest_html = tmpl_latest.replace("{{LATEST_HREF}}", latest_target)
-    latest_html = latest_html.replace("{{LATEST_DATE}}", pages[0]["date_iso"] if pages else "")
-    write_text(OUT_DIR / "latest.html", latest_html)
+    latest_page_path = OUT_DIR / latest_target
+    latest_page_html = read_text(latest_page_path)
+    write_text(OUT_DIR / "latest.html", latest_page_html)
 
     rebuild_sitemap_with_daily(
         ROOT / "sitemap.xml",
