@@ -114,6 +114,10 @@ jobs:
         run: |
           echo "---- head data/coins/btc.json ----"
           head -c 800 data/coins/btc.json; echo
+          grep -n "const m" -n coins/btc/index.html
+          grep -n "snap\\.market" coins/btc/index.html
+          grep -n "current_price" coins/btc/index.html
+
 
 
 
