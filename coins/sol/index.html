@@ -70,6 +70,7 @@
       if(!j || !j.market) throw new Error("snapshot json missing 'market'");
 
       const m = j.market;
+      const chg7d = (m.price_change_percentage_7d_in_currency ?? m.price_change_percentage_7d ?? null);
 
       document.getElementById("price").textContent = fmtJPY(m.current_price);
       document.getElementById("price_sub").textContent =
@@ -96,6 +97,7 @@
 
 </body>
 </html>
+
 
 
 
