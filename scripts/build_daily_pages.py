@@ -139,48 +139,55 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
     }
     return json.dumps(data, ensure_ascii=False)
 
-
-
 def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -> str:
-    """直近n件のチップを生成（前後も含めて回遊しやすくする）
-    - 可能なら「当日(=最新)」も同じ列に含める
-    - 重複表示を避け、日付は small に、ラベルは必要なときだけ表示
+    """ナビ（1列）: 最新から直近n日を固定表示 + 前日/翌日 + 一覧/最新
+    - 日付チップの集合がページ遷移で変わらない（コロコロしない）
+    - current は active 表示（「現在」ラベルは不要なら付けない）
     """
     if not dated_all:
         return ""
     if current_ymd not in dated_all:
         return ""
 
+    dated_all = sorted(set(dated_all))  # 昇順
     latest_ymd = dated_all[-1]
+
+    # 固定ウィンドウ（最新からn件）
+    window = dated_all[-n:]
+
+    # prev/next（存在すれば）
     idx = dated_all.index(current_ymd)
+    prev_ymd = dated_all[idx - 1] if idx > 0 else ""
+    next_ymd = dated_all[idx + 1] if idx < (len(dated_all) - 1) else ""
 
-    # 基本は「前3・後3（計7）」を狙う。端は自動で寄せる。
-    half = n // 2
-    start = max(0, idx - half)
-    end = min(len(dated_all), idx + half + 1)
-    # 端で足りない分を反対側に寄せる
-    while (end - start) < n and start > 0:
-        start -= 1
-    while (end - start) < n and end < len(dated_all):
-        end += 1
-
-    window = dated_all[start:end]
+    def _chip(href: str, inner: str, active: bool = False, extra_cls: str = "") -> str:
+        cls = "chip"
+        if active:
+            cls += " active"
+        if extra_cls:
+            cls += f" {extra_cls}"
+        return f"<a class='{cls}' href='{href}'>{inner}</a>"
 
     parts = []
+
+    # 前日/翌日（シンプル）
+    if prev_ymd:
+        parts.append(_chip(f"/daily/{prev_ymd}.html", "<small>←</small>前日", extra_cls="nav"))
+    if next_ymd:
+        parts.append(_chip(f"/daily/{next_ymd}.html", "<small>→</small>翌日", extra_cls="nav"))
+
+    # 日付チップ（固定）
     for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
-        if ymd == latest_ymd:
-            label = "今日"
-        elif ymd == current_ymd:
-            label = "現在"
-        else:
-            label = ""
         href = f"/daily/{ymd}.html"
-        inner = f"<small>{mmdd}</small>{escape_html(label)}" if label else f"<small>{mmdd}</small>"
-        parts.append(f"<a class='chip' href='{href}'>{inner}</a>")
+        inner = f"<small>{mmdd}</small>"
+        parts.append(_chip(href, inner, active=(ymd == current_ymd)))
 
-    parts.append("<a class='chip' href='/daily/'><small>LIST</small>一覧</a>")
-    parts.append("<a class='chip' href='/daily/latest.html'><small>NEW</small>最新</a>")
+    # 一覧/最新
+    parts.append(_chip("/daily/", "<small>LIST</small>一覧", extra_cls="nav"))
+    # 「最新」＝ latest.html
+    parts.append(_chip("/daily/latest.html", "<small>NEW</small>最新", extra_cls="nav"))
+
     return "\n      ".join(parts)
 
 
@@ -806,9 +813,6 @@ def main() -> None:
         top_gainer = it["top_gainer"]
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
-        same_judge_html = build_same_judge_days_html(judge, judge_days.get(judge, []), ymd, n=5)
-        if same_judge_html:
-            recent_days_html = recent_days_html + "\n      " + same_judge_html
 
         why_html = build_reason_html(payload)
 
