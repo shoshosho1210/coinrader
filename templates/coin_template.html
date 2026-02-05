@@ -32,4 +32,59 @@
 
     <div class="grid">
       <div class="card"><div class="k">価格 (JPY)</div><div class="v" id="price">--</div><div class="muted" id="price_sub"></div></div>
-      <div class="card"><div class="k">24h / 7d 変動</div><div class="v" id="chg">--</div><div class="muted" id="chg_sub"><_
+      <div class="card"><div class="k">24h / 7d 変動</div><div class="v" id="chg">--</div><div class="muted" id="chg_sub"></div></div>
+      <div class="card"><div class="k">出来高 (24h)</div><div class="v" id="vol">--</div><div class="muted">取引の活発度の目安</div></div>
+      <div class="card"><div class="k">時価総額</div><div class="v" id="mcap">--</div><div class="muted">市場規模の目安</div></div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="card">
+      <div class="k">メモ</div>
+      <div class="muted" id="memo">読み込み中…</div>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <script>
+    const COIN_ID = "{{COIN_ID}}";
+
+    const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
+    const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
+    const fmtJPYBig = (n) => {
+      if (n == null || isNaN(n)) return "--";
+      const x = Number(n);
+      if (x >= 1e12) return (x/1e12).toFixed(2) + "兆円";
+      if (x >= 1e9)  return (x/1e9).toFixed(2) + "十億円";
+      return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
+    };
+
+    async function main(){
+      try{
+        const url = "https://api.coingecko.com/api/v3/coins/markets"
+          + "?vs_currency=jpy&ids=" + encodeURIComponent(COIN_ID)
+          + "&price_change_percentage=24h,7d";
+        const r = await fetch(url);
+        if(!r.ok) throw new Error("CoinGecko fetch failed: " + r.status);
+        const j = await r.json();
+        if(!Array.isArray(j) || !j[0]) throw new Error("CoinGecko empty");
+        const m = j[0];
+
+        document.getElementById("price").textContent = fmtJPY(m.current_price);
+        document.getElementById("price_sub").textContent = "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
+        document.getElementById("chg").textContent = fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(m.price_change_percentage_7d_in_currency);
+        document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
+        document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
+        document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+
+        const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
+        document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
+      }catch(e){
+        document.getElementById("err").textContent = String(e?.message || e);
+        document.getElementById("memo").textContent = "データ取得に失敗しました。";
+      }
+    }
+    main();
+  </script>
+</body>
+</html>
