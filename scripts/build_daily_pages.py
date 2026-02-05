@@ -990,6 +990,14 @@ def main() -> None:
             tag_html
         )
 
+        # --- tag H1: ページ見出しもタグ用に合わせる ---
+        tag_html = re.sub(
+            r"<h1>.*?</h1>",
+            f"<h1>AI {judge_key} の日一覧</h1>",
+            tag_html,
+            flags=re.DOTALL
+        )
+
         # tabs current（テンプレに tabs がある場合のみ）
         tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
         tag_html = tag_html.replace(
