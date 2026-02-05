@@ -6,21 +6,39 @@
   <title>Daily AIレポート一覧 | CoinRader</title>
   <meta name="description" content="CoinRaderの日次AIレポート一覧。最新日から過去へ遡って閲覧できます。" />
   <link rel="canonical" href="https://coinrader.net/daily/" />
+
   <style>
     :root{--bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--line:#1f2937;--accent:#38bdf8;}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--fg);}
-    .wrap{max-width:980px;margin:0 auto;padding:24px 16px 48px;}
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
-    h1{font-size:26px;margin:10px 0 6px}
-    .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
-    .list{border-top:1px solid var(--line)}
-    .row{padding:0;border-bottom:1px solid var(--line)}
-    .date{font-weight:800}
-    .meta{color:var(--muted);font-size:12px}
 
-    /* タグ（判定別）タブ */
-    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+    /* ---------- Header (sticky) ---------- */
+    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
+    .appHeader-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brandLogo{height:24px;width:auto;display:block}
+    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 12px;font-size:12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+      color:var(--fg);text-decoration:none
+    }
+    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
+    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
+
+    h1{font-size:22px;margin:12px 0 6px}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+
+    /* ---------- Tabs (judge) ---------- */
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 12px}
     .tab{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
          font-size:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
          color:var(--fg);text-decoration:none}
@@ -30,103 +48,32 @@
     .tab-bear{border-color:rgba(239,68,68,.35)}
     .tab-bull{border-color:rgba(34,197,94,.35)}
     .tab-wait{border-color:rgba(234,179,8,.35)}
-/* 行全体をカード化 */
-/* meta を 右に余白作って矢印置き場にする */
-.rowlink{
-  display:block;
-  position:relative;
-  padding:14px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.06);
-  text-decoration:none;
-  color:inherit;
-}
 
-.rowlink:hover{
-  border-color: rgba(255,255,255,.14);
-}
+    /* ---------- Controls (search + count) ---------- */
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+    .search{flex:1;min-width:240px}
+    .search input{
+      width:100%;padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);
+      color:var(--fg);outline:none
+    }
+    .search input::placeholder{color:rgba(148,163,184,.8)}
+    .count{color:var(--muted);font-size:12.5px;white-space:nowrap}
 
-/* 矢印：右端に固定、被り防止 */
-.rowlink::after{
-  content:"›";
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  opacity:.55;
-  font-size:22px;
-  line-height:1;
-  pointer-events:none;
-}
+    /* ---------- List / Rows ---------- */
+    .list{border-top:1px solid rgba(255,255,255,.06)}
+    .row{padding:0;border-bottom:0;margin:10px 0}
+    .date{font-weight:800}
+    .meta{color:var(--muted);font-size:12px}
 
-/* 右端の矢印ぶんだけ meta 側に余白を確保 */
-.rowlink .meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  line-height:1.2;
-  padding-right:34px;
-}
-
-/* 日付＋チップ */
-.rowlink .date{ font-weight:700; margin-bottom:8px; }
-
-/* チップ */
-.pill{
-  display:inline-flex;
-  align-items:center;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.04);
-  white-space:nowrap;
-}
-
-/* 種類別 */
-.pill-ai{ font-weight:700; }
-.pill-ai.bull{ border-color:rgba(34,197,94,.35); }
-.pill-ai.bear{ border-color:rgba(239,68,68,.35); }
-.pill-ai.wait{ border-color:rgba(234,179,8,.35); }
-.pill-hot{ border-color:rgba(56,189,248,.35); }
-.pill-up{ border-color:rgba(167,139,250,.35); }
-.pill-kpi{ opacity:.72; }
-
-@media (max-width: 520px){
-  .pill{ font-size:11px; padding:6px 8px; }
-}
-/* 要約だけ長文化しやすいので、横幅を制御して省略 */
-.pill-reason{
-  max-width: 520px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-@media (max-width: 900px){
-  .pill-reason{ max-width: 320px; }
-}
-@media (max-width: 520px){
-  .pill-reason{ max-width: 220px; }
-}
-@media (max-width: 520px){
-  .rowlink .meta{ gap:6px; }
-  .pill{ padding:5px 7px; }
-}
-</style>
-</head>
-<body>
-  <div class="wrap">
-    <div style="color:var(--muted);font-size:13px"><a href="/">CoinRader</a> / Daily</div>
-    <h1>Daily AIレポート一覧</h1>
-    <div class="sub">最新: <a href="/daily/latest.html">latest</a></div>
-    <div class="tabs">
-      <a class="tab current" href="/daily/"><small>ALL</small>一覧</a>
-      <a class="tab tab-bear" href="/daily/tags/bear.html"><small>AI</small>BEAR</a>
-      <a class="tab tab-bull" href="/daily/tags/bull.html"><small>AI</small>BULL</a>
-      <a class="tab tab-wait" href="/daily/tags/wait.html"><small>AI</small>WAIT</a>
-    </div>
-    <div class="list">
-      {{ROWS}}
-    </div>
-  </div>
-</body>
-</html>
+    .rowlink{
+      display:block;
+      position:relative;
+      padding:14px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.03);
+      text-decoration:none;
+      color:inherit;
+    }
+    .rowlink:hover{border-color: rgba(255,255,255,.14);text-decoration:non
