@@ -933,6 +933,8 @@ def main() -> None:
             f"{SITE_ORIGIN}/daily/tags/bear",
             f"{SITE_ORIGIN}/daily/tags/bull",
             f"{SITE_ORIGIN}/daily/tags/wait",
+            # 日次ページURL（/daily/YYYYMMDD.html）を自動追加
+            *[f"{SITE_ORIGIN}/daily/{ymd}.html" for ymd in dated],
         ],
     )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
