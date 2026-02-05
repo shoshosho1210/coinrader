@@ -912,11 +912,6 @@ def main() -> None:
         out_path_html = tags_dir / f"{tag_lower}.html"
         write_text(out_path_html, tag_html)
 
-        # 追加: /daily/tags/{tag} (拡張子なし) 用にディレクトリ index.html を生成
-        out_dir_noext = tags_dir / tag_lower
-        out_dir_noext.mkdir(parents=True, exist_ok=True)
-        write_text(out_dir_noext / "index.html", tag_html)
-
         # 互換: /daily/tags/{tag} をファイルとして読む環境向け（必要なら）
         write_text(tags_dir / tag_lower, tag_html)
 
