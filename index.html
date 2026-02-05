@@ -7735,11 +7735,22 @@ function makeLineChart(canvasId, labels, series, opts){
         const sym = (coin.symbol || '').toLowerCase();
         const name = document.createElement('a');
         name.className = 'top5-name coin-link';
+
+        const supported = ['btc','eth','sol','xrp'];
+        const hasPage = supported.includes(sym);
+
         name.href = '/coins/' + sym + '/';
         name.textContent = (coin.symbol || '').toUpperCase();
-
+        
         name.addEventListener('click', (ev) => {
-          ev.stopPropagation();
+          ev.preventDefault();
+            ev.stopPropagation();
+
+            if (hasPage) {
+              location.href = `/coins/${sym}/`;
+            } else {
+              openCoinGecko(coin);  // 既存関数を使う（外部へ）
+            }
         });
         
         // 3. 数値・アクション
