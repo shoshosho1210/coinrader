@@ -28,3 +28,4 @@ jobs:
           git add -A daily sitemap.xml
           git commit -m "chore: generate daily pages" || echo "No changes to commit"
           git push
+
