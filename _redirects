@@ -4,3 +4,16 @@
 
 /go-pr/coincheck  https://coincheck.com/ja/             302
 /go-pr/sbi        https://www.sbivc.co.jp/                   302
+# Canonical URL normalization (SEO)
+/about.html        /about                301
+/contact.html      /contact              301
+/privacy.html      /privacy              301
+/disclaimer.html   /disclaimer           301
+/data-sources.html /data-sources         301
+/ads-pr.html       /ads-pr               301
+/guide.html        /guide                301
+/start.html        /start                301
+/daily/index.html  /daily/               301
+/daily/tags/bear.html /daily/tags/bear   301
+/daily/tags/bull.html /daily/tags/bull   301
+/daily/tags/wait.html /daily/tags/wait   301
