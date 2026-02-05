@@ -4831,10 +4831,11 @@ html, body{
 </div>
 <div class="hud-shortline" id="aiInsightShort">—</div>
 <div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
-  <a href="/daily/latest.html" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
+  <a id="aiDailyLatestLink" href="/daily/latest.html" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
      aria-label="今日のAIレポート">今日のAIレポート</a>
-  <a href="/daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
+  <a id="aiDailyListLink" href="/daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
      aria-label="過去AIレポート一覧">過去AIレポート一覧</a>
+
   <a href="/daily/20260204.html" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.25); padding:4px 8px; border-radius:999px;" aria-label="AIレポート 20260204">02/04</a>
   <a href="/daily/20260203.html" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.25); padding:4px 8px; border-radius:999px;" aria-label="AIレポート 20260203">02/03</a>
   <a href="/daily/20260202.html" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.25); padding:4px 8px; border-radius:999px;" aria-label="AIレポート 20260202">02/02</a>
@@ -9338,6 +9339,27 @@ function createSparkline(prices, isUp) {
         <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
 }
+// --- Daily links: open in modal (no reload) ---
+(function(){
+  const latest = document.getElementById('aiDailyLatestLink');
+  const list   = document.getElementById('aiDailyListLink');
+
+  if (latest) {
+    latest.addEventListener('click', (ev) => {
+      ev.preventDefault();     // ← ページ遷移（リロード）を止める
+      ev.stopPropagation();    // ← 親要素のクリックを止める（念のため）
+      openPageModal('/daily/latest.html', '今日のAIレポート');
+    });
+  }
+
+  if (list) {
+    list.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      openPageModal('/daily/', '過去AIレポート一覧');
+    });
+  }
+})();
 
 </script>
 <footer class="site-footer">
