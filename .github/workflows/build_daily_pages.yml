@@ -29,6 +29,12 @@ jobs:
         run: |
           python scripts/build_coin_pages.py
 
+      - name: Debug env for coin build
+        run: |
+          echo "CR_COINGECKO_KEY length: ${#CR_COINGECKO_KEY}"
+        env:
+          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
+
       - name: Commit generated pages
         run: |
           git config user.name "github-actions[bot]"
