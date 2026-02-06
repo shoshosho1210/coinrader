@@ -286,15 +286,15 @@ def rebuild_sitemap_with_daily(
     pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
     latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
 
-    # daily ルート
+    # daily ルート（canonical-only）
     daily_root_urls = [
         f"{site_origin}/daily/",
-        f"{site_origin}/daily/index.html",
         f"{site_origin}/daily/latest.html",
         f"{site_origin}/daily/tags/bear.html",
         f"{site_origin}/daily/tags/bull.html",
         f"{site_origin}/daily/tags/wait.html",
     ]
+
     if include_extensionless_tag_pages:
         daily_root_urls += [
             f"{site_origin}/daily/tags/bear",
