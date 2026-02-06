@@ -39,6 +39,9 @@ jobs:
           echo "---- after rm ----"
           ls -la daily/tags || true
           git status --porcelain
+          echo "---- grep /daily/*.html in daily/*.html ----"
+          grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
+
 
 
       - name: Validate sitemap (canonical-only)
