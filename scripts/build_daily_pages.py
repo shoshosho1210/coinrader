@@ -142,26 +142,16 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
 
 
 def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -> str:
-    """日付ナビ（チップ）を生成（表示がコロコロ変わらない設計）
-    - 直近 n 日（最新側）を固定で表示
-    - 現在ページは強調表示（aria-current）
-    - 前日/翌日 へは矢印で移動（存在するときだけ表示）
-    """
     if not dated_all or current_ymd not in dated_all:
         return ""
 
     idx = dated_all.index(current_ymd)
-
-    # 直近 n 件（最新側）を固定で表示
     window = dated_all[-n:] if len(dated_all) > n else list(dated_all)
-
-    # current が直近n件に含まれない場合も、現在日付だけは追加して迷子防止
     if current_ymd not in window:
         window = window + [current_ymd]
 
     parts: list[str] = []
 
-    # 前日/翌日（古い日→新しい日が idx+1）
     if idx > 0:
         prev_ymd = dated_all[idx - 1]
         parts.append(f"<a class='chip chip-nav' href='/daily/{prev_ymd}'>← 前日</a>")
@@ -173,32 +163,20 @@ def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
         href = f"/daily/{ymd}"
         is_current = (ymd == current_ymd)
-
-        # テンプレ側CSSに依存しない最低限の強調（見た目が安定する）
         extra_cls = " is-active" if is_current else ""
         aria = " aria-current='page'" if is_current else ""
         style = " style='border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10)'" if is_current else ""
+        parts.append(f"<a class='chip{extra_cls}' href='{href}'{aria}{style}><small>{mmdd}</small></a>")
 
-        parts.append(
-            f"<a class='chip{extra_cls}' href='{href}'{aria}{style}><small>{mmdd}</small></a>"
-        )
-
-    # ユーティリティ（固定）
     parts.append("<a class='chip' href='/daily/'><small>LIST</small>一覧</a>")
-    parts.append("<a class='chip' href='/daily/latest.html'><small>NEW</small>最新</a>")
-
+    parts.append("<a class='chip' href='/daily/latest'><small>NEW</small>最新</a>")
     return "\n      ".join(parts)
 
 
 def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ymd: str, n: int = 5) -> str:
-    """同じAI判定の日への内部リンク（チップ）を生成。
-    - current の前後を含めて最大 n 件
-    - judge が空、または対象日が不足なら空を返す
-    """
     judge = (judge or "").strip()
     if not judge or not judge_days_all or current_ymd not in judge_days_all:
         return ""
-    # judge_days_all は昇順前提（YYYYMMDD）
     idx = judge_days_all.index(current_ymd)
     half = n // 2
     start = max(0, idx - half)
@@ -209,12 +187,13 @@ def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ym
         end += 1
 
     window = judge_days_all[start:end]
-
     parts = []
-    # ラベル（非リンク）
+
+    tag_lower = escape_html(judge.lower())
     parts.append(
-        f"<a class='chip' href='/daily/tags/{escape_html(judge.lower())}.html' style='opacity:.75'><small>SAME</small>{escape_html(judge)}</a>"
+        f"<a class='chip' href='/daily/tags/{tag_lower}' style='opacity:.75'><small>SAME</small>{escape_html(judge)}</a>"
     )
+
     for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
         label = "" if ymd != current_ymd else "現在"
@@ -288,27 +267,30 @@ def rebuild_sitemap_with_daily(
 
     # --- canonical-only cleanup: remove old non-canonical URLs that may remain in existing sitemap ---
     drop_locs = {
-        f"{site_origin}/daily/index.html",   # canonical is /daily/
-        f"{site_origin}/daily/latest",       # canonical is /daily/latest.html (current policy)
-        f"{site_origin}/daily/tags/bear",    # canonical is .html (current policy)
-        f"{site_origin}/daily/tags/bull",
-        f"{site_origin}/daily/tags/wait",
-        f"{site_origin}/daily/tags/bear/",
-        f"{site_origin}/daily/tags/bull/",
-        f"{site_origin}/daily/tags/wait/",
-    }
-    for loc in list(existing.keys()):
-        if loc in drop_locs:
-            existing.pop(loc, None)
-          
-    # daily ルート（canonical-only）
-    daily_root_urls = [
-        f"{site_origin}/daily/",
+        f"{site_origin}/daily/index.html",
         f"{site_origin}/daily/latest.html",
         f"{site_origin}/daily/tags/bear.html",
         f"{site_origin}/daily/tags/bull.html",
         f"{site_origin}/daily/tags/wait.html",
+        f"{site_origin}/daily/latest/",
+        f"{site_origin}/daily/tags/bear/",
+        f"{site_origin}/daily/tags/bull/",
+        f"{site_origin}/daily/tags/wait/",
+    }
+
+    for loc in list(existing.keys()):
+        if loc in drop_locs:
+            existing.pop(loc, None)
+          
+    # daily ルート（canonical-only extensionless）
+    daily_root_urls = [
+        f"{site_origin}/daily/",
+        f"{site_origin}/daily/latest",
+        f"{site_origin}/daily/tags/bear",
+        f"{site_origin}/daily/tags/bull",
+        f"{site_origin}/daily/tags/wait",
     ]
+
 
     if include_extensionless_tag_pages:
         daily_root_urls += [
@@ -330,7 +312,7 @@ def rebuild_sitemap_with_daily(
         date_iso = str(d.get("date_iso") or "").strip()
         if not (ymd and re.fullmatch(r"\d{8}", ymd) and date_iso):
             continue
-        u = f"{site_origin}/daily/{ymd}.html"
+        u = f"{site_origin}/daily/{ymd}"
         existing[u] = {
             "lastmod": date_iso,
             "changefreq": "daily",
@@ -350,18 +332,24 @@ def rebuild_sitemap_with_daily(
     # daily系を最後にまとめて追加（重複排除）
     daily_first = [
         f"{site_origin}/daily/",
-        f"{site_origin}/daily/latest.html",
-        f"{site_origin}/daily/tags/bear.html",
-        f"{site_origin}/daily/tags/bull.html",
-        f"{site_origin}/daily/tags/wait.html",
+        f"{site_origin}/daily/latest",
+        f"{site_origin}/daily/tags/bear",
+        f"{site_origin}/daily/tags/bull",
+        f"{site_origin}/daily/tags/wait",
     ]
+
     if include_extensionless_tag_pages:
         daily_first += [
             f"{site_origin}/daily/tags/bear",
             f"{site_origin}/daily/tags/bull",
             f"{site_origin}/daily/tags/wait",
         ]
-    daily_dates = [f"{site_origin}/daily/{d['ymd']}.html" for d in pages_sorted if str(d.get('ymd') or '').strip()]
+    daily_dates = [
+        f"{site_origin}/daily/{d['ymd']}"
+        for d in pages_sorted
+        if str(d.get("ymd") or "").strip()
+    ]
+
     for loc in daily_first + daily_dates:
         if loc in existing and loc not in ordered_locs:
             ordered_locs.append(loc)
@@ -381,22 +369,22 @@ def rebuild_sitemap_with_daily(
     body = "\n".join(_url_block(loc, existing[loc]) for loc in ordered_locs) + "\n"
     footer = "</urlset>\n"
     write_text(sitemap_path, header + body + footer)
+
 def build_tag_jsonld(site_origin: str, tag_key: str, rows: list[dict]) -> str:
-    """/daily/tags/{tag}.html 用 JSON-LD（CollectionPage + ItemList）"""
     tag = (tag_key or "").lower()
     tag_u = (tag_key or "").upper()
-    url = f"{site_origin}/daily/tags/{tag}.html"
+    url = f"{site_origin}/daily/tags/{tag}"
 
     items = []
     for i, r in enumerate(rows, start=1):
-        href = r.get("href") or (f"{r.get('ymd','')}.html" if r.get("ymd") else "")
+        ymd = (r.get("ymd") or "").strip()
         date_iso = r.get("date_iso", "")
-        if not href or not date_iso:
+        if not ymd or not date_iso:
             continue
         items.append({
             "@type": "ListItem",
             "position": i,
-            "url": f"{site_origin}/daily/{href}",
+            "url": f"{site_origin}/daily/{ymd}",
             "name": date_iso
         })
 
@@ -416,7 +404,7 @@ def build_tag_jsonld(site_origin: str, tag_key: str, rows: list[dict]) -> str:
     }
 
     s = json.dumps(data, ensure_ascii=False)
-    return s.replace("</", "<\\/")  # 念のため
+    return s.replace("</", "<\\/")
 
 
 def get_path(obj: Any, path: str, default: Any = "") -> Any:
