@@ -10,8 +10,7 @@
   <meta property="og:description" content="Bitcoin(BTC)の概要、チェックポイント。" />
   <meta property="og:url" content="https://coinrader.net/coins/bitcoin/" />
   <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="/_page_style.css" />
-  <style>
+<style>
 /* Minimal shared page chrome for /guide /dictionary /coins */
 :root{
   --bg:#0b1220; --panel:#0f172a; --panel2:#111c33;
@@ -56,7 +55,14 @@ a:hover{text-decoration:underline}
 
 .note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6}
 
-  </style>
+  
+/* layout fixes for /coins */
+.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer .links{display:flex;gap:12px;flex-wrap:wrap}
+.footer .links a{color:var(--muted);text-decoration:none}
+.footer .links a:hover{color:var(--text)}
+
+</style>
 </head>
 <body>
   <div class="topbar">
@@ -71,29 +77,47 @@ a:hover{text-decoration:underline}
       </nav>
     </div>
   </div>
-  <main class="container">
-<h1>Bitcoin (BTC)</h1>
-<div class="panel">
-  <p>暗号資産市場の“中心”。アルトはBTCの地合いに影響されやすいため、まずBTCを確認するのが定石です。</p>
-  <h2>見るポイント</h2>
-  <ul>
-    <li><a href="/dictionary/fear-and-greed/">Fear &amp; Greed</a>：心理の極端さ</li>
+  
+  <main class="wrap">
+    <div class="hero">
+      <div class="bcrumb"><a href="/">CoinRader</a> / <a href="/coins/">Coins</a> / Bitcoin (BTC)</div>
+      <h1>Bitcoin (BTC)</h1>
+      <p class="muted">暗号資産市場の“中心”。アルトはBTCの地合いに影響されやすいため、まずBTCを確認するのが定石です。</p>
+    </div>
+
+    <div class="grid cols2">
+      <section class="card">
+        <h2>概要</h2>
+        <p class="muted">暗号資産市場の“中心”。アルトはBTCの地合いに影響されやすいため、まずBTCを確認するのが定石です。</p>
+      </section>
+      <section class="card">
+        <h2>見るポイント</h2>
+        <ul class="list">
+          <li><a href="/dictionary/fear-and-greed/">Fear &amp; Greed</a>：心理の極端さ</li>
     <li><a href="/dictionary/rsi/">RSI</a>：過熱感</li>
     <li><a href="/dictionary/moving-average/">MA</a>：中長期の流れ</li>
-  </ul>
-</div>
-<div class="note"><a href="/">ダッシュボードへ戻る</a> / <a href="/daily/">AIレポート</a></div>
-  </main>
-  <footer class="footer">
-    <div class="inner">
-      <div>© CoinRader</div>
-      <div class="links">
-        <a href="/about">About</a>
-        <a href="/data-sources">Data Sources</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/disclaimer">Disclaimer</a>
-        <a href="/contact">Contact</a>
+        </ul>
+      </section>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h2>関連リンク</h2>
+      <div class="muted" style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="/daily/latest" class="btn">AIレポート（最新）</a>
+        <a href="/daily/" class="btn">AIレポート一覧</a>
+        <a href="/" class="btn">Dashboard</a>
       </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>© CoinRader</div>
+    <div class="links">
+      <a href="/about">About</a>
+      <a href="/data-sources">Data Sources</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/disclaimer">Disclaimer</a>
+      <a href="/contact">Contact</a>
     </div>
   </footer>
 </body>

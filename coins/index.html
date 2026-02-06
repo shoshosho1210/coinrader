@@ -10,8 +10,7 @@
   <meta property="og:description" content="主要暗号資産の概要とCoinRader内リンク。" />
   <meta property="og:url" content="https://coinrader.net/coins/" />
   <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="/_page_style.css" />
-  <style>
+<style>
 /* Minimal shared page chrome for /guide /dictionary /coins */
 :root{
   --bg:#0b1220; --panel:#0f172a; --panel2:#111c33;
@@ -56,7 +55,16 @@ a:hover{text-decoration:underline}
 
 .note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6}
 
-  </style>
+  
+/* layout fixes for /coins */
+.cards{display:grid;gap:12px}
+@media (min-width: 820px){.cards{grid-template-columns:repeat(2, minmax(0,1fr));}}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer .links{display:flex;gap:12px;flex-wrap:wrap}
+.footer .links a{color:var(--muted);text-decoration:none}
+.footer .links a:hover{color:var(--text)}
+
+</style>
 </head>
 <body>
   <div class="topbar">
@@ -71,27 +79,44 @@ a:hover{text-decoration:underline}
       </nav>
     </div>
   </div>
-  <main class="container">
-<h1>Coins</h1>
-<p class="muted">主要銘柄の“最小限”の概要ページ。必要に応じて追加していけます。</p>
-<div class="cards">
-  <a class="card" href="/coins/bitcoin/"><h2>Bitcoin (BTC)</h2><p>暗号資産の基軸。市場の方向性の中心。</p></a>
-  <a class="card" href="/coins/ethereum/"><h2>Ethereum (ETH)</h2><p>スマートコントラクト基盤。DeFi/NFTの中心。</p></a>
-  <a class="card" href="/coins/xrp/"><h2>XRP (XRP)</h2><p>送金・決済系の代表格。</p></a>
-  <a class="card" href="/coins/solana/"><h2>Solana (SOL)</h2><p>高速チェーン。ミーム/DeFiも活発。</p></a>
-</div>
-<div class="note">AIレポートから銘柄ページへリンクする導線は、後続の改善で追加できます。</div>
+  
+  <main class="wrap">
+    <div class="hero">
+      <div class="bcrumb"><a href="/">CoinRader</a> / Coins</div>
+      <h1>Coins</h1>
+      <p class="muted">主要銘柄の“最小限”の概要ページ。必要に応じて追加していきます。</p>
+    </div>
+
+    <div class="cards">
+      <a class="card" href="/coins/bitcoin/">
+        <h2>Bitcoin (BTC)</h2>
+        <p class="muted">暗号資産の基軸。市場の方向性の中心。</p>
+      </a>
+      <a class="card" href="/coins/ethereum/">
+        <h2>Ethereum (ETH)</h2>
+        <p class="muted">スマートコントラクト基盤。DeFi/NFTの中心。</p>
+      </a>
+      <a class="card" href="/coins/xrp/">
+        <h2>XRP (XRP)</h2>
+        <p class="muted">送金・決済系の代表格。</p>
+      </a>
+      <a class="card" href="/coins/solana/">
+        <h2>Solana (SOL)</h2>
+        <p class="muted">高速チェーン。ミーム/DeFi活発。</p>
+      </a>
+    </div>
+
+    <p class="muted" style="margin-top:14px">AIレポートから銘柄ページリンクする導線は、後続の改善で追加できます。</p>
   </main>
+
   <footer class="footer">
-    <div class="inner">
-      <div>© CoinRader</div>
-      <div class="links">
-        <a href="/about">About</a>
-        <a href="/data-sources">Data Sources</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/disclaimer">Disclaimer</a>
-        <a href="/contact">Contact</a>
-      </div>
+    <div>© CoinRader</div>
+    <div class="links">
+      <a href="/about">About</a>
+      <a href="/data-sources">Data Sources</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/disclaimer">Disclaimer</a>
+      <a href="/contact">Contact</a>
     </div>
   </footer>
 </body>
