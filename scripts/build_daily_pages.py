@@ -1038,8 +1038,7 @@ def main() -> None:
         out_path_html = tags_dir / f"{tag_lower}.html"
         write_text(out_path_html, tag_html)
 
-        # 互換: /daily/tags/{tag} をファイルとして読む環境向け（必要なら）
-        write_text(tags_dir / tag_lower, tag_html)
+        # NOTE: tag pages are canonicalized to .html via _redirects, so do not generate extensionless files.
 
     latest_target = f"{latest_ymd}.html"
     latest_page_path = OUT_DIR / latest_target
