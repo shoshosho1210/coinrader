@@ -49,6 +49,11 @@ jobs:
           grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
           echo "---- non-html files under daily/tags (must be empty) ----"
           find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
+          echo "---- grep extensionless daily links ----"
+          grep -RInE "/daily/[0-9]{8}([^.]|$)" daily --include="*.html" | head -n 50
+          echo "---- tag canonical must be extensionless ----"
+          grep -RIn "rel=\"canonical\" href=\"https://coinrader.net/daily/tags/.*\.html" daily/tags --include="*.html" || true
+
 
       - name: Validate sitemap (canonical-only)
         run: |
