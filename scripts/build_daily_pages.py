@@ -105,7 +105,7 @@ def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi
     desc = f"{date_iso}のBTCをAIが日次分析。市場心理(Fear&Greed)={fgi_s}、RSI={rsi_s}、Trend={trend_s}。総合判断={judge}。注目トレンド:{trend_str}.{gain_str}".strip()
     og_title = f"BTC AI分析 {date_iso}｜AI判定 {judge}"
     og_desc = f"Fear&Greed={fgi_s} / RSI={rsi_s} / Trend={trend_s}。注目:{trend_str}"
-    canonical = f"https://coinrader.net/daily/{ymd}.html"
+    canonical = f"https://coinrader.net/daily/{ymd}"
     return {
         "TITLE": title,
         "DESCRIPTION": desc,
