@@ -1,41 +1,23 @@
-# Force https + apex
-http://coinrader.net/*        https://coinrader.net/:splat        301!
+# --- Guide / Dictionary / Coins (extensionless canonical) ---
 
-# Root
-/index.html                   /                                   301
+/guide.html              /guide/                301
+/guide                  /guide/                301
 
-# Share (pretty -> actual html)
-# 例: /share/20260206  → /share/20260206.html
-/share/:date([0-9]{8})        /share/:date.html                    301
+/dictionary.html         /dictionary/           301
+/dictionary             /dictionary/           301
 
-# Affiliate jumps
-/go/coincheck                 https://coincheck.com/ja/            302
-/go/bitflyer                  https://bitflyer.com/ja-jp/          302
-/go/sbi                       https://www.sbivc.co.jp/             302
-/go-pr/coincheck              https://coincheck.com/ja/            302
-/go-pr/sbi                    https://www.sbivc.co.jp/             302
+/coins.html              /coins/               301
+/coins                 /coins/               301
 
-# Canonical URL normalization (SEO) - extensionless canonical
-/about.html                   /about                               301
-/contact.html                 /contact                             301
-/privacy.html                 /privacy                              301
-/disclaimer.html              /disclaimer                           301
-/data-sources.html            /data-sources                         301
-/ads-pr.html                  /ads-pr                               301
-/guide.html                   /guide                                301
-/start.html                   /start                                301
+# Optional: coin detail pretty URL (if you keep legacy *.html around)
+/coins/bitcoin.html      /coins/bitcoin/        301
+/coins/ethereum.html     /coins/ethereum/       301
+/coins/xrp.html          /coins/xrp/            301
 
-# Daily (index & latest)
-# 末尾スラッシュ/拡張子あり → 正規URLへ
-/daily/index.html             /daily/                               301
-/daily/latest.html            /daily/latest                          301
-/daily/latest/                /daily/latest                          301
-
-# Daily tags (trailing slash / legacy .html -> extensionless)
-/daily/tags/:tag.html         /daily/tags/:tag                       301
-/daily/tags/:tag/             /daily/tags/:tag                       301
-
-# Daily date pages (legacy .html -> extensionless)
-# 例: /daily/20260206.html → /daily/20260206
-/daily/:date([0-9]{8}).html   /daily/:date                           301
-/daily/:date.html             /daily/:date                           301
+# Optional: dictionary term pretty URL (if you keep legacy *.html around)
+/dictionary/rsi.html             /dictionary/rsi/             301
+/dictionary/fear-and-greed.html  /dictionary/fear-and-greed/  301
+/dictionary/moving-average.html  /dictionary/moving-average/  301
+/dictionary/volume.html          /dictionary/volume/          301
+/dictionary/market-cap.html      /dictionary/market-cap/      301
+/dictionary/trend.html           /dictionary/trend/           301
