@@ -370,7 +370,7 @@ def build_tag_jsonld(site_origin: str, tag_key: str, rows: list[dict]) -> str:
     """/daily/tags/{tag}.html 用 JSON-LD（CollectionPage + ItemList）"""
     tag = (tag_key or "").lower()
     tag_u = (tag_key or "").upper()
-    url = f"{site_origin}/daily/tags/{tag}"
+    url = f"{site_origin}/daily/tags/{tag}.html"
 
     items = []
     for i, r in enumerate(rows, start=1):
