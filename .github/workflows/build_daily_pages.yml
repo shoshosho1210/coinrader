@@ -33,6 +33,13 @@ jobs:
           grep -RIn "/daily/.*\.html" daily || true
           grep -RIn "/daily/.*\.html" daily --include="*.html" | head
           find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
+          echo "---- remove legacy extensionless tag files ----"
+          ls -la daily/tags || true
+          rm -f daily/tags/bear daily/tags/bull daily/tags/wait
+          echo "---- after rm ----"
+          ls -la daily/tags || true
+          git status --porcelain
+
 
       - name: Validate sitemap (canonical-only)
         run: |
