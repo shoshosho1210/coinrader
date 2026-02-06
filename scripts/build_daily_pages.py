@@ -164,14 +164,14 @@ def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -
     # 前日/翌日（古い日→新しい日が idx+1）
     if idx > 0:
         prev_ymd = dated_all[idx - 1]
-        parts.append(f"<a class='chip chip-nav' href='/daily/{prev_ymd}.html'>← 前日</a>")
+        parts.append(f"<a class='chip chip-nav' href='/daily/{prev_ymd}'>← 前日</a>")
     if idx < (len(dated_all) - 1):
         next_ymd = dated_all[idx + 1]
-        parts.append(f"<a class='chip chip-nav' href='/daily/{next_ymd}.html'>翌日 →</a>")
+        parts.append(f"<a class='chip chip-nav' href='/daily/{next_ymd}'>翌日 →</a>")
 
     for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
-        href = f"/daily/{ymd}.html"
+        href = f"/daily/{ymd}"
         is_current = (ymd == current_ymd)
 
         # テンプレ側CSSに依存しない最低限の強調（見た目が安定する）
@@ -218,7 +218,7 @@ def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ym
     for ymd in window:
         mmdd = f"{ymd[4:6]}/{ymd[6:8]}"
         label = "" if ymd != current_ymd else "現在"
-        href = f"/daily/{ymd}.html"
+        href = f"/daily/{ymd}"
         inner = f"<small>{mmdd}</small>{escape_html(label)}" if label else f"<small>{mmdd}</small>"
         parts.append(f"<a class='chip' href='{href}'>{inner}</a>")
     return "\n      ".join(parts)
