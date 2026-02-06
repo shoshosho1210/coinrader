@@ -12,24 +12,22 @@ SITEMAP = ROOT / "sitemap.xml"
 
 
 def canonicalize(url: str) -> str:
-    """Return canonical form for CoinRader daily URLs."""
+    """Return canonical form for CoinRader sitemap policy (aligned with current _redirects)."""
     u = (url or "").strip()
     if not u:
         return u
 
-    # unify trailing slashes for these endpoints
+    # Normalize daily index
     if u.endswith("/daily/index.html"):
         return u.replace("/daily/index.html", "/daily/")
-    if u.endswith("/daily/latest.html"):
-        return u.replace("/daily/latest.html", "/daily/latest")
-    if u.endswith("/daily/tags/bear.html"):
-        return u.replace("/daily/tags/bear.html", "/daily/tags/bear")
-    if u.endswith("/daily/tags/bull.html"):
-        return u.replace("/daily/tags/bull.html", "/daily/tags/bull")
-    if u.endswith("/daily/tags/wait.html"):
-        return u.replace("/daily/tags/wait.html", "/daily/tags/wait")
 
-    # also normalize accidental trailing slash on tag pages
+    # Keep latest as .html (your generator writes daily/latest.html and you link to it)
+    # (If you later decide to canonicalize to /daily/latest (extensionless), change here + redirects.)
+    # So: no rewrite.
+
+    # Tags: canonical is .html (because _redirects sends /daily/tags/bear -> /daily/tags/bear.html 301)
+    # So: do NOT rewrite bear.html -> bear
+    # Also normalize accidental trailing slashes:
     if u.endswith("/daily/tags/bear/"):
         return u[:-1]
     if u.endswith("/daily/tags/bull/"):
@@ -37,8 +35,9 @@ def canonicalize(url: str) -> str:
     if u.endswith("/daily/tags/wait/"):
         return u[:-1]
 
-    # keep everything else as-is
+    # Keep everything else as-is
     return u
+
 
 
 def _iter_loc_elements(root: ET.Element):
