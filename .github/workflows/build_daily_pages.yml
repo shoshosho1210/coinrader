@@ -55,9 +55,11 @@ jobs:
             echo "FOUND legacy .html links under /daily/"
             exit 1
           fi
-           echo "---- tags dir must not contain non-html files ----"
+
+          echo "---- tags dir must not contain non-html files ----"
           test -z "$(find daily/tags -maxdepth 1 -type f '!' -name '*.html' -print)"
-           echo "---- tags canonical must be extensionless (no .html) ----"
+
+          echo "---- tags canonical must be extensionless (no .html) ----"
           if grep -RInE 'rel="canonical" href="https://coinrader\.net/daily/tags/[^"]+\.html"' daily/tags --include="*.html"
           then
             echo "FOUND .html canonical under /daily/tags/"
@@ -76,11 +78,18 @@ jobs:
             echo "FOUND legacy .html links under /daily/tags/"
             exit 1
           fi
+
           # legacy入口が残ってないか（/daily と /daily/tags）
           grep -RInE "(/daily/[^\"' ]+\.html|/daily/tags/[^\"' ]+\.html)" daily --include="*.html" || true
 
-          # redirects ルールの存在チェック（目視）
-          grep -nE "^/daily/.*\.html|^/daily/tags/.*\.html" _redirects
+          # redirects ルールの存在チェック（目視）: マッチ0でも落とさない
+          echo "---- _redirects legacy html rules (optional) ----"
+          if [ -f _redirects ]; then
+            grep -nE "^/daily/.*\.html|^/daily/tags/.*\.html" _redirects || true
+          else
+            echo "_redirects not found"
+          fi
+
 
       - name: Validate sitemap (canonical-only)
         run: |
