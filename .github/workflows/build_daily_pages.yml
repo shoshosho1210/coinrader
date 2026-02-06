@@ -42,13 +42,13 @@ jobs:
           echo "---- grep /daily/*.html in daily/*.html ----"
           grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
 
-       - name: Sanity check daily links
-         run: |
-           set -eux
-           echo "---- grep /daily/*.html in daily/*.html ----"
-           grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
-           echo "---- non-html files under daily/tags (must be empty) ----"
-           find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
+      - name: Sanity check daily links
+        run: |
+          set -eux
+          echo "---- grep /daily/*.html in daily/*.html ----"
+          grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
+          echo "---- non-html files under daily/tags (must be empty) ----"
+          find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
 
       - name: Validate sitemap (canonical-only)
         run: |
