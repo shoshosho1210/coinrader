@@ -3,130 +3,128 @@
 from __future__ import annotations
 
 import argparse
-import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
+from collections import Counter
 
 ROOT = Path(__file__).resolve().parents[1]
 SITEMAP = ROOT / "sitemap.xml"
 
-# non-canonical URLs (we want directory-style canonical)
-BANNED = {
-    "https://coinrader.net/daily/index.html",
-    "https://coinrader.net/daily/latest.html",
-    "https://coinrader.net/daily/tags/bear.html",
-    "https://coinrader.net/daily/tags/bull.html",
-    "https://coinrader.net/daily/tags/wait.html",
-}
 
-# If a banned URL is found, replace with canonical URL (instead of dropping)
-CANONICAL_MAP = {
-    "https://coinrader.net/daily/index.html": "https://coinrader.net/daily/",
-    "https://coinrader.net/daily/latest.html": "https://coinrader.net/daily/latest",
-    "https://coinrader.net/daily/tags/bear.html": "https://coinrader.net/daily/tags/bear",
-    "https://coinrader.net/daily/tags/bull.html": "https://coinrader.net/daily/tags/bull",
-    "https://coinrader.net/daily/tags/wait.html": "https://coinrader.net/daily/tags/wait",
-}
+def canonicalize(url: str) -> str:
+    """Return canonical form for CoinRader daily URLs."""
+    u = (url or "").strip()
+    if not u:
+        return u
 
+    # unify trailing slashes for these endpoints
+    if u.endswith("/daily/index.html"):
+        return u.replace("/daily/index.html", "/daily/")
+    if u.endswith("/daily/latest.html"):
+        return u.replace("/daily/latest.html", "/daily/latest")
+    if u.endswith("/daily/tags/bear.html"):
+        return u.replace("/daily/tags/bear.html", "/daily/tags/bear")
+    if u.endswith("/daily/tags/bull.html"):
+        return u.replace("/daily/tags/bull.html", "/daily/tags/bull")
+    if u.endswith("/daily/tags/wait.html"):
+        return u.replace("/daily/tags/wait.html", "/daily/tags/wait")
 
-def _scan(xml: str) -> tuple[list[str], list[str], list[str]]:
-    ET.fromstring(xml)  # well-formed check
-    locs = re.findall(r"<loc>\s*([^<]+)\s*</loc>", xml)
-    dups = sorted({u for u in locs if locs.count(u) > 1})
-    bad = sorted([u for u in locs if u in BANNED])
-    return locs, dups, bad
+    # also normalize accidental trailing slash on tag pages
+    if u.endswith("/daily/tags/bear/"):
+        return u[:-1]
+    if u.endswith("/daily/tags/bull/"):
+        return u[:-1]
+    if u.endswith("/daily/tags/wait/"):
+        return u[:-1]
 
-
-def _iter_url_nodes(root: ET.Element) -> list[ET.Element]:
-    """
-    Return <url> nodes regardless of sitemap namespace.
-    Supports:
-      - <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-      - <urlset> (no namespace)
-    """
-    urls = []
-
-    # Case 1: standard sitemap namespace
-    urls.extend(root.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}url"))
-
-    # Case 2: no namespace
-    if not urls:
-        urls.extend(root.findall(".//url"))
-
-    # Fallback: any element whose tag endswith 'url'
-    if not urls:
-        for el in root.iter():
-            if isinstance(el.tag, str) and el.tag.endswith("url"):
-                urls.append(el)
-
-    return urls
+    # keep everything else as-is
+    return u
 
 
-def _find_loc_el(url_el: ET.Element) -> ET.Element | None:
-    # standard namespace
-    loc = url_el.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
-    if loc is not None:
-        return loc
-    # no namespace
-    loc = url_el.find("loc")
-    if loc is not None:
-        return loc
-    # fallback: first child whose tag endswith 'loc'
-    for ch in list(url_el):
-        if isinstance(ch.tag, str) and ch.tag.endswith("loc"):
-            return ch
-    return None
+def _iter_loc_elements(root: ET.Element):
+    # namespace-agnostic: find any element whose localname is "loc"
+    for el in root.iter():
+        if el.tag.endswith("loc"):
+            yield el
+
+
+def _scan(xml: str):
+    root = ET.fromstring(xml)
+    loc_els = list(_iter_loc_elements(root))
+    locs = [((el.text or "").strip()) for el in loc_els if (el.text or "").strip()]
+
+    # duplicates based on canonicalized loc (because different forms are effectively same)
+    canon = [canonicalize(u) for u in locs]
+    cnt = Counter(canon)
+    dups = sorted([u for u, c in cnt.items() if c > 1])
+
+    # non-canonical: loc itself isn't equal to canonicalized
+    bad = sorted([u for u in locs if canonicalize(u) != u])
+
+    return root, loc_els, locs, dups, bad
 
 
 def _autofix(xml: str) -> str:
     root = ET.fromstring(xml)
+
+    # Build mapping from canonical -> first url node, and remove others
     seen: set[str] = set()
+    to_remove = []
 
-    for url in list(_iter_url_nodes(root)):
-        loc_el = _find_loc_el(url)
-        loc = (loc_el.text or "").strip() if loc_el is not None else ""
+    # iterate <url> nodes namespace-agnostic (tag endswith 'url')
+    for url_node in list(root):
+        if not url_node.tag.endswith("url"):
+            continue
 
+        loc_el = None
+        for child in url_node:
+            if child.tag.endswith("loc"):
+                loc_el = child
+                break
+
+        loc = ((loc_el.text or "").strip()) if loc_el is not None else ""
         if not loc:
-            urlset_parent = root
-            urlset_parent.remove(url)
+            to_remove.append(url_node)
             continue
 
-        # replace banned -> canonical
-        if loc in CANONICAL_MAP:
-            loc = CANONICAL_MAP[loc]
-            loc_el.text = loc
+        canon = canonicalize(loc)
+        # rewrite to canonical
+        if loc_el is not None:
+            loc_el.text = canon
 
-        # drop any still-banned (in case) or duplicates
-        if loc in BANNED or loc in seen:
-            root.remove(url)
+        if canon in seen:
+            to_remove.append(url_node)
             continue
+        seen.add(canon)
 
-        seen.add(loc)
+    for n in to_remove:
+        root.remove(n)
 
+    # preserve namespaces as much as ET allows
     return ET.tostring(root, encoding="unicode")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--fix", action="store_true", help="Auto-fix banned/duplicate URLs in sitemap")
+    parser.add_argument("--fix", action="store_true", help="Auto-fix non-canonical/duplicate URLs in sitemap")
     args = parser.parse_args()
 
     xml = SITEMAP.read_text(encoding="utf-8")
-    locs, dups, bad = _scan(xml)
+    root, loc_els, locs, dups, bad = _scan(xml)
 
     if (dups or bad) and args.fix:
         fixed = _autofix(xml)
-        SITEMAP.write_text(
-            "\n".join(['<?xml version="1.0" encoding="UTF-8"?>', fixed, ""]),
-            encoding="utf-8",
-        )
+        # Keep xml declaration
+        SITEMAP.write_text('<?xml version="1.0" encoding="UTF-8"?>\n' + fixed + '\n', encoding="utf-8")
         xml = SITEMAP.read_text(encoding="utf-8")
-        locs, dups, bad = _scan(xml)
+        root, loc_els, locs, dups, bad = _scan(xml)
         print("SITEMAP AUTO-FIX APPLIED")
 
-    errors: list[str] = []
+    errors = []
+    if not locs:
+        errors.append("no <loc> entries found (sitemap namespace/format issue?)")
     if dups:
-        errors.append(f"duplicate loc entries: {dups}")
+        errors.append(f"duplicate (canonical) loc entries: {dups}")
     if bad:
         errors.append(f"non-canonical URLs in sitemap: {bad}")
 
