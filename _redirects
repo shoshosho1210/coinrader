@@ -1,22 +1,26 @@
 http://coinrader.net/*   https://coinrader.net/:splat   301!
 /index.html              /                              301
-/share/:date([0-9]{8})   /share/:date.html   301
-/go/coincheck     https://coincheck.com/ja/      302
-/go/bitflyer      https://bitflyer.com/ja-jp/    302
-/go/sbi           https://www.sbivc.co.jp/       302
 
-/go-pr/coincheck  https://coincheck.com/ja/             302
-/go-pr/sbi        https://www.sbivc.co.jp/                   302
-# Canonical URL normalization (SEO)
-/about.html        /about                301
-/contact.html      /contact              301
-/privacy.html      /privacy              301
-/disclaimer.html   /disclaimer           301
-/data-sources.html /data-sources         301
-/ads-pr.html       /ads-pr               301
-/guide.html        /guide                301
-/start.html        /start                301
-/daily/index.html  /daily/               301
-/daily/tags/bear   /daily/tags/bear.html   301
-/daily/tags/bull   /daily/tags/bull.html   301
-/daily/tags/wait   /daily/tags/wait.html   301
+/share/:date([0-9]{8})   /share/:date.html              301
+
+/go/coincheck            https://coincheck.com/ja/      302
+/go/bitflyer             https://bitflyer.com/ja-jp/    302
+/go/sbi                  https://www.sbivc.co.jp/       302
+
+/go-pr/coincheck         https://coincheck.com/ja/      302
+/go-pr/sbi               https://www.sbivc.co.jp/       302
+
+# Canonical URL normalization (SEO) - extensionless
+/about.html              /about                         301
+/contact.html            /contact                       301
+/privacy.html            /privacy                       301
+/disclaimer.html         /disclaimer                    301
+/data-sources.html       /data-sources                  301
+/ads-pr.html             /ads-pr                        301
+/guide.html              /guide                         301
+/start.html              /start                         301
+
+# Daily canonical (extensionless)
+# NOTE: files remain .html, but users/search should land on extensionless URLs
+/daily/index.html        /daily/                        301!
+/daily/latest.html       /daily/latest                  301!
