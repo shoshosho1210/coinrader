@@ -69,6 +69,14 @@ jobs:
           test "$cnt" -gt 0
           echo "found: $cnt"
 
+          echo "---- reject /daily/tags/*.html in href/content/canonical ----"
+          if grep -RInE "href=['\"]/daily/tags/[^'\"]+\.html(['\"#?]|$)|content=['\"][^'\"]*/daily/tags/[^'\"]+\.html(['\"#?]|$)" \
+            daily --include="*.html"
+          then
+            echo "FOUND legacy .html links under /daily/tags/"
+            exit 1
+          fi
+
       - name: Validate sitemap (canonical-only)
         run: |
           python scripts/validate_sitemap.py --fix
