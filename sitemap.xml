@@ -7,6 +7,30 @@
     <ns0:priority>0.9</ns0:priority>
   </ns0:url>
   <ns0:url>
+    <ns0:loc>https://coinrader.net/daily/latest</ns0:loc>
+    <ns0:lastmod>2026-02-06</ns0:lastmod>
+    <ns0:changefreq>daily</ns0:changefreq>
+    <ns0:priority>0.6</ns0:priority>
+  </ns0:url>
+  <ns0:url>
+    <ns0:loc>https://coinrader.net/daily/tags/bear.html</ns0:loc>
+    <ns0:lastmod>2026-02-06</ns0:lastmod>
+    <ns0:changefreq>daily</ns0:changefreq>
+    <ns0:priority>0.6</ns0:priority>
+  </ns0:url>
+  <ns0:url>
+    <ns0:loc>https://coinrader.net/daily/tags/bull.html</ns0:loc>
+    <ns0:lastmod>2026-02-06</ns0:lastmod>
+    <ns0:changefreq>daily</ns0:changefreq>
+    <ns0:priority>0.6</ns0:priority>
+  </ns0:url>
+  <ns0:url>
+    <ns0:loc>https://coinrader.net/daily/tags/wait.html</ns0:loc>
+    <ns0:lastmod>2026-02-06</ns0:lastmod>
+    <ns0:changefreq>daily</ns0:changefreq>
+    <ns0:priority>0.6</ns0:priority>
+  </ns0:url>
+  <ns0:url>
     <ns0:loc>https://coinrader.net/daily/20260206.html</ns0:loc>
     <ns0:lastmod>2026-02-06</ns0:lastmod>
     <ns0:changefreq>daily</ns0:changefreq>
@@ -78,28 +102,4 @@
     <ns0:changefreq>daily</ns0:changefreq>
     <ns0:priority>0.8</ns0:priority>
   </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/latest</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/tags/bear.html</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/tags/bull.html</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/tags/wait.html</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
-  </ns0:url>
-  </ns0:urlset>
+</ns0:urlset>
