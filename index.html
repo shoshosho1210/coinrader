@@ -1342,6 +1342,9 @@
   .info-body p { margin-bottom: 12px; }
   .info-body ul { padding-left: 20px; margin-bottom: 12px; }
   .info-body a { color: #60a5fa; text-decoration: underline; }
+  #pageModalBody.has-iframe { padding: 0; overflow: hidden; }
+  .page-modal-iframe { width: 100%; height: min(80vh, 900px); border: 0; display: block; background: transparent; }
+
 /* --- AI Insight Box: プレミアム・サイバーアップデート --- */
 .ai-insight-box {
     margin: 10px 0 16px;
@@ -9040,58 +9043,22 @@ textEl.innerHTML = htmlContent;
 
     document.addEventListener('keydown', __crModalKeyHandler);
   }
-
   async function openPageModal(url, title) {
     const overlay = document.getElementById('pageModalOverlay');
     const titleEl = document.getElementById('pageModalTitle');
-    const bodyEl = document.getElementById('pageModalBody');
-    const closeBtn = document.getElementById('pageModalCloseBtn');
+    const bodyEl  = document.getElementById('pageModalBody');
 
-    // Remember focus to restore later
-    __crModalLastFocus = document.activeElement;
+    titleEl.textContent = title || '';
+    bodyEl.classList.add('has-iframe');
 
-    // 1) Open modal immediately with loading state
-    titleEl.textContent = title;
-    bodyEl.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#94a3b8;">読み込み中...</div>';
+    const safeTitle = String(title || 'CoinRader').replace(/"/g, '&quot;');
+    const src = url;
+    bodyEl.innerHTML = `<iframe class="page-modal-iframe" src="${src}" title="${safeTitle}" loading="lazy"></iframe>`;
+
     overlay.classList.add('open');
-
-    // Scroll lock + key handling + focus
-    __crLockScroll();
-    __crSetupModalKeyHandling();
-    if (closeBtn) closeBtn.focus({ preventScroll:true });
-
-    // Close side menu if open
-    const menu = document.getElementById('sideMenu');
-    const menuOverlay = document.getElementById('sideMenuOverlay');
-    if(menu) menu.classList.remove('is-open');
-    if(menuOverlay) menuOverlay.hidden = true;
-
-    try {
-      const res = await fetch(url + '?v=' + Date.now());
-      if (!res.ok) throw new Error('ページが見つかりませんでした (' + res.status + ')');
-
-      const text = await res.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-
-      const content = doc.body ? doc.body.innerHTML : text;
-      bodyEl.innerHTML = content;
-
-      // Ensure focus remains inside modal after content swap
-      const focusables = __crGetFocusable(overlay.querySelector('.info-modal'));
-      if (focusables.length && document.activeElement === document.body) {
-        focusables[0].focus({ preventScroll:true });
-      }
-    } catch (e) {
-      console.error(e);
-      bodyEl.innerHTML = `<div style="padding:20px;text-align:center;color:#f87171;">
-        読み込みに失敗しました。<br><br>
-        <small>${e.message}</small>
-      </div>`;
-    }
+    lockBodyScroll();
   }
 
-  
   // Delegated handler: open modal for links/buttons with data-page-modal
   document.addEventListener('click', (ev) => {
     const el = ev.target.closest('[data-page-modal="1"]');
@@ -9105,6 +9072,9 @@ textEl.innerHTML = htmlContent;
 function closePageModal() {
     const overlay = document.getElementById('pageModalOverlay');
     overlay.classList.remove('open');
+    const bodyEl = document.getElementById('pageModalBody');
+    bodyEl.classList.remove('has-iframe');
+    bodyEl.innerHTML = '';
 
     // Remove key handler
     if (__crModalKeyHandler) {
