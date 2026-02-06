@@ -879,7 +879,7 @@ def main() -> None:
             "ymd": ymd,
             "date_iso": date_iso,
             "title": title,
-            "href": f"{ymd}.html",
+            "href": f"{ymd}",
             "judge": str(judge),
             "fgi": sent,
             "btc_rsi": rsi,
@@ -947,7 +947,7 @@ def main() -> None:
 
     index_html, n_rows = rows_pat.subn(rows_html, index_html)
     index_html, n_items = items_pat.subn(items_html, index_html)
-    index_html, n_latest = latest_pat.subn(f"{latest_ymd}.html", index_html)
+    index_html, n_latest = latest_pat.subn(f"{latest_ymd}", index_html)
 
     if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", index_html):
         raise RuntimeError("daily_index.html: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
@@ -970,13 +970,14 @@ def main() -> None:
             f"<div class='tagsub'>全{len(filtered)}件</div>"
             f"<div class='taglinks' style='margin-top:6px;font-size:12px;color:var(--muted)'>"
             f"<a href='/daily/' style='margin-right:10px'>一覧</a>"
-            f"<a href='/daily/latest.html' style='margin-right:10px'>最新</a>"
+            f"<a href='/daily/latest' style='margin-right:10px'>最新</a>"
             f"<a href='/' style='margin-right:10px'>ダッシュボード</a>"
+
             f"</div>"
             f"</div>\n"
             + "\n".join([
                 "<div class='row'>"
-                f"<a class='rowlink' href='../{escape_html(p['ymd'])}.html'>"
+                f"<a class='rowlink' href='../{escape_html(p['ymd'])}'>"
                 f"<div class='date'>{escape_html(p['date_iso'])}</div>"
                 f"<div class='meta'>{_fmt_meta_html(p)}</div>"
                 "</a>"
@@ -986,7 +987,7 @@ def main() -> None:
         )
 
         items_html_tag = "\n".join([
-            f"<li><a href='../{escape_html(p['ymd'])}.html'>{escape_html(p['title'])}</a></li>"
+            f"<li><a href='../{escape_html(p['ymd'])}'>{escape_html(p['title'])}</a></li>"
             for p in filtered
         ])
 
@@ -1015,7 +1016,7 @@ def main() -> None:
             tag_html
         )
 
-        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}.html"
+        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}"
         tag_html = re.sub(
             r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
             f'<link rel="canonical" href="{escape_html(canon_url)}" />',
