@@ -55,18 +55,19 @@ jobs:
           grep -RIn "rel=\"canonical\" href=\"https://coinrader.net/daily/tags/.*\.html" daily/tags --include="*.html" || true
           set -eux
 
-          echo "---- reject /daily/*.html links in generated html ----"
-          ! grep -RIn '/daily/.*\.html' daily --include="*.html"
+          set -eux
+
+          echo "---- reject /daily/*.html links (regex) ----"
+          ! grep -RInE '/daily/[^"'\'' ]+\.html' daily --include="*.html"
 
           echo "---- require extensionless /daily/YYYYMMDD links exist ----"
-          grep -RInE '/daily/[0-9]{8}([^.]|$)' daily --include="*.html" | head -n 20 || true
+          grep -RInE '/daily/[0-9]{8}([^.]|$)' daily --include="*.html" | head -n 30 || true
 
           echo "---- tags dir must not contain extensionless files ----"
           test -z "$(find daily/tags -maxdepth 1 -type f '!' -name '*.html' -print)"
 
           echo "---- tags canonical must be extensionless ----"
-          ! grep -RIn 'rel="canonical" href="https://coinrader.net/daily/tags/.*\.html' daily/tags --include="*.html"
-
+          ! grep -RInE 'rel="canonical" href="https://coinrader\.net/daily/tags/[^"]+\.html"' daily/tags --include="*.html"
 
       - name: Validate sitemap (canonical-only)
         run: |
