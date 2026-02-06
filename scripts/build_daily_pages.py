@@ -105,7 +105,7 @@ def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi
     desc = f"{date_iso}のBTCをAIが日次分析。市場心理(Fear&Greed)={fgi_s}、RSI={rsi_s}、Trend={trend_s}。総合判断={judge}。注目トレンド:{trend_str}.{gain_str}".strip()
     og_title = f"BTC AI分析 {date_iso}｜AI判定 {judge}"
     og_desc = f"Fear&Greed={fgi_s} / RSI={rsi_s} / Trend={trend_s}。注目:{trend_str}"
-    canonical = f"https://coinrader.net/daily/{ymd}"
+    canonical = f"{SITE_ORIGIN}/daily/{ymd}"
     return {
         "TITLE": title,
         "DESCRIPTION": desc,
@@ -303,7 +303,7 @@ def rebuild_sitemap_with_daily(
         existing[u] = {
             "lastmod": latest_iso,
             "changefreq": "daily",
-            "priority": "0.9" if u.endswith("/daily/") or u.endswith("index.html") or u.endswith("latest.html") else "0.6",
+            "priority": "0.9" if (u.endswith("/daily/") or u.endswith("/daily/latest")) else "0.6",
         }
 
     # 日次ページ
@@ -776,7 +776,7 @@ def main() -> None:
 
         title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
         desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
-        canonical = seo_meta.get("CANONICAL") or f"{SITE_ORIGIN}/daily/{ymd}.html"
+        canonical = seo_meta.get("CANONICAL") or f"{SITE_ORIGIN}/daily/{ymd}"
 
         items.append({
             "ymd": ymd,
@@ -994,7 +994,7 @@ def main() -> None:
         tag_html = tmpl_index
         tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
         tag_html, _ = items_pat.subn(items_html_tag, tag_html)
-        tag_html, _ = latest_pat.subn(f"../{latest_ymd}.html", tag_html)
+        tag_html, _ = latest_pat.subn(f"../{latest_ymd}", tag_html)
 
         if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
             raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
