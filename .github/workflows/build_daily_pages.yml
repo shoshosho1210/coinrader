@@ -26,6 +26,12 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
+      - name: Check daily html links (no .html)
+        run: |
+          echo "---- grep .html under /daily/ in generated daily/ ----"
+          grep -RIn "/daily/.*\.html" daily | head -n 50 || true
+
+
       - name: Validate sitemap (canonical-only)
         run: |
           python scripts/validate_sitemap.py --fix
