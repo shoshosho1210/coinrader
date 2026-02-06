@@ -30,6 +30,7 @@ jobs:
         run: |
           python scripts/validate_sitemap.py --fix
           
+          
       - name: Fetch coin snapshots (for /coins/* pages)
         env:
           CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
