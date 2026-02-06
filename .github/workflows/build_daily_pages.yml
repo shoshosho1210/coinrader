@@ -132,6 +132,15 @@ jobs:
           echo "---- show head sitemap.xml ----"
           head -n 40 sitemap.xml
 
+      - name: Debug sitemap hash
+        run: |
+          python - << 'PY'
+          import hashlib, pathlib
+          p = pathlib.Path("sitemap.xml")
+          h = hashlib.sha256(p.read_bytes()).hexdigest()
+          print("sitemap.sha256=", h)
+          print("size=", p.stat().st_size)
+          PY
 
 
 
