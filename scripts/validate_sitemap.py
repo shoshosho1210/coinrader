@@ -12,29 +12,31 @@ SITEMAP = ROOT / "sitemap.xml"
 
 
 def canonicalize(url: str) -> str:
-    """Return canonical form for CoinRader daily URLs (.html canonical)."""
+    """Return canonical form for CoinRader daily URLs (extensionless canonical)."""
     u = (url or "").strip()
     if not u:
         return u
 
-    # daily index is not canonical; prefer /daily/
+    # /daily/index.html -> /daily/
     if u.endswith("/daily/index.html"):
         return u.replace("/daily/index.html", "/daily/")
 
-    # If someone wrote extensionless, canonical is .html
-    # tags
-    if u.endswith("/daily/tags/bear"):
-        return u + ".html"
-    if u.endswith("/daily/tags/bull"):
-        return u + ".html"
-    if u.endswith("/daily/tags/wait"):
-        return u + ".html"
+    # /daily/latest.html -> /daily/latest
+    if u.endswith("/daily/latest.html"):
+        return u.replace("/daily/latest.html", "/daily/latest")
 
-    # daily pages
+    # tags: /daily/tags/bear(.html) -> /daily/tags/bear
+    for t in ("bear", "bull", "wait"):
+        if u.endswith(f"/daily/tags/{t}.html"):
+            return u.replace(f"/daily/tags/{t}.html", f"/daily/tags/{t}")
+        if u.endswith(f"/daily/tags/{t}"):
+            return u
+
+    # daily pages: /daily/YYYYMMDD(.html) -> /daily/YYYYMMDD
     import re
-    m = re.search(r"/daily/(\d{8})$", u)
+    m = re.search(r"/daily/(\d{8})(?:\.html)?$", u)
     if m:
-        return u + ".html"
+        return u.replace(".html", "")
 
     return u
 
