@@ -4764,47 +4764,109 @@ html, body{
 </div>
 </div>
 <header class="appHeader" role="banner">
-<div class="hdr-inner">
-<div class="hdr-left">
-<button aria-controls="sideMenu" aria-expanded="false" aria-label="メニュー" class="iconBtn menuBtn" id="menuBtn" type="button">
-<span aria-hidden="true" class="burger"></span>
-</button>
-<a aria-label="CoinRader ホーム" class="brandLink" href="/">
-<img alt="CoinRader" class="brandLogo" src="/assets/icons/logo_horizontal_v4.png"/>
-</a>
-</div>
-<div class="hdr-right">
-<div class="status-indicator" id="statusContainer">
-<span class="status-dot" id="statusDot"></span>
-<span id="statusText">最新</span>
-<span style="opacity: 0.4; margin: 0 2px;">|</span>
-<span id="updatedTimeText">--</span>
-</div>
-<div class="miniNote" id="miniNote" title="自動更新（約3分ごと）">Auto</div>
-<button class="btn small" id="refreshBtn" type="button">更新</button>
-<button class="btn small" id="langToggle" type="button"
-        aria-label="Switch language" aria-pressed="false">EN</button>
-</div>
-</div>
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <button aria-controls="sideMenu" aria-expanded="false" aria-label="メニュー"
+              class="iconBtn menuBtn" id="menuBtn" type="button">
+        <span aria-hidden="true" class="burger"></span>
+      </button>
+
+      <a aria-label="CoinRader ホーム" class="brandLink" href="/">
+        <img alt="CoinRader" class="brandLogo" src="assets/icons/logo_horizontal_v4.png"/>
+      </a>
+    </div>
+
+    <div class="hdr-right">
+      <div class="status-indicator" id="statusContainer">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText"
+              data-i18n data-ja="最新" data-en="Latest">最新</span>
+        <span style="opacity: 0.4; margin: 0 2px;">|</span>
+        <span id="updatedTimeText">--</span>
+      </div>
+
+      <div class="miniNote" id="miniNote"
+           data-i18n-title data-title-ja="自動更新（約3分ごと）" data-title-en="Auto refresh (~every 3 min)"
+           title="自動更新（約3分ごと）">Auto</div>
+
+      <button class="btn small" id="refreshBtn" type="button"
+              data-i18n data-ja="更新" data-en="Refresh">更新</button>
+
+      <!-- ★追加：言語切替（右端に置くのが一番安全） -->
+      <button class="btn small" id="langToggle" type="button"
+              aria-label="Switch language" aria-pressed="false">EN</button>
+    </div>
+  </div>
 </header>
-<div class="sideMenuOverlay" hidden="" id="sideMenuOverlay"></div>
+
+<div class="sideMenuOverlay" hidden id="sideMenuOverlay"></div>
+
 <aside aria-hidden="true" class="sideMenu" id="sideMenu">
-<div class="sideMenuHeader">
-<div class="sideMenuTitle">メニュー</div>
-<button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
-</div>
-<nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
-<div class="sideMenuFooter">
-<a class="sideNavLink" href="/coins/"><i class="fa-solid fa-coins" aria-hidden="true"></i><span>銘柄別ページ（Coins）</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/guide', '📖 CoinRader 活用ガイド'); return false;" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span>サイトの見かたガイド</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/start', '暗号資産の始め方'); return false;"><i class="fa-solid fa-circle-play" aria-hidden="true"></i><span>暗号資産の始め方</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/about', '運営者情報'); return false;"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>運営者情報</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/disclaimer', '免責事項'); return false;"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>免責事項</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/data-sources', 'データソース'); return false;"><i class="fa-solid fa-database" aria-hidden="true"></i><span>データソース</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/ads-pr', '広告・PR表記'); return false;"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i><span>広告・PR表記</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/privacy', 'プライバシーポリシー'); return false;"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>プライバシーポリシー</span></a>
-<a class="sideNavLink" href="#" onclick="openPageModal('/contact', 'お問い合わせ'); return false;"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>お問い合わせ</span></a>
-</div>
+  <div class="sideMenuHeader">
+    <div class="sideMenuTitle"
+         data-i18n data-ja="メニュー" data-en="Menu">メニュー</div>
+    <button aria-label="閉じる" class="iconBtn" id="menuCloseBtn" type="button">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
+
+  <div class="sideMenuFooter">
+    <a class="sideNavLink" href="/coins/">
+      <i class="fa-solid fa-coins" aria-hidden="true"></i>
+      <span data-i18n data-ja="銘柄別ページ（Coins）" data-en="Coins pages">銘柄別ページ（Coins）</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/guide', '📖 CoinRader 活用ガイド'); return false;"
+       style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;">
+      <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+      <span data-i18n data-ja="サイトの見かたガイド" data-en="How to use">サイトの見かたガイド</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/start', '暗号資産の始め方'); return false;">
+      <i class="fa-solid fa-circle-play" aria-hidden="true"></i>
+      <span data-i18n data-ja="暗号資産の始め方" data-en="Getting started">暗号資産の始め方</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/about', '運営者情報'); return false;">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      <span data-i18n data-ja="運営者情報" data-en="About">運営者情報</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/disclaimer', '免責事項'); return false;">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <span data-i18n data-ja="免責事項" data-en="Disclaimer">免責事項</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/data-sources', 'データソース'); return false;">
+      <i class="fa-solid fa-database" aria-hidden="true"></i>
+      <span data-i18n data-ja="データソース" data-en="Data sources">データソース</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/ads-pr', '広告・PR表記'); return false;">
+      <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
+      <span data-i18n data-ja="広告・PR表記" data-en="Ads / PR">広告・PR表記</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/privacy', 'プライバシーポリシー'); return false;">
+      <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+      <span data-i18n data-ja="プライバシーポリシー" data-en="Privacy policy">プライバシーポリシー</span>
+    </a>
+
+    <a class="sideNavLink" href="#"
+       onclick="openPageModal('/contact', 'お問い合わせ'); return false;">
+      <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+      <span data-i18n data-ja="お問い合わせ" data-en="Contact">お問い合わせ</span>
+    </a>
+  </div>
 </aside>
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
 <div class="section-header">
@@ -9368,11 +9430,20 @@ function createSparkline(prices, isUp) {
     btn.textContent = (lang === 'en') ? 'JP' : 'EN';
     btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
 
+    // text
     document.querySelectorAll('[data-i18n]').forEach(el=>{
       const ja = el.getAttribute('data-ja');
       const en = el.getAttribute('data-en');
       if(!ja || !en) return;
       el.textContent = (lang === 'en') ? en : ja;
+    });
+
+    // title tooltips (任意)
+    document.querySelectorAll('[data-i18n-title]').forEach(el=>{
+      const ja = el.getAttribute('data-title-ja');
+      const en = el.getAttribute('data-title-en');
+      if(!ja || !en) return;
+      el.setAttribute('title', (lang === 'en') ? en : ja);
     });
   }
 
