@@ -57,17 +57,29 @@ jobs:
 
           set -eux
 
-          echo "---- reject /daily/*.html links (regex) ----"
-          ! grep -RInE '/daily/[^"'\'' ]+\.html' daily --include="*.html"
+          echo "---- reject /daily/*.html in href/content/canonical ----"
+          # href="/daily/... .html" または href='/daily/... .html'
+          # content="https://.../daily/... .html" も対象（og:url等）
+          if grep -RInE "href=['\"]/daily/[^'\"]+\.html(['\"#?]|$)|content=['\"][^'\"]*/daily/[^'\"]+\.html(['\"#?]|$)" \
+            daily --include="*.html"
+          then
+            echo "FOUND legacy .html links under /daily/"
+            exit 1
+          fi
 
-          echo "---- require extensionless /daily/YYYYMMDD links exist ----"
-          grep -RInE '/daily/[0-9]{8}([^.]|$)' daily --include="*.html" | head -n 30 || true
+          echo "---- require extensionless /daily/YYYYMMDD links exist (sanity) ----"
+          grep -RInE "/daily/[0-9]{8}([^.]|$)" daily --include="*.html" | head -n 30 || true
 
-          echo "---- tags dir must not contain extensionless files ----"
+          echo "---- tags dir must not contain non-html files ----"
           test -z "$(find daily/tags -maxdepth 1 -type f '!' -name '*.html' -print)"
 
-          echo "---- tags canonical must be extensionless ----"
-          ! grep -RInE 'rel="canonical" href="https://coinrader\.net/daily/tags/[^"]+\.html"' daily/tags --include="*.html"
+          echo "---- tags canonical must be extensionless (no .html) ----"
+          if grep -RInE 'rel="canonical" href="https://coinrader\.net/daily/tags/[^"]+\.html"' daily/tags --include="*.html"
+          then
+            echo "FOUND .html canonical under /daily/tags/"
+            exit 1
+          fi
+
 
       - name: Validate sitemap (canonical-only)
         run: |
