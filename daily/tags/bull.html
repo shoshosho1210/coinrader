@@ -177,8 +177,8 @@
     }
     .site-footer .footer-logo{
       height:28px;
-      width:auto;              /* 横伸び防止 */
-      max-width:180px;         /* 念のため上限 */
+      width:auto;
+      max-width:180px;
       display:block;
       opacity:.95;
       object-fit:contain;
@@ -232,17 +232,28 @@
           </a>
           <div class="crumb"><a href="/">CoinRader</a> / Daily</div>
         </div>
+
         <nav class="nav" aria-label="主要リンク">
-          <a class="btn" href="/">ダッシュボード</a>
-          <a class="btn btn-primary" href="/daily/latest.html">最新</a>
-          <a class="btn" href="/daily/">一覧</a>
-          <a class="btn" href="/guide">ガイド</a>
+          <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
+          <a class="btn btn-primary" href="/daily/latest.html" data-i18n data-ja="最新" data-en="Latest">最新</a>
+          <a class="btn" href="/daily/" data-i18n data-ja="一覧" data-en="All">一覧</a>
+          <a class="btn" href="/guide" data-i18n data-ja="ガイド" data-en="Guide">ガイド</a>
+
+          <!-- ★追加：言語切替ボタン -->
+          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">
+            EN
+          </button>
         </nav>
       </div>
     </header>
 
-    <h1>AI BULL の日一覧</h1>
-    <div class="sub">最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。</div>
+    <!-- ★ここも data-i18n を付けるなら付けてOK（あなたがA/B/C済ならそのままでもOK） -->
+    <h1 data-i18n data-ja="Daily AIレポート一覧" data-en="Daily AI Reports">Daily AIレポート一覧</h1>
+    <div class="sub" data-i18n
+      data-ja="最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。"
+      data-en="Browse daily AI reports with key metrics (FGI / RSI / Trend).">
+      最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。
+    </div>
 
     <div class="tabs">
       <a class="tab" href="/daily/"><small>ALL</small>一覧</a>
@@ -253,7 +264,11 @@
 
     <div class="controls">
       <div class="search">
-        <input id="q" type="search" placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など" />
+        <!-- ★placeholder を切替対応 -->
+        <input id="q" type="search"
+          placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
+          data-ph-ja="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
+          data-ph-en="Search: date / hot coins / top gainers / summary ..." />
       </div>
       <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
     </div>
@@ -262,7 +277,11 @@
       <div class='taghead'><div class='tagtitle'>AI BULL の日</div><div class='tagsub'>全0件</div><div class='taglinks' style='margin-top:6px;font-size:12px;color:var(--muted)'><a href='/daily/' style='margin-right:10px'>一覧</a><a href='/daily/latest.html' style='margin-right:10px'>最新</a><a href='/' style='margin-right:10px'>ダッシュボード</a></div></div>
 
     </div>
-    <div class="empty" id="empty">該当するレポートがありません。</div>
+
+    <!-- ★empty も切替対応 -->
+    <div class="empty" id="empty" data-i18n data-ja="該当するレポートがありません。" data-en="No matching reports found.">
+      該当するレポートがありません。
+    </div>
   </div>
 
   <!-- Footer -->
@@ -318,6 +337,51 @@
     q.addEventListener('input', apply);
     window.addEventListener('DOMContentLoaded', apply);
   </script>
+
+  <!-- ★追加：言語切替（data-i18n + placeholder 対応） -->
+  <script>
+  (function(){
+    const btn = document.getElementById('langToggle');
+    if(!btn) return;
+
+    const KEY = 'cr_lang';
+    const saved = localStorage.getItem(KEY) || document.documentElement.lang || 'ja';
+
+    function applyLang(lang){
+      document.documentElement.lang = lang;
+      btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+      btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+
+      // text nodes
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const ja = el.getAttribute('data-ja');
+        const en = el.getAttribute('data-en');
+        if(!ja || !en) return;
+        el.textContent = (lang === 'en') ? en : ja;
+      });
+
+      // placeholders (minimum)
+      const q = document.getElementById('q');
+      if(q){
+        const phJa = q.getAttribute('data-ph-ja');
+        const phEn = q.getAttribute('data-ph-en');
+        if(phJa && phEn){
+          q.setAttribute('placeholder', (lang === 'en') ? phEn : phJa);
+        }
+      }
+    }
+
+    btn.addEventListener('click', ()=>{
+      const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+      localStorage.setItem(KEY, next);
+      applyLang(next);
+    });
+
+    applyLang(saved);
+  })();
+  </script>
+
+<!-- build:20260206 -->
 <!-- build:20260206 -->
 </body>
 </html>
