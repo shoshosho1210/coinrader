@@ -30,10 +30,6 @@ http://coinrader.net/*   https://coinrader.net/:splat   301!
 /daily/latest.html       /daily/latest           301
 /daily/latest/           /daily/latest           301
 
-/daily/tags/bear.html    /daily/tags/bear        301
-/daily/tags/bull.html    /daily/tags/bull        301
-/daily/tags/wait.html    /daily/tags/wait        301
-
 /daily/tags/bear/        /daily/tags/bear        301
 /daily/tags/bull/        /daily/tags/bull        301
 /daily/tags/wait/        /daily/tags/wait        301
