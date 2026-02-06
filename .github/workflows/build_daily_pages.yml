@@ -45,17 +45,6 @@ jobs:
       - name: Sanity check daily links
         run: |
           set -eux
-          echo "---- grep /daily/*.html in daily/*.html ----"
-          grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
-          echo "---- non-html files under daily/tags (must be empty) ----"
-          find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
-          echo "---- grep extensionless daily links ----"
-          grep -RInE "/daily/[0-9]{8}([^.]|$)" daily --include="*.html" | head -n 50
-          echo "---- tag canonical must be extensionless ----"
-          grep -RIn "rel=\"canonical\" href=\"https://coinrader.net/daily/tags/.*\.html" daily/tags --include="*.html" || true
-          set -eux
-
-          set -eux
 
           echo "---- reject /daily/*.html in href/content/canonical ----"
           # href="/daily/... .html" または href='/daily/... .html'
@@ -66,20 +55,19 @@ jobs:
             echo "FOUND legacy .html links under /daily/"
             exit 1
           fi
-
-          echo "---- require extensionless /daily/YYYYMMDD links exist (sanity) ----"
-          grep -RInE "/daily/[0-9]{8}([^.]|$)" daily --include="*.html" | head -n 30 || true
-
-          echo "---- tags dir must not contain non-html files ----"
+           echo "---- tags dir must not contain non-html files ----"
           test -z "$(find daily/tags -maxdepth 1 -type f '!' -name '*.html' -print)"
-
-          echo "---- tags canonical must be extensionless (no .html) ----"
+           echo "---- tags canonical must be extensionless (no .html) ----"
           if grep -RInE 'rel="canonical" href="https://coinrader\.net/daily/tags/[^"]+\.html"' daily/tags --include="*.html"
           then
             echo "FOUND .html canonical under /daily/tags/"
             exit 1
           fi
 
+          echo "---- require extensionless /daily/YYYYMMDD links exist (count) ----"
+          cnt=$(grep -RInE "/daily/[0-9]{8}([^.]|$)" daily --include="*.html" | wc -l)
+          test "$cnt" -gt 0
+          echo "found: $cnt"
 
       - name: Validate sitemap (canonical-only)
         run: |
