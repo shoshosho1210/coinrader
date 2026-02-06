@@ -222,16 +222,26 @@
           </div>
         </div>
         <nav class="nav" aria-label="Daily navigation">
-          <a class="btn" href="/daily/">一覧</a>
-          <a class="btn btn-primary" href="/daily/latest.html">最新</a>
-          <a class="btn" href="/guide">活用ガイド</a>
+          <a class="btn" href="/daily/" data-i18n data-ja="一覧" data-en="List">一覧</a>
+          <a class="btn btn-primary" href="/daily/latest.html" data-i18n data-ja="最新" data-en="Latest">最新</a>
+          <a class="btn" href="/guide" data-i18n data-ja="活用ガイド" data-en="Guide">活用ガイド</a>
+          <!-- Language toggle -->
+          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">EN</button>
         </nav>
       </div>
     </header>
 
     <!-- Title -->
     <div class="h1">BTC AI分析（2026-02-03）</div>
-    <div class="meta">更新: 2026-02-03 09:00（JST）・このページは日次データから自動生成されています。</div>
+
+    <!-- Meta (split to keep 2026-02-03 09:00 intact) -->
+    <div class="meta">
+      <span data-i18n data-ja="更新:" data-en="Updated:">更新:</span>
+      2026-02-03 09:00（JST）・
+      <span data-i18n data-ja="このページは日次データから自動生成されています。" data-en="This page is auto-generated from daily data.">
+        このページは日次データから自動生成されています。
+      </span>
+    </div>
 
     <!-- Date chips -->
     <div class="chips">
@@ -281,26 +291,45 @@
         </div>
 
         <div class="navlinks">
-          <a class="navlink" href="/">ダッシュボードへ</a>
-          <a class="navlink" href="/guide">指標の見方（Trend / RSI）</a>
+          <a class="navlink" href="/" data-i18n data-ja="ダッシュボードへ" data-en="Go to Dashboard">ダッシュボードへ</a>
+          <a class="navlink" href="/guide" data-i18n data-ja="指標の見方（Trend / RSI）" data-en="How to read indicators (Trend / RSI)">
+            指標の見方（Trend / RSI）
+          </a>
         </div>
       </aside>
     </div>
 
     <!-- FAQ -->
     <section class="card faq" style="margin-top:12px" aria-label="FAQ">
-      <h2>よくある質問</h2>
+      <h2 data-i18n data-ja="よくある質問" data-en="FAQ">よくある質問</h2>
+
       <details>
-        <summary>このAI判断は投資助言ですか？</summary>
-        <div class="a">いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。</div>
+        <summary data-i18n data-ja="このAI判断は投資助言ですか？" data-en="Is this AI judgment investment advice?">このAI判断は投資助言ですか？</summary>
+        <div class="a" data-i18n
+             data-ja="いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。"
+             data-en="No. CoinRader is for informational purposes only. Please make your own trading decisions.">
+          いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。
+        </div>
       </details>
+
       <details>
-        <summary>更新頻度は？</summary>
-        <div class="a">このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。</div>
+        <summary data-i18n data-ja="更新頻度は？" data-en="How often is it updated?">更新頻度は？</summary>
+        <div class="a" data-i18n
+             data-ja="このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。"
+             data-en="This page is updated daily (JST). Some indicators on the top page may refresh every few minutes.">
+          このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。
+        </div>
       </details>
+
       <details>
-        <summary>Fear &amp; GreedやRSIが低いと「必ず買い」？</summary>
-        <div class="a">必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。</div>
+        <summary data-i18n data-ja="Fear &amp; GreedやRSIが低いと「必ず買い」？" data-en="If Fear &amp; Greed and RSI are low, does it mean 'buy for sure'?">
+          Fear &amp; GreedやRSIが低いと「必ず買い」？
+        </summary>
+        <div class="a" data-i18n
+             data-ja="必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。"
+             data-en="Not necessarily. They are rough indicators of sentiment/overheating, and should be interpreted with market context (trend, volume, etc.).">
+          必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。
+        </div>
       </details>
     </section>
 
@@ -309,22 +338,59 @@
       <div class="footer-inner">
         <div class="footer-brand">
           <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
-          <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+          <span class="footer-tagline"
+                data-i18n
+                data-ja="客観的な暗号資産分析ダッシュボード"
+                data-en="Objective crypto analytics dashboard">
+            客観的な暗号資産分析ダッシュボード
+          </span>
         </div>
         <nav class="footer-nav">
-          <a href="/guide">活用ガイド</a>
-          <a href="/start">始め方</a>
+          <a href="/guide" data-i18n data-ja="活用ガイド" data-en="Guide">活用ガイド</a>
+          <a href="/start" data-i18n data-ja="始め方" data-en="Getting Started">始め方</a>
           <a href="/coins/">Coins</a>
-          <a href="/data-sources">データ</a>
-          <a href="/about">運営</a>
-          <a href="/contact">連絡</a>
-          <a href="/disclaimer">免責</a>
-          <a href="/privacy">法務</a>
+          <a href="/data-sources" data-i18n data-ja="データ" data-en="Data">データ</a>
+          <a href="/about" data-i18n data-ja="運営" data-en="About">運営</a>
+          <a href="/contact" data-i18n data-ja="連絡" data-en="Contact">連絡</a>
+          <a href="/disclaimer" data-i18n data-ja="免責" data-en="Disclaimer">免責</a>
+          <a href="/privacy" data-i18n data-ja="法務" data-en="Legal">法務</a>
         </nav>
       </div>
       <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
     </footer>
 
   </div>
+
+  <script>
+  (function(){
+    const btn = document.getElementById('langToggle');
+    if(!btn) return;
+
+    const KEY = 'cr_lang';
+    const saved = localStorage.getItem(KEY) || 'ja';
+
+    function apply(lang){
+      document.documentElement.lang = lang;
+      btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+      btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const ja = el.getAttribute('data-ja');
+        const en = el.getAttribute('data-en');
+        if(!ja || !en) return;
+        el.innerHTML = (lang === 'en') ? en : ja;
+      });
+    }
+
+    btn.addEventListener('click', ()=>{
+      const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+      localStorage.setItem(KEY, next);
+      apply(next);
+    });
+
+    apply(saved);
+  })();
+  </script>
+
 </body>
 </html>
