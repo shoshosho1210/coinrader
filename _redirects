@@ -1,42 +1,41 @@
 # Force https + apex
-http://coinrader.net/*   https://coinrader.net/:splat   301!
+http://coinrader.net/*        https://coinrader.net/:splat        301!
 
 # Root
-/index.html              /                              301
+/index.html                   /                                   301
 
-# Share
-/share/:date([0-9]{8})   /share/:date.html              301
+# Share (pretty -> actual html)
+# 例: /share/20260206  → /share/20260206.html
+/share/:date([0-9]{8})        /share/:date.html                    301
 
 # Affiliate jumps
-/go/coincheck     https://coincheck.com/ja/      302
-/go/bitflyer      https://bitflyer.com/ja-jp/    302
-/go/sbi           https://www.sbivc.co.jp/       302
-
-/go-pr/coincheck  https://coincheck.com/ja/      302
-/go-pr/sbi        https://www.sbivc.co.jp/       302
+/go/coincheck                 https://coincheck.com/ja/            302
+/go/bitflyer                  https://bitflyer.com/ja-jp/          302
+/go/sbi                       https://www.sbivc.co.jp/             302
+/go-pr/coincheck              https://coincheck.com/ja/            302
+/go-pr/sbi                    https://www.sbivc.co.jp/             302
 
 # Canonical URL normalization (SEO) - extensionless canonical
-/about.html        /about                301
-/contact.html      /contact              301
-/privacy.html      /privacy              301
-/disclaimer.html   /disclaimer           301
-/data-sources.html /data-sources         301
-/ads-pr.html       /ads-pr               301
-/guide.html        /guide                301
-/start.html        /start                301
+/about.html                   /about                               301
+/contact.html                 /contact                             301
+/privacy.html                 /privacy                              301
+/disclaimer.html              /disclaimer                           301
+/data-sources.html            /data-sources                         301
+/ads-pr.html                  /ads-pr                               301
+/guide.html                   /guide                                301
+/start.html                   /start                                301
 
-# Daily (canonical: extensionless)
-/daily/index.html         /daily/               301
-/daily/latest.html        /daily/latest         301
-/daily/latest/            /daily/latest         301
+# Daily (index & latest)
+# 末尾スラッシュ/拡張子あり → 正規URLへ
+/daily/index.html             /daily/                               301
+/daily/latest.html            /daily/latest                          301
+/daily/latest/                /daily/latest                          301
 
-# Daily tags (canonical: extensionless)
-/daily/tags/bear/         /daily/tags/bear      301
-/daily/tags/bull/         /daily/tags/bull      301
-/daily/tags/wait/         /daily/tags/wait      301
+# Daily tags (trailing slash / legacy .html -> extensionless)
+/daily/tags/:tag.html         /daily/tags/:tag                       301
+/daily/tags/:tag/             /daily/tags/:tag                       301
 
-# Daily date pages -> extensionless canonical
-/daily/:date.html         /daily/:date          301
-
-# Daily tags pages -> extensionless canonical
-/daily/tags/:tag.html     /daily/tags/:tag      301
+# Daily date pages (legacy .html -> extensionless)
+# 例: /daily/20260206.html → /daily/20260206
+/daily/:date([0-9]{8}).html   /daily/:date                           301
+/daily/:date.html             /daily/:date                           301
