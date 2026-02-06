@@ -14,6 +14,6 @@
 /guide.html        /guide                301
 /start.html        /start                301
 /daily/index.html  /daily/               301
-/daily/tags/bear   /daily/tags/bear.html   200
-/daily/tags/bull   /daily/tags/bull.html   200
-/daily/tags/wait   /daily/tags/wait.html   200
+/daily/tags/bear   /daily/tags/bear.html   301
+/daily/tags/bull   /daily/tags/bull.html   301
+/daily/tags/wait   /daily/tags/wait.html   301
