@@ -229,13 +229,18 @@
           <a href="/" aria-label="CoinRader ホーム">
             <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
           </a>
-          <div class="crumb"><a href="/">CoinRader</a> / Daily</div>
+          <div class="crumb">
+            <a href="/">CoinRader</a> /
+            <span data-i18n data-ja="Daily" data-en="Daily">Daily</span>
+          </div>
         </div>
         <nav class="nav" aria-label="主要リンク">
-          <a class="btn" href="/">ダッシュボード</a>
-          <a class="btn btn-primary" href="/daily/latest.html">最新</a>
-          <a class="btn" href="/daily/">一覧</a>
-          <a class="btn" href="/guide">ガイド</a>
+          <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
+          <a class="btn btn-primary" href="/daily/latest.html" data-i18n data-ja="最新" data-en="Latest">最新</a>
+          <a class="btn" href="/daily/" data-i18n data-ja="一覧" data-en="All">一覧</a>
+          <a class="btn" href="/guide" data-i18n data-ja="ガイド" data-en="Guide">ガイド</a>
+
+          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">EN</button>
         </nav>
       </div>
     </header>
@@ -328,5 +333,38 @@
     window.addEventListener('DOMContentLoaded', apply);
   </script>
 <!-- build:20260206 -->
+
+<script>
+(function(){
+  const btn = document.getElementById('langToggle');
+  if(!btn) return;
+
+  const KEY = 'cr_lang';
+  const saved = localStorage.getItem(KEY) || 'ja';
+
+  function apply(lang){
+    document.documentElement.lang = lang;
+    btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+    btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+
+    // data-i18n を持つ要素だけ差し替える
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const ja = el.getAttribute('data-ja');
+      const en = el.getAttribute('data-en');
+      if(!ja || !en) return;
+      el.textContent = (lang === 'en') ? en : ja;
+    });
+  }
+
+  btn.addEventListener('click', ()=>{
+    const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+    localStorage.setItem(KEY, next);
+    apply(next);
+  });
+
+  apply(saved);
+})();
+</script>
+
 </body>
 </html>
