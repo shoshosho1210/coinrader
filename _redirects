@@ -25,25 +25,18 @@ http://coinrader.net/*   https://coinrader.net/:splat   301!
 /guide.html        /guide                301
 /start.html        /start                301
 
-# Daily
-/daily/index.html        /daily/                 301
-/daily/latest.html       /daily/latest           301
-/daily/latest/           /daily/latest           301
+# Daily (canonical: extensionless)
+/daily/index.html         /daily/               301
+/daily/latest.html        /daily/latest         301
+/daily/latest/            /daily/latest         301
 
-/daily/tags/bear/        /daily/tags/bear        301
-/daily/tags/bull/        /daily/tags/bull        301
-/daily/tags/wait/        /daily/tags/wait        301
+# Daily tags (canonical: extensionless)
+/daily/tags/bear/         /daily/tags/bear      301
+/daily/tags/bull/         /daily/tags/bull      301
+/daily/tags/wait/         /daily/tags/wait      301
 
-# Daily date pages
-/daily/:date([0-9]{8}).html   /daily/:date        301
+# Daily date pages -> extensionless canonical
+/daily/:date.html         /daily/:date          301
 
-# Daily pretty URL (SEO canonical)
-# daily pages
-/daily/:date.html        /daily/:date        301
-
-# tags
-/daily/tags/:tag.html    /daily/tags/:tag    301
-
-# latest
-/daily/latest.html       /daily/latest       301
-
+# Daily tags pages -> extensionless canonical
+/daily/tags/:tag.html     /daily/tags/:tag      301
