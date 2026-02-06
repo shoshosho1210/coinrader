@@ -335,7 +335,6 @@ def rebuild_sitemap_with_daily(
     # daily系を最後にまとめて追加（重複排除）
     daily_first = [
         f"{site_origin}/daily/",
-        f"{site_origin}/daily/index.html",
         f"{site_origin}/daily/latest.html",
         f"{site_origin}/daily/tags/bear.html",
         f"{site_origin}/daily/tags/bull.html",
@@ -354,6 +353,7 @@ def rebuild_sitemap_with_daily(
 
     # 4) 正規化: 旧版で混入した「/daily/tags/bear/」や「/daily/tags/bear.html/」等は落とす（.html を優先）
     drop_suffixes = [
+        f"{site_origin}/daily/index.html",
         f"{site_origin}/daily/tags/bear/",
         f"{site_origin}/daily/tags/bull/",
         f"{site_origin}/daily/tags/wait/",
