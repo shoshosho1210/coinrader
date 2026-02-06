@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CoinRaderガイド</title>
+  <meta name="description" content="CoinRaderの使い方・指標の読み方をまとめたガイド。" />
+  <link rel="canonical" href="https://coinrader.net/guide/" />
+  <meta property="og:title" content="CoinRaderガイド" />
+  <meta property="og:description" content="CoinRaderの使い方・指標の読み方をまとめたガイド。" />
+  <meta property="og:url" content="https://coinrader.net/guide/" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="/_page_style.css" />
+  <style>
+/* Minimal shared page chrome for /guide /dictionary /coins */
+:root{
+  --bg:#0b1220; --panel:#0f172a; --panel2:#111c33;
+  --text:#e5e7eb; --muted:#9ca3af; --line:rgba(148,163,184,.22);
+  --accent:#38bdf8; --accent2:#22c55e;
+  --shadow:0 14px 40px rgba(0,0,0,.35);
+  --r:16px;
+  --max:1040px;
+}
+html,body{background:var(--bg);color:var(--text);margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 40px;}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.topbar .inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 16px;}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:800;letter-spacing:.2px}
+.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(56,189,248,.15)}
+.nav{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.nav a{color:var(--text);font-size:13px;padding:7px 10px;border:1px solid rgba(229,231,235,.14);border-radius:999px;background:rgba(15,23,42,.5)}
+.nav a[aria-current='page']{border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10)}
+.hero{margin:18px 0 14px;}
+.hero h1{margin:0 0 6px;font-size:24px}
+.hero p{margin:0;color:var(--muted);line-height:1.6}
+.grid{display:grid;gap:12px}
+@media(min-width:860px){.grid.cols2{grid-template-columns:1fr 1fr}}
+.card{background:linear-gradient(180deg,rgba(17,28,51,.92),rgba(15,23,42,.92));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+.card h2{margin:0 0 10px;font-size:16px}
+.card p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
+.list{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.item{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid rgba(148,163,184,.18);border-radius:12px;background:rgba(2,6,23,.25)}
+.item .k{min-width:110px;font-weight:700;color:var(--text)}
+.item .v{color:var(--muted);font-size:14px;line-height:1.55}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid rgba(56,189,248,.35);color:var(--accent);background:rgba(56,189,248,.08)}
+.footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.footer a{color:var(--muted)}
+.bcrumb{font-size:12px;color:var(--muted);margin-top:8px}
+.bcrumb a{color:var(--muted)}
+
+.table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
+.table th,.table td{border-bottom:1px solid rgba(148,163,184,.16);padding:10px 8px;text-align:left;vertical-align:top}
+.table th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+
+.note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6}
+
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <a class="brand" href="/">CoinRader</a>
+      <nav class="nav">
+        <a href="/">Dashboard</a>
+        <a href="/daily/">AIレポート</a>
+        <a href="/guide/">Guide</a>
+        <a href="/dictionary/">Dictionary</a>
+        <a href="/coins/">Coins</a>
+      </nav>
+    </div>
+  </div>
+  <main class="container">
+<section class="hero">
+  <h1>Guide</h1>
+  <p class="muted">CoinRaderの読み方を、必要最小限でまとめます。迷ったらここ。</p>
+  <div class="cards">
+    <a class="card" href="/guide/market-insight/">
+      <h2>AI Market Insight</h2>
+      <p>総合判断（BULL/BEAR/WAIT）と、見る順番。</p>
+    </a>
+    <a class="card" href="/guide/indicators/">
+      <h2>主要指標</h2>
+      <p>Fear&Greed、RSI、移動平均、出来高など。</p>
+    </a>
+    <a class="card" href="/guide/how-to-use/">
+      <h2>使い方（朝3分）</h2>
+      <p>チェック項目と、行動に落とすコツ。</p>
+    </a>
+  </div>
+
+  <div class="note">
+    <strong>Tip：</strong>各ページ末尾から「用語」「銘柄ページ」に移動できるようにしています。
+  </div>
+</section>
+  </main>
+  <footer class="footer">
+    <div class="inner">
+      <div>© CoinRader</div>
+      <div class="links">
+        <a href="/about">About</a>
+        <a href="/data-sources">Data Sources</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
