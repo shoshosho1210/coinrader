@@ -4817,51 +4817,43 @@ html, body{
       <span data-i18n data-ja="銘柄別ページ（Coins）" data-en="Coins pages">銘柄別ページ（Coins）</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       href="/guide/"
+    <a class="sideNavLink" href="/guide/" data-page-modal="1" data-url="/guide/" data-title="📖 CoinRader 活用ガイド"
        style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;">
       <i class="fa-solid fa-book-open" aria-hidden="true"></i>
       <span data-i18n data-ja="サイトの見かたガイド" data-en="How to use">サイトの見かたガイド</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/start', '暗号資産の始め方'); return false;">
+    <a class="sideNavLink" href="/start/" data-page-modal="1" data-url="/start/" data-title="暗号資産の始め方">
       <i class="fa-solid fa-circle-play" aria-hidden="true"></i>
       <span data-i18n data-ja="暗号資産の始め方" data-en="Getting started">暗号資産の始め方</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/about', '運営者情報'); return false;">
+    <a class="sideNavLink" href="/about/" data-page-modal="1" data-url="/about/" data-title="運営者情報">
       <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
       <span data-i18n data-ja="運営者情報" data-en="About">運営者情報</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/disclaimer', '免責事項'); return false;">
+    <a class="sideNavLink" href="/disclaimer/" data-page-modal="1" data-url="/disclaimer/" data-title="免責事項">
       <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
       <span data-i18n data-ja="免責事項" data-en="Disclaimer">免責事項</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/data-sources', 'データソース'); return false;">
+    <a class="sideNavLink" href="/data-sources/" data-page-modal="1" data-url="/data-sources/" data-title="データソース">
       <i class="fa-solid fa-database" aria-hidden="true"></i>
       <span data-i18n data-ja="データソース" data-en="Data sources">データソース</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/ads-pr', '広告・PR表記'); return false;">
+    <a class="sideNavLink" href="/ads-pr/" data-page-modal="1" data-url="/ads-pr/" data-title="広告・PR表記">
       <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
       <span data-i18n data-ja="広告・PR表記" data-en="Ads / PR">広告・PR表記</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/privacy', 'プライバシーポリシー'); return false;">
+    <a class="sideNavLink" href="/privacy/" data-page-modal="1" data-url="/privacy/" data-title="プライバシーポリシー">
       <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
       <span data-i18n data-ja="プライバシーポリシー" data-en="Privacy policy">プライバシーポリシー</span>
     </a>
 
-    <a class="sideNavLink" href="#"
-       onclick="openPageModal('/contact', 'お問い合わせ'); return false;">
+    <a class="sideNavLink" href="/contact/" data-page-modal="1" data-url="/contact/" data-title="お問い合わせ">
       <i class="fa-solid fa-envelope" aria-hidden="true"></i>
       <span data-i18n data-ja="お問い合わせ" data-en="Contact">お問い合わせ</span>
     </a>
@@ -4888,7 +4880,7 @@ html, body{
 <span class="status-text">ANALYZING...</span>
 </div>
 </div>
-<button class="hud-guide-btn" onclick="location.href='/guide/';">
+<button class="hud-guide-btn" onclick="openPageModal('/guide', 'CoinRader 活用ガイド');">
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
 </div>
@@ -5045,7 +5037,7 @@ html, body{
 <div class="cta-micro">shareページ：日付固定の共有ページ（例：/share/20260203.html）。ホーム：coinrader.net のトップページ。</div>
 </div>
 <div class="cta-actions">
-<a class="btn primary" href="/start" onclick="openPageModal('/start', '🔰 暗号資産投資の始め方'); return false;" style="background: #1e88e5; border:none; padding: 10px 20px; font-weight: 700;">投資の準備を整える</a>
+<a class="btn primary" href="/start" data-page-modal="1" data-url="/start/" data-title="🔰 暗号資産投資の始め方" style="background: #1e88e5; border:none; padding: 10px 20px; font-weight: 700;">投資の準備を整える</a>
 </div>
 </div>
 <div class="cta-note">※当サイトは広告収益により運営されています（景品表示法に基づくPR表記）。</div>
@@ -9099,7 +9091,18 @@ textEl.innerHTML = htmlContent;
     }
   }
 
-  function closePageModal() {
+  
+  // Delegated handler: open modal for links/buttons with data-page-modal
+  document.addEventListener('click', (ev) => {
+    const el = ev.target.closest('[data-page-modal="1"]');
+    if (!el) return;
+    ev.preventDefault();
+    const url = el.getAttribute('data-url') || el.getAttribute('href');
+    const title = el.getAttribute('data-title') || (el.textContent || '').trim();
+    if (typeof openPageModal === 'function' && url) openPageModal(url, title);
+    else if (url) window.location.href = url;
+  });
+function closePageModal() {
     const overlay = document.getElementById('pageModalOverlay');
     overlay.classList.remove('open');
 
