@@ -76,6 +76,11 @@ jobs:
             echo "FOUND legacy .html links under /daily/tags/"
             exit 1
           fi
+          # legacy入口が残ってないか（/daily と /daily/tags）
+          grep -RInE "(/daily/[^\"' ]+\.html|/daily/tags/[^\"' ]+\.html)" daily --include="*.html" || true
+
+          # redirects ルールの存在チェック（目視）
+          grep -nE "^/daily/.*\.html|^/daily/tags/.*\.html" _redirects
 
       - name: Validate sitemap (canonical-only)
         run: |
