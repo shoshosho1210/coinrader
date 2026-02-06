@@ -219,7 +219,7 @@ def rebuild_sitemap_with_daily(
     - 既存 sitemap の <url> を loc でユニーク化して保持
     - daily のURLは lastmod/changefreq/priority を付与して上書き（または新規追加）
     - 旧版で混入した「<url><loc>..</loc></url> だけ」形式も正規化される
-    - タグURLは基本 .html のみを収録（必要なら拡張子なしも追加可能）
+    - タグの canonical は拡張子なし（/daily/tags/bear 等）。必要なら .html を sitemap に併記できる。
     """
 
     def _parse_existing(xml: str) -> dict[str, dict[str, str]]:
@@ -282,7 +282,7 @@ def rebuild_sitemap_with_daily(
         if loc in drop_locs:
             existing.pop(loc, None)
           
-    # daily ルート（canonical-only extensionless）
+    # daily ルート（canonical: extensionless）
     daily_root_urls = [
         f"{site_origin}/daily/",
         f"{site_origin}/daily/latest",
@@ -291,12 +291,13 @@ def rebuild_sitemap_with_daily(
         f"{site_origin}/daily/tags/wait",
     ]
 
-
+    # 互換性: タグの .html URL を sitemap に併記したい場合のみ True
+    # ※ canonical は拡張子なしに統一しているため、通常は False 推奨
     if include_extensionless_tag_pages:
         daily_root_urls += [
-            f"{site_origin}/daily/tags/bear",
-            f"{site_origin}/daily/tags/bull",
-            f"{site_origin}/daily/tags/wait",
+            f"{site_origin}/daily/tags/bear.html",
+            f"{site_origin}/daily/tags/bull.html",
+            f"{site_origin}/daily/tags/wait.html",
         ]
 
     for u in daily_root_urls:
