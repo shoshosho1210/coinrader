@@ -31,6 +31,8 @@ jobs:
           echo "---- grep .html under /daily/ in generated daily/ ----"
           grep -RIn "/daily/.*\.html" daily | head -n 50 || true
           grep -RIn "/daily/.*\.html" daily || true
+          grep -RIn "/daily/.*\.html" daily --include="*.html" | head
+          find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
 
       - name: Validate sitemap (canonical-only)
         run: |
