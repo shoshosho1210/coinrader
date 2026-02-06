@@ -1,104 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ns0:urlset xmlns:ns0="http://www.sitemaps.org/schemas/sitemap/0.9">
   <ns0:url>
-    <ns0:loc>https://coinrader.net/</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>1.0</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/about</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.8</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/contact</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.5</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/privacy</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.3</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/disclaimer</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.3</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/data-sources</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.5</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/ads-pr</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.3</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/guide</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.9</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/start</ns0:loc>
-    <ns0:lastmod>2026-02-04</ns0:lastmod>
-    <ns0:priority>0.8</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/sponsor</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:priority>0.4</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/coins/</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:priority>0.7</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/coins/btc/</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:priority>0.7</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/coins/eth/</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:priority>0.7</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/coins/sol/</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:priority>0.7</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/coins/xrp/</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:priority>0.7</ns0:priority>
-  </ns0:url>
-  <ns0:url>
     <ns0:loc>https://coinrader.net/daily/</ns0:loc>
     <ns0:lastmod>2026-02-06</ns0:lastmod>
     <ns0:changefreq>daily</ns0:changefreq>
     <ns0:priority>0.9</ns0:priority>
   </ns0:url>
   <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/tags/bear</ns0:loc>
-    <ns0:lastmod>2026-02-05</ns0:lastmod>
+    <ns0:loc>https://coinrader.net/daily/20260206.html</ns0:loc>
+    <ns0:lastmod>2026-02-06</ns0:lastmod>
     <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/tags/bull</ns0:loc>
-    <ns0:lastmod>2026-02-05</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/tags/wait</ns0:loc>
-    <ns0:lastmod>2026-02-05</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.6</ns0:priority>
+    <ns0:priority>0.8</ns0:priority>
   </ns0:url>
   <ns0:url>
     <ns0:loc>https://coinrader.net/daily/20260205.html</ns0:loc>
@@ -166,10 +78,4 @@
     <ns0:changefreq>daily</ns0:changefreq>
     <ns0:priority>0.8</ns0:priority>
   </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://coinrader.net/daily/20260206.html</ns0:loc>
-    <ns0:lastmod>2026-02-06</ns0:lastmod>
-    <ns0:changefreq>daily</ns0:changefreq>
-    <ns0:priority>0.8</ns0:priority>
-  </ns0:url>
-  </ns0:urlset>
+</ns0:urlset>
