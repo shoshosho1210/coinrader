@@ -286,6 +286,21 @@ def rebuild_sitemap_with_daily(
     pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
     latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
 
+    # --- canonical-only cleanup: remove old non-canonical URLs that may remain in existing sitemap ---
+    drop_locs = {
+        f"{site_origin}/daily/index.html",   # canonical is /daily/
+        f"{site_origin}/daily/latest",       # canonical is /daily/latest.html (current policy)
+        f"{site_origin}/daily/tags/bear",    # canonical is .html (current policy)
+        f"{site_origin}/daily/tags/bull",
+        f"{site_origin}/daily/tags/wait",
+        f"{site_origin}/daily/tags/bear/",
+        f"{site_origin}/daily/tags/bull/",
+        f"{site_origin}/daily/tags/wait/",
+    }
+    for loc in list(existing.keys()):
+        if loc in drop_locs:
+            existing.pop(loc, None)
+          
     # daily ルート（canonical-only）
     daily_root_urls = [
         f"{site_origin}/daily/",
