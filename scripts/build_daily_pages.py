@@ -1012,7 +1012,7 @@ def main() -> None:
             tag_html
         )
 
-        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}"
+        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}.html"
         tag_html = re.sub(
             r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
             f'<link rel="canonical" href="{escape_html(canon_url)}" />',
