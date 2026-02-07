@@ -976,6 +976,7 @@ def main() -> None:
         raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
 
     # ★ build marker
+    index_html = strip_lonely_script_closers(index_html)
     index_html = inject_build_marker_once(index_html, latest_ymd)
     write_text(OUT_DIR / "index.html", index_html)
 
@@ -1066,6 +1067,7 @@ def main() -> None:
         tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
 
         # ★ build marker
+        tag_html = strip_lonely_script_closers(tag_html)
         tag_html = inject_build_marker_once(tag_html, latest_ymd)
 
         out_path_html = tags_dir / f"{tag_lower}.html"
@@ -1093,6 +1095,9 @@ def main() -> None:
     )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
+def strip_lonely_script_closers(html: str) -> str:
+    # 行として単独で存在する </script> だけ除去（インデント込み）
+    return re.sub(r"^\s*</script>\s*$\n?", "", html, flags=re.MULTILINE)
 
 if __name__ == "__main__":
     main()
