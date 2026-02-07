@@ -50,6 +50,17 @@ TZ_NAME = "JST"
 
 
 # ---------- utils ----------
+def strip_build_markers(html: str) -> str:
+    # 既存の build マーカーを全部除去（重複防止）
+    return re.sub(r"<!--\s*build:\d{8}\s*-->\s*", "", html)
+
+def inject_build_marker_once(html: str, latest_ymd: str) -> str:
+    html = strip_build_markers(html)
+    # </body> の直前に 1回だけ差し込む
+    if "</body>" in html:
+        return html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
+    return html + f"\n<!-- build:{latest_ymd} -->\n"
+
 def read_text(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
@@ -965,7 +976,7 @@ def main() -> None:
         raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
 
     # ★ build marker
-    index_html = index_html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
+    index_html = inject_build_marker_once(index_html, latest_ymd)
     write_text(OUT_DIR / "index.html", index_html)
 
     tags_dir = OUT_DIR / "tags"
@@ -1055,7 +1066,7 @@ def main() -> None:
         tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
 
         # ★ build marker
-        tag_html = tag_html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
+        tag_html = inject_build_marker_once(tag_html, latest_ymd)
 
         out_path_html = tags_dir / f"{tag_lower}.html"
 
