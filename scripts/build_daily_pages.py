@@ -371,14 +371,20 @@ def rebuild_sitemap_with_daily(
             "priority": "0.8",
         }
 
-    # 3) 出力順: 既存の順序をできるだけ保持しつつ、daily 系は /daily/ -> index/latest/tags -> 日次(新しい順)
-    # 既存 sitemap にある loc を走査して順序を再現
+    # 3) 出力順: static -> daily root -> daily dates
     ordered_locs: list[str] = []
+
+    # 既存 sitemap の順序は「daily 以外」だけ参考にする（daily は後で決め打ち順で入れる）
     if sitemap_path.exists():
         xml0 = read_text(sitemap_path)
         for loc in re.findall(r"<loc>\s*([^<]+)\s*</loc>", xml0):
             loc = (loc or "").strip()
-            if loc and loc in existing and loc not in ordered_locs:
+            if not loc or loc not in existing:
+                continue
+            # daily系はここでは入れない（後で正規順序でまとめて入れる）
+            if re.search(r"/daily(/|$)", loc):
+                continue
+            if loc not in ordered_locs:
                 ordered_locs.append(loc)
 
     # static pages first (keep canonical order)
