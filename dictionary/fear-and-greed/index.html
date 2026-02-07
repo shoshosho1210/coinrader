@@ -55,10 +55,72 @@ a:hover{text-decoration:underline}
 .table th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 
 .note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6}
-
+.cr-dict-header{
+  border-bottom:1px solid rgba(229,231,235,.12);
+  background:rgba(15,23,42,.65);
+  backdrop-filter: blur(10px);
+}
+.cr-dict-header__row{
+  max-width:980px;margin:0 auto;padding:14px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.cr-dict-brand{color:#fff;text-decoration:none;font-weight:800;letter-spacing:.2px}
+.cr-dict-nav{display:flex;gap:10px;flex-wrap:wrap}
+.cr-dict-btn{
+  display:inline-flex;align-items:center;
+  padding:8px 12px;border-radius:999px;
+  text-decoration:none;font-size:13px;line-height:1;
+}
+.cr-dict-btn--ghost{border:1px solid rgba(229,231,235,.18);color:#e5e7eb}
+.cr-dict-btn--primary{border:1px solid rgba(56,189,248,.35);background:rgba(56,189,248,.12);color:#e5e7eb}
+.cr-dict-breadcrumb{
+  max-width:980px;margin:0 auto;padding:0 16px 12px 16px;
+  display:flex;gap:8px;align-items:center;
+  font-size:12px;color:rgba(229,231,235,.75)
+}
+.cr-dict-breadcrumb a{color:#38bdf8;text-decoration:none}
+.cr-dict-footer{
+  margin-top:28px;border-top:1px solid rgba(229,231,235,.12);
+  padding:22px 0
+}
+.cr-dict-footer__grid{
+  max-width:980px;margin:0 auto;padding:0 16px;
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px
+}
+.cr-dict-footer__title{font-weight:800;margin-bottom:6px}
+.cr-dict-footer__note{font-size:12px;line-height:1.6;color:rgba(229,231,235,.75);margin:0}
+.cr-dict-footer__links{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.cr-dict-footer__h{font-weight:700;color:#e5e7eb;opacity:.9;margin-bottom:6px}
+.cr-dict-footer__links a{color:rgba(229,231,235,.75);text-decoration:none}
+.cr-dict-footer__links a:hover{color:#e5e7eb}
+.cr-dict-footer__bottom{
+  max-width:980px;margin:0 auto;padding:14px 16px 0 16px;
+  display:flex;justify-content:space-between;
+  color:rgba(229,231,235,.6);font-size:12px
+}
+@media (max-width:740px){
+  .cr-dict-footer__grid{grid-template-columns:1fr;gap:14px}
+}
   </style>
 </head>
 <body>
+<header class="cr-dict-header">
+  <div class="cr-dict-header__row">
+    <a class="cr-dict-brand" href="/">CoinRader</a>
+
+    <nav class="cr-dict-nav">
+      <a class="cr-dict-btn cr-dict-btn--ghost" href="/dictionary/">辞書一覧</a>
+      <a class="cr-dict-btn cr-dict-btn--primary" href="/">ダッシュボードへ</a>
+    </nav>
+  </div>
+
+  <div class="cr-dict-breadcrumb">
+    <a href="/">ホーム</a><span>›</span>
+    <a href="/dictionary/">辞書</a><span>›</span>
+    <span aria-current="page">Fear &amp; Greed</span>
+  </div>
+</header>
+
   <div class="topbar">
     <div class="inner">
       <a class="brand" href="/">CoinRader</a>
@@ -94,5 +156,38 @@ a:hover{text-decoration:underline}
       </div>
     </div>
   </footer>
+<footer class="cr-dict-footer">
+  <div class="cr-dict-footer__grid">
+    <div>
+      <div class="cr-dict-footer__title">CoinRader Dictionary</div>
+      <p class="cr-dict-footer__note">
+        本ページは学習・参考情報であり、投資助言ではありません。最終判断はご自身の責任で行ってください。
+      </p>
+    </div>
+
+    <div class="cr-dict-footer__links">
+      <div class="cr-dict-footer__h">Site</div>
+      <a href="/about">About</a>
+      <a href="/data-sources">Data Sources</a>
+      <a href="/disclaimer">Disclaimer</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/contact">Contact</a>
+    </div>
+
+    <div class="cr-dict-footer__links">
+      <div class="cr-dict-footer__h">Related</div>
+      <a href="/dictionary/rsi/">RSI</a>
+      <a href="/dictionary/moving-average/">Moving Average</a>
+      <a href="/dictionary/market-cap/">Market Cap</a>
+      <a href="/dictionary/volume/">Volume</a>
+      <a href="/dictionary/trend/">Trend</a>
+    </div>
+  </div>
+
+  <div class="cr-dict-footer__bottom">
+    <small>© CoinRader</small>
+  </div>
+</footer>
+
 </body>
 </html>
