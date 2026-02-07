@@ -20,6 +20,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
+      - name: Cleanup legacy tag files
+        run: |
+          rm -f daily/tags/bear daily/tags/bull daily/tags/wait || true
+
       - name: Generate daily pages
         env:
           CR_SITE_ORIGIN: https://coinrader.net
