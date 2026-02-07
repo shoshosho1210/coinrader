@@ -976,7 +976,7 @@ def main() -> None:
         raise RuntimeError("daily_index.html: placeholder が見つからず置換できませんでした（テンプレの {{ROWS}}/{{ITEMS}}/{{LATEST_HREF}} を確認してください）")
 
     # ★ build marker
-    index_html = strip_lonely_script_closers(index_html)
+    index_html = strip_orphan_script_closers(index_html)
     index_html = inject_build_marker_once(index_html, latest_ymd)
     write_text(OUT_DIR / "index.html", index_html)
 
@@ -1067,7 +1067,7 @@ def main() -> None:
         tag_html = tag_html.replace("</head>", f'  <script type="application/ld+json">{jsonld}</script>\n</head>', 1)
 
         # ★ build marker
-        tag_html = strip_lonely_script_closers(tag_html)
+        tag_html = strip_orphan_script_closers(tag_html)
         tag_html = inject_build_marker_once(tag_html, latest_ymd)
 
         out_path_html = tags_dir / f"{tag_lower}.html"
@@ -1095,9 +1095,39 @@ def main() -> None:
     )
     print(f"[OK] Generated {len(pages)} pages into: {OUT_DIR} (latest={latest_target})")
 
-def strip_lonely_script_closers(html: str) -> str:
-    # 行として単独で存在する </script> だけ除去（インデント込み）
-    return re.sub(r"^\s*</script>\s*$\n?", "", html, flags=re.MULTILINE)
+def strip_orphan_script_closers(html: str) -> str:
+    """
+    本当に「孤立している </script>」だけ除去する。
+    直前に未クローズの <script ...> が存在するなら、それは孤立ではないので消さない。
+    """
+    # </script> を見つけて、直前の <script ...> と </script> の数で整合を取る
+    parts = re.split(r"(</script\s*>)", html, flags=re.IGNORECASE)
+    if len(parts) == 1:
+        return html
+
+    out = []
+    open_count = 0
+
+    # 開始側は <script ...>（ただし <script type="application/ld+json"> も含む）
+    script_open_re = re.compile(r"<script\b[^>]*>", re.IGNORECASE)
+
+    for chunk in parts:
+        if chunk.lower().startswith("</script"):
+            if open_count > 0:
+                # 対応する <script> がある → 正常な </script>
+                out.append(chunk)
+                open_count -= 1
+            else:
+                # 対応する <script> が無い → 孤立なので除去（何も出力しない）
+                continue
+        else:
+            # chunk 内の <script ...> の数を加算
+            opens = len(script_open_re.findall(chunk))
+            open_count += opens
+            out.append(chunk)
+
+    return "".join(out)
+
 
 if __name__ == "__main__":
     main()
