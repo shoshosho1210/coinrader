@@ -1036,11 +1036,12 @@ def main() -> None:
         )
         # テンプレが <div class="h1">...</div> 形式の場合も置換する（daily_index系）
         tag_html = re.sub(
-            r"<div\s+class=['\"]h1['\"]>.*?</div>",
+            r"<div[^>]*class=['\"][^'\"]*\bh1\b[^'\"]*['\"][^>]*>.*?</div>",
             f"<div class=\"h1\">AI {escape_html(judge_key)} の日一覧</div>",
             tag_html,
             flags=re.DOTALL
         )
+
 
         tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
         tag_html = tag_html.replace(f'class="tab tab-{tag_lower}"', f'class="tab tab-{tag_lower} current"', 1)
