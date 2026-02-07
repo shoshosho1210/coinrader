@@ -305,7 +305,7 @@ def rebuild_sitemap_with_daily(
         "priority": "0.8",
     }
 
-    # term pages: dictionary/<slug>/index.html => /dictionary/<slug>
+    # term pages: dictionary/<slug>/index.html => /dictionary/<slug>/
     if dict_dir.exists():
         for idx_html in sorted(dict_dir.glob("*/index.html")):
             slug = idx_html.parent.name
@@ -313,7 +313,7 @@ def rebuild_sitemap_with_daily(
                 continue
             if not re.fullmatch(r"[a-z0-9\-]+", slug):
                 continue
-            u = f"{site_origin}/dictionary/{slug}"
+            u = f"{site_origin}/dictionary/{slug}/"
             existing[u] = {
                 "lastmod": latest_iso,
                 "changefreq": "monthly",
@@ -454,7 +454,7 @@ def rebuild_sitemap_with_daily(
         for idx_html in sorted((sitemap_path.parent / "dictionary").glob("*/index.html")):
             slug = idx_html.parent.name
             if re.fullmatch(r"[a-z0-9\-]+", slug):
-                u = f"{site_origin}/dictionary/{slug}"
+                u = f"{site_origin}/dictionary/{slug}/"
                 dict_terms.append(u)
 
     for loc in dict_first + dict_terms:
