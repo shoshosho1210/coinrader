@@ -30,6 +30,12 @@ jobs:
         run: |
           python scripts/build_daily_pages.py
 
+      - name: Generate dictionary pages
+        env:
+          CR_SITE_ORIGIN: https://coinrader.net
+        run: |
+          python scripts/build_dictionary_pages.py
+
       - name: Check daily html links (no .html)
         run: |
           echo "---- grep .html under /daily/ in generated daily/ ----"
@@ -147,6 +153,7 @@ jobs:
           git add -f daily/tags/*.html
           git add -A coins
           git add -A data/coins
+          git add -A dictionary
 
           echo "---- status (porcelain) ----"
           git status --porcelain
