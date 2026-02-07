@@ -217,6 +217,8 @@
       font-size:12px;
       opacity:.9;
     }
+  .rowreason{margin-top:6px;font-size:13px;line-height:1.55;color:rgba(229,231,235,.88)}
+  .rowlink{display:block}
   </style>
 </head>
 
@@ -271,7 +273,9 @@
       </div>
       <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
     </div>
-
+    <p style="margin:10px 0 14px;color:rgba(229,231,235,.85);line-height:1.6">
+      毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。
+    </p>
     <div class="list" id="list">
       {{ROWS}}
     </div>
