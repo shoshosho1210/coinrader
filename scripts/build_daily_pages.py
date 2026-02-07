@@ -449,6 +449,19 @@ def rebuild_sitemap_with_daily(
         if str(d.get("ymd") or "").strip()
     ]
 
+    dict_first = [f"{site_origin}/dictionary/"]
+    dict_terms = []
+    if (sitemap_path.parent / "dictionary").exists():
+        for idx_html in sorted((sitemap_path.parent / "dictionary").glob("*/index.html")):
+            slug = idx_html.parent.name
+            if re.fullmatch(r"[a-z0-9\-]+", slug):
+                u = f"{site_origin}/dictionary/{slug}"
+                dict_terms.append(u)
+
+    for loc in dict_first + dict_terms:
+        if loc in existing and loc not in ordered_locs:
+            ordered_locs.append(loc)
+
     for loc in daily_first + daily_dates:
         if loc in existing and loc not in ordered_locs:
             ordered_locs.append(loc)
