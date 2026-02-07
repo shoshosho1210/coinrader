@@ -80,6 +80,11 @@ def escape_html(s: str) -> str:
               .replace("'", "&#39;"))
 
 
+def iso_today() -> str:
+    # sitemap lastmod などで使う ISO 日付
+    return datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+
+
 def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi, trend, trending: List[str], top_gainer=None) -> Dict[str, str]:
     # title/description は検索結果でのクリック率を意識して具体的な数値を含める
     try:
@@ -281,7 +286,7 @@ def rebuild_sitemap_with_daily(
     for loc in list(existing.keys()):
         if loc in drop_locs:
             existing.pop(loc, None)
-          
+
     # daily ルート（canonical: extensionless）
     daily_root_urls = [
         f"{site_origin}/daily/",
@@ -825,7 +830,7 @@ def main() -> None:
         jsonld = it["jsonld"]
         trending = it["trending"]
         top_gainer = it["top_gainer"]
-        
+
         fgi_label = get_path(payload, "summary.fgi.label", default="")
         trend_top3 = " / ".join(trending[:3]) if trending else ""
 
@@ -1028,9 +1033,10 @@ def main() -> None:
             tag_html
         )
 
+        # --- 見出し置換：<h1> / <h1 ...> どちらでも当たるようにする ---
         tag_html = re.sub(
-            r"<h1>.*?</h1>",
-            f"<h1>AI {judge_key} の日一覧</h1>",
+            r"<h1[^>]*>.*?</h1>",
+            f"<h1>AI {escape_html(judge_key)} の日一覧</h1>",
             tag_html,
             flags=re.DOTALL
         )
@@ -1041,7 +1047,6 @@ def main() -> None:
             tag_html,
             flags=re.DOTALL
         )
-
 
         tag_html = re.sub(r'(class="tab[^"]*?)\s+current', r'\1', tag_html)
         tag_html = tag_html.replace(f'class="tab tab-{tag_lower}"', f'class="tab tab-{tag_lower} current"', 1)
@@ -1054,8 +1059,11 @@ def main() -> None:
 
         out_path_html = tags_dir / f"{tag_lower}.html"
 
-        if "Daily AIレポート一覧" in tag_html:
-          raise RuntimeError("tag page: heading replacement failed (Daily AIレポート一覧 が残っています)")
+        # --- 失敗検知を「見出しに残っている場合」だけに絞る（広すぎチェックを廃止） ---
+        if re.search(r"<h1[^>]*>\s*Daily AIレポート一覧\s*</h1>", tag_html):
+            raise RuntimeError("tag page: heading replacement failed (h1)")
+        if re.search(r"<div[^>]*class=['\"][^'\"]*\bh1\b[^'\"]*['\"][^>]*>\s*Daily AIレポート一覧\s*</div>", tag_html):
+            raise RuntimeError("tag page: heading replacement failed (div.h1)")
 
         write_text(out_path_html, tag_html)
 
