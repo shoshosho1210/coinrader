@@ -103,6 +103,24 @@ def _autofix(xml: str) -> str:
     # preserve namespaces as much as ET allows
     return ET.tostring(root, encoding="unicode")
 
+import re
+from urllib.parse import urlparse
+
+def validate_dictionary_trailing_slash(locs: list[str]) -> list[str]:
+    """
+    dictionary の canonical を末尾スラッシュ有りに統一する再発防止チェック。
+    - OK:  /dictionary/ , /dictionary/<slug>/
+    - NG:  /dictionary/<slug>   （末尾なし）
+    """
+    paths = []
+    for u in locs:
+        try:
+            paths.append(urlparse(u).path or "")
+        except Exception:
+            continue
+
+    bad = sorted({p for p in paths if re.fullmatch(r"/dictionary/[a-z0-9\-]+", p)})
+    return bad
 
 def main() -> int:
     parser = argparse.ArgumentParser()
@@ -111,6 +129,8 @@ def main() -> int:
 
     xml = SITEMAP.read_text(encoding="utf-8")
     root, loc_els, locs, dups, bad = _scan(xml)
+    # --- dictionary: trailing slash canonical enforcement ---
+    dict_bad = validate_dictionary_trailing_slash(locs)
 
     if (dups or bad) and args.fix:
         fixed = _autofix(xml)
@@ -127,6 +147,8 @@ def main() -> int:
         errors.append(f"duplicate (canonical) loc entries: {dups}")
     if bad:
         errors.append(f"non-canonical URLs in sitemap: {bad}")
+    if dict_bad:
+        errors.append(f"dictionary term URLs must end with '/': {dict_bad}")
 
     if errors:
         print("SITEMAP VALIDATION FAILED")
