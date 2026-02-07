@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Generate sitemap.xml (canonical-only policy aligned with current _redirects)
+Generate sitemap.xml (canonical-only policy aligned with current _redirects & daily generator)
 
-Canon:
-- /daily/ (index)
-- /daily/latest.html
-- /daily/YYYYMMDD.html
-- /daily/tags/{bear|bull|wait}.html
-- static pages: /about, /start, /guide, /data-sources, /ads-pr, /privacy, /disclaimer, /contact
-- root: /
+Canonical policy:
+- /                               (root)
+- static pages: /about /start /guide /data-sources /ads-pr /privacy /disclaimer /contact
+- /daily/                          (index)
+- /daily/latest                    (latest redirect/canonical)
+- /daily/YYYYMMDD                  (daily page)
+- /daily/tags/{bear|bull|wait}     (tag pages)
+
+Notes:
+- Do NOT include legacy .html URLs in sitemap.
+- lastmod uses latest daily date for hubs/static, and ymd->iso for each daily page.
 """
 from __future__ import annotations
 
@@ -57,7 +61,7 @@ def url_block(loc: str, lastmod: str = "", changefreq: str = "", priority: str =
 
 def list_daily_ymds() -> list[str]:
     files = sorted(glob.glob(str(DATA_DIR / "*.json")))
-    ymds = []
+    ymds: list[str] = []
     for f in files:
         stem = Path(f).stem
         if re.fullmatch(r"\d{8}", stem):
@@ -89,17 +93,17 @@ def main() -> None:
     for p in static_paths:
         urls.append((f"{SITE_ORIGIN}{p}", latest_iso, "monthly", "0.5"))
 
-    # Daily hub
+    # Daily hub + latest (extensionless canonical)
     urls.append((f"{SITE_ORIGIN}/daily/", latest_iso, "daily", "0.9"))
-    urls.append((f"{SITE_ORIGIN}/daily/latest.html", latest_iso, "daily", "0.9"))
+    urls.append((f"{SITE_ORIGIN}/daily/latest", latest_iso, "daily", "0.9"))
 
-    # Tag pages (canonical .html)
+    # Tag pages (extensionless canonical)
     for tag in ["bear", "bull", "wait"]:
-        urls.append((f"{SITE_ORIGIN}/daily/tags/{tag}.html", latest_iso, "daily", "0.6"))
+        urls.append((f"{SITE_ORIGIN}/daily/tags/{tag}", latest_iso, "daily", "0.6"))
 
-    # Daily pages
+    # Daily pages (extensionless canonical)
     for ymd in sorted(ymds, reverse=True):
-        urls.append((f"{SITE_ORIGIN}/daily/{ymd}.html", ymd_to_iso(ymd), "daily", "0.8"))
+        urls.append((f"{SITE_ORIGIN}/daily/{ymd}", ymd_to_iso(ymd), "daily", "0.8"))
 
     header = '<?xml version="1.0" encoding="UTF-8"?>\n'
     header += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
