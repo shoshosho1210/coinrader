@@ -293,6 +293,16 @@ def rebuild_sitemap_with_daily(
     pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
     latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
 
+    # --- dictionary canonical cleanup ---
+    # dictionaryのtermは canonical が ".../dictionary/<slug>/"（末尾スラあり）なので、
+    # sitemapに残っている ".../dictionary/<slug>"（末尾スラなし）を削除する
+    dict_prefix = f"{site_origin}/dictionary/"
+    dict_hub = dict_prefix  # ".../dictionary/"
+    for loc in list(existing.keys()):
+        if isinstance(loc, str) and loc.startswith(dict_prefix) and loc != dict_hub:
+            if not loc.endswith("/"):
+                existing.pop(loc, None)
+
     # ---- dictionary pages (auto-discover) ----
     root_dir = sitemap_path.parent
     dict_dir = root_dir / "dictionary"
