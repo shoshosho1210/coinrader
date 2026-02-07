@@ -920,17 +920,21 @@ def main() -> None:
             parts.append(_pill(f"注目 {p['trend_top3']}", "pill-hot"))
         if p.get("top_gainer"):
             parts.append(_pill(f"上昇 {p['top_gainer']}", "pill-up"))
-        r = (p.get("reason_1line") or "").strip()
-        if r:
-            r = shorten_one_line(r, max_len=55)
-            parts.append(_pill(f"要約 {r}", "pill-reason"))
         return "".join([x for x in parts if x])
+
+    def _reason_line(p: dict) -> str:
+        r = (p.get("reason_1line") or "").strip()
+        if not r:
+            return ""
+        r = shorten_one_line(r, max_len=95)
+        return f"<div class='rowreason'>{escape_html(r)}</div>"
 
     rows_html = "\n".join([
         "<div class='row'>"
         f"<a class='rowlink' href='{escape_html(p['href'])}'>"
         f"<div class='date'>{escape_html(p['date_iso'])}</div>"
         f"<div class='meta'>{_fmt_meta_html(p)}</div>"
+        f"{_reason_line(p)}"
         "</a>"
         "</div>"
         for p in pages_desc
