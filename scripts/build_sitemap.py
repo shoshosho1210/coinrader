@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Generate sitemap.xml (canonical-only policy aligned with current _redirects & daily generator)
+Generate sitemap.xml (canonical-only policy aligned with current canonical URLs)
 
-Canonical policy:
-- /                               (root)
-- static pages: /about /start /guide /data-sources /ads-pr /privacy /disclaimer /contact
-- /daily/                          (index)
-- /daily/latest                    (latest redirect/canonical)
-- /daily/YYYYMMDD                  (daily page)
-- /daily/tags/{bear|bull|wait}     (tag pages)
-
-Notes:
-- Do NOT include legacy .html URLs in sitemap.
-- lastmod uses latest daily date for hubs/static, and ymd->iso for each daily page.
+Canonical policy (extensionless):
+- /daily/ (index)
+- /daily/latest
+- /daily/YYYYMMDD
+- /daily/tags/{bear|bull|wait}
+- static pages: /about, /start, /guide, /data-sources, /ads-pr, /privacy, /disclaimer, /contact
+- root: /
 """
 from __future__ import annotations
 
@@ -93,15 +89,15 @@ def main() -> None:
     for p in static_paths:
         urls.append((f"{SITE_ORIGIN}{p}", latest_iso, "monthly", "0.5"))
 
-    # Daily hub + latest (extensionless canonical)
+    # Daily hub (canonical: extensionless)
     urls.append((f"{SITE_ORIGIN}/daily/", latest_iso, "daily", "0.9"))
     urls.append((f"{SITE_ORIGIN}/daily/latest", latest_iso, "daily", "0.9"))
 
-    # Tag pages (extensionless canonical)
+    # Tag pages (canonical: extensionless)
     for tag in ["bear", "bull", "wait"]:
         urls.append((f"{SITE_ORIGIN}/daily/tags/{tag}", latest_iso, "daily", "0.6"))
 
-    # Daily pages (extensionless canonical)
+    # Daily pages (canonical: extensionless)
     for ymd in sorted(ymds, reverse=True):
         urls.append((f"{SITE_ORIGIN}/daily/{ymd}", ymd_to_iso(ymd), "daily", "0.8"))
 
