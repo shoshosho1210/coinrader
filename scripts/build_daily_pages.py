@@ -977,7 +977,6 @@ def main() -> None:
             f"<a href='/daily/' style='margin-right:10px'>一覧</a>"
             f"<a href='/daily/latest' style='margin-right:10px'>最新</a>"
             f"<a href='/' style='margin-right:10px'>ダッシュボード</a>"
-
             f"</div>"
             f"</div>\n"
             + "\n".join([
@@ -985,6 +984,7 @@ def main() -> None:
                 f"<a class='rowlink' href='../{escape_html(p['ymd'])}'>"
                 f"<div class='date'>{escape_html(p['date_iso'])}</div>"
                 f"<div class='meta'>{_fmt_meta_html(p)}</div>"
+                f"{_reason_line(p)}"
                 "</a>"
                 "</div>"
                 for p in filtered
