@@ -157,59 +157,9 @@ jobs:
           git commit -m "chore: generate daily & coin pages" || echo "No changes to commit"
           git push
 
-      - name: Debug bear.html snippet
-        run: |
-          echo "---- grep taghead ----"
-          grep -n "taghead" -n daily/tags/bear.html || true
-          echo "---- grep /daily/ links ----"
-          grep -n "/daily/" daily/tags/bear.html || true
-          echo "---- show around taghead ----"
-          awk 'NR>=1 && NR<=220 {print}' daily/tags/bear.html | sed -n '150,210p'
 
-      - name: Debug coin key injection
-        run: |
-          grep -n "CG_KEY" coins/btc/index.html || true
-          grep -n "x-cg-demo-api-key" coins/btc/index.html || true
 
-      - name: Debug git diff (coins)
-        run: |
-          git status --porcelain
-          git diff --name-only || true
-          git diff -- coins/btc/index.html | head -n 80 || true
 
-      - name: Debug coin snapshot url in generated page
-        run: |
-          echo "---- grep data/coins ----"
-          grep -n "data/coins" coins/btc/index.html || true
-          echo "---- grep api.coingecko.com ----"
-          grep -n "api.coingecko.com" coins/btc/index.html || true
-
-      - name: Debug one snapshot JSON
-        run: |
-          echo "---- head data/coins/btc.json ----"
-          head -c 800 data/coins/btc.json; echo
-          grep -n "fetch(snapUrl" -n coins/btc/index.html || true
-          grep -n "const m" -n coins/btc/index.html || true
-          grep -n "snap\\.market" -n coins/btc/index.html || true
-
-      - name: Debug sitemap after build
-        run: |
-          echo "---- grep /daily/index.html ----"
-          grep -n "/daily/index.html" sitemap.xml || echo "OK: not found"
-          echo "---- diff sitemap.xml ----"
-          git diff -- sitemap.xml || true
-          echo "---- show head sitemap.xml ----"
-          head -n 40 sitemap.xml
-
-      - name: Debug sitemap hash
-        run: |
-          python - << 'PY'
-          import hashlib, pathlib
-          p = pathlib.Path("sitemap.xml")
-          h = hashlib.sha256(p.read_bytes()).hexdigest()
-          print("sitemap.sha256=", h)
-          print("size=", p.stat().st_size)
-          PY
 
 
 
