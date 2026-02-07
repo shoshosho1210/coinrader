@@ -21,3 +21,7 @@
 /dictionary/volume.html          /dictionary/volume/          301
 /dictionary/market-cap.html      /dictionary/market-cap/      301
 /dictionary/trend.html           /dictionary/trend/           301
+
+/dictionary/:slug    /dictionary/:slug/    301
+/dictionary/fear-greed-index/   /dictionary/fear-and-greed/   301
+/dictionary/fear-greed-index    /dictionary/fear-and-greed/   301
