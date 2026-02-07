@@ -1053,6 +1053,10 @@ def main() -> None:
         tag_html = tag_html.replace("</body>", f"<!-- build:{latest_ymd} -->\n</body>", 1)
 
         out_path_html = tags_dir / f"{tag_lower}.html"
+
+        if "Daily AIレポート一覧" in tag_html:
+          raise RuntimeError("tag page: heading replacement failed (Daily AIレポート一覧 が残っています)")
+
         write_text(out_path_html, tag_html)
 
         # NOTE: tag pages are canonicalized to .html via _redirects, so do not generate extensionless files.
