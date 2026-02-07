@@ -985,38 +985,33 @@ def main() -> None:
 
     for judge_key in ["BEAR", "BULL", "WAIT"]:
         filtered = [p for p in pages_desc if str(p.get("judge","")).upper() == judge_key]
+        tag_lower = judge_key.lower()
 
-        rows_html_tag = (
-            f"<div class='taghead'>"
-            f"<div class='tagtitle'>AI {escape_html(judge_key)} の日</div>"
-            f"<div class='tagsub'>全{len(filtered)}件</div>"
-            f"<div class='taglinks' style='margin-top:6px;font-size:12px;color:var(--muted)'>"
-            f"<a href='/daily/' style='margin-right:10px'>一覧</a>"
-            f"<a href='/daily/latest' style='margin-right:10px'>最新</a>"
-            f"<a href='/' style='margin-right:10px'>ダッシュボード</a>"
-            f"</div>"
-            f"</div>\n"
-            + "\n".join([
-                "<div class='row'>"
-                f"<a class='rowlink' href='../{escape_html(p['ymd'])}'>"
-                f"<div class='date'>{escape_html(p['date_iso'])}</div>"
-                f"<div class='meta'>{_fmt_meta_html(p)}</div>"
-                f"{_reason_line(p)}"
-                "</a>"
-                "</div>"
-                for p in filtered
-            ])
-        )
+        # tagページはテンプレ側にh1/説明/タブ/検索UIが既にある前提なので
+        # list内に taghead を追加しない（見出し二重を防ぐ）
+        rows_html_tag = "\n".join([
+            "<div class='row'>"
+            f"<a class='rowlink' href='/daily/{escape_html(p['ymd'])}'>"
+            f"<div class='date'>{escape_html(p['date_iso'])}</div>"
+            f"<div class='meta'>{_fmt_meta_html(p)}</div>"
+            f"{_reason_line(p)}"
+            "</a>"
+            "</div>"
+            for p in filtered
+        ])
 
         items_html_tag = "\n".join([
-            f"<li><a href='../{escape_html(p['ymd'])}'>{escape_html(p['title'])}</a></li>"
+            f"<li><a href='/daily/{escape_html(p['ymd'])}'>{escape_html(p['title'])}</a></li>"
             for p in filtered
         ])
 
         tag_html = tmpl_index
         tag_html, _ = rows_pat.subn(rows_html_tag, tag_html)
         tag_html, _ = items_pat.subn(items_html_tag, tag_html)
-        tag_html, _ = latest_pat.subn(f"../{latest_ymd}", tag_html)
+
+        # テンプレの「最新」リンクは extensionless に統一
+        # （daily/latest は _redirects で daily/yyyymmdd に飛ぶ想定）
+        tag_html, _ = latest_pat.subn("/daily/latest", tag_html)
 
         if re.search(r"\{\{\s*(ROWS|ITEMS|LATEST_HREF)\s*\}\}", tag_html):
             raise RuntimeError("tag page: placeholder が残っています（ROWS/ITEMS/LATEST_HREF）")
