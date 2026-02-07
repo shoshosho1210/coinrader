@@ -3,191 +3,271 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fear & Greedとは｜CoinRader 用語集</title>
-  <meta name="description" content="Fear & Greed Indexの意味と使い方。" />
+
+  <title>Fear &amp; Greed Index（恐怖指数）とは？｜CoinRader Dictionary</title>
+  <meta name="description" content="Fear &amp; Greed Index（恐怖指数）は市場の心理状態（恐怖/強欲）を数値化した指標。CoinRaderの見方と目安を簡潔に解説します。" />
+
+  <!-- canonical: 末尾スラッシュ統一 -->
   <link rel="canonical" href="https://coinrader.net/dictionary/fear-and-greed/" />
-  <meta property="og:title" content="Fear & Greedとは｜CoinRader 用語集" />
-  <meta property="og:description" content="Fear & Greed Indexの意味と使い方。" />
+
+  <meta property="og:title" content="Fear &amp; Greed Index（恐怖指数）とは？｜CoinRader" />
+  <meta property="og:description" content="市場の心理状態（恐怖/強欲）を数値化した指標。極端値は反転のヒントになることがあります。" />
+  <meta property="og:type" content="article" />
   <meta property="og:url" content="https://coinrader.net/dictionary/fear-and-greed/" />
-  <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="/_page_style.css" />
+
   <style>
-/* Minimal shared page chrome for /guide /dictionary /coins */
-:root{
-  --bg:#0b1220; --panel:#0f172a; --panel2:#111c33;
-  --text:#e5e7eb; --muted:#9ca3af; --line:rgba(148,163,184,.22);
-  --accent:#38bdf8; --accent2:#22c55e;
-  --shadow:0 14px 40px rgba(0,0,0,.35);
-  --r:16px;
-  --max:1040px;
-}
-html,body{background:var(--bg);color:var(--text);margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 40px;}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-.topbar .inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 16px;}
-.brand{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:800;letter-spacing:.2px}
-.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(56,189,248,.15)}
-.nav{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
-.nav a{color:var(--text);font-size:13px;padding:7px 10px;border:1px solid rgba(229,231,235,.14);border-radius:999px;background:rgba(15,23,42,.5)}
-.nav a[aria-current='page']{border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10)}
-.hero{margin:18px 0 14px;}
-.hero h1{margin:0 0 6px;font-size:24px}
-.hero p{margin:0;color:var(--muted);line-height:1.6}
-.grid{display:grid;gap:12px}
-@media(min-width:860px){.grid.cols2{grid-template-columns:1fr 1fr}}
-.card{background:linear-gradient(180deg,rgba(17,28,51,.92),rgba(15,23,42,.92));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
-.card h2{margin:0 0 10px;font-size:16px}
-.card p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
-.list{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:8px}
-.item{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid rgba(148,163,184,.18);border-radius:12px;background:rgba(2,6,23,.25)}
-.item .k{min-width:110px;font-weight:700;color:var(--text)}
-.item .v{color:var(--muted);font-size:14px;line-height:1.55}
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid rgba(56,189,248,.35);color:var(--accent);background:rgba(56,189,248,.08)}
-.footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.footer a{color:var(--muted)}
-.bcrumb{font-size:12px;color:var(--muted);margin-top:8px}
-.bcrumb a{color:var(--muted)}
+    :root{
+      --bg0:#0b1220;
+      --bg1:#0f172a;
+      --fg:#e5e7eb;
+      --muted:rgba(226,232,240,.75);
+      --muted2:rgba(226,232,240,.55);
+      --line:rgba(148,163,184,.15);
+      --chip:rgba(15,23,42,.35);
+      --accent:#38bdf8;
+      --accentBg:rgba(56,189,248,.10);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;
+      background:radial-gradient(1200px 600px at 20% 0%, rgba(56,189,248,.08), transparent 55%),
+                 radial-gradient(900px 500px at 80% 20%, rgba(99,102,241,.06), transparent 60%),
+                 linear-gradient(180deg, var(--bg0), var(--bg1));
+      color:var(--fg);
+    }
+    a{color:inherit}
+    .wrap{max-width:1120px;margin:0 auto;padding:18px 16px 28px}
+    /* header */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(2,6,23,.72);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      max-width:1120px;margin:0 auto;
+      padding:12px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-link{
+      display:flex;align-items:center;gap:8px;
+      text-decoration:none;color:var(--fg);
+    }
+    .brand-icon{
+      display:inline-flex;width:20px;height:20px;align-items:center;justify-content:center;
+      border:1px solid rgba(56,189,248,.5);
+      border-radius:999px;color:var(--accent);font-size:12px;line-height:1;
+    }
+    .brand-name{font-weight:800;letter-spacing:.06em}
+    .crumb{
+      display:flex;align-items:center;gap:8px;
+      color:rgba(226,232,240,.7);
+      font-size:12px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .crumb-a{color:rgba(226,232,240,.85);text-decoration:none}
+    .crumb-sep{opacity:.5}
+    .crumb-cur{color:#e2e8f0}
+    .top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(226,232,240,.18);
+      color:var(--fg);text-decoration:none;font-size:12px;
+      background:var(--chip);
+    }
+    .chip-primary{
+      border-color:rgba(56,189,248,.55);
+      background:var(--accentBg);
+      color:#e2f2ff;
+    }
 
-.table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
-.table th,.table td{border-bottom:1px solid rgba(148,163,184,.16);padding:10px 8px;text-align:left;vertical-align:top}
-.table th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    /* main */
+    main{max-width:1120px;margin:0 auto;padding:18px 16px 0}
+    .hero{
+      padding:18px 0 10px;
+    }
+    .h1{
+      font-size:28px;font-weight:900;letter-spacing:.02em;
+      margin:6px 0 6px;
+    }
+    .lead{
+      color:var(--muted);
+      margin:0 0 10px;
+      line-height:1.7;
+      max-width:880px;
+    }
+    .panel{
+      margin-top:14px;
+      border:1px solid var(--line);
+      background:rgba(15,23,42,.35);
+      border-radius:var(--radius);
+      padding:16px;
+    }
+    .sec-title{
+      margin:0 0 10px;
+      font-size:14px;
+      color:rgba(226,232,240,.9);
+      letter-spacing:.02em;
+    }
+    .p{margin:0 0 10px;line-height:1.75;color:rgba(226,232,240,.86)}
+    ul{margin:8px 0 10px 18px;color:rgba(226,232,240,.86)}
+    li{margin:6px 0}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .kpi{
+      display:inline-flex;align-items:baseline;gap:8px;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(226,232,240,.16);
+      background:rgba(2,6,23,.25);
+    }
+    .kpi b{font-size:12px;color:rgba(226,232,240,.85)}
+    .kpi span{font-size:12px;color:rgba(226,232,240,.7)}
+    .meta{
+      margin-top:10px;
+      color:var(--muted2);
+      font-size:12px;
+    }
+    .inline-links a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+    .inline-links a:hover{text-decoration:underline}
 
-.note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6}
-.cr-dict-header{
-  border-bottom:1px solid rgba(229,231,235,.12);
-  background:rgba(15,23,42,.65);
-  backdrop-filter: blur(10px);
-}
-.cr-dict-header__row{
-  max-width:980px;margin:0 auto;padding:14px 16px;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-}
-.cr-dict-brand{color:#fff;text-decoration:none;font-weight:800;letter-spacing:.2px}
-.cr-dict-nav{display:flex;gap:10px;flex-wrap:wrap}
-.cr-dict-btn{
-  display:inline-flex;align-items:center;
-  padding:8px 12px;border-radius:999px;
-  text-decoration:none;font-size:13px;line-height:1;
-}
-.cr-dict-btn--ghost{border:1px solid rgba(229,231,235,.18);color:#e5e7eb}
-.cr-dict-btn--primary{border:1px solid rgba(56,189,248,.35);background:rgba(56,189,248,.12);color:#e5e7eb}
-.cr-dict-breadcrumb{
-  max-width:980px;margin:0 auto;padding:0 16px 12px 16px;
-  display:flex;gap:8px;align-items:center;
-  font-size:12px;color:rgba(229,231,235,.75)
-}
-.cr-dict-breadcrumb a{color:#38bdf8;text-decoration:none}
-.cr-dict-footer{
-  margin-top:28px;border-top:1px solid rgba(229,231,235,.12);
-  padding:22px 0
-}
-.cr-dict-footer__grid{
-  max-width:980px;margin:0 auto;padding:0 16px;
-  display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px
-}
-.cr-dict-footer__title{font-weight:800;margin-bottom:6px}
-.cr-dict-footer__note{font-size:12px;line-height:1.6;color:rgba(229,231,235,.75);margin:0}
-.cr-dict-footer__links{display:flex;flex-direction:column;gap:8px;font-size:13px}
-.cr-dict-footer__h{font-weight:700;color:#e5e7eb;opacity:.9;margin-bottom:6px}
-.cr-dict-footer__links a{color:rgba(229,231,235,.75);text-decoration:none}
-.cr-dict-footer__links a:hover{color:#e5e7eb}
-.cr-dict-footer__bottom{
-  max-width:980px;margin:0 auto;padding:14px 16px 0 16px;
-  display:flex;justify-content:space-between;
-  color:rgba(229,231,235,.6);font-size:12px
-}
-@media (max-width:740px){
-  .cr-dict-footer__grid{grid-template-columns:1fr;gap:14px}
-}
+    /* footer */
+    .footer{
+      margin-top:26px;
+      border-top:1px solid var(--line);
+      background:rgba(2,6,23,.55);
+    }
+    .footer-inner{
+      max-width:1120px;margin:0 auto;
+      padding:18px 16px;
+      display:flex;align-items:flex-start;justify-content:space-between;
+      gap:14px;flex-wrap:wrap;
+    }
+    .footer-left{min-width:240px}
+    .footer-desc{margin-top:6px;color:var(--muted);font-size:12px}
+    .footer-copy{margin-top:8px;color:var(--muted2);font-size:12px}
+    .footer-right{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+    /* small screens */
+    @media (max-width:720px){
+      .h1{font-size:24px}
+      .crumb{display:none}
+    }
   </style>
+
+  <!-- JSON-LD (簡易) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Article",
+    "headline":"Fear & Greed Index（恐怖指数）とは？",
+    "description":"Fear & Greed Index（恐怖指数）は市場の心理状態（恐怖/強欲）を数値化した指標。CoinRaderの見方と目安を簡潔に解説します。",
+    "mainEntityOfPage":{"@type":"WebPage","@id":"https://coinrader.net/dictionary/fear-and-greed/"},
+    "publisher":{"@type":"Organization","name":"CoinRader"}
+  }
+  </script>
 </head>
+
 <body>
-<header class="cr-dict-header">
-  <div class="cr-dict-header__row">
-    <a class="cr-dict-brand" href="/">CoinRader</a>
+  <!-- ===== Header (daily寄せ) ===== -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <a class="brand-link" href="/">
+          <span class="brand-icon">◎</span>
+          <span class="brand-name">COINRADER</span>
+        </a>
+        <nav class="crumb" aria-label="breadcrumb">
+          <a href="/" class="crumb-a">CoinRader</a>
+          <span class="crumb-sep">/</span>
+          <a href="/dictionary/" class="crumb-a">Dictionary</a>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-cur">Fear &amp; Greed</span>
+        </nav>
+      </div>
 
-    <nav class="cr-dict-nav">
-      <a class="cr-dict-btn cr-dict-btn--ghost" href="/dictionary/">辞書一覧</a>
-      <a class="cr-dict-btn cr-dict-btn--primary" href="/">ダッシュボードへ</a>
-    </nav>
-  </div>
-
-  <div class="cr-dict-breadcrumb">
-    <a href="/">ホーム</a><span>›</span>
-    <a href="/dictionary/">辞書</a><span>›</span>
-    <span aria-current="page">Fear &amp; Greed</span>
-  </div>
-</header>
-
-  <div class="topbar">
-    <div class="inner">
-      <a class="brand" href="/">CoinRader</a>
-      <nav class="nav">
-        <a href="/">Dashboard</a>
-        <a href="/daily/">AIレポート</a>
-        <a href="/guide/">Guide</a>
-        <a href="/dictionary/">Dictionary</a>
-        <a href="/coins/">Coins</a>
-      </nav>
+      <div class="top-actions">
+        <a class="chip" href="/">Dashboard</a>
+        <a class="chip chip-primary" href="/daily/latest">最新</a>
+        <a class="chip" href="/daily/">一覧</a>
+        <a class="chip" href="/guide">活用ガイド</a>
+        <a class="chip" href="/en/">EN</a>
+      </div>
     </div>
-  </div>
-  <main class="container">
-<h1>Fear &amp; Greed</h1>
-<div class="panel">
-  <p><strong>Fear &amp; Greed Index</strong>は、市場の“恐怖/強欲”を数値化した心理指標です。極端な値は、反転が起きやすい局面として意識されます。</p>
-  <ul>
-    <li>低いほど Fear（恐怖）</li>
-    <li>高いほど Greed（強欲）</li>
-  </ul>
-</div>
-<div class="note">関連：<a href="/guide/how-to-use/">朝3分</a> / <a href="/dictionary/rsi/">RSI</a></div>
+  </header>
+
+  <!-- ===== Main ===== -->
+  <main>
+    <section class="hero">
+      <div class="h1">Fear &amp; Greed Index（恐怖指数）</div>
+      <p class="lead">
+        市場の心理状態（恐怖/強欲）を数値化した指標です。極端な値は、反転が起きやすい局面として意識されます。
+      </p>
+
+      <div class="chips">
+        <div class="kpi"><b>低いほど</b><span>Fear（恐怖）</span></div>
+        <div class="kpi"><b>高いほど</b><span>Greed（強欲）</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="sec-title">ざっくり言うと</div>
+      <p class="p">
+        「いま市場が怖がっているのか / 楽観しているのか」を1つの数値で把握するための指標です。
+        価格そのものではなく、ニュース・需給・ボラティリティ等の複数要素から作られます。
+      </p>
+
+      <div class="sec-title" style="margin-top:14px;">目安（一般的）</div>
+      <ul>
+        <li><b>0〜24</b>：Extreme Fear（悲観が強い）</li>
+        <li><b>75〜100</b>：Extreme Greed（過熱）</li>
+      </ul>
+
+      <div class="sec-title" style="margin-top:14px;">CoinRaderでの見方</div>
+      <p class="p">
+        Dailyページの <b>FGI</b> を、<b>RSI</b> や <b>Trend</b>（MA距離など）とセットで確認します。
+        たとえば「FGIが極端＋RSIが過熱/売られ過ぎ」など、複数の一致を重視すると判断が安定します。
+      </p>
+
+      <div class="chips inline-links" style="margin-top:12px;">
+        <a class="chip" href="/dictionary/rsi/">RSI</a>
+        <a class="chip" href="/dictionary/trend/">Trend（CoinRaderのトレンド指標）</a>
+        <a class="chip" href="/dictionary/moving-average/">移動平均（MA）</a>
+        <a class="chip chip-primary" href="/daily/latest">今日のAIレポートを見る</a>
+      </div>
+
+      <div class="meta">Lastmod: 2026-02-07</div>
+    </section>
   </main>
+
+  <!-- ===== Footer (daily寄せ) ===== -->
   <footer class="footer">
-    <div class="inner">
-      <div>&copy; CoinRader</div>
-      <div class="links">
-        <a href="/about">About</a>
-        <a href="/data-sources">Data Sources</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/disclaimer">Disclaimer</a>
-        <a href="/contact">Contact</a>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a class="brand-link" href="/">
+          <span class="brand-icon">◎</span>
+          <span class="brand-name">COINRADER</span>
+        </a>
+        <div class="footer-desc">客観的な暗号資産分析ダッシュボード</div>
+        <div class="footer-copy">© 2026 CoinRader. All rights reserved.</div>
+      </div>
+
+      <div class="footer-right">
+        <a class="chip" href="/guide">活用ガイド</a>
+        <a class="chip" href="/start">始め方</a>
+        <a class="chip" href="/coins/">Coins</a>
+        <a class="chip" href="/data-sources">データ</a>
+        <a class="chip" href="/about">運営</a>
+        <a class="chip" href="/contact">連絡</a>
+        <a class="chip" href="/disclaimer">免責</a>
+        <a class="chip" href="/privacy">法務</a>
       </div>
     </div>
   </footer>
-<footer class="cr-dict-footer">
-  <div class="cr-dict-footer__grid">
-    <div>
-      <div class="cr-dict-footer__title">CoinRader Dictionary</div>
-      <p class="cr-dict-footer__note">
-        本ページは学習・参考情報であり、投資助言ではありません。最終判断はご自身の責任で行ってください。
-      </p>
-    </div>
-
-    <div class="cr-dict-footer__links">
-      <div class="cr-dict-footer__h">Site</div>
-      <a href="/about">About</a>
-      <a href="/data-sources">Data Sources</a>
-      <a href="/disclaimer">Disclaimer</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/contact">Contact</a>
-    </div>
-
-    <div class="cr-dict-footer__links">
-      <div class="cr-dict-footer__h">Related</div>
-      <a href="/dictionary/rsi/">RSI</a>
-      <a href="/dictionary/moving-average/">Moving Average</a>
-      <a href="/dictionary/market-cap/">Market Cap</a>
-      <a href="/dictionary/volume/">Volume</a>
-      <a href="/dictionary/trend/">Trend</a>
-    </div>
-  </div>
-
-  <div class="cr-dict-footer__bottom">
-    <small>© CoinRader</small>
-  </div>
-</footer>
-
 </body>
 </html>
