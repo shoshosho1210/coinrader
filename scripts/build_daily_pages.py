@@ -287,6 +287,34 @@ def rebuild_sitemap_with_daily(
     if sitemap_path.exists():
         existing = _parse_existing(read_text(sitemap_path))
 
+    # ---- dictionary pages (auto-discover) ----
+    root_dir = sitemap_path.parent
+    dict_dir = root_dir / "dictionary"
+
+    # hub
+    dict_hub = f"{site_origin}/dictionary/"
+    existing[dict_hub] = {
+        "lastmod": latest_iso,
+        "changefreq": "weekly",
+        "priority": "0.8",
+    }
+
+    # term pages: dictionary/<slug>/index.html => /dictionary/<slug>
+    if dict_dir.exists():
+        for idx_html in sorted(dict_dir.glob("*/index.html")):
+            slug = idx_html.parent.name
+            if not slug or slug == ".":
+                continue
+            # safety: slug chars
+            if not re.fullmatch(r"[a-z0-9\-]+", slug):
+                continue
+            u = f"{site_origin}/dictionary/{slug}"
+            existing[u] = {
+                "lastmod": latest_iso,
+                "changefreq": "monthly",
+                "priority": "0.7",
+            }
+  
     # 2) daily 系URLを構築
     site_origin = (site_origin or "").rstrip("/")
     pages = list(daily_pages or [])
