@@ -286,6 +286,12 @@ def rebuild_sitemap_with_daily(
     existing: dict[str, dict[str, str]] = {}
     if sitemap_path.exists():
         existing = _parse_existing(read_text(sitemap_path))
+  
+    # 2) daily 系URLを構築
+    site_origin = (site_origin or "").rstrip("/")
+    pages = list(daily_pages or [])
+    pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
+    latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
 
     # ---- dictionary pages (auto-discover) ----
     root_dir = sitemap_path.parent
@@ -305,7 +311,6 @@ def rebuild_sitemap_with_daily(
             slug = idx_html.parent.name
             if not slug or slug == ".":
                 continue
-            # safety: slug chars
             if not re.fullmatch(r"[a-z0-9\-]+", slug):
                 continue
             u = f"{site_origin}/dictionary/{slug}"
@@ -314,12 +319,6 @@ def rebuild_sitemap_with_daily(
                 "changefreq": "monthly",
                 "priority": "0.7",
             }
-  
-    # 2) daily 系URLを構築
-    site_origin = (site_origin or "").rstrip("/")
-    pages = list(daily_pages or [])
-    pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
-    latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
 
     # --- canonical-only cleanup: remove old non-canonical URLs that may remain in existing sitemap ---
     drop_locs = {
