@@ -38,6 +38,18 @@ import glob
 import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+STATIC_PATHS = [
+    "/",               # root
+    "/about",
+    "/start",
+    "/guide",
+    "/data-sources",
+    "/ads-pr",
+    "/privacy",
+    "/disclaimer",
+    "/contact",
+    "/coins/",         # coins hub（あるなら）
+]
 
 # scripts/ の1つ上を repo root として想定
 ROOT = Path(__file__).resolve().parents[1]
@@ -298,6 +310,29 @@ def rebuild_sitemap_with_daily(
         if loc in drop_locs:
             existing.pop(loc, None)
 
+    # 2.5) static pages (extensionless canonical)
+    static_urls = []
+    for p in (STATIC_PATHS or []):
+        if not isinstance(p, str):
+            continue
+        p = p.strip()
+        if not p:
+            continue
+
+        if p == "/":
+            u = f"{site_origin}/"
+        else:
+            if not p.startswith("/"):
+                p = "/" + p
+            u = f"{site_origin}{p}"
+        static_urls.append(u)
+
+    for u in static_urls:
+        if u == f"{site_origin}/":
+            existing[u] = {"lastmod": latest_iso, "changefreq": "hourly", "priority": "1.0"}
+        else:
+            existing[u] = {"lastmod": latest_iso, "changefreq": "monthly", "priority": "0.5"}
+
     # daily ルート（canonical: extensionless）
     daily_root_urls = [
         f"{site_origin}/daily/",
@@ -345,6 +380,19 @@ def rebuild_sitemap_with_daily(
             loc = (loc or "").strip()
             if loc and loc in existing and loc not in ordered_locs:
                 ordered_locs.append(loc)
+
+    # static pages first (keep canonical order)
+    static_first = [f"{site_origin}/"]
+    for p in (STATIC_PATHS or []):
+        if p in ("/", "", None):
+            continue
+        if not p.startswith("/"):
+            p = "/" + p
+        static_first.append(f"{site_origin}{p}")
+
+    for loc in static_first:
+        if loc in existing and loc not in ordered_locs:
+            ordered_locs.append(loc)
 
     # daily系を最後にまとめて追加（重複排除）
     daily_first = [
