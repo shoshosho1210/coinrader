@@ -200,6 +200,47 @@
       font-size:12px;
       opacity:.85;
     }
+
+    /* ---------- SEO / How-to block ---------- */
+    .seo-lead{
+      margin:8px 0 12px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(56,189,248,.22);
+      background:rgba(56,189,248,.08);
+      color:var(--fg);
+      font-weight:800;
+      letter-spacing:.2px;
+      line-height:1.65;
+    }
+    .seo-grid{
+      display:grid;
+      gap:10px;
+      grid-template-columns:1fr;
+      margin-top:8px;
+    }
+    @media(min-width:860px){.seo-grid{grid-template-columns:1fr 1fr}}
+    .seo-item{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      padding:12px;
+      background:rgba(255,255,255,.02);
+    }
+    .seo-h{font-weight:900;margin-bottom:6px}
+    .seo-p{color:rgba(229,231,235,.88);line-height:1.7}
+    .seo-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .seo-note{
+      margin-top:10px;
+      font-size:12px;
+      color:rgba(148,163,184,.95);
+      line-height:1.5;
+    }
+
   </style>
 
   <script type="application/ld+json">
@@ -332,6 +373,61 @@
           必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。
         </div>
       </details>
+    </section>
+    <!-- How to read / SEO block -->
+    <section class="card seo" style="margin-top:12px" aria-label="How to read">
+      <div class="badge" data-i18n data-ja="使い方" data-en="How to read">使い方</div>
+      <div style="height:10px"></div>
+
+      <div class="seo-lead" data-i18n
+           data-ja="今日のAI判定（WAIT）→ 市場心理（Fear &amp; Greed: 2）→ 短期の温度感（RSI: 15.3）→ 方向感（Trend: -11.3%）の順に見ると迷いません。"
+           data-en="A simple flow: AI judgment (WAIT) → sentiment (Fear &amp; Greed: 2) → short-term heat (RSI: 15.3) → direction (Trend: -11.3%).">
+        今日のAI判定（WAIT）→ 市場心理（Fear &amp; Greed: 2）→ 短期の温度感（RSI: 15.3）→ 方向感（Trend: -11.3%）の順に見ると迷いません。
+      </div>
+
+      <div class="seo-grid">
+        <div class="seo-item">
+          <div class="seo-h" data-i18n data-ja="RSI（相対力指数）" data-en="RSI">RSI（相対力指数）</div>
+          <div class="seo-p" data-i18n
+               data-ja="一般に70以上は過熱、30以下は売られ過ぎの目安です。今日のRSIは 15.3。単独ではなく、Trendやニュースと合わせて解釈してください。"
+               data-en="A rough guide: 70+ overheated, 30- oversold. Today: 15.3. Interpret with Trend/news, not alone.">
+            一般に70以上は過熱、30以下は売られ過ぎの目安です。今日のRSIは 15.3。単独ではなく、Trendやニュースと合わせて解釈してください。
+          </div>
+        </div>
+
+        <div class="seo-item">
+          <div class="seo-h" data-i18n data-ja="Fear &amp; Greed（恐怖・欲望）" data-en="Fear &amp; Greed">Fear &amp; Greed（恐怖・欲望）</div>
+          <div class="seo-p" data-i18n
+               data-ja="市場心理を数値化した参考指標です。今日の値は 2（Extreme Fear）。極端な水準では反転の“候補日”として注目されやすくなります。"
+               data-en="A sentiment gauge. Today: 2 (Extreme Fear). Extreme levels often attract attention as potential turning points.">
+            市場心理を数値化した参考指標です。今日の値は 2（Extreme Fear）。極端な水準では反転の“候補日”として注目されやすくなります。
+          </div>
+        </div>
+
+        <div class="seo-item">
+          <div class="seo-h" data-i18n data-ja="Trend（移動平均との距離）" data-en="Trend (MA distance)">Trend（移動平均との距離）</div>
+          <div class="seo-p" data-i18n
+               data-ja="方向感を掴むための目安です。今日のTrendは -11.3%。大きなプラスは上向き、マイナスは下向き圧力の参考になります。"
+               data-en="A quick directional proxy. Today: -11.3%. Large positive suggests upward momentum; negative suggests downward pressure.">
+            方向感を掴むための目安です。今日のTrendは -11.3%。大きなプラスは上向き、マイナスは下向き圧力の参考になります。
+          </div>
+        </div>
+      </div>
+
+      <div class="seo-links">
+        <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
+        <a class="btn" href="/daily/" data-i18n data-ja="過去AIレポート一覧" data-en="Daily list">過去AIレポート一覧</a>
+        <a class="btn" href="/daily/latest" data-i18n data-ja="最新レポート" data-en="Latest report">最新レポート</a>
+        <a class="btn" href="/daily/tags/bull">BULL</a>
+        <a class="btn" href="/daily/tags/bear">BEAR</a>
+        <a class="btn" href="/daily/tags/wait">WAIT</a>
+      </div>
+
+      <div class="seo-note" data-i18n
+           data-ja="※ CoinRaderは投資助言ではありません。情報提供・学習用途としてご利用ください。"
+           data-en="*CoinRader is not investment advice. Use for informational/learning purposes.">
+        ※ CoinRaderは投資助言ではありません。情報提供・学習用途としてご利用ください。
+      </div>
     </section>
 
     <!-- Footer -->
