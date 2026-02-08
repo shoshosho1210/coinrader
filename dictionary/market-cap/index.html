@@ -4,99 +4,46 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>時価総額(Market Cap)とは｜CoinRader 用語集</title>
-  <meta name="description" content="時価総額の意味とランキングの読み方。" />
+  <meta name="description" content="時価総額(Market Cap)をわかりやすく解説。暗号資産の比較やランキングの見方に役立つ基礎用語です。" />
   <link rel="canonical" href="https://coinrader.net/dictionary/market-cap/" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CoinRader" />
-  <meta property="og:title" content="時価総額(Market Cap)とは｜CoinRader 用語集" />
-  <meta property="og:description" content="時価総額の意味とランキングの読み方。" />
-  <meta property="og:url" content="https://coinrader.net/dictionary/market-cap/" />
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <link rel="stylesheet" href="/_page_style.css" />
-
+  <!-- 既存の style は残しつつ、下の Header/Footer CSS を追記してください -->
   <style>
-    :root{
-      --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --line:#1f2937; --accent:#38bdf8;
-      --max:980px;
-    }
-    html,body{background:var(--bg);color:var(--fg);margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;}
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
+    :root{--bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--fg);}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    .container{max-width:980px;margin:0 auto;padding:20px 16px 40px;}
+    /* ↑ここまでは例。あなたの現行CSSがあるならそれをそのまま残してOK */
 
-    /* ---------- Header (daily style) ---------- */
-    .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 48px;}
+    /* ---------- Header (align with Daily) ---------- */
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
     .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
-    .appHeader-inner{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
-      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
-    }
+    .appHeader-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(15,23,42,.92);backdrop-filter:blur(10px)}
     .brand{display:flex;align-items:center;gap:12px;min-width:0}
     .brandLogo{height:24px;width:auto;display:block}
     .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .crumb a{color:var(--accent);text-decoration:none}
     .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:6px 12px;font-size:12px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
-      color:var(--fg);text-decoration:none
-    }
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;font-size:12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--fg);text-decoration:none}
     .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
     .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
+    @media (max-width: 520px){.appHeader-inner{align-items:flex-start}.nav{justify-content:flex-start}}
 
-    /* ---------- Page ---------- */
-    h1{font-size:26px;font-weight:900;margin:10px 0 10px}
-    .card{
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;
-      padding:18px
-    }
-    .card p{margin:0;color:rgba(229,231,235,.88);line-height:1.75;font-size:14px}
-    .note{margin-top:10px;color:rgba(148,163,184,.95);font-size:12px;line-height:1.55}
-
-    /* ---------- Footer (daily style) ---------- */
-    .site-footer{
-      margin-top:28px;
-      border-top:1px solid rgba(255,255,255,.08);
-      padding:18px 0 10px;
-      color:var(--muted);
-    }
-    .footer-inner{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    .footer-brand{display:flex;flex-direction:column;gap:8px;min-width:220px}
-    .footer-logo{height:26px;width:auto;max-width:220px;object-fit:contain;display:block}
-    .footer-tagline{font-size:12px;color:rgba(148,163,184,.9);line-height:1.35}
-    .footer-nav{display:flex;flex-wrap:wrap;gap:10px 12px;justify-content:flex-end}
-    .footer-nav a{
-      color:rgba(148,163,184,.95);
-      font-size:12px;
-      padding:6px 10px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:999px;
-      background:rgba(255,255,255,.03);
-      text-decoration:none;
-    }
-    .footer-nav a:hover{border-color:rgba(56,189,248,.35);filter:brightness(1.06);text-decoration:none}
-    .footer-copyright{margin-top:12px;font-size:12px;opacity:.85}
-
-    @media (max-width: 520px){
-      .appHeader-inner{align-items:flex-start}
-      .nav{justify-content:flex-start}
-    }
+    /* ---------- Footer (align with Daily) ---------- */
+    .site-footer{margin-top:28px;border-top:1px solid rgba(255,255,255,.08);padding:18px 0 10px;color:var(--muted);}
+    .footer-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .footer-brand{display:flex;flex-direction:column;gap:8px;min-width:220px;}
+    .footer-logo{height:26px;width:auto;max-width:220px;object-fit:contain;display:block;}
+    .footer-tagline{font-size:12px;color:rgba(148,163,184,.9);line-height:1.35;}
+    .footer-nav{display:flex;flex-wrap:wrap;gap:10px 12px;justify-content:flex-end;}
+    .footer-nav a{color:rgba(148,163,184,.95);font-size:12px;padding:6px 10px;border:1px solid rgba(255,255,255,.10);border-radius:999px;background:rgba(255,255,255,.03);text-decoration:none;}
+    .footer-nav a:hover{border-color:rgba(56,189,248,.35);filter:brightness(1.06);text-decoration:none;}
+    .footer-copyright{margin-top:12px;font-size:12px;opacity:.85;}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
     <header class="appHeader">
       <div class="appHeader-inner">
         <div class="brand">
@@ -104,35 +51,21 @@
             <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
           </a>
           <div class="crumb">
-            <a href="/">CoinRader</a> / <a href="/dictionary/">Dictionary</a> / Market Cap
+            <a href="/">CoinRader</a> / <a href="/dictionary/">Dictionary</a> / 時価総額(Market Cap)
           </div>
         </div>
-        <nav class="nav" aria-label="Dictionary navigation">
+        <nav class="nav" aria-label="Global navigation">
           <a class="btn" href="/">Dashboard</a>
           <a class="btn btn-primary" href="/daily/latest">最新</a>
-          <a class="btn" href="/daily/">一覧</a>
+          <a class="btn" href="/dictionary/">一覧</a>
           <a class="btn" href="/guide">活用ガイド</a>
           <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">EN</button>
         </nav>
       </div>
     </header>
 
-    <main>
-      <h1 data-i18n data-ja="時価総額（Market Cap）" data-en="Market Cap">時価総額（Market Cap）</h1>
-
-      <section class="card">
-        <p data-i18n
-           data-ja="概ね「価格 × 供給量」。規模と流動性の目安になります（厳密な供給量は銘柄によって差があります）。"
-           data-en="Roughly: price × supply. It’s a handy proxy for size and liquidity (exact circulating supply varies by asset).">
-          概ね「価格 × 供給量」。規模と流動性の目安になります（厳密な供給量は銘柄によって差があります）。
-        </p>
-
-        <div class="note" data-i18n
-             data-ja="CoinRaderでは、時価総額ランキング（TOP）と出来高などをセットで見て「資金が集まっている場所」を確認するのが基本です。"
-             data-en="On CoinRader, the basic approach is to view market-cap ranks together with volume and trend to see where capital is concentrating.">
-          CoinRaderでは、時価総額ランキング（TOP）と出来高などをセットで見て「資金が集まっている場所」を確認するのが基本です。
-        </div>
-      </section>
+    <main class="container">
+      <!-- あなたの現行 <main> 内の内容をここにそのまま貼る -->
     </main>
 
     <footer class="site-footer">
@@ -142,47 +75,31 @@
           <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
         </div>
         <nav class="footer-nav">
-          <a href="/guide">活用ガイド</a>
-          <a href="/start">始め方</a>
-          <a href="/coins/">Coins</a>
-          <a href="/data-sources">データ</a>
-          <a href="/about">運営</a>
-          <a href="/contact">連絡</a>
-          <a href="/disclaimer">免責</a>
-          <a href="/privacy">法務</a>
+          <a href="/guide">活用ガイド</a><a href="/start">始め方</a><a href="/coins/">Coins</a>
+          <a href="/data-sources">データ</a><a href="/about">運営</a><a href="/contact">連絡</a>
+          <a href="/disclaimer">免責</a><a href="/privacy">法務</a>
         </nav>
       </div>
       <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
     </footer>
-
   </div>
 
   <script>
   (function(){
     const btn = document.getElementById('langToggle');
     if(!btn) return;
-    const KEY = 'cr_lang';
-    const saved = localStorage.getItem(KEY) || 'ja';
-
+    const KEY='cr_lang', saved=localStorage.getItem(KEY)||'ja';
     function apply(lang){
-      document.documentElement.lang = lang;
-      btn.textContent = (lang === 'en') ? 'JP' : 'EN';
-      btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
-
+      document.documentElement.lang=lang;
+      btn.textContent=(lang==='en')?'JP':'EN';
+      btn.setAttribute('aria-pressed', lang==='en'?'true':'false');
       document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const ja = el.getAttribute('data-ja');
-        const en = el.getAttribute('data-en');
-        if(!ja || !en) return;
-        el.innerHTML = (lang === 'en') ? en : ja;
+        const ja=el.getAttribute('data-ja'), en=el.getAttribute('data-en');
+        if(!ja||!en) return;
+        el.innerHTML=(lang==='en')?en:ja;
       });
     }
-
-    btn.addEventListener('click', ()=>{
-      const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
-      localStorage.setItem(KEY, next);
-      apply(next);
-    });
-
+    btn.addEventListener('click', ()=>{const next=(document.documentElement.lang==='en')?'ja':'en';localStorage.setItem(KEY,next);apply(next);});
     apply(saved);
   })();
   </script>
