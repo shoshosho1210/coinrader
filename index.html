@@ -8661,10 +8661,16 @@ textEl.innerHTML = htmlContent;
       _ai_thinking = false;
     }
 }
-  
+
+let __initRunning = false;
+let __lastVisibilityRefreshAt = 0; 
   // ============ Boot ============
   async function init(fromManualRefresh=false){
     const firstLoad = !HAS_RENDERED_ONCE;
+    
+    if (__initRunning) return;
+    __initRunning = true;
+    
     if (firstLoad) {
       setLoadingAll();
       resetSectionErrors();
@@ -8720,8 +8726,35 @@ textEl.innerHTML = htmlContent;
       }
     } finally {
       if (!firstLoad) setRefreshingAll(false);
+      __initRunning = false;
     }
   }
+
+// --- 追加：タブ復帰時に即同期（バックグラウンド間引き対策） ---
+let __lastVisibilityRefreshAt = 0;
+
+document.addEventListener('visibilitychange', () => {
+  // 表示状態に戻った瞬間だけ走らせる
+  if (document.visibilityState !== 'visible') return;
+
+  // 連打防止（OSやブラウザで復帰イベントが複数回飛ぶことがある）
+  const now = Date.now();
+  if (now - __lastVisibilityRefreshAt < 3000) return;
+  __lastVisibilityRefreshAt = now;
+
+  // ここで即同期（「手動更新」扱いにしない）
+  init(false).catch(e => console.warn('visibility refresh failed', e));
+});
+window.addEventListener('focus', () => {
+  if (document.visibilityState !== 'visible') return;
+
+  const now = Date.now();
+  if (now - __lastVisibilityRefreshAt < 3000) return;
+  __lastVisibilityRefreshAt = now;
+
+  init(false).catch(e => console.warn('focus refresh failed', e));
+});
+
 
   // --- Market Cap table: TOP10 default, expand to TOP20 (show extra columns) ---
   function setupMcapToggle(){
