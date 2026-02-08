@@ -1384,22 +1384,6 @@
     0 0 25px 0 rgba(56, 189, 248, 0.25);
   background: rgba(15, 23, 42, 0.98) !important;
 }
-/* ★追加：スキャンライン演出（分析してる感を出す） */
-.ai-insight-box::after {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
-    animation: ai-scan 4s linear infinite;
-    z-index: 1;
-    pointer-events: none;
-}
-@keyframes ai-scan {
-    0% { top: 0; opacity: 0; }
-    5% { opacity: 1; }
-    95% { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-}
 /* 左端のアクセント（シアンの光棒） */
 .ai-insight-box::before {
     content: "";
