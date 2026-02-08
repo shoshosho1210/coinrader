@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (02/08)
+🤖 CoinRader 市場速報 (02/09)
 分析: 弱気 (BEAR)
 
-🔹 Bitcoin 📉
-価格: ¥1093万
-前日比: -0.9%
-RSI(14): 51.7
-心理指数: 6 (Extreme Fear)
+🔹 Bitcoin 📈
+価格: ¥1121万
+前日比: +2.6%
+RSI(14): 54.5
+心理指数: 7 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: FIRO, SIREN, BTC
-急上昇銘柄: SIREN (273%↑)
+トレンド入り: BNKR, BTC, SOL
+急上昇銘柄: PIPPIN (46%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260208.html
+https://coinrader.net/share/20260209.html
 
 #CoinRader #ビットコイン #暗号資産
