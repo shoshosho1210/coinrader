@@ -333,7 +333,7 @@ def rebuild_sitemap_with_daily(
     # --- canonical-only cleanup: remove old non-canonical URLs that may remain in existing sitemap ---
     drop_locs = {
         f"{site_origin}/daily/index.html",
-        f"{site_origin}/daily/latest.html",
+        f"{site_origin}/daily/latest",
         f"{site_origin}/daily/tags/bear.html",
         f"{site_origin}/daily/tags/bull.html",
         f"{site_origin}/daily/tags/wait.html",
