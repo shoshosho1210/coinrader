@@ -4895,6 +4895,9 @@ html, body{
 </div>
 </div>
 <div class="ai-insight-box hud-panel" id="aiInsightBox">
+  <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+    <source src="/assets/hero_bg.mp4" type="video/mp4">
+  </video>
   <div class="hud-header">
     <div class="hud-header-left">
       <span class="ai-icon-pulse">
@@ -4935,8 +4938,8 @@ html, body{
         <span class="ai-disclaimer">※投資助言ではありません</span>
       </div>
     </details>
-  </div>
-  <div class="summary-lists">
+  </div><!-- /.hero-content -->
+</div><!-- /#aiInsightBox -->
     <div class="summary-card summary-trend">
       <div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">24h変動</span></div>
         <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
