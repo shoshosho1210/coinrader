@@ -4912,66 +4912,66 @@ html, body{
       <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
   </div>
-<div class="hud-shortline" id="aiInsightShort">—</div>
-<div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
-  <a id="aiDailyLatestLink" href="/daily/latest" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
-     aria-label="今日のAIレポート">今日のAIレポート</a>
-  <a id="aiDailyListLink" href="/daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
-     aria-label="過去のAIレポート">過去のAIレポート</a>
-</div>
-<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENTIMENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
-<details class="hud-details">
-<summary class="hud-summary-btn">
-<span class="btn-text">AIの判断理由を見る（30秒）</span>
-<span class="toggle-arrow">▼</span>
-</summary>
-<div class="hud-content-text" id="aiInsightText">
-<div class="ai-loading-placeholder">
-<span class="cyber-blink">INITIALIZING NEURAL NET...</span>
-</div>
-</div>
-<div class="ai-footer-info">
-<span class="ai-timestamp" id="aiUpdateTime">[ STANDBY ]</span>
-<span class="ai-disclaimer">※投資助言ではありません</span>
-</div>
-</details>
-</div>
-<div class="summary-lists">
-<div class="summary-card summary-trend">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">24h変動</span></div>
-<ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
-<div class="summary-footer"><a class="summary-jump" href="#grid-trend">TOP5</a></div>
-</div>
-<div class="summary-card summary-up">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-rocket"></i> 上昇TOP3</span><span class="summary-card-note-inline">24h変動</span></div>
-<ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
-<div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
-</div>
-<div class="summary-card summary-mcap">
-<div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline summary-card-note-desktop">24h/7d変動</span><span class="summary-card-note-inline summary-card-note-mobile">24h変動</span></div>
-<ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
-<div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
-</div>
-</div>
-<details class="kpi-details">
-<summary class="kpi-details-summary"><i class="fa-solid fa-thumbtack"></i> 主要指標（KPI）を表示</summary>
-<div class="summary-kpis" id="summaryKpis">
-<div class="kpi-tile kpi-sent">
-<div class="kpi-tile-title"><i class="fa-solid fa-gauge-high"></i><span class="kpi-title-stack"><span class="kpi-title-main">SENTIMENT</span><span class="kpi-title-sub">市場心理</span></span></div>
-<div class="kpi-value-row">
-<div class="kpi-tile-big" id="sumSentMain">-</div>
-<div class="kpi-tile-sub inline" id="sumSentSub">-</div>
-</div>
-<div aria-hidden="true" class="mini-vis">
-<div class="mini-sent-track">
-<div class="mini-sent-zone fear"></div>
-<div class="mini-sent-zone caution"></div>
-<div class="mini-sent-zone neutral"></div>
-<div class="mini-sent-zone greed"></div>
-<div class="mini-sent-marker" id="sumSentMarker"></div>
-</div>
-</div>
-</div>
+  <div class="hud-shortline" id="aiInsightShort">—</div>
+  <div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
+    <a id="aiDailyLatestLink" href="/daily/latest" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
+       aria-label="今日のAIレポート">今日のAIレポート</a>
+    <a id="aiDailyListLink" href="/daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
+       aria-label="過去のAIレポート">過去のAIレポート</a>
+  </div>
+  <div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENTIMENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
+    <details class="hud-details">
+      <summary class="hud-summary-btn">
+        <span class="btn-text">AIの判断理由を見る（30秒）</span>
+        <span class="toggle-arrow">▼</span>
+      </summary>
+      <div class="hud-content-text" id="aiInsightText">
+        <div class="ai-loading-placeholder">
+          <span class="cyber-blink">INITIALIZING NEURAL NET...</span>
+        </div>
+      </div>
+      <div class="ai-footer-info">
+        <span class="ai-timestamp" id="aiUpdateTime">[ STANDBY ]</span>
+        <span class="ai-disclaimer">※投資助言ではありません</span>
+      </div>
+    </details>
+  </div>
+  <div class="summary-lists">
+    <div class="summary-card summary-trend">
+      <div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-fire"></i> トレンドTOP3</span><span class="summary-card-note-inline">24h変動</span></div>
+        <ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>
+        <div class="summary-footer"><a class="summary-jump" href="#grid-trend">TOP5</a></div>
+      </div>
+    <div class="summary-card summary-up">
+      <div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-rocket"></i> 上昇TOP3</span><span class="summary-card-note-inline">24h変動</span></div>
+        <ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>
+        <div class="summary-footer"><a class="summary-jump" href="#grid-gainers">TOP5</a></div>
+     </div>
+    <div class="summary-card summary-mcap">
+      <div class="summary-card-title"><span class="summary-title-main"><i class="fa-solid fa-trophy"></i> 時価総額TOP5</span><span class="summary-card-note-inline summary-card-note-desktop">24h/7d変動</span><span class="summary-card-note-inline summary-card-note-mobile">24h変動</span></div>
+        <ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>
+        <div class="summary-footer"><a class="summary-jump" href="#sec-mcap">TOP20</a></div>
+      </div>
+    </div>
+    <details class="kpi-details">
+      <summary class="kpi-details-summary"><i class="fa-solid fa-thumbtack"></i> 主要指標（KPI）を表示</summary>
+      <div class="summary-kpis" id="summaryKpis">
+        <div class="kpi-tile kpi-sent">
+          <div class="kpi-tile-title"><i class="fa-solid fa-gauge-high"></i><span class="kpi-title-stack"><span class="kpi-title-main">SENTIMENT</span><span class="kpi-title-sub">市場心理</span></span></div>
+          <div class="kpi-value-row">
+            <div class="kpi-tile-big" id="sumSentMain">-</div>
+            <div class="kpi-tile-sub inline" id="sumSentSub">-</div>
+          </div>
+          <div aria-hidden="true" class="mini-vis">
+            <div class="mini-sent-track">
+              <div class="mini-sent-zone fear"></div>
+              <div class="mini-sent-zone caution"></div>
+              <div class="mini-sent-zone neutral"></div>
+              <div class="mini-sent-zone greed"></div>
+              <div class="mini-sent-marker" id="sumSentMarker"></div>
+            </div>
+          </div>
+         </div>
 <div class="kpi-tile kpi-rsi">
 <div class="kpi-tile-title"><i class="fa-solid fa-wave-square"></i><span class="kpi-title-stack"><span class="kpi-title-main">RSI</span><span class="kpi-title-sub">過熱感</span></span></div>
 <div class="kpi-value-row">
