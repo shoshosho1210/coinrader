@@ -4737,41 +4737,26 @@ html, body{
   margin-top: auto; /* anchor sparkline at bottom when present */
 }
 
-  .hero-bg {
-  position: relative;
-  background: #0F172A;
-  overflow: hidden;
+.hero-bg{ position:relative; background:#0F172A; overflow:hidden; }
+.hero-bg video, .hero-bg canvas{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:0;
+  filter:saturate(0.85) contrast(0.95) brightness(0.75);
 }
-
-/* 背景動画 or canvas */
-.hero-bg video,
-.hero-bg canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* 色味をCoinRader寄りに＆眩しさ抑え */
-  filter: saturate(0.85) contrast(0.95) brightness(0.75);
-}
-
-/* 暗さの決め手：ネイビー系オーバーレイ */
-.hero-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+.hero-bg::after{
+  content:"";
+  position:absolute; inset:0;
+  z-index:1;
+  pointer-events:none;
   background:
     radial-gradient(60% 60% at 30% 40%, rgba(56,189,248,0.10), transparent 60%),
     radial-gradient(50% 50% at 70% 60%, rgba(34,90,191,0.10), transparent 60%),
     linear-gradient(180deg, rgba(15,23,42,0.85), rgba(11,18,32,0.90));
-  pointer-events: none;
 }
+.hero-content{ position:relative; z-index:2; }
 
-/* コンテンツは最前面 */
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
 
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
@@ -4910,23 +4895,23 @@ html, body{
 </div>
 </div>
 <div class="ai-insight-box hud-panel" id="aiInsightBox">
-<div class="hud-header">
-<div class="hud-header-left">
-<span class="ai-icon-pulse">
-<i class="fa-solid fa-robot" style="color:#38bdf8; filter:drop-shadow(0 0 5px rgba(56,189,248,0.6));"></i>
-</span>
-<span class="ai-label">AI JUDGE</span>
-<div class="hud-status-badge status-loading" id="aiVerdictBadge">
-<span class="status-icon">
-<i class="fa-solid fa-circle-notch fa-spin"></i>
-</span>
-<span class="status-text">ANALYZING...</span>
-</div>
-</div>
-<button class="hud-guide-btn" onclick="openPageModal('/guide', 'CoinRader 活用ガイド');">
-<i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
+  <div class="hud-header">
+    <div class="hud-header-left">
+      <span class="ai-icon-pulse">
+        <i class="fa-solid fa-robot" style="color:#38bdf8; filter:drop-shadow(0 0 5px rgba(56,189,248,0.6));"></i>
+      </span>
+      <span class="ai-label">AI JUDGE</span>
+      <div class="hud-status-badge status-loading" id="aiVerdictBadge">
+        <span class="status-icon">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+        <span class="status-text">ANALYZING...</span>
+      </div>
+    </div>
+    <button class="hud-guide-btn" onclick="openPageModal('/guide', 'CoinRader 活用ガイド');">
+      <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
     </button>
-</div>
+  </div>
 <div class="hud-shortline" id="aiInsightShort">—</div>
 <div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
   <a id="aiDailyLatestLink" href="/daily/latest" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
