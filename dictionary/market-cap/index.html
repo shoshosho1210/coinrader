@@ -6,88 +6,185 @@
   <title>時価総額(Market Cap)とは｜CoinRader 用語集</title>
   <meta name="description" content="時価総額の意味とランキングの読み方。" />
   <link rel="canonical" href="https://coinrader.net/dictionary/market-cap/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CoinRader" />
   <meta property="og:title" content="時価総額(Market Cap)とは｜CoinRader 用語集" />
   <meta property="og:description" content="時価総額の意味とランキングの読み方。" />
   <meta property="og:url" content="https://coinrader.net/dictionary/market-cap/" />
-  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link rel="stylesheet" href="/_page_style.css" />
+
   <style>
-/* Minimal shared page chrome for /guide /dictionary /coins */
-:root{
-  --bg:#0b1220; --panel:#0f172a; --panel2:#111c33;
-  --text:#e5e7eb; --muted:#9ca3af; --line:rgba(148,163,184,.22);
-  --accent:#38bdf8; --accent2:#22c55e;
-  --shadow:0 14px 40px rgba(0,0,0,.35);
-  --r:16px;
-  --max:1040px;
-}
-html,body{background:var(--bg);color:var(--text);margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 40px;}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-.topbar .inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:14px;padding:10px 16px;}
-.brand{display:flex;align-items:center;gap:10px;color:var(--text);font-weight:800;letter-spacing:.2px}
-.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(56,189,248,.15)}
-.nav{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
-.nav a{color:var(--text);font-size:13px;padding:7px 10px;border:1px solid rgba(229,231,235,.14);border-radius:999px;background:rgba(15,23,42,.5)}
-.nav a[aria-current='page']{border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10)}
-.hero{margin:18px 0 14px;}
-.hero h1{margin:0 0 6px;font-size:24px}
-.hero p{margin:0;color:var(--muted);line-height:1.6}
-.grid{display:grid;gap:12px}
-@media(min-width:860px){.grid.cols2{grid-template-columns:1fr 1fr}}
-.card{background:linear-gradient(180deg,rgba(17,28,51,.92),rgba(15,23,42,.92));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
-.card h2{margin:0 0 10px;font-size:16px}
-.card p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
-.list{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:8px}
-.item{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid rgba(148,163,184,.18);border-radius:12px;background:rgba(2,6,23,.25)}
-.item .k{min-width:110px;font-weight:700;color:var(--text)}
-.item .v{color:var(--muted);font-size:14px;line-height:1.55}
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid rgba(56,189,248,.35);color:var(--accent);background:rgba(56,189,248,.08)}
-.footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.footer a{color:var(--muted)}
-.bcrumb{font-size:12px;color:var(--muted);margin-top:8px}
-.bcrumb a{color:var(--muted)}
+    :root{
+      --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --line:#1f2937; --accent:#38bdf8;
+      --max:980px;
+    }
+    html,body{background:var(--bg);color:var(--fg);margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
 
-.table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}
-.table th,.table td{border-bottom:1px solid rgba(148,163,184,.16);padding:10px 8px;text-align:left;vertical-align:top}
-.table th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    /* ---------- Header (daily style) ---------- */
+    .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 48px;}
+    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
+    .appHeader-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brandLogo{height:24px;width:auto;display:block}
+    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 12px;font-size:12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+      color:var(--fg);text-decoration:none
+    }
+    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
+    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
 
-.note{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.6}
+    /* ---------- Page ---------- */
+    h1{font-size:26px;font-weight:900;margin:10px 0 10px}
+    .card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:18px
+    }
+    .card p{margin:0;color:rgba(229,231,235,.88);line-height:1.75;font-size:14px}
+    .note{margin-top:10px;color:rgba(148,163,184,.95);font-size:12px;line-height:1.55}
 
+    /* ---------- Footer (daily style) ---------- */
+    .site-footer{
+      margin-top:28px;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:18px 0 10px;
+      color:var(--muted);
+    }
+    .footer-inner{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .footer-brand{display:flex;flex-direction:column;gap:8px;min-width:220px}
+    .footer-logo{height:26px;width:auto;max-width:220px;object-fit:contain;display:block}
+    .footer-tagline{font-size:12px;color:rgba(148,163,184,.9);line-height:1.35}
+    .footer-nav{display:flex;flex-wrap:wrap;gap:10px 12px;justify-content:flex-end}
+    .footer-nav a{
+      color:rgba(148,163,184,.95);
+      font-size:12px;
+      padding:6px 10px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      background:rgba(255,255,255,.03);
+      text-decoration:none;
+    }
+    .footer-nav a:hover{border-color:rgba(56,189,248,.35);filter:brightness(1.06);text-decoration:none}
+    .footer-copyright{margin-top:12px;font-size:12px;opacity:.85}
+
+    @media (max-width: 520px){
+      .appHeader-inner{align-items:flex-start}
+      .nav{justify-content:flex-start}
+    }
   </style>
 </head>
+
 <body>
-  <div class="topbar">
-    <div class="inner">
-      <a class="brand" href="/">CoinRader</a>
-      <nav class="nav">
-        <a href="/">Dashboard</a>
-        <a href="/daily/">AIレポート</a>
-        <a href="/guide/">Guide</a>
-        <a href="/dictionary/">Dictionary</a>
-        <a href="/coins/">Coins</a>
-      </nav>
-    </div>
-  </div>
-  <main class="container">
-<h1>時価総額（Market Cap）</h1>
-<div class="panel">
-  <p>概ね「価格 × 供給量」。規模と流動性の目安になります（厳密な供給量は銘柄によって差があります）。</p>
-</div>
-  </main>
-  <footer class="footer">
-    <div class="inner">
-      <div>&copy; CoinRader</div>
-      <div class="links">
-        <a href="/about">About</a>
-        <a href="/data-sources">Data Sources</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/disclaimer">Disclaimer</a>
-        <a href="/contact">Contact</a>
+  <div class="wrap">
+
+    <header class="appHeader">
+      <div class="appHeader-inner">
+        <div class="brand">
+          <a href="/" aria-label="CoinRader">
+            <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
+          </a>
+          <div class="crumb">
+            <a href="/">CoinRader</a> / <a href="/dictionary/">Dictionary</a> / Market Cap
+          </div>
+        </div>
+        <nav class="nav" aria-label="Dictionary navigation">
+          <a class="btn" href="/">Dashboard</a>
+          <a class="btn btn-primary" href="/daily/latest">最新</a>
+          <a class="btn" href="/daily/">一覧</a>
+          <a class="btn" href="/guide">活用ガイド</a>
+          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">EN</button>
+        </nav>
       </div>
-    </div>
-  </footer>
+    </header>
+
+    <main>
+      <h1 data-i18n data-ja="時価総額（Market Cap）" data-en="Market Cap">時価総額（Market Cap）</h1>
+
+      <section class="card">
+        <p data-i18n
+           data-ja="概ね「価格 × 供給量」。規模と流動性の目安になります（厳密な供給量は銘柄によって差があります）。"
+           data-en="Roughly: price × supply. It’s a handy proxy for size and liquidity (exact circulating supply varies by asset).">
+          概ね「価格 × 供給量」。規模と流動性の目安になります（厳密な供給量は銘柄によって差があります）。
+        </p>
+
+        <div class="note" data-i18n
+             data-ja="CoinRaderでは、時価総額ランキング（TOP）と出来高などをセットで見て「資金が集まっている場所」を確認するのが基本です。"
+             data-en="On CoinRader, the basic approach is to view market-cap ranks together with volume and trend to see where capital is concentrating.">
+          CoinRaderでは、時価総額ランキング（TOP）と出来高などをセットで見て「資金が集まっている場所」を確認するのが基本です。
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
+          <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+        </div>
+        <nav class="footer-nav">
+          <a href="/guide">活用ガイド</a>
+          <a href="/start">始め方</a>
+          <a href="/coins/">Coins</a>
+          <a href="/data-sources">データ</a>
+          <a href="/about">運営</a>
+          <a href="/contact">連絡</a>
+          <a href="/disclaimer">免責</a>
+          <a href="/privacy">法務</a>
+        </nav>
+      </div>
+      <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
+    </footer>
+
+  </div>
+
+  <script>
+  (function(){
+    const btn = document.getElementById('langToggle');
+    if(!btn) return;
+    const KEY = 'cr_lang';
+    const saved = localStorage.getItem(KEY) || 'ja';
+
+    function apply(lang){
+      document.documentElement.lang = lang;
+      btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+      btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const ja = el.getAttribute('data-ja');
+        const en = el.getAttribute('data-en');
+        if(!ja || !en) return;
+        el.innerHTML = (lang === 'en') ? en : ja;
+      });
+    }
+
+    btn.addEventListener('click', ()=>{
+      const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+      localStorage.setItem(KEY, next);
+      apply(next);
+    });
+
+    apply(saved);
+  })();
+  </script>
 </body>
 </html>
