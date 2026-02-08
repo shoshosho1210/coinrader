@@ -4737,6 +4737,42 @@ html, body{
   margin-top: auto; /* anchor sparkline at bottom when present */
 }
 
+  .hero-bg {
+  position: relative;
+  background: #0F172A;
+  overflow: hidden;
+}
+
+/* 背景動画 or canvas */
+.hero-bg video,
+.hero-bg canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 色味をCoinRader寄りに＆眩しさ抑え */
+  filter: saturate(0.85) contrast(0.95) brightness(0.75);
+}
+
+/* 暗さの決め手：ネイビー系オーバーレイ */
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 60% at 30% 40%, rgba(56,189,248,0.10), transparent 60%),
+    radial-gradient(50% 50% at 70% 60%, rgba(34,90,191,0.10), transparent 60%),
+    linear-gradient(180deg, rgba(15,23,42,0.85), rgba(11,18,32,0.90));
+  pointer-events: none;
+}
+
+/* コンテンツは最前面 */
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
