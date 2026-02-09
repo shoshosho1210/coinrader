@@ -164,6 +164,17 @@ jobs:
           git commit -m "chore: generate daily & coin pages" || echo "No changes to commit"
           git push
 
+      - name: Debug sitemap change
+        run: |
+          set -eux
+          ls -la
+          echo "---- grep alias in sitemap.xml ----"
+          (grep -n "coins/btc" sitemap.xml && exit 0) || echo "OK: no btc"
+          echo "---- git status ----"
+          git status --porcelain
+          echo "---- git diff (sitemap only) ----"
+          git diff -- sitemap.xml || true
+
 
 
 
