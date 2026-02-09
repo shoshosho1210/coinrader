@@ -8511,24 +8511,19 @@ const fmtInt = (v) => (v === null) ? '—' : String(Math.round(v));
 // v111: 対象期間/確度（ルールベース。予測ではなく“目安”）
 const horizonTxt = '短期(24h)';
 let confidence = 'Mid';
-let alignedBear = false;
-let alignedBull = false;
-
+let highReasonTxt = '';
 if (fgNum === null || rsiNum === null || maNum === null) {
   confidence = 'Low';
 } else {
-  alignedBear = (fgNum <= 25 && maNum < -1);
-  alignedBull = (fgNum >= 60 && maNum > 1);
-  if (alignedBear || alignedBull) confidence = 'High';
+  const alignedBear = (fgNum <= 25 && maNum < -1);
+  const alignedBull = (fgNum >= 60 && maNum > 1);
+  if (alignedBear || alignedBull) {
+    confidence = 'High';
+    highReasonTxt = alignedBear
+      ? '確度が高い理由：恐怖（Fear&Greed≤25）＋TREND下向き（<-1%）が同時に成立'
+      : '確度が高い理由：強気心理（Fear&Greed≥60）＋TREND上向き（>+1%）が同時に成立';
+  }
 }
-
-// Highのときだけ「なぜ高いか」を1行で出す（初見向け）
-let confidenceReason = '';
-if (confidence === 'High') {
-  if (alignedBear) confidenceReason = '確度が高い理由：恐怖（Fear&Greed≤25）＋TREND下向き（< -1%）が同時に成立';
-  else if (alignedBull) confidenceReason = '確度が高い理由：強気心理（Fear&Greed≥60）＋TREND上向き（> +1%）が同時に成立';
-}
-
 // UIへ反映
 if (horizonEl) horizonEl.textContent = `対象: ${horizonTxt}`;
 if (confEl) confEl.textContent = `確度: ${confidence}`;
@@ -8633,7 +8628,7 @@ function hlMemo(s){
 // 戦略メモ（30秒テンプレ：2行。ポジション指示/煽りは避ける）
 let memoLines = [
   '方向感はまだ不安定。急反発が出ても戻り売りが出やすく、値動きが荒くなりがち。',
-  '注目：Fear&Greedの改善（25超/45超）や、TRENDが0付近へ戻るか。'
+  '注目：Fear&Greedの改善（25超/45超）や、TRENDが-2%以上（0付近）へ戻るか。'
 ];
 
 // 地合いに応じて微調整
@@ -8645,13 +8640,19 @@ if (regimeCls === 'regime-bear') {
 } else if (regimeCls === 'regime-bull') {
   memoLines = [
     'リスクオン寄り。伸びやすい一方、過熱サインが出ると巻き戻しも速い。',
-    '注目：RSIが70接近 / Fear&Greedが75超 / TRENDが鈍化しないか。'
+    '注目：RSIが70接近 / Fear&Greedが75超 / TRENDが+2%未満へ鈍化しないか。'
   ];
 } else {
   memoLines = [
     'レンジ気味。強弱が混在しやすいので「強い銘柄の選別」になりやすい。',
     '注目：TRENDが±2%を明確に超えて推移するか、Fear&Greedが45〜55から外れるか。'
   ];
+}
+
+
+// Highのときだけ：確度理由を1行追加（主役の流れを邪魔しない位置）
+if (confidence === 'High' && highReasonTxt) {
+  memoLines.push(highReasonTxt);
 }
 
 // 地合い目安（次に見るポイント）
@@ -8673,7 +8674,7 @@ const trNow = (maNum===null||maNum===undefined) ? '—' : `${fmtPct(maNum)}（${
 if (regimeCls === 'regime-bear') {
   ifThenLines = [
     '弱気が続く条件：TRENDが0未満 ＆ RSIが55未満なら、反発しても戻り売りが出やすい。',
-    '判断を切り替える条件（弱気→中立）：Fear&Greedが25以上へ回復 ＆ TRENDが0付近まで改善したら、警戒を一段下げる。'
+    '判断を切り替える条件（弱気→中立）：Fear&Greedが25以上へ回復 ＆ TRENDが-2%以上（0付近）まで改善したら、警戒を一段下げる。'
   ];
   top3Lines = [
     `Fear&Greed：${fgNow} → 市場心理が弱く、上を追う買いが続きにくい`,
@@ -8701,6 +8702,10 @@ if (regimeCls === 'regime-bear') {
     `Fear&Greed：${fgNow} → 心理が傾くと相場の色が出やすい`
   ];
 }
+
+// 折りたたみ用（詳細データ）
+const reasonDetailsHtml = `
+  `;
 
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
@@ -8730,7 +8735,6 @@ const htmlContent = `
         <li>${hlMemo(ifThenLines[0])}</li>
         <li>${hlMemo(ifThenLines[1])}</li>
       </ul>
-      ${confidenceReason ? `<div class="ai-mini-note" style="margin-top:6px;font-size:12px;color:#a1b3c7;">${confidenceReason}</div>` : ``}
     </div>
 
     <div class="ai-mini-block">
@@ -8740,6 +8744,7 @@ const htmlContent = `
         <li>${top3Lines[1]}</li>
         <li>${top3Lines[2]}</li>
       </ol>
+      ${reasonDetailsHtml}
       <div class="ai-mini-foot"></div>
     </div>
   </div>
