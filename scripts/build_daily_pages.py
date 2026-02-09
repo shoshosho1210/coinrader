@@ -296,6 +296,12 @@ def rebuild_sitemap_with_daily(
     # 2) daily 系URLを構築
     site_origin = (site_origin or "").rstrip("/")
 
+    # --- remove coins alias URLs from existing sitemap (canonical only) ---
+    coins_prefix = f"{site_origin}/coins/"
+    for alias in COINS_ALIAS_SLUGS:
+        existing.pop(f"{coins_prefix}{alias}/", None)
+        existing.pop(f"{coins_prefix}{alias}", None)  # 念のため末尾/なしも落とす
+
     # --- extra: ensure guide/coins pages are included (directory index style) ---
     project_root = sitemap_path.parent
 
