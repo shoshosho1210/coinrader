@@ -30,6 +30,12 @@ jobs:
           grep -n "COINS_ALIAS_SLUGS" scripts/build_daily_pages.py || true
           grep -n "slug in COINS_ALIAS_SLUGS" -n scripts/build_daily_pages.py || true
 
+      - name: Sync with origin/main (before build)
+        run: |
+          set -eux
+          git fetch origin main
+          git rebase origin/main
+
 
       - name: Generate daily pages
         env:
