@@ -8691,10 +8691,6 @@ if (regimeCls === 'regime-bear') {
   ];
 }
 
-// 折りたたみ用（詳細データ）
-const reasonDetailsHtml = `
-  `;
-
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 const pct01 = (x) => (Math.round(clamp01(x) * 1000) / 10).toFixed(1) + '%';
@@ -8732,7 +8728,6 @@ const htmlContent = `
         <li>${top3Lines[1]}</li>
         <li>${top3Lines[2]}</li>
       </ol>
-      ${reasonDetailsHtml}
       <div class="ai-mini-foot"></div>
     </div>
   </div>
