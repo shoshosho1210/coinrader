@@ -127,25 +127,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://coinrader.net/coins/btc/</loc>
-    <lastmod>2026-02-09</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://coinrader.net/coins/eth/</loc>
-    <lastmod>2026-02-09</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://coinrader.net/coins/ethereum/</loc>
-    <lastmod>2026-02-09</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://coinrader.net/coins/sol/</loc>
     <lastmod>2026-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
