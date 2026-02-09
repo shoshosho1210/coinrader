@@ -24,146 +24,17 @@
     .card-title{font-weight:800;margin:0 0 6px}
     .card-desc{color:rgba(229,231,235,.86);font-size:13px;line-height:1.5}
     .foot{margin-top:18px;color:var(--muted);font-size:12px}
-
-    /* ---------- Header (copied from daily) ---------- */
-    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
-    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
-    .appHeader-inner{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
-      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
-    }
-    .brand{display:flex;align-items:center;gap:12px;min-width:0}
-    .brandLogo{height:24px;width:auto;display:block}
-    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:6px 12px;font-size:12px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
-      color:var(--fg);text-decoration:none
-    }
-    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
-    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
-
-    /* ---------- Page ---------- */
-    .h1{font-size:28px;font-weight:900;letter-spacing:.2px;margin:12px 0 6px}
-    .lead{color:rgba(229,231,235,.88);line-height:1.8;margin:0 0 14px}
-    .card{
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:18px
-    }
-
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      font-size:12px;color:var(--fg);
-      text-decoration:none;
-    }
-    .chip small{color:var(--muted);font-weight:700;letter-spacing:.2px}
-    .chip:hover{filter:brightness(1.1)}
-
-    .secTitle{font-size:14px;font-weight:900;margin:18px 0 8px;color:rgba(229,231,235,.95)}
-    ul{margin:8px 0 0 18px}
-    li{margin:6px 0;line-height:1.8}
-    li::marker{color:rgba(148,163,184,.65)}
-    .note{color:rgba(148,163,184,.95);font-size:12px;line-height:1.7;margin-top:12px}
-    .lastmod{color:rgba(148,163,184,.9);font-size:12px;margin-top:12px}
-
-    @media (max-width: 520px){
-      .appHeader-inner{align-items:flex-start}
-      .nav{justify-content:flex-start}
-    }
-
-    /* ---------- Footer (copied from daily) ---------- */
-    .site-footer{
-      margin-top:28px;
-      border-top:1px solid rgba(255,255,255,.08);
-      padding:18px 0 10px;
-      color:var(--muted);
-    }
-    .footer-inner{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    .footer-brand{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width:220px;
-    }
-    .footer-logo{
-      height:26px;
-      width:auto;
-      max-width:220px;
-      object-fit:contain;
-      display:block;
-      image-rendering:auto;
-    }
-    .footer-tagline{
-      font-size:12px;
-      color:rgba(148,163,184,.9);
-      line-height:1.35;
-    }
-    .footer-nav{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px 12px;
-      justify-content:flex-end;
-    }
-    .footer-nav a{
-      color:rgba(148,163,184,.95);
-      font-size:12px;
-      padding:6px 10px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:999px;
-      background:rgba(255,255,255,.03);
-      text-decoration:none;
-    }
-    .footer-nav a:hover{
-      border-color:rgba(56,189,248,.35);
-      filter:brightness(1.06);
-      text-decoration:none;
-    }
-    .footer-copyright{
-      margin-top:12px;
-      font-size:12px;
-      opacity:.85;
-    }
-</style>
+  </style>
 </head>
 <body>
-    <header class="appHeader">
-      <div class="appHeader-inner">
-        <div class="brand">
-          <a href="/" aria-label="CoinRader">
-            <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
-          </a>
-          <div class="crumb">
-            <a href="/">CoinRader</a> / <span>Dictionary</span>
-          
-        </div>
-
-        <nav class="nav" aria-label="Site navigation">
-          <a class="btn" href="/" data-i18n data-ja="Dashboard" data-en="Dashboard">Dashboard</a>
-          <a class="btn btn-primary" href="/daily/latest" data-i18n data-ja="最新" data-en="Latest">最新</a>
-          <a class="btn" href="/daily/" data-i18n data-ja="一覧" data-en="List">一覧</a>
-          <a class="btn" href="/guide" data-i18n data-ja="活用ガイド" data-en="Guide">活用ガイド</a>
-          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">EN</button>
-        </nav>
-      </div>
-    </header>
-
   <div class="wrap">
-    </div>
+    <div class="head">
+      <div class="brand">
+        <a href="/" aria-label="CoinRader ホーム">
+          <img class="logo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
+        </a>
+        <div style="color:var(--muted);font-size:13px">CoinRader / Dictionary</div>
+      </div>
       <div>
         <a href="/daily/" style="font-size:12px;border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;color:var(--fg);background:rgba(255,255,255,.04)">Daily一覧</a>
       </div>
@@ -182,29 +53,5 @@
 
     <div class="foot">Lastmod: 2026-02-09</div>
   </div>
-<footer class="site-footer">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
-          <span class="footer-tagline"
-                data-i18n
-                data-ja="客観的な暗号資産分析ダッシュボード"
-                data-en="Objective crypto analytics dashboard">
-            客観的な暗号資産分析ダッシュボード
-          </span>
-        </div>
-        <nav class="footer-nav">
-          <a href="/guide" data-i18n data-ja="活用ガイド" data-en="Guide">活用ガイド</a>
-          <a href="/start" data-i18n data-ja="始め方" data-en="Getting Started">始め方</a>
-          <a href="/coins/">Coins</a>
-          <a href="/data-sources" data-i18n data-ja="データ" data-en="Data">データ</a>
-          <a href="/about" data-i18n data-ja="運営" data-en="About">運営</a>
-          <a href="/contact" data-i18n data-ja="連絡" data-en="Contact">連絡</a>
-          <a href="/disclaimer" data-i18n data-ja="免責" data-en="Disclaimer">免責</a>
-          <a href="/privacy" data-i18n data-ja="法務" data-en="Legal">法務</a>
-        </nav>
-      </div>
-      <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
-    </footer>
 </body>
 </html>
