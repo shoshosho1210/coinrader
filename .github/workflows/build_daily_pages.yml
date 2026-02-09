@@ -146,15 +146,16 @@ jobs:
 
       - name: Commit generated pages
         run: |
+          set -eux
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          echo "---- ls coins ----"
-          ls -la coins coins/btc || true
-          ls -la coins/btc/index.html || true
+          # 先に取り込んで衝突回避（fetch first対策）
+          git fetch origin main
+          git rebase origin/main
 
-          echo "---- check ignore ----"
-          git check-ignore -v coins/btc/index.html && echo "(ignored)" || echo "coins/btc/index.html is NOT ignored"
+          # aliasの残骸を消したいなら（今の状況なら coins/sol が対象になりやすい）
+          rm -rf coins/sol || true
 
           git add -A daily sitemap.xml
           git add -f daily/tags/*.html
@@ -162,14 +163,15 @@ jobs:
           git add -A data/coins
           git add -A dictionary
 
-          echo "---- status (porcelain) ----"
-          git status --porcelain
+          # 差分なければ終了
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
 
-          echo "---- check ignore (data/coins) ----"
-          git check-ignore -v data/coins/*.json && echo "(ignored)" || echo "data/coins/*.json is NOT ignored"
+          git commit -m "chore: generate daily & coin pages"
+          git push origin HEAD:main
 
-          git commit -m "chore: generate daily & coin pages" || echo "No changes to commit"
-          git push
 
       - name: Debug sitemap change
         run: |
