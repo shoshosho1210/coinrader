@@ -8511,13 +8511,24 @@ const fmtInt = (v) => (v === null) ? '—' : String(Math.round(v));
 // v111: 対象期間/確度（ルールベース。予測ではなく“目安”）
 const horizonTxt = '短期(24h)';
 let confidence = 'Mid';
+let alignedBear = false;
+let alignedBull = false;
+
 if (fgNum === null || rsiNum === null || maNum === null) {
   confidence = 'Low';
 } else {
-  const alignedBear = (fgNum <= 25 && maNum < -1);
-  const alignedBull = (fgNum >= 60 && maNum > 1);
+  alignedBear = (fgNum <= 25 && maNum < -1);
+  alignedBull = (fgNum >= 60 && maNum > 1);
   if (alignedBear || alignedBull) confidence = 'High';
 }
+
+// Highのときだけ「なぜ高いか」を1行で出す（初見向け）
+let confidenceReason = '';
+if (confidence === 'High') {
+  if (alignedBear) confidenceReason = '確度が高い理由：恐怖（Fear&Greed≤25）＋TREND下向き（< -1%）が同時に成立';
+  else if (alignedBull) confidenceReason = '確度が高い理由：強気心理（Fear&Greed≥60）＋TREND上向き（> +1%）が同時に成立';
+}
+
 // UIへ反映
 if (horizonEl) horizonEl.textContent = `対象: ${horizonTxt}`;
 if (confEl) confEl.textContent = `確度: ${confidence}`;
@@ -8719,6 +8730,7 @@ const htmlContent = `
         <li>${hlMemo(ifThenLines[0])}</li>
         <li>${hlMemo(ifThenLines[1])}</li>
       </ul>
+      ${confidenceReason ? `<div class="ai-mini-note" style="margin-top:6px;font-size:12px;color:#a1b3c7;">${confidenceReason}</div>` : ``}
     </div>
 
     <div class="ai-mini-block">
