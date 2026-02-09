@@ -8359,20 +8359,12 @@ async function updateAiInsight() {
     const noteEl = document.getElementById('aiInsightNote');
     const shortEl = document.getElementById('aiInsightShort');
     const horizonEl = document.getElementById('aiHorizonPill');
-    const confEl = document.getElementById('aiConfPill');
-
-    // v115: reset frame state (will be set once verdict is known)
-    if (box) box.removeAttribute('data-signal');
-
+    const confEl = document.getElementById('aiConfPill'); 
     // 1. 【修正】バッジ要素を取得（ANALYZINGを解除するため）
     const badgeEl = document.getElementById('aiVerdictBadge');
 
     
-    if (!box || !textEl || _ai_thinking) return;
-
-    // v115: reset frame state while analyzing
-    try{ box.removeAttribute('data-signal'); }catch(e){}
-
+    if (!box || !textEl || _ai_thinking) return; 
     // 1. JSONから「過去データ」を一括取得
     const pastToday = await getHistoricalData(0); 
     const pastYest  = await getHistoricalData(1);
