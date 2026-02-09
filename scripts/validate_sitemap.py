@@ -12,60 +12,73 @@ SITEMAP = ROOT / "sitemap.xml"
 
 
 def canonicalize(url: str) -> str:
-    """Return canonical form for CoinRader URLs (canonical-only policy)."""
+    """Return canonical form for CoinRader URLs.
+
+    Policy:
+    - daily: extensionless canonical (except /daily/ as directory)
+    - hubs with index.html are canonicalized to trailing slash (e.g. /coins/, /guide/, /dictionary/)
+    - legacy static pages .html -> extensionless (about.html -> /about)
+    """
     u = (url or "").strip()
     if not u:
         return u
 
-    # ---- extensionless static pages ----
-    for p in ("about", "start", "guide", "data-sources", "ads-pr", "privacy", "disclaimer", "contact"):
-        if u.endswith(f"/{p}.html"):
-            return u.replace(f"/{p}.html", f"/{p}")
-
-    # ---- daily (extensionless canonical) ----
+    # normalize scheme-less input? (keep as-is if it's not a full URL)
+    # ---- daily ----
     if u.endswith("/daily/index.html"):
         return u.replace("/daily/index.html", "/daily/")
     if u.endswith("/daily/latest.html"):
         return u.replace("/daily/latest.html", "/daily/latest")
+    if re.search(r"/daily/\d{8}\.html$", u):
+        return re.sub(r"(\/daily\/\d{8})\.html$", r"\1", u)
+    if re.search(r"/daily/tags/[a-z0-9_-]+\.html$", u):
+        return re.sub(r"(\/daily\/tags\/[a-z0-9_-]+)\.html$", r"\1", u)
 
+    # ---- hubs (directory index) ----
+    for hub in ("/coins", "/guide", "/dictionary", "/daily"):
+        if u.endswith(hub):
+            return u + "/"
+        if u.endswith(hub + "/index.html"):
+            return u.replace(hub + "/index.html", hub + "/")
+
+    # ---- coins/guide/dictionary subpages as directories ----
+    # /coins/btc/index.html -> /coins/btc/
+    u = re.sub(r"(\/coins\/[A-Za-z0-9_-]+)\/index\.html$", r"\1/", u)
+    u = re.sub(r"(\/guide\/[A-Za-z0-9_-]+)\/index\.html$", r"\1/", u)
+    u = re.sub(r"(\/dictionary\/[A-Za-z0-9_-]+)\/index\.html$", r"\1/", u)
+
+    # if someone mistakenly put /coins/btc (no slash) and directory exists, canonical would be /coins/btc/
+    u = re.sub(r"(\/coins\/[A-Za-z0-9_-]+)$", r"\1/", u) if re.search(r"\/coins\/[A-Za-z0-9_-]+$", u) else u
+    u = re.sub(r"(\/guide\/[A-Za-z0-9_-]+)$", r"\1/", u) if re.search(r"\/guide\/[A-Za-z0-9_-]+$", u) else u
+    u = re.sub(r"(\/dictionary\/[A-Za-z0-9_-]+)$", r"\1/", u) if re.search(r"\/dictionary\/[A-Za-z0-9_-]+$", u) else u
+
+    # ---- static pages ----
+    # about.html -> /about
+    u = re.sub(r"/(about|start|data-sources|ads-pr|privacy|disclaimer|contact|sponsor|en)/index\.html$", r"/\1/", u)
+    u = re.sub(r"/(about|start|data-sources|ads-pr|privacy|disclaimer|contact|sponsor|en)\.html$", r"/\1", u)
+
+    return u
+
+    # /daily/index.html -> /daily/
+    if u.endswith("/daily/index.html"):
+        return u.replace("/daily/index.html", "/daily/")
+
+    # /daily/latest.html -> /daily/latest
+    if u.endswith("/daily/latest.html"):
+        return u.replace("/daily/latest.html", "/daily/latest")
+
+    # tags: /daily/tags/bear(.html) -> /daily/tags/bear
     for t in ("bear", "bull", "wait"):
         if u.endswith(f"/daily/tags/{t}.html"):
             return u.replace(f"/daily/tags/{t}.html", f"/daily/tags/{t}")
         if u.endswith(f"/daily/tags/{t}"):
             return u
 
+    # daily pages: /daily/YYYYMMDD(.html) -> /daily/YYYYMMDD
     import re
     m = re.search(r"/daily/(\d{8})(?:\.html)?$", u)
     if m:
         return u.replace(".html", "")
-
-    # ---- dictionary trailing slash canonical ----
-    m = re.search(r"/dictionary/([a-z0-9\-]+)$", u)
-    if m:
-        return u + "/"
-    m = re.search(r"/dictionary/([a-z0-9\-]+)/index\.html$", u)
-    if m:
-        return u.replace("/index.html", "/")
-
-    # ---- guide pages canonical (subpages with trailing slash) ----
-    m = re.search(r"/guide/([a-z0-9\-]+)$", u)
-    if m:
-        return u + "/"
-    m = re.search(r"/guide/([a-z0-9\-]+)/index\.html$", u)
-    if m:
-        return u.replace("/index.html", "/")
-
-    # ---- coins pages canonical (hub and subpages with trailing slash) ----
-    if u.endswith("/coins"):
-        return u + "/"
-    if u.endswith("/coins/index.html"):
-        return u.replace("/coins/index.html", "/coins/")
-    m = re.search(r"/coins/([a-z0-9\-]+)$", u)
-    if m:
-        return u + "/"
-    m = re.search(r"/coins/([a-z0-9\-]+)/index\.html$", u)
-    if m:
-        return u.replace("/index.html", "/")
 
     return u
 
@@ -151,29 +164,6 @@ def validate_dictionary_trailing_slash(locs: list[str]) -> list[str]:
     bad = sorted({p for p in paths if re.fullmatch(r"/dictionary/[a-z0-9\-]+", p)})
     return bad
 
-
-def validate_guide_trailing_slash(locs: list[str]) -> list[str]:
-    """guide のサブページ canonical を末尾スラッシュ有りに統一するチェック。"""
-    paths = []
-    for u in locs:
-        try:
-            paths.append(urlparse(u).path or "")
-        except Exception:
-            continue
-    bad = sorted({p for p in paths if re.fullmatch(r"/guide/[a-z0-9\-]+", p)})
-    return bad
-
-def validate_coins_trailing_slash(locs: list[str]) -> list[str]:
-    """coins の hub/subpage canonical を末尾スラッシュ有りに統一するチェック。"""
-    paths = []
-    for u in locs:
-        try:
-            paths.append(urlparse(u).path or "")
-        except Exception:
-            continue
-    bad = sorted({p for p in paths if p == "/coins" or re.fullmatch(r"/coins/[a-z0-9\-]+", p)})
-    return bad
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--fix", action="store_true", help="Auto-fix non-canonical/duplicate URLs in sitemap")
@@ -183,8 +173,6 @@ def main() -> int:
     root, loc_els, locs, dups, bad = _scan(xml)
     # --- dictionary: trailing slash canonical enforcement ---
     dict_bad = validate_dictionary_trailing_slash(locs)
-    guide_bad = validate_guide_trailing_slash(locs)
-    coins_bad = validate_coins_trailing_slash(locs)
 
     if (dups or bad) and args.fix:
         fixed = _autofix(xml)
@@ -203,10 +191,6 @@ def main() -> int:
         errors.append(f"non-canonical URLs in sitemap: {bad}")
     if dict_bad:
         errors.append(f"dictionary term URLs must end with '/': {dict_bad}")
-    if guide_bad:
-        errors.append(f"guide subpage URLs must end with '/': {guide_bad}")
-    if coins_bad:
-        errors.append(f"coins URLs must end with '/': {coins_bad}")
 
     if errors:
         print("SITEMAP VALIDATION FAILED")
