@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from collections import Counter
@@ -75,7 +76,6 @@ def canonicalize(url: str) -> str:
             return u
 
     # daily pages: /daily/YYYYMMDD(.html) -> /daily/YYYYMMDD
-    import re
     m = re.search(r"/daily/(\d{8})(?:\.html)?$", u)
     if m:
         return u.replace(".html", "")
