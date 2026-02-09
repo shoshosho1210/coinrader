@@ -25,3 +25,13 @@
 /dictionary/:slug    /dictionary/:slug/    301
 /dictionary/fear-greed-index/   /dictionary/fear-and-greed/   301
 /dictionary/fear-greed-index    /dictionary/fear-and-greed/   301
+
+# coins canonicalize
+/coins/btc        /coins/bitcoin/   301
+/coins/btc/       /coins/bitcoin/   301
+
+/coins/eth        /coins/ethereum/  301
+/coins/eth/       /coins/ethereum/  301
+
+/coins/sol        /coins/solana/    301
+/coins/sol/       /coins/solana/    301
