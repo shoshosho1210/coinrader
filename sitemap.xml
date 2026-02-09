@@ -19,12 +19,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://coinrader.net/guide</loc>
-    <lastmod>2026-02-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://coinrader.net/data-sources</loc>
     <lastmod>2026-02-09</lastmod>
     <changefreq>monthly</changefreq>
@@ -63,8 +57,8 @@
   <url>
     <loc>https://coinrader.net/dictionary/</loc>
     <lastmod>2026-02-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://coinrader.net/dictionary/fear-and-greed/</loc>
@@ -167,6 +161,12 @@
     <lastmod>2026-02-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/guide/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://coinrader.net/daily/</loc>
