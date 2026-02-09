@@ -1,34 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>恐怖指数（Fear & Greed）の使い方｜失敗しにくい判断ルール（CoinRader）</title>
-  <meta name="description" content="恐怖指数（Fear & Greed）を『当てに行く指標』ではなく『ブレを減らす指標』として使う方法。CoinRaderのAI Market Insight（AI JUDGE）と併用する、事故りにくい判断ルールを解説。" />
-  <link rel="canonical" href="/guide/fear-greed-strategy/" />
+  <title>恐怖指数（Fear &amp; Greed）の使い方｜失敗しにくい判断ルール - CoinRader</title>
+  <meta name="description" content="恐怖指数（Fear &amp; Greed）を『当てに行く指標』ではなく『ブレを減らす指標』として使う方法。CoinRaderのAI Market Insight（AI JUDGE）と併用する、事故りにくい判断ルールを解説。" />
+  <link rel="canonical" href="https://coinrader.net/guide/fear-greed-strategy/" />
+  <meta property="og:site_name" content="CoinRader" />
+  <meta property="og:title" content="恐怖指数（Fear &amp; Greed）の使い方｜失敗しにくい判断ルール" />
+  <meta property="og:description" content="恐怖指数（Fear &amp; Greed）× AI JUDGEで、感情に振り回されにくい判断ルールを整理。" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://coinrader.net/guide/fear-greed-strategy/" />
+
   <style>
     :root{ color-scheme: dark; }
-    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif; background:#0b1220; color:#e5e7eb; }
-    .wrap{ max-width: 980px; margin:0 auto; padding: 28px 16px 60px; }
-    .crumbs{ font-size:12px; opacity:.8; margin-bottom:10px; }
-    .crumbs a{ color:#38bdf8; text-decoration:none; }
-    h1{ font-size:26px; margin: 6px 0 10px; }
-    .lead{ opacity:.9; line-height:1.8; margin: 0 0 16px; }
+    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif; background:#0b1220; color:#e5e7eb; }
+    .container{ max-width:980px; margin:0 auto; padding:24px 16px 56px; }
+    a{ color:#38bdf8; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+    .topnav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; opacity:.95; }
+    .topnav a{ font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid rgba(229,231,235,.18); color:#e5e7eb; }
+    .topnav a.primary{ background:#38bdf8; color:#0b1220; border-color:rgba(56,189,248,.35); }
+    h1{ font-size:26px; margin: 10px 0 8px; }
+    .lead{ opacity:.92; line-height:1.85; margin:0 0 12px; }
     .card{ border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.03); border-radius:16px; padding:14px 14px; margin:12px 0; }
-    h2{ font-size:18px; margin: 6px 0 10px; }
-    h3{ font-size:15px; margin: 14px 0 8px; }
-    ul{ margin: 8px 0 8px 20px; line-height:1.8; }
-    .pill{ display:inline-block; font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(56,189,248,.35); color:#38bdf8; margin-right:8px; }
+    h2{ font-size:18px; margin:6px 0 10px; }
+    h3{ font-size:15px; margin:14px 0 8px; }
+    ul,ol{ line-height:1.85; }
     .toc a{ color:#e5e7eb; text-decoration:none; border-bottom:1px dashed rgba(229,231,235,.35); }
     .toc a:hover{ color:#38bdf8; }
-    .cta{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-    .btn{ display:inline-block; font-size:13px; padding:10px 12px; border-radius:999px; text-decoration:none; }
-    .btn-primary{ color:#0b1220; background:#38bdf8; }
-    .btn-ghost{ color:#e5e7eb; border:1px solid rgba(229,231,235,.18); }
-    .note{ font-size:12px; opacity:.8; line-height:1.7; }
     details{ border:1px solid rgba(255,255,255,.10); border-radius:14px; padding:10px 12px; background:rgba(255,255,255,.02); margin:10px 0; }
     summary{ cursor:pointer; font-weight:700; }
-    .muted{ opacity:.85; }
+    .note{ font-size:12px; opacity:.8; line-height:1.7; }
   </style>
 
   <script type="application/ld+json">
@@ -39,12 +42,12 @@
       {
         "@type":"Question",
         "name":"恐怖指数は低いほど買い、高いほど売りですか？",
-        "acceptedAnswer":{"@type":"Answer","text":"単純にそうはなりません。恐怖指数は『方向』ではなく『温度（過熱/萎縮）』を見る指標です。CoinRaderのAI Market Insightや市場概況と合わせて、地合いを確認してから判断するのが安全です。"}
+        "acceptedAnswer":{"@type":"Answer","text":"単純にそうはなりません。恐怖指数は『方向』ではなく『温度（過熱/萎縮）』を見る指標です。CoinRaderのAI Market Insight（AI JUDGE）や指標と合わせて、地合いを確認してから判断するのが安全です。"}
       },
       {
         "@type":"Question",
         "name":"恐怖指数は何と一緒に見るのが良いですか？",
-        "acceptedAnswer":{"@type":"Answer","text":"CoinRaderでは、恐怖指数→AI Market Insight（AI JUDGE）→市場概況（指標やランキング）の順で見るのがおすすめです。温度→要約→根拠の順に確認すると、感情でのミスが減ります。"}
+        "acceptedAnswer":{"@type":"Answer","text":"恐怖指数→AI Market Insight（AI JUDGE）→指標/ランキングの順で、温度→要約→根拠を確認するのがおすすめです。"}
       }
     ]
   }
@@ -52,47 +55,48 @@
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="crumbs">
-      <a href="/">CoinRader</a> / <a href="/guide/">Guide</a> / fear-greed-strategy
+  <div class="container">
+    <div class="topnav">
+      <a href="/" aria-label="Home">ホーム</a>
+      <a href="/guide/" aria-label="Guide">ガイド一覧</a>
+      <a href="/dictionary/fear-and-greed/" aria-label="Dictionary">用語集：Fear &amp; Greed</a>
+      <a class="primary" href="/daily/latest" aria-label="Daily">今日のAIレポート</a>
     </div>
 
     <h1>恐怖指数（Fear &amp; Greed）の使い方：失敗しにくい判断ルール</h1>
     <p class="lead">
       恐怖指数は「当てに行く指標」ではなく、<b>感情でミスしやすい局面を可視化して、判断のブレを減らす指標</b>です。
-      このページでは、CoinRaderの画面（AI Market Insight など）と組み合わせた、実務的な見方をまとめます。
+      このページでは、CoinRaderの <a href="/guide/market-insight/">AI Market Insight（AI JUDGE）</a> と組み合わせた実務的な見方をまとめます。
     </p>
 
     <div class="card toc">
-      <span class="pill">目次</span>
-      <ul>
+      <h2 style="margin-top:0;">目次</h2>
+      <ol>
         <li><a href="#what">恐怖指数とは</a></li>
-        <li><a href="#misunderstanding">よくある誤解（低い＝買い？高い＝売り？）</a></li>
+        <li><a href="#mis">よくある誤解（低い＝買い？高い＝売り？）</a></li>
         <li><a href="#rule">結論：3段階ルール（温度→地合い→行動）</a></li>
-        <li><a href="#templates">実践テンプレ（局面別の動き方）</a></li>
-        <li><a href="#coinrader">CoinRaderでのおすすめ導線</a></li>
-      </ul>
+        <li><a href="#tmpl">実践テンプレ（局面別の動き方）</a></li>
+        <li><a href="#flow">CoinRaderでのおすすめ導線</a></li>
+      </ol>
     </div>
 
     <section id="what" class="card">
       <h2>恐怖指数とは</h2>
-      <p class="muted" style="line-height:1.9; margin:0;">
+      <p style="margin:0; opacity:.9; line-height:1.85;">
         恐怖指数（Fear &amp; Greed Index）は、市場が「怖がりすぎ」なのか「強気すぎ」なのかを数値で示す“気分メーター”です。
         低いほど恐怖（リスク回避）、高いほど強欲（過熱）になりやすい傾向があります。
-        <br />
-        用語としての定義は <a href="/dictionary/fear-and-greed/" style="color:#38bdf8; text-decoration:none;">用語集：Fear &amp; Greed</a> にまとめています。
+        定義や目安は <a href="/dictionary/fear-and-greed/">用語集</a> に整理しています。
       </p>
     </section>
 
-    <section id="misunderstanding" class="card">
+    <section id="mis" class="card">
       <h2>よくある誤解：低い＝買い、高い＝売り…ではない</h2>
       <ul>
-        <li>恐怖が強い（低い）＝「まだ下がる」場合もあるし、「投げ売り後の反発前」の場合もあります。</li>
-        <li>強欲が強い（高い）＝「上昇トレンドが強い」場合もあるし、「過熱して崩れやすい」場合もあります。</li>
+        <li>恐怖が強い（低い）＝「まだ下がる」ことも、「投げ売り後の反発前」もあります。</li>
+        <li>強欲が強い（高い）＝「上昇トレンドの強さ」も、「過熱」も含みます。</li>
       </ul>
-      <p class="muted" style="line-height:1.9; margin:0;">
-        つまり恐怖指数は<b>方向</b>ではなく<b>温度</b>。
-        方向は別の情報（地合い・指標・要約）と合わせる方が、事故りにくくなります。
+      <p style="margin:0; opacity:.9; line-height:1.85;">
+        つまり恐怖指数は<b>方向</b>ではなく<b>温度</b>。方向は、要約や指標と合わせた方が事故りにくくなります。
       </p>
     </section>
 
@@ -106,79 +110,73 @@
       </ul>
 
       <h3>② 地合いを“要約”で確認する（CoinRader推奨）</h3>
-      <p class="muted" style="line-height:1.9;">
-        恐怖指数だけだと「なぜそうなっているか」が分かりづらいので、CoinRaderの
-        <a href="/guide/market-insight/" style="color:#38bdf8; text-decoration:none;">AI Market Insight（AI JUDGE）</a>
-        で市場の強弱を要約で確認します。
+      <p style="opacity:.9; line-height:1.85;">
+        恐怖指数だけだと「なぜそうなっているか」が分かりづらいので、
+        <a href="/guide/market-insight/">AI Market Insight（AI JUDGE）</a> で市場の強弱を要約で確認します。
       </p>
 
       <h3>③ 具体的な行動は“分割”で決める（DCAの考え方）</h3>
-      <p class="muted" style="line-height:1.9; margin-bottom:0;">
-        恐怖指数と相性が良いのは「当てに行く」より「外しても致命傷にならない」設計です。
-        一括よりも<b>分割（DCA）</b>をベースにすると、感情によるミスが減ります。
+      <p style="margin:0; opacity:.9; line-height:1.85;">
+        一括より<b>分割（DCA）</b>をベースにすると、感情でのミスが減ります。
+        「当てに行く」より「外しても致命傷にならない」設計が強いです。
       </p>
     </section>
 
-    <section id="templates" class="card">
+    <section id="tmpl" class="card">
       <h2>実践テンプレ（局面別の動き方）</h2>
 
       <details>
         <summary>恐怖が強いとき（守り寄り）</summary>
-        <div style="margin-top:8px; line-height:1.9;" class="muted">
+        <div style="margin-top:8px; opacity:.9; line-height:1.85;">
           <ul>
             <li>新規は少額・分割が基本（焦って一気に入れない）</li>
-            <li><a href="/guide/market-insight/" style="color:#38bdf8; text-decoration:none;">AI Market Insight</a>で「弱さの理由」を確認</li>
-            <li>ランキングは“見るだけ”にして、地合いが落ち着くまで待つ選択肢もOK</li>
+            <li><a href="/guide/market-insight/">AI Market Insight</a>で「弱さの理由」を確認</li>
+            <li>ランキングは“見るだけ”にして待つ選択肢もOK</li>
           </ul>
         </div>
       </details>
 
       <details>
         <summary>中間のとき（ルール通りに淡々）</summary>
-        <div style="margin-top:8px; line-height:1.9;" class="muted">
+        <div style="margin-top:8px; opacity:.9; line-height:1.85;">
           <ul>
             <li>いつもの配分・いつものルールで運用</li>
-            <li>トレンド銘柄を見るなら、先に地合い（AI要約）を確認してから</li>
+            <li>トレンド銘柄を見るなら、先に要約（AI JUDGE）を確認してから</li>
           </ul>
         </div>
       </details>
 
       <details>
         <summary>強欲が強いとき（追いかけミスを回避）</summary>
-        <div style="margin-top:8px; line-height:1.9;" class="muted">
+        <div style="margin-top:8px; opacity:.9; line-height:1.85;">
           <ul>
             <li>急騰銘柄の追いかけ買いは控えめに</li>
             <li>利確・リバランスの検討（“守り”の準備）</li>
-            <li>過熱感があるなら、まずは「買い増しを抑える」だけでも効果があります</li>
+            <li>まずは「買い増しを抑える」だけでも効果があります</li>
           </ul>
         </div>
       </details>
 
       <p class="note">
-        ※上のテンプレは一般的な考え方です。投資判断はご自身の責任でお願いします（<a href="/disclaimer" style="color:#38bdf8; text-decoration:none;">免責</a>）。
+        ※本ページは情報提供を目的としており、投資判断はご自身の責任でお願いします（<a href="/disclaimer">免責</a>）。
       </p>
     </section>
 
-    <section id="coinrader" class="card">
+    <section id="flow" class="card">
       <h2>CoinRaderでのおすすめ導線（この順で見ればOK）</h2>
-      <ol style="line-height:1.9; margin:8px 0 8px 20px;">
+      <ol>
         <li><b>恐怖指数</b>：いまの温度を把握</li>
         <li><b>AI Market Insight</b>：全体の地合いを要約で確認</li>
         <li><b>指標/ランキング</b>：根拠と具体をチェック</li>
       </ol>
 
-      <div class="cta">
-        <a class="btn btn-primary" href="/daily/latest">今日のAIレポート</a>
-        <a class="btn btn-ghost" href="/guide/market-insight/">AI Market Insightの見方</a>
-        <a class="btn btn-ghost" href="/guide/indicators/">指標ガイド</a>
-        <a class="btn btn-ghost" href="/guide/">ガイド一覧</a>
+      <div class="topnav" style="margin-top:10px;">
+        <a class="primary" href="/daily/latest">今日のAIレポート</a>
+        <a href="/guide/market-insight/">AI Market Insightの見方</a>
+        <a href="/guide/indicators/">指標ガイド</a>
+        <a href="/guide/how-to-use/">使い方</a>
       </div>
     </section>
-
-    <p class="note" style="margin-top:14px;">
-      関連：<a href="/dictionary/fear-and-greed/" style="color:#38bdf8; text-decoration:none;">用語集（Fear &amp; Greed）</a> /
-      <a href="/guide/how-to-use/" style="color:#38bdf8; text-decoration:none;">使い方</a>
-    </p>
   </div>
 </body>
 </html>
