@@ -1,14 +1,30 @@
 name: Build Daily Pages
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+# 並走で「fetch first」になりやすいので、同時実行を潰す
+concurrency:
+  group: build-pages-main
+  cancel-in-progress: true
+
 jobs:
   build-daily:
+    # bot が生成物を push したコミットでは再起動しない（ループ＆競合防止）
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+
+    # git push するので write が必要
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          # rebase / pull --rebase に必要
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -24,18 +40,18 @@ jobs:
         run: |
           rm -f daily/tags/bear daily/tags/bull daily/tags/wait || true
 
-      - name: Verify build_daily_pages.py is v10
+      - name: Verify build_daily_pages.py has COINS_ALIAS_SLUGS (sanity)
         run: |
           set -eux
           grep -n "COINS_ALIAS_SLUGS" scripts/build_daily_pages.py || true
-          grep -n "slug in COINS_ALIAS_SLUGS" -n scripts/build_daily_pages.py || true
 
+      # ★ ここで先に同期（クリーンな状態で rebase するのが重要）
       - name: Sync with origin/main (before build)
         run: |
           set -eux
-          git fetch origin main
-          git rebase origin/main
-
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
 
       - name: Generate daily pages
         env:
@@ -51,27 +67,22 @@ jobs:
 
       - name: Check daily html links (no .html)
         run: |
+          set -eux
           echo "---- grep .html under /daily/ in generated daily/ ----"
-          grep -RIn "/daily/.*\.html" daily | head -n 50 || true
-          grep -RIn "/daily/.*\.html" daily || true
-          grep -RIn "/daily/.*\.html" daily --include="*.html" | head
-          find daily/tags -maxdepth 1 -type f ! -name "*.html" -print
+          grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50 || true
+          find daily/tags -maxdepth 1 -type f ! -name "*.html" -print || true
+
           echo "---- remove legacy extensionless tag files ----"
+          rm -f daily/tags/bear daily/tags/bull daily/tags/wait || true
           ls -la daily/tags || true
-          rm -f daily/tags/bear daily/tags/bull daily/tags/wait
-          echo "---- after rm ----"
-          ls -la daily/tags || true
-          git status --porcelain
+
           echo "---- grep /daily/*.html in daily/*.html ----"
-          grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50
+          grep -RIn "/daily/.*\.html" daily --include="*.html" | head -n 50 || true
 
       - name: Sanity check daily links
         run: |
           set -eux
-
           echo "---- reject /daily/*.html in href/content/canonical ----"
-          # href="/daily/... .html" または href='/daily/... .html'
-          # content="https://.../daily/... .html" も対象（og:url等）
           if grep -RInE "href=['\"]/daily/[^'\"]+\.html(['\"#?]|$)|content=['\"][^'\"]*/daily/[^'\"]+\.html(['\"#?]|$)" \
             daily --include="*.html"
           then
@@ -102,23 +113,15 @@ jobs:
             exit 1
           fi
 
-          # legacy入口が残ってないか（/daily と /daily/tags）
-          grep -RInE "(/daily/[^\"' ]+\.html|/daily/tags/[^\"' ]+\.html)" daily --include="*.html" || true
-
-          # redirects ルールの存在チェック（目視）: マッチ0でも落とさない
           echo "---- _redirects legacy html rules (optional) ----"
           if [ -f _redirects ]; then
             grep -nE "^/daily/.*\.html|^/daily/tags/.*\.html" _redirects || true
-          else
-            echo "_redirects not found"
           fi
-
 
       - name: Validate sitemap (canonical-only)
         run: |
           python scripts/validate_sitemap.py
-          
-          
+
       - name: Fetch coin snapshots (for /coins/* pages)
         env:
           CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
@@ -126,7 +129,6 @@ jobs:
           mkdir -p data/coins
           python scripts/fetch_coin_snapshots.py
 
-      # ★追加：coinsを生成
       - name: Generate coin pages
         env:
           CR_SITE_ORIGIN: https://coinrader.net
@@ -134,21 +136,15 @@ jobs:
         run: |
           python scripts/build_coin_pages.py
 
+      # debug は canonical 側（bitcoin）を見る
       - name: Debug coin page headers (after build)
         run: |
-          echo "---- grep x-cg-demo-api-key ----"
-          grep -n "x-cg-demo-api-key" coins/btc/index.html || true
-          echo "---- grep fetch headers ----"
-          grep -n "fetch(url" coins/btc/index.html || true
-          grep -n "headers\\[" coins/btc/index.html || true
+          echo "---- list coins ----"
+          ls -la coins || true
+          echo "---- grep x-cg-demo-api-key (if embedded) ----"
+          grep -n "x-cg-demo-api-key" coins/bitcoin/index.html || true
           echo "---- grep CG_KEY ----"
-          grep -n "const CG_KEY" coins/btc/index.html || true
-
-      - name: Debug env for coin build
-        run: |
-          echo "CR_COINGECKO_KEY length: ${#CR_COINGECKO_KEY}"
-        env:
-          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
+          grep -n "const CG_KEY" coins/bitcoin/index.html || true
 
       - name: Commit generated pages
         run: |
@@ -156,11 +152,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 先に取り込んで衝突回避（fetch first対策）
-          git fetch origin main
-          git rebase origin/main
+          # ★ ここが重要：push直前に「autostash付きrebase」で最新を取り込む
+          # （生成物がある＝未コミット変更がある状態でも安全に rebase できる）
+          git pull --rebase --autostash origin main
 
-          # aliasの残骸を消したいなら（今の状況なら coins/sol が対象になりやすい）
+          # alias 残骸の掃除（必要なものだけ追加。例：coins/sol を消したい場合）
           rm -rf coins/sol || true
 
           git add -A daily sitemap.xml
@@ -169,7 +165,6 @@ jobs:
           git add -A data/coins
           git add -A dictionary
 
-          # 差分なければ終了
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
@@ -178,38 +173,12 @@ jobs:
           git commit -m "chore: generate daily & coin pages"
           git push origin HEAD:main
 
-
-      - name: Debug sitemap change
-        run: |
-          set -eux
-          ls -la
-          echo "---- grep alias in sitemap.xml ----"
-          (grep -n "coins/btc" sitemap.xml && exit 0) || echo "OK: no btc"
-          echo "---- git status ----"
-          git status --porcelain
-          echo "---- git diff (sitemap only) ----"
-          git diff -- sitemap.xml || true
-
       - name: Inspect sitemap after build
         run: |
           set -eux
-          echo "=== where is sitemap.xml ==="
           ls -la sitemap.xml
-          echo "=== last 5 lines of sitemap ==="
           tail -n 5 sitemap.xml
           echo "=== grep alias (should be empty) ==="
           grep -n "coins/btc" sitemap.xml || echo "OK: no btc"
           grep -n "coins/eth" sitemap.xml || echo "OK: no eth"
           grep -n "coins/sol" sitemap.xml || echo "OK: no sol"
-          echo "=== git status/diff ==="
-          git status --porcelain
-          git diff -- sitemap.xml || true
-
-
-
-
-
-
-
-
-
