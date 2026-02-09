@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
+"""　
 CoinRader: data/daily/*.json から daily/ 配下のHTMLを自動生成します。
 - daily/YYYYMMDD.html
 - daily/index.html (一覧)
