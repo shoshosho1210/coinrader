@@ -4863,7 +4863,97 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
       inset 0 0 10px rgba(56, 189, 248, 0.05),
       0 0 26px var(--judge-glow) !important;
   }
+/* =========================================
+   MODERN TABLE & HEATMAP STYLES
+   ========================================= */
 
+/* 1. テーブル全体の「脱・枠線」 */
+.rank-table {
+    border-collapse: separate !important; /* 行ごとの隙間を作るために必須 */
+    border-spacing: 0 4px !important;     /* 行と行の間に4pxの隙間 */
+    width: 100%;
+}
+
+.rank-table th {
+    /* ヘッダーは控えめに */
+    border: none !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b !important; /* Slate-500 */
+    padding: 12px 8px !important;
+    font-weight: 600;
+}
+
+.rank-table td {
+    border: none !important; /* セルの枠線削除 */
+    padding: 12px 16px !important; /* ゆったりとした余白 */
+    vertical-align: middle;
+    
+    /* 行の背景色（デフォルト） */
+    background: rgba(15, 23, 42, 0.4); /* Slate-900の薄い版 */
+    
+    /* 上下の角丸（行全体がカードのように見える） */
+    &:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+    &:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+    
+    transition: background 0.2s ease;
+}
+
+/* ホバー時の行ハイライト */
+.rank-table tr:hover td {
+    background: rgba(30, 41, 59, 0.8) !important; /* Slate-800 */
+}
+
+
+/* 2. ヒートマップ風セル（変動率など） */
+
+/* プラス（上昇）のヒートマップ */
+td.text-up {
+    /* 文字色 */
+    color: #4ade80 !important; /* Green-400 */
+    font-weight: 700;
+    
+    /* 背景色（ヒートマップ効果）: 文字色の薄いバージョンを敷く */
+    background: rgba(34, 197, 94, 0.15) !important; /* Green-500 15% */
+    
+    /* 数値部分だけカプセル状にする場合 */
+    /* border-radius: 6px; */ 
+    /* width: fit-content; */
+}
+
+/* マイナス（下落）のヒートマップ */
+td.text-down {
+    /* 文字色 */
+    color: #f87171 !important; /* Red-400 */
+    font-weight: 700;
+    
+    /* 背景色（ヒートマップ効果） */
+    background: rgba(239, 68, 68, 0.15) !important; /* Red-500 15% */
+}
+
+
+/* 3. その他のセルの微調整 */
+
+/* 通貨ペア名 */
+.symbol-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #f8fafc;
+    font-size: 14px;
+}
+.symbol-sub {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-left: 4px;
+}
+
+/* 価格 */
+.price-cell {
+    font-family: 'JetBrains Mono', monospace;
+    color: #e2e8f0;
+    font-weight: 500;
+}
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
