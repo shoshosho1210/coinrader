@@ -2,19 +2,24 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
+
 import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPL_DIR = ROOT / "templates"
 OUT_COINS_DIR = ROOT / "coins"
-SITE_ORIGIN = "https://coinrader.net"
+SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
 
+# NOTE:
+# - slug: URL（canonical）に使うディレクトリ名
+# - symbol: 表示・テンプレ埋め込み用（BTC/ETH...）
+# - coin_id: CoinGecko等のID（データ取得に使う想定）
 COINS = [
-    {"symbol": "btc", "coin_id": "bitcoin",  "name": "Bitcoin"},
-    {"symbol": "eth", "coin_id": "ethereum", "name": "Ethereum"},
-    {"symbol": "sol", "coin_id": "solana",   "name": "Solana"},
-    {"symbol": "xrp", "coin_id": "ripple",   "name": "XRP"},
+    {"slug": "bitcoin",  "symbol": "btc", "coin_id": "bitcoin",  "name": "Bitcoin"},
+    {"slug": "ethereum", "symbol": "eth", "coin_id": "ethereum", "name": "Ethereum"},
+    {"slug": "solana",   "symbol": "sol", "coin_id": "solana",   "name": "Solana"},
+    {"slug": "xrp",      "symbol": "xrp", "coin_id": "ripple",   "name": "XRP"},
 ]
 
 def read_text(p: Path) -> str:
@@ -25,8 +30,9 @@ def write_text(p: Path, s: str) -> None:
     p.write_text(s, encoding="utf-8")
 
 def build_coins_index() -> str:
+    # indexはcanonical slugへリンク（aliasは _redirects で 301 ）
     items = "\n".join(
-        [f"<li><a href='/coins/{c['symbol']}/'>{c['name']} ({c['symbol'].upper()})</a></li>" for c in COINS]
+        [f"<li><a href='/coins/{c['slug']}/'>{c['name']} ({c['symbol'].upper()})</a></li>" for c in COINS]
     )
     return f"""<!doctype html>
 <html lang="ja">
@@ -64,6 +70,7 @@ def build_coins_index() -> str:
 
 def render_coin_page(tmpl: str, c: dict) -> str:
     s = tmpl
+    # テンプレは従来の置換キーを維持（URL slug とは別）
     s = s.replace("{{SYMBOL}}", c["symbol"])
     s = s.replace("{{SYMBOL_UPPER}}", c["symbol"].upper())
     s = s.replace("{{COIN_ID}}", c["coin_id"])
@@ -78,17 +85,16 @@ def main() -> None:
 
     tmpl = read_text(tmpl_path)
 
+    # hub
     write_text(OUT_COINS_DIR / "index.html", build_coins_index())
 
+    # coin pages: canonical slug 配下に生成
     for c in COINS:
         html = render_coin_page(tmpl, c)
-        write_text(OUT_COINS_DIR / c["symbol"] / "index.html", html)
+        write_text(OUT_COINS_DIR / c["slug"] / "index.html", html)
 
     print(f"[OK] Generated coins pages: {OUT_COINS_DIR} (count={len(COINS)})")
     print("[DEBUG] CR_COINGECKO_KEY length=", len(os.environ.get("CR_COINGECKO_KEY","")))
 
 if __name__ == "__main__":
     main()
-
-
-
