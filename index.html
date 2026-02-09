@@ -33,8 +33,6 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -48,6 +46,7 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "CoinRaderのAI判断は何を見ていますか？", "acceptedAnswer": {"@type": "Answer", "text": "主にRSI、恐怖指数（Fear & Greed）、トレンド指標などの代表的なシグナルから、買い・売り・様子見の示唆を表示します。"}}, {"@type": "Question", "name": "更新頻度はどれくらいですか？", "acceptedAnswer": {"@type": "Answer", "text": "ページ上の更新表示に従い、一定間隔でデータを取得して表示を更新します。"}}, {"@type": "Question", "name": "投資助言サービスですか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。表示内容は情報提供を目的としており、投資判断はご自身の責任で行ってください。"}}, {"@type": "Question", "name": "今日のAIレポートはどこで見られますか？", "acceptedAnswer": {"@type": "Answer", "text": "AI JUDGEの下にある「今日のAIレポート」から確認できます。"}}]}
 </script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 </head>
 <style>
   .hero{padding:28px 0 16px;}
@@ -2531,7 +2530,7 @@ body {
 #hudRsiVal,
 #hudFgVal,
 #hudTrendVal {
-  font-family: 'JetBrains Mono', 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+  font-family: 'Roboto Mono', 'Inter', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
 }
@@ -4884,6 +4883,13 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
       0 0 26px var(--judge-glow) !important;
   }
 
+
+/* === HUD numbers (AI JUDGE): JetBrains Mono === */
+#hudRsiVal, #hudFgVal, #hudTrendVal{
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-weight: 800 !important;
+  font-variant-numeric: tabular-nums;
+}
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
