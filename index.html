@@ -4772,7 +4772,7 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
   #aiInsightBox{
     --judge-accent: rgba(56,189,248,.35);
     --judge-glow: rgba(56,189,248,.12);
-    background: radial-gradient(circle at top right, rgba(30,41,59,0.85), rgba(15,23,42,0.95));
+    background: linear-gradient(180deg, rgba(13,18,30,0.92), rgba(6,10,18,0.96));
     border-color: var(--judge-accent) !important;
     box-shadow:
       0 0 20px rgba(56, 189, 248, 0.05),
@@ -4793,16 +4793,12 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
     pointer-events: none;
     z-index: 1;
   }
-  /* v116: AI JUDGEだけスキャンラインを弱めて“青くくすむ”印象を軽減 */
+    /* v117: AI JUDGEの“青いくすみ”の主因（スキャンライン）を無効化 */
   #aiInsightBox.hud-panel::before{
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(56, 189, 248, 0.018) 3px
-    );
+    background: none !important;
+    opacity: 0 !important;
   }
-  /* Avoid the accent bar overlapping content on very small padding */
+/* Avoid the accent bar overlapping content on very small padding */
   #aiInsightBox .hud-header,
   #aiInsightBox .hud-metrics-row,
   #aiInsightBox .hud-shortline,
