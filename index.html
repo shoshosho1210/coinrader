@@ -2492,6 +2492,29 @@ body {
 /* 変動率の色（JSで制御するための基本クラス） */
 .text-up { color: #4ade80; }
 .text-down { color: #f87171; }
+
+/* =========================================
+   LIVE PULSE (HUD numbers only)
+   ========================================= */
+@keyframes flashUpdate {
+    0% {
+        color: #ffffff !important;
+        text-shadow: 0 0 18px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.35) !important;
+        transform: scale(1.12);
+        opacity: 1;
+    }
+    100% {
+        color: inherit;
+        text-shadow: none;
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.live-flash {
+    animation: flashUpdate 0.45s ease-out forwards !important;
+    will-change: transform, filter, text-shadow;
+}
 /* 中立 (Neutral/Wait) モード */
 .status-neutral {
     background: rgba(148, 163, 184, 0.15); /* グレーベース */
@@ -8252,6 +8275,23 @@ async function getHistoricalData(daysAgo = 0) {
 let _ai_thinking = false; // 変数名の重複を避けるため _ai_thinking に統一
 let _last_ai_state = ""; 
 
+/**
+ * HUD数値の更新を「フラッシュ演出付き」で行う
+ * - 値が同じなら点滅しない
+ * - アニメを毎回確実に再生するため、reflowでリセット
+ */
+function updateWithFlash(elementId, newValue) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const next = String(newValue);
+    if ((el.textContent || '').trim() === next.trim()) return;
+    el.textContent = next;
+
+    el.classList.remove('live-flash');
+    void el.offsetWidth; // reflow to restart animation
+    el.classList.add('live-flash');
+}
+
 async function updateAiInsight() {
     const box = document.getElementById('aiInsightBox');
     const textEl = document.getElementById('aiInsightText');
@@ -8325,16 +8365,16 @@ async function updateAiInsight() {
     
     // 4. 【修正】上の3つの計器（HUD）へ数値を強制反映
     if (rsi !== null) {
-        document.getElementById('hudRsiVal').textContent = Math.round(rsi);
+        updateWithFlash('hudRsiVal', Math.round(rsi));
         document.getElementById('hudRsiBar').style.width = Math.min(100, Math.max(0, rsi)) + '%';
     }
     if (sent !== null) {
-        document.getElementById('hudFgVal').textContent = Math.round(sent);
+        updateWithFlash('hudFgVal', Math.round(sent));
         document.getElementById('hudFgBar').style.width = Math.min(100, Math.max(0, sent)) + '%';
     }
     if (maDist !== null) {
         const maVal = parseFloat(maDist);
-        document.getElementById('hudTrendVal').textContent = (maVal >= 0 ? '+' : '') + maVal.toFixed(1) + '%';
+        updateWithFlash('hudTrendVal', (maVal >= 0 ? '+' : '') + maVal.toFixed(1) + '%');
         const bar = document.getElementById('hudTrendBar');
         if (bar){
             const clamped = Math.max(-10, Math.min(10, maVal)); // -10%..+10% を代表レンジ
