@@ -42,17 +42,18 @@ STATIC_PATHS = [
     "/",               # root
     "/about",
     "/start",
+
+    # hubs (canonical)
     "/guide/",
-    "/guide",  # backward compat hub
+    "/coins/",
+    "/dictionary/",
+    "/daily/",
 
     "/data-sources",
     "/ads-pr",
     "/privacy",
     "/disclaimer",
     "/contact",
-    "/coins/",
-    "/coins",          # backward compat hub
-    # coins hub（あるなら）
 ]
 
 # scripts/ の1つ上を repo root として想定
@@ -349,6 +350,25 @@ def rebuild_sitemap_with_daily(
     dict_hub = dict_prefix  # ".../dictionary/"
     for loc in list(existing.keys()):
         if isinstance(loc, str) and loc.startswith(dict_prefix) and loc != dict_hub:
+            if not loc.endswith("/"):
+                existing.pop(loc, None)
+
+    # --- coins/guide canonical cleanup ---
+    # hubs must end with '/', and subpages should also end with '/'
+    for bad in (f"{site_origin}/coins", f"{site_origin}/guide", f"{site_origin}/daily", f"{site_origin}/dictionary"):
+        existing.pop(bad, None)
+
+    coins_prefix = f"{site_origin}/coins/"
+    coins_hub = coins_prefix
+    for loc in list(existing.keys()):
+        if isinstance(loc, str) and loc.startswith(coins_prefix) and loc != coins_hub:
+            if not loc.endswith("/"):
+                existing.pop(loc, None)
+
+    guide_prefix = f"{site_origin}/guide/"
+    guide_hub = guide_prefix
+    for loc in list(existing.keys()):
+        if isinstance(loc, str) and loc.startswith(guide_prefix) and loc != guide_hub:
             if not loc.endswith("/"):
                 existing.pop(loc, None)
 
