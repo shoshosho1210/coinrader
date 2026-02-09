@@ -8539,18 +8539,18 @@ const _rsi = (rsiNum===null||rsiNum===undefined)? null : Number(rsiNum);
 
 if (verdictTxt.includes('弱気')) {
   regimeCls = 'regime-bear';
-  // 強い弱気（要警戒）: 恐怖がかなり強い or トレンドが強く下向き
-  const strongBear = (_fgi !== null && _fgi <= 10) || (_trend !== null && _trend <= -15);
+  // 強い弱気（要警戒）: 恐怖がかなり強い or トレンドがかなり下向き
+  const strongBear = (_fgi !== null && _fgi <= 10) || (_trend !== null && _trend <= -16);
   regime = strongBear ? '要警戒（下落が続きやすい）' : '警戒（戻り売り優勢）';
 } else if (verdictTxt.includes('強気')) {
   regimeCls = 'regime-bull';
-  // 強い強気（過熱注意）: 強欲域 or RSI過熱 or トレンドが強く上向き
-  const hotBull = (_fgi !== null && _fgi >= 75) || (_rsi !== null && _rsi >= 70) || (_trend !== null && _trend >= 10);
+  // 強い強気（過熱注意）: 強欲域 or RSI過熱 or トレンドがかなり上向き
+  const hotBull = (_fgi !== null && _fgi >= 75) || (_rsi !== null && _rsi >= 70) || (_trend !== null && _trend >= 12);
   regime = hotBull ? '過熱注意（急落も速い）' : '前向き（押し目が入りやすい）';
 } else {
   regimeCls = 'regime-neutral';
-  // 転換点: TRENDが±2%を超える or 心理が中立帯(45-55)から外れる
-  const pivot = (_trend !== null && Math.abs(_trend) >= 2) || (_fgi !== null && (_fgi < 45 || _fgi > 55));
+  // 転換点: TRENDが±3%を超える or 心理が中立帯(45-55)から外れる
+  const pivot = (_trend !== null && Math.abs(_trend) >= 3) || (_fgi !== null && (_fgi < 45 || _fgi > 55));
   regime = pivot ? '転換点（どちらにも動きやすい）' : '様子見（方向感待ち）';
 }
 
@@ -8558,16 +8558,16 @@ if (verdictTxt.includes('弱気')) {
 let regimeSub = '方向感待ち。強い銘柄の選別になりやすい。';
 if (regimeCls === 'regime-bear') {
   regimeSub = (regime.startsWith('要警戒'))
-    ? '反発が続きにくく、下方向に引っ張られやすい地合い。'
-    : '急反発が出ても、戻り売りが入りやすい地合い。';
+    ? '反発が続きにくく、下方向に引っ張られやすい地合い。戻りは短命になりやすい。'
+    : '急反発が出ても、戻り売りが入りやすい地合い。下落が加速するほどではないが、上値が重い。';
 } else if (regimeCls === 'regime-bull') {
   regimeSub = (regime.startsWith('過熱注意'))
-    ? '上方向に伸びても、巻き戻し（急落）が速くなりやすい。'
-    : '上方向に伸びやすいが、過熱サインには注意。';
+    ? '上方向に伸びても、巻き戻し（急落）が速くなりやすい。利確・損切りは早めを意識。'
+    : '上方向に伸びやすいが、過熱サインには注意。押し目が入ったら強い銘柄が残りやすい。';
 } else if (regimeCls === 'regime-neutral') {
   regimeSub = (regime.startsWith('転換点'))
-    ? '小さな材料で上下に振れやすい。条件が揃うまで慎重に。'
-    : '方向感待ち。強い銘柄の選別になりやすい。';
+    ? '小さな材料で上下に振れやすい。節目のブレイク待ちが無難。'
+    : '方向感待ち。強い銘柄の選別になりやすい。無理に方向を決めず、条件が揃うのを待つ。';
 }
 
 
