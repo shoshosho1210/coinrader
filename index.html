@@ -8531,13 +8531,45 @@ if (confEl) confEl.textContent = `確度: ${confidence}`;
 // 地合い（ポジション指示ではなく“市場環境”）
 let regime = 'レンジ（様子見）';
 let regimeCls = 'regime-neutral';
-if (verdictTxt.includes('弱気')) { regime = 'リスクオフ（警戒）'; regimeCls = 'regime-bear'; }
-else if (verdictTxt.includes('強気')) { regime = 'リスクオン（選別）'; regimeCls = 'regime-bull'; }
+
+// v113: 市場モードを「もう1段」自動切替（分かりやすい2段階）
+const _fgi = (fgNum===null||fgNum===undefined)? null : Number(fgNum);
+const _trend = (maNum===null||maNum===undefined)? null : Number(maNum);
+const _rsi = (rsiNum===null||rsiNum===undefined)? null : Number(rsiNum);
+
+if (verdictTxt.includes('弱気')) {
+  regimeCls = 'regime-bear';
+  // 強い弱気（要警戒）: 恐怖がかなり強い or トレンドが強く下向き
+  const strongBear = (_fgi !== null && _fgi <= 10) || (_trend !== null && _trend <= -15);
+  regime = strongBear ? '要警戒（下落が続きやすい）' : '警戒（戻り売り優勢）';
+} else if (verdictTxt.includes('強気')) {
+  regimeCls = 'regime-bull';
+  // 強い強気（過熱注意）: 強欲域 or RSI過熱 or トレンドが強く上向き
+  const hotBull = (_fgi !== null && _fgi >= 75) || (_rsi !== null && _rsi >= 70) || (_trend !== null && _trend >= 10);
+  regime = hotBull ? '過熱注意（急落も速い）' : '前向き（押し目が入りやすい）';
+} else {
+  regimeCls = 'regime-neutral';
+  // 転換点: TRENDが±2%を超える or 心理が中立帯(45-55)から外れる
+  const pivot = (_trend !== null && Math.abs(_trend) >= 2) || (_fgi !== null && (_fgi < 45 || _fgi > 55));
+  regime = pivot ? '転換点（どちらにも動きやすい）' : '様子見（方向感待ち）';
+}
 
 // v111: 市場局面の一言翻訳（初見向け）
 let regimeSub = '方向感待ち。強い銘柄の選別になりやすい。';
-if (regimeCls === 'regime-bear') regimeSub = '急反発が出ても、戻り売りが入りやすい地合い。';
-else if (regimeCls === 'regime-bull') regimeSub = '上方向に伸びやすいが、過熱サインには注意。';
+if (regimeCls === 'regime-bear') {
+  regimeSub = (regime.startsWith('要警戒'))
+    ? '反発が続きにくく、下方向に引っ張られやすい地合い。'
+    : '急反発が出ても、戻り売りが入りやすい地合い。';
+} else if (regimeCls === 'regime-bull') {
+  regimeSub = (regime.startsWith('過熱注意'))
+    ? '上方向に伸びても、巻き戻し（急落）が速くなりやすい。'
+    : '上方向に伸びやすいが、過熱サインには注意。';
+} else if (regimeCls === 'regime-neutral') {
+  regimeSub = (regime.startsWith('転換点'))
+    ? '小さな材料で上下に振れやすい。条件が揃うまで慎重に。'
+    : '方向感待ち。強い銘柄の選別になりやすい。';
+}
+
 
 // 判断理由（数値＋しきい値で“何が効いたか”を明示）
 const reasonRsi = (rsiNum === null)
