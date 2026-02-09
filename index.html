@@ -8629,7 +8629,7 @@ let memoLines = [
 if (regimeCls === 'regime-bear') {
   memoLines = [
     '弱気寄り（警戒）です。反発しても「戻り売り」が出やすい局面。',
-    '見直し条件（警戒を弱める目安）：Fear&Greedが25以上へ回復 ＆ TRENDが0付近へ戻るか。'
+    '次の分岐（条件）：弱気が続く条件＝TRENDが0未満＋RSIが55未満。判断を切り替える条件（弱気→中立）＝Fear&Greedが25以上＋TRENDが-2%以上（0付近）。'
   ];
 } else if (regimeCls === 'regime-bull') {
   memoLines = [
@@ -9698,6 +9698,40 @@ function createSparkline(prices, isUp) {
   init();
   animate();
 })();
+
+// ===== AI JUDGE tuning constants =====
+const AIJ_HORIZON_LABEL = '短期(24h)';
+const TREND_NEAR_ZERO = -2.0;   // "0付近" の定義（-2%以内）
+const FGI_RELIEF = 25;          // 恐怖が和らぐ目安
+const RSI_UP_SHIFT = 55;        // 勢い回復の目安（補助）
+
+function classifyConfidence({ rsi, fgi, trend }) {
+  // Low: 欠損・非数
+  const nums = [rsi, fgi, trend];
+  if (nums.some(v => v === null || v === undefined || Number.isNaN(Number(v)))) return 'Low';
+
+  // High条件：判断方向と指標が揃っているか（シンプルに）
+  // ※BEAR/BULLの判定自体は既存ロジックに任せる前提なので、
+  // ここでは「揃い具合」を見るだけ。
+  const bearAligned = (fgi <= 20) && (trend < -5);   // 恐怖が強く、トレンドも明確に下
+  const bullAligned = (fgi >= 40) && (trend > 5);    // 恐怖脱却、トレンドも明確に上
+
+  if (bearAligned || bullAligned) return 'High';
+  return 'Mid';
+}
+
+function buildIfThenText({ rsi, fgi, trend }) {
+  const bearContinue = `弱気が続く条件：TRENDが0未満のまま＋RSIが${RSI_UP_SHIFT}未満なら、反発が出ても戻り売りが入りやすい。`;
+
+  // "0付近" を数値で固定して説明
+  const trendNear = `TRENDが${TREND_NEAR_ZERO}%以上（0付近）`;
+  const fgiRecover = `Fear&Greedが${FGI_RELIEF}以上へ回復`;
+
+  const review = `判断を切り替える条件（弱気→中立）：${fgiRecover}＋${trendNear}なら、警戒を一段下げる。`;
+
+  return { bearContinue, review };
+}
+
 </script>
 </body>
 </html>
