@@ -8721,7 +8721,7 @@ const htmlContent = `
   <div class="ai-mini">
     <div class="ai-regime-hero ${regimeCls}">
       <div class="ai-regime-left">
-        <div class="ai-regime-kicker">市場局面</div>
+        <div class="ai-regime-kicker">市場モード（自動判定）</div>
         <div class="ai-regime-main">${regime}</div>
         <div class="ai-regime-sub">${regimeSub}</div>
       </div>
@@ -8730,7 +8730,7 @@ const htmlContent = `
 
     
     <div class="ai-mini-block">
-      <div class="ai-mini-title">次の分岐（条件）</div>
+      <div class="ai-mini-title">判定が変わる条件（自動）</div>
       <ul class="ai-mini-ul">
         <li>${hlMemo(ifThenLines[0])}</li>
         <li>${hlMemo(ifThenLines[1])}</li>
@@ -9420,7 +9420,7 @@ function renderAiHud(data) {
         const htmlContent = `
             <div class="hud-content-text">
                 <div class="ai-section-title">
-                    <div class="ai-section-dot"></div> 市場局面
+                    <div class="ai-section-dot"></div> 市場モード（自動判定）
                 </div>
                 <div class="ai-text-block">
                     ${formattedComparison}
