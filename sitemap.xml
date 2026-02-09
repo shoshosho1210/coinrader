@@ -109,6 +109,66 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://coinrader.net/guide/how-to-use/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/guide/indicators/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/guide/market-insight/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/bitcoin/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/btc/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/eth/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/ethereum/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/sol/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/solana/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://coinrader.net/coins/xrp/</loc>
+    <lastmod>2026-02-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://coinrader.net/daily/</loc>
     <lastmod>2026-02-09</lastmod>
     <changefreq>daily</changefreq>
