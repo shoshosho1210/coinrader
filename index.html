@@ -2496,25 +2496,35 @@ body {
 /* =========================================
    LIVE PULSE (HUD numbers only)
    ========================================= */
+/* =========================================
+   LIVE PULSE (Strong + visible)
+   ========================================= */
 @keyframes flashUpdate {
-    0% {
-        color: #ffffff !important;
-        text-shadow: 0 0 18px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.35) !important;
-        transform: scale(1.12);
-        opacity: 1;
-    }
-    100% {
-        color: inherit;
-        text-shadow: none;
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% {
+    color: #ffffff !important;
+    text-shadow: 0 0 24px rgba(255,255,255,1.0), 0 0 48px rgba(255,255,255,0.45) !important;
+    transform: scale(1.18);
+    filter: brightness(1.15);
+    opacity: 1;
+  }
+  100% {
+    color: inherit;
+    text-shadow: none;
+    transform: scale(1);
+    filter: none;
+    opacity: 1;
+  }
+}
+.live-flash {
+  display: inline-block !important;      /* transform を確実に効かせる */
+  padding: 0 6px !important;             /* 一瞬だけ“ハイライト”に見せる */
+  border-radius: 999px !important;
+  background: rgba(255,255,255,0.10) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset, 0 0 18px rgba(255,255,255,0.45) !important;
+  animation: flashUpdate 0.55s ease-out forwards !important;
+  will-change: transform, filter, text-shadow;
 }
 
-.live-flash {
-    animation: flashUpdate 0.45s ease-out forwards !important;
-    will-change: transform, filter, text-shadow;
-}
 /* 中立 (Neutral/Wait) モード */
 .status-neutral {
     background: rgba(148, 163, 184, 0.15); /* グレーベース */
@@ -8280,16 +8290,40 @@ let _last_ai_state = "";
  * - 値が同じなら点滅しない
  * - アニメを毎回確実に再生するため、reflowでリセット
  */
-function updateWithFlash(elementId, newValue) {
-    const el = document.getElementById(elementId);
-    if (!el) return;
-    const next = String(newValue);
-    if ((el.textContent || '').trim() === next.trim()) return;
-    el.textContent = next;
+/**
+ * 更新フラッシュ用関数（数値が変わった時だけフラッシュ）
+ */
+function updateWithFlash(elementId, newValue, colorClass = null) {
+  const el = document.getElementById(elementId);
+  if (!el) {
+    console.warn('Element not found:', elementId);
+    return;
+  }
 
-    el.classList.remove('live-flash');
-    void el.offsetWidth; // reflow to restart animation
-    el.classList.add('live-flash');
+  const prev = (el.innerText || '').trim();
+  const next = (newValue ?? '').toString().trim();
+
+  // 値が同じなら何もしない（無駄な点滅を防ぐ）
+  if (prev === next) return;
+
+  // 値の更新
+  el.innerText = next;
+
+  // 色クラスの変更（指定があれば）
+  if (colorClass) {
+    el.classList.remove('text-up', 'text-down', 'text-gray-400');
+    el.classList.add(colorClass);
+  }
+
+  // ★発光アニメーションの再生（確実にリスタート）
+  el.classList.remove('live-flash');
+  void el.offsetWidth; // reflow
+  el.classList.add('live-flash');
+
+  // 背面ハイライト（見逃し防止）
+  el.classList.remove('live-flash-bg');
+  void el.offsetWidth;
+  el.classList.add('live-flash-bg');
 }
 
 async function updateAiInsight() {
