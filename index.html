@@ -8693,10 +8693,7 @@ if (regimeCls === 'regime-bear') {
 
 // 折りたたみ用（詳細データ）
 const reasonDetailsHtml = `
-  <details class="ai-mini-details">
-    <summary class="ai-mini-summary">詳細データ（指標一覧）</summary>
-    <div class="ai-mini-details-body">${reasonGridHtml}</div>
-  </details>`;
+  `;
 
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
