@@ -42,13 +42,17 @@ STATIC_PATHS = [
     "/",               # root
     "/about",
     "/start",
-    "/guide",
+    "/guide/",
+    "/guide",  # backward compat hub
+
     "/data-sources",
     "/ads-pr",
     "/privacy",
     "/disclaimer",
     "/contact",
-    "/coins/",         # coins hub（あるなら）
+    "/coins/",
+    "/coins",          # backward compat hub
+    # coins hub（あるなら）
 ]
 
 # scripts/ の1つ上を repo root として想定
@@ -289,6 +293,51 @@ def rebuild_sitemap_with_daily(
   
     # 2) daily 系URLを構築
     site_origin = (site_origin or "").rstrip("/")
+
+    # --- extra: ensure guide/coins pages are included (directory index style) ---
+    project_root = sitemap_path.parent
+
+    def _collect_dir_index_urls(dir_name: str, base_path: str) -> list[str]:
+        """Collect URLs like /guide/<slug>/ from <dir_name>/<slug>/index.html.
+
+        - Excludes the hub index.html (e.g., guide/index.html)
+        - Includes only directories that contain index.html
+        """
+        urls: list[str] = []
+        base = project_root / dir_name
+        if not base.exists() or not base.is_dir():
+            return urls
+
+        for p in base.iterdir():
+            if p.name == "index.html":
+                continue
+            if not p.is_dir():
+                continue
+            if (p / "index.html").exists():
+                slug = p.name
+                urls.append(f"{site_origin}{base_path}{slug}/")
+        return urls
+
+    def _ensure_urls(urls: list[str], *, changefreq: str = "weekly", priority: str = "0.6") -> None:
+        # Existing map key is loc; keep if already present
+        today = iso_today()
+        for u in urls:
+            if u not in existing:
+                existing[u] = {
+                    "loc": u,
+                    "lastmod": today,
+                    "changefreq": changefreq,
+                    "priority": priority,
+                }
+
+    # Hubs (already covered by STATIC_PATHS in the base sitemap, but ensure anyway)
+    _ensure_urls([f"{site_origin}/guide/", f"{site_origin}/coins/", f"{site_origin}/dictionary/", f"{site_origin}/daily/"],
+                changefreq="daily", priority="0.8")
+
+    # Subpages
+    _ensure_urls(_collect_dir_index_urls("guide", "/guide/"), changefreq="weekly", priority="0.6")
+    _ensure_urls(_collect_dir_index_urls("coins", "/coins/"), changefreq="daily", priority="0.7")
+    _ensure_urls(_collect_dir_index_urls("dictionary", "/dictionary/"), changefreq="monthly", priority="0.5")
     pages = list(daily_pages or [])
     pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
     latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
@@ -330,44 +379,7 @@ def rebuild_sitemap_with_daily(
                 "priority": "0.7",
             }
 
-    
-
-    # ---- guide pages (auto-discover) ----
-    # guide/<slug>/index.html => /guide/<slug>/  (hub /guide は STATIC_PATHS 側で管理)
-    guide_dir = root_dir / "guide"
-    if guide_dir.exists():
-        for idx_html in sorted(guide_dir.glob("*/index.html")):
-            slug = idx_html.parent.name
-            if not slug or slug == ".":
-                continue
-            # allow a-z0-9- only to avoid weird paths
-            if not re.fullmatch(r"[a-z0-9\-]+", slug):
-                continue
-            u = f"{site_origin}/guide/{slug}/"
-            existing[u] = {
-                "lastmod": latest_iso,
-                "changefreq": "monthly",
-                "priority": "0.7",
-            }
-
-    # ---- coins pages (auto-discover) ----
-    # coins/<slug>/index.html => /coins/<slug>/  (hub /coins/ は STATIC_PATHS 側で管理)
-    coins_dir = root_dir / "coins"
-    if coins_dir.exists():
-        for idx_html in sorted(coins_dir.glob("*/index.html")):
-            slug = idx_html.parent.name
-            if not slug or slug == ".":
-                continue
-            if not re.fullmatch(r"[a-z0-9\-]+", slug):
-                continue
-            u = f"{site_origin}/coins/{slug}/"
-            existing[u] = {
-                "lastmod": latest_iso,
-                "changefreq": "daily",
-                "priority": "0.8",
-            }
-
-# --- canonical-only cleanup: remove old non-canonical URLs that may remain in existing sitemap ---
+    # --- canonical-only cleanup: remove old non-canonical URLs that may remain in existing sitemap ---
     drop_locs = {
         f"{site_origin}/daily/index.html",
         f"{site_origin}/daily/latest",
@@ -507,27 +519,6 @@ def rebuild_sitemap_with_daily(
     for loc in dict_first + dict_terms:
         if loc in existing and loc not in ordered_locs:
             ordered_locs.append(loc)
-
-    guide_first = [f"{site_origin}/guide"]
-    guide_pages = []
-    if (sitemap_path.parent / "guide").exists():
-        for idx_html in sorted((sitemap_path.parent / "guide").glob("*/index.html")):
-            slug = idx_html.parent.name
-            if re.fullmatch(r"[a-z0-9\-]+", slug):
-                guide_pages.append(f"{site_origin}/guide/{slug}/")
-
-    coins_first = [f"{site_origin}/coins/"]
-    coins_pages = []
-    if (sitemap_path.parent / "coins").exists():
-        for idx_html in sorted((sitemap_path.parent / "coins").glob("*/index.html")):
-            slug = idx_html.parent.name
-            if re.fullmatch(r"[a-z0-9\-]+", slug):
-                coins_pages.append(f"{site_origin}/coins/{slug}/")
-
-    for loc in guide_first + guide_pages + coins_first + coins_pages:
-        if loc in existing and loc not in ordered_locs:
-            ordered_locs.append(loc)
-
 
     for loc in daily_first + daily_dates:
         if loc in existing and loc not in ordered_locs:
