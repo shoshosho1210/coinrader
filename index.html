@@ -700,6 +700,15 @@
   .ai-reasons-grid .h{ font-size:11px; }
   .ai-reasons-grid .c{ font-size:12px; }
   .ai-mini-ul{ font-size:12px; line-height:1.45; padding-left:16px; }
+.ai-mini-ol{ font-size:12px; line-height:1.45; padding-left:18px; margin:6px 0 0; }
+.ai-mini-ol li{ margin:4px 0; }
+.ai-mini-details{ margin-top:10px; border:1px solid rgba(148,163,184,.18); border-radius:12px; background:rgba(15,23,42,.35); }
+.ai-mini-summary{ cursor:pointer; list-style:none; padding:10px 12px; font-size:12px; color:#cbd5e1; user-select:none; }
+.ai-mini-summary::-webkit-details-marker{ display:none; }
+.ai-mini-summary:after{ content:"▼"; float:right; opacity:.7; }
+.ai-mini-details[open] .ai-mini-summary:after{ content:"▲"; }
+.ai-mini-details-body{ padding:0 12px 12px; }
+
   .ai-mini-ul li{ margin:2px 0; }
   .ai-mini-note{ font-size:12px; line-height:1.45; }
   /* big saving: strategy title top margin was large */
@@ -4733,6 +4742,21 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
   z-index: -1;          /* コンテンツの裏側に配置 */
   pointer-events: none; /* クリックを邪魔しない */
 }
+
+  /* v111: AI JUDGE meta (horizon / confidence) */
+  .hud-meta-badges{ display:flex; gap:6px; flex-wrap:wrap; margin-left:10px; align-items:center; }
+  .hud-meta-badges .meta-pill{
+    font-size:11px; padding:3px 8px; border-radius:999px;
+    border:1px solid rgba(148,163,184,.25);
+    background:rgba(17,24,39,.55);
+    color:rgba(229,231,235,.85);
+    white-space:nowrap;
+  }
+  @media (max-width: 640px){
+    .hud-meta-badges{ margin-left:6px; }
+    .hud-meta-badges .meta-pill{ font-size:10.5px; padding:2px 7px; }
+  }
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -4883,6 +4907,7 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
 </span>
 <span class="status-text">ANALYZING...</span>
 </div>
+<div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報"><span class="meta-pill" id="aiHorizonPill">対象: 短期(24h)</span><span class="meta-pill" id="aiConfPill">確度: --</span></div>
 </div>
 <button class="hud-guide-btn" onclick="openPageModal('/guide', 'CoinRader 活用ガイド');">
 <i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
@@ -8159,6 +8184,8 @@ async function updateAiInsight() {
     const timeEl = document.getElementById('aiUpdateTime');
     const noteEl = document.getElementById('aiInsightNote');
     const shortEl = document.getElementById('aiInsightShort');
+    const horizonEl = document.getElementById('aiHorizonPill');
+    const confEl = document.getElementById('aiConfPill');
 
     // 1. 【修正】バッジ要素を取得（ANALYZINGを解除するため）
     const badgeEl = document.getElementById('aiVerdictBadge');
@@ -8481,11 +8508,30 @@ const fmtInt = (v) => (v === null) ? '—' : String(Math.round(v));
 
 
 
+// v111: 対象期間/確度（ルールベース。予測ではなく“目安”）
+const horizonTxt = '短期(24h)';
+let confidence = 'Mid';
+if (fgNum === null || rsiNum === null || maNum === null) {
+  confidence = 'Low';
+} else {
+  const alignedBear = (fgNum <= 25 && maNum < -1);
+  const alignedBull = (fgNum >= 60 && maNum > 1);
+  if (alignedBear || alignedBull) confidence = 'High';
+}
+// UIへ反映
+if (horizonEl) horizonEl.textContent = `対象: ${horizonTxt}`;
+if (confEl) confEl.textContent = `確度: ${confidence}`;
+
 // 地合い（ポジション指示ではなく“市場環境”）
 let regime = 'レンジ（様子見）';
 let regimeCls = 'regime-neutral';
 if (verdictTxt.includes('弱気')) { regime = 'リスクオフ（警戒）'; regimeCls = 'regime-bear'; }
 else if (verdictTxt.includes('強気')) { regime = 'リスクオン（選別）'; regimeCls = 'regime-bull'; }
+
+// v111: 市場局面の一言翻訳（初見向け）
+let regimeSub = '方向感待ち。強い銘柄の選別になりやすい。';
+if (regimeCls === 'regime-bear') regimeSub = '急反発が出ても、戻り売りが入りやすい地合い。';
+else if (regimeCls === 'regime-bull') regimeSub = '上方向に伸びやすいが、過熱サインには注意。';
 
 // 判断理由（数値＋しきい値で“何が効いたか”を明示）
 const reasonRsi = (rsiNum === null)
@@ -8605,6 +8651,53 @@ if (regimeCls === 'regime-bull') {
   updateHint = 'TRENDが±2%を超えて推移し始めると、相場の色が出やすい。';
 }
 
+// v111: 次の分岐（If-Then）と根拠TOP3（表より先に見せる）
+let ifThenLines = [];
+let top3Lines = [];
+
+const fgNow = (fgNum===null||fgNum===undefined) ? '—' : `${fmtInt(fgNum)}（${fgText(fgNum)}）`;
+const rsiNow = (rsiNum===null||rsiNum===undefined) ? '—' : `${fmtInt(rsiNum)}（${rsiLabel(rsiNum)}）`;
+const trNow = (maNum===null||maNum===undefined) ? '—' : `${fmtPct(maNum)}（${trendLabel(maNum)}）`;
+
+if (regimeCls === 'regime-bear') {
+  ifThenLines = [
+    '弱気が続く条件：TRENDが0未満 ＆ RSIが55未満なら、反発しても戻り売りが出やすい。',
+    '判断を切り替える条件（弱気→中立）：Fear&Greedが25以上へ回復 ＆ TRENDが0付近まで改善したら、警戒を一段下げる。'
+  ];
+  top3Lines = [
+    `Fear&Greed：${fgNow} → 市場心理が弱く、上を追う買いが続きにくい`,
+    `TREND：${trNow} → 地合いはリスクオフ寄りで、反発しても戻り売りが出やすい`,
+    `RSI：${rsiNow} → 過熱でも売られすぎでもなく、勢いが出るには材料待ち`
+  ];
+} else if (regimeCls === 'regime-bull') {
+  ifThenLines = [
+    '強気が続く条件：TRENDがプラス圏を維持 ＆ RSIが70未満なら、押し目が入りやすい。',
+    '注意（過熱サイン）：RSIが70超 or Fear&Greedが75超になると、短期の巻き戻しに注意。'
+  ];
+  top3Lines = [
+    `TREND：${trNow} → 地合いはリスクオン寄り`,
+    `Fear&Greed：${fgNow} → 心理が強気側に寄ると上が伸びやすい`,
+    `RSI：${rsiNow} → 過熱域に近づくと反落が速くなりやすい`
+  ];
+} else {
+  ifThenLines = [
+    'レンジが続く条件：RSIが45〜55 ＆ TRENDが±2%以内なら、方向が出にくい。',
+    '色が出る条件：TRENDが±2%を超えて定着 or Fear&Greedが45〜55を外れると、相場の色が出やすい。'
+  ];
+  top3Lines = [
+    `RSI：${rsiNow} → 中立域では方向が出にくい`,
+    `TREND：${trNow} → 0付近は綱引きになりやすい`,
+    `Fear&Greed：${fgNow} → 心理が傾くと相場の色が出やすい`
+  ];
+}
+
+// 折りたたみ用（詳細データ）
+const reasonDetailsHtml = `
+  <details class="ai-mini-details">
+    <summary class="ai-mini-summary">詳細データ（指標一覧）</summary>
+    <div class="ai-mini-details-body">${reasonGridHtml}</div>
+  </details>`;
+
 // 視覚要素：ミニメーター（RSI/FGは0-100、TRENDは-10〜+10を中心ゼロで表示）
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 const pct01 = (x) => (Math.round(clamp01(x) * 1000) / 10).toFixed(1) + '%';
@@ -8621,22 +8714,28 @@ const htmlContent = `
       <div class="ai-regime-left">
         <div class="ai-regime-kicker">市場局面</div>
         <div class="ai-regime-main">${regime}</div>
+        <div class="ai-regime-sub">${regimeSub}</div>
       </div>
       <div class="ai-regime-meta">BTC 24h：${fmtPct(btcChgNum)} / BTC.D：${(dom===null||dom===undefined)?'—':Number(dom).toFixed(1)+'%'}</div>
     </div>
 
     
     <div class="ai-mini-block">
-      <div class="ai-mini-title">判断理由</div>
-      ${reasonGridHtml}
+      <div class="ai-mini-title">次の分岐（条件）</div>
+      <ul class="ai-mini-ul">
+        <li>${hlMemo(ifThenLines[0])}</li>
+        <li>${hlMemo(ifThenLines[1])}</li>
+      </ul>
     </div>
 
     <div class="ai-mini-block">
-      <div class="ai-mini-title">戦略メモ</div>
-      <ul class="ai-mini-ul">
-        <li>${hlMemo(memoLines[0])}</li>
-        <li>${hlMemo(memoLines[1])}</li>
-      </ul>
+      <div class="ai-mini-title">根拠TOP3</div>
+      <ol class="ai-mini-ol">
+        <li>${top3Lines[0]}</li>
+        <li>${top3Lines[1]}</li>
+        <li>${top3Lines[2]}</li>
+      </ol>
+      ${reasonDetailsHtml}
       <div class="ai-mini-foot"></div>
     </div>
   </div>
