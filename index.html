@@ -4757,6 +4757,63 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
     .hud-meta-badges .meta-pill{ font-size:10.5px; padding:2px 7px; }
   }
 
+  /* v115: AI JUDGE frame color follows verdict (bear/bull/neutral/stale) */
+  #aiInsightBox{
+    --judge-accent: rgba(56,189,248,.35);
+    --judge-glow: rgba(56,189,248,.12);
+    border-color: var(--judge-accent) !important;
+    box-shadow:
+      0 0 20px rgba(56, 189, 248, 0.05),
+      inset 0 0 40px rgba(0,0,0,0.5),
+      0 0 18px var(--judge-glow) !important;
+  }
+  #aiInsightBox::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 4px;
+    border-radius: 999px;
+    background: var(--judge-accent);
+    box-shadow: 0 0 14px var(--judge-glow);
+    opacity: .95;
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* Avoid the accent bar overlapping content on very small padding */
+  #aiInsightBox .hud-header,
+  #aiInsightBox .hud-metrics-row,
+  #aiInsightBox .hud-shortline,
+  #aiInsightBox .hud-details{
+    position: relative;
+    z-index: 2;
+  }
+  /* States */
+  #aiInsightBox[data-signal="bull"]{
+    --judge-accent: rgba(56,189,248,.50);
+    --judge-glow: rgba(56,189,248,.16);
+  }
+  #aiInsightBox[data-signal="bear"]{
+    --judge-accent: rgba(248,113,113,.55);
+    --judge-glow: rgba(248,113,113,.16);
+  }
+  #aiInsightBox[data-signal="neutral"]{
+    --judge-accent: rgba(148,163,184,.45);
+    --judge-glow: rgba(148,163,184,.12);
+  }
+  #aiInsightBox[data-signal="stale"]{
+    --judge-accent: rgba(250,204,21,.45);
+    --judge-glow: rgba(250,204,21,.12);
+  }
+  /* Hover keeps your existing feel but follows the state color */
+  #aiInsightBox:hover{
+    box-shadow:
+      0 0 25px rgba(56, 189, 248, 0.05),
+      inset 0 0 10px rgba(56, 189, 248, 0.05),
+      0 0 26px var(--judge-glow) !important;
+  }
+
 </style>
 <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
@@ -8187,11 +8244,17 @@ async function updateAiInsight() {
     const horizonEl = document.getElementById('aiHorizonPill');
     const confEl = document.getElementById('aiConfPill');
 
+    // v115: reset frame state (will be set once verdict is known)
+    if (box) box.removeAttribute('data-signal');
+
     // 1. 【修正】バッジ要素を取得（ANALYZINGを解除するため）
     const badgeEl = document.getElementById('aiVerdictBadge');
 
     
     if (!box || !textEl || _ai_thinking) return;
+
+    // v115: reset frame state while analyzing
+    try{ box.removeAttribute('data-signal'); }catch(e){}
 
     // 1. JSONから「過去データ」を一括取得
     const pastToday = await getHistoricalData(0); 
@@ -8205,12 +8268,14 @@ async function updateAiInsight() {
     const diffMin = (Date.now() - lastFetch) / 60000;
     // 1時間以上前のデータなら、AI分析を「更新待ち」にする
     if (diffMin > 60) {
+        if (box) box.setAttribute('data-signal','stale');
         if (timeEl) {
             timeEl.textContent = "[ DATA STALE: RELOAD REQUIRED ]";
             timeEl.style.color = "#f87171";
         }
         if (shortEl) shortEl.textContent = 'データ更新待ち：更新ボタンで最新化してください';
         textEl.innerHTML = `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">表示中の市場データが古いため、AI分析を一時停止しています。<br>最新情報を取得するには「更新」ボタンを押してください。</div>`;
+        if (box) box.setAttribute('data-signal','stale');
         return;
     }
   
@@ -8274,16 +8339,25 @@ async function updateAiInsight() {
 
     // 5. 【修正】ANALYZING表示を解除し、判定を表示
     if (badgeEl) {
-        badgeEl.className = 'hud-status-badge ' + (sent <= 30 || btcChg <= -3 ? 'status-bearish' : 'status-bullish');
-        badgeEl.querySelector('.status-text').textContent = (sent <= 30 || btcChg <= -3 ? '弱気 (BEAR)' : '強気 (BULL)');
+        const isBear = (sent <= 30 || btcChg <= -3);
+        // Mild zone: show neutral frame (badge text stays Bear/Bull for continuity)
+        const isNeutral = (!isBear && (sent !== null && sent < 55) && (btcChg > -1.2 && btcChg < 1.2));
+
+        // v115: colorize the AI JUDGE frame to match verdict
+        if (box) box.setAttribute('data-signal', isNeutral ? 'neutral' : (isBear ? 'bear' : 'bull'));
+
+        badgeEl.className = 'hud-status-badge ' + (isBear ? 'status-bearish' : 'status-bullish');
+        badgeEl.querySelector('.status-text').textContent = (isBear ? '弱気 (BEAR)' : '強気 (BULL)');
+
         if (shortEl) {
             const verdictTxt = badgeEl.querySelector('.status-text')?.textContent || '';
             const rsiTxt = document.getElementById('hudRsiVal')?.textContent || '';
             const fgTxt  = document.getElementById('hudFgVal')?.textContent || '';
             shortEl.textContent = `結論：${verdictTxt}｜RSI ${rsiTxt}｜Fear&Greed ${fgTxt}`;
         }
+
         const icon = badgeEl.querySelector('.status-icon i');
-        if (icon) icon.className = (sent <= 30 || btcChg <= -3 ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-rocket');
+        if (icon) icon.className = (isBear ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-rocket');
     }
 
     // データ待ちガード
