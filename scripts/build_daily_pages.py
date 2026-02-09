@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""　
+"""
 CoinRader: data/daily/*.json から daily/ 配下のHTMLを自動生成します。
 - daily/YYYYMMDD.html
 - daily/index.html (一覧)
@@ -55,6 +55,7 @@ STATIC_PATHS = [
     "/disclaimer",
     "/contact",
 ]
+COINS_ALIAS_SLUGS = {"btc", "eth", "sol"}  # sitemapに載せない（301で正規へ集約）
 
 # scripts/ の1つ上を repo root として想定
 ROOT = Path(__file__).resolve().parents[1]
