@@ -2309,6 +2309,17 @@ body {
     text-shadow: 0 0 10px rgba(248, 113, 113, 0.4);
 }
 
+
+/* v116: AI判定バッジの文字をくっきり（軽い縁取り＋影） */
+.hud-status-badge .status-text{
+    text-shadow:
+        0 1px 0 rgba(0,0,0,0.35),
+        0 0 12px currentColor;
+    -webkit-text-stroke: 0.35px rgba(0,0,0,0.35);
+}
+.hud-status-badge .status-icon{
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.35)) drop-shadow(0 0 10px rgba(0,0,0,0.15));
+}
 .hud-score {
     text-align: right;
 }
@@ -4761,6 +4772,7 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
   #aiInsightBox{
     --judge-accent: rgba(56,189,248,.35);
     --judge-glow: rgba(56,189,248,.12);
+    background: radial-gradient(circle at top right, rgba(30,41,59,0.85), rgba(15,23,42,0.95));
     border-color: var(--judge-accent) !important;
     box-shadow:
       0 0 20px rgba(56, 189, 248, 0.05),
@@ -4780,6 +4792,15 @@ body { background-color: transparent !important; } /* 既存の背景を透明�
     opacity: .95;
     pointer-events: none;
     z-index: 1;
+  }
+  /* v116: AI JUDGEだけスキャンラインを弱めて“青くくすむ”印象を軽減 */
+  #aiInsightBox.hud-panel::before{
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(56, 189, 248, 0.018) 3px
+    );
   }
   /* Avoid the accent bar overlapping content on very small padding */
   #aiInsightBox .hud-header,
