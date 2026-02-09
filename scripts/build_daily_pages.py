@@ -338,7 +338,7 @@ def rebuild_sitemap_with_daily(
 
     # Subpages
     _ensure_urls(_collect_dir_index_urls("guide", "/guide/"), changefreq="weekly", priority="0.6")
-    _ensure_urls(_collect_dir_index_urls("coins", "/coins/"), changefreq="daily", priority="0.7")
+    _ensure_urls([u for u in _collect_dir_index_urls("coins", "/coins/") if (u.rsplit('/',2)[-2] not in COINS_ALIAS_SLUGS)], changefreq="daily", priority="0.7")
     _ensure_urls(_collect_dir_index_urls("dictionary", "/dictionary/"), changefreq="monthly", priority="0.5")
     pages = list(daily_pages or [])
     pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
