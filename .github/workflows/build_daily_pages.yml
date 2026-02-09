@@ -182,6 +182,21 @@ jobs:
           echo "---- git diff (sitemap only) ----"
           git diff -- sitemap.xml || true
 
+      - name: Inspect sitemap after build
+        run: |
+          set -eux
+          echo "=== where is sitemap.xml ==="
+          ls -la sitemap.xml
+          echo "=== last 5 lines of sitemap ==="
+          tail -n 5 sitemap.xml
+          echo "=== grep alias (should be empty) ==="
+          grep -n "coins/btc" sitemap.xml || echo "OK: no btc"
+          grep -n "coins/eth" sitemap.xml || echo "OK: no eth"
+          grep -n "coins/sol" sitemap.xml || echo "OK: no sol"
+          echo "=== git status/diff ==="
+          git status --porcelain
+          git diff -- sitemap.xml || true
+
 
 
 
