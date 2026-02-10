@@ -5911,29 +5911,10 @@ function abortInFlightFetches(){
 }
 
 
-  async async function cgFetch(url, options = {}){
-    // CoinGecko が環境によって CORS を返さない/弾くケースがあるため、
-    // まずは直叩き → 失敗したら CORS プロキシをフォールバックします。
+  async function cgFetch(url, options = {}){
     const headers = { ...(options.headers || {}) };
     if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
-
-    const baseOpts = { ...options, headers };
-
-    // NOTE: proxy は GET 前提（本サイトの用途も GET のみ）
-    const proxyUrl = (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u);
-
-    // 1) direct
-    try{
-      return await fetch(url, baseOpts);
-    }catch(e){
-      // fetch がネットワーク/CORS で落ちた場合のみプロキシへ
-      try{
-        return await fetch(proxyUrl(url), baseOpts);
-      }catch(e2){
-        // 2回目も失敗したら元のエラーを投げる（UIは fetchJsonRetry 側でハンドリング）
-        throw e;
-      }
-    }
+    return fetch(url, { ...options, headers });
   }
 
   async function fetchWithTimeout(url, timeoutMs = 15000, options = {}){
