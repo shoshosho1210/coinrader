@@ -879,81 +879,96 @@ import re
 
 from pathlib import Path
 
-def build_coin_hub_links_html(site_origin: str, trending=None, top_gainer=None, coins_dir: str = "coins") -> str:
-    """
-    Dailyページ用：関連銘柄(/coins/)へのリンクを生成する。
-    - trending: ["BTC","ETH",...] のようなシンボル配列を想定
-    - top_gainer: {"symbol":"BNKR", ...} のようなdictを想定
-    """
+# --- Coin hubs (related coin links) -----------------------------------------
 
-    # --- local helper (位置事故防止) ---
-    from pathlib import Path
+def list_existing_coin_slugs(coins_dir: str = "coins") -> set[str]:
+    """
+    Return a set of canonical slugs that exist under /coins/.
+    Expected examples:
+      coins/bitcoin/index.html
+      coins/bitcoin.html (legacy)
+    """
+    import os
 
-    def list_existing_coin_slugs_local(_coins_dir: str = "coins") -> set:
-        base = Path(_coins_dir)
-        if not base.exists():
-            return set()
-        slugs = set()
-        for p in base.glob("*/index.html"):
-            try:
-                slugs.add(p.parent.name)
-            except Exception:
-                pass
+    slugs: set[str] = set()
+    if not os.path.isdir(coins_dir):
         return slugs
 
-    # 既存 /coins/ slug を確認（存在するものだけリンクに出す）
-    available = list_existing_coin_slugs_local(coins_dir)
+    for name in os.listdir(coins_dir):
+        if name.startswith("."):
+            continue
+        p = os.path.join(coins_dir, name)
 
-    # 候補シンボルを集める（重複排除・順序維持）
-    cand = []
+        # coins/<slug>/index.html
+        if os.path.isdir(p):
+            idx = os.path.join(p, "index.html")
+            if os.path.isfile(idx):
+                slugs.add(name)
+                continue
 
-    def add_sym(s):
-        if not s:
-            return
-        s = str(s).strip().upper()
-        if not s:
-            return
-        if s not in cand:
-            cand.append(s)
+        # coins/<slug>.html (legacy)
+        if os.path.isfile(p) and name.endswith(".html"):
+            slugs.add(name[:-5])
 
-    if isinstance(trending, (list, tuple)):
-        for s in trending:
-            add_sym(s)
+    return slugs
+
+
+def build_coin_hub_links_html(site_origin: str, trending: list[str] | None = None, top_gainer: dict | None = None) -> str:
+    """
+    Build small "related coins" hub links for daily pages.
+    - Use /coins/<slug>/ if the page exists.
+    - Map common tickers (BTC->bitcoin etc).
+    """
+    # 1) gather symbols (keep order, unique)
+    symbols: list[str] = []
+    if trending:
+        symbols.extend([s for s in trending if isinstance(s, str) and s.strip()])
 
     if isinstance(top_gainer, dict):
-        add_sym(top_gainer.get("symbol"))
+        s = top_gainer.get("symbol")
+        if isinstance(s, str) and s.strip():
+            symbols.append(s.strip())
 
+    seen = set()
+    ordered: list[str] = []
+    for s in symbols:
+        ss = s.strip().upper()
+        if not ss or ss in seen:
+            continue
+        seen.add(ss)
+        ordered.append(ss)
+
+    if not ordered:
+        return ""
+
+    # 2) available slugs under /coins/
+    available = list_existing_coin_slugs("coins")
+
+    # 3) ticker -> slug mapping (minimal / safe)
     SYMBOL_TO_SLUG = {
         "BTC": "bitcoin",
         "ETH": "ethereum",
         "SOL": "solana",
         "XRP": "xrp",
         "BNB": "bnb",
-        "DOGE": "dogecoin",
         "ADA": "cardano",
-        "TRX": "tron",
+        "DOGE": "dogecoin",
         "AVAX": "avalanche",
         "DOT": "polkadot",
         "LINK": "chainlink",
         "MATIC": "polygon",
+        "TRX": "tron",
+        "LTC": "litecoin",
+        "BCH": "bitcoin-cash",
+        "ATOM": "cosmos",
     }
 
-    links = []
-    for sym in cand:
-        slug = SYMBOL_TO_SLUG.get(sym)
-
-        # 固定マップに無い場合： /coins/<lower>/ が存在するならそれを使う
-        if not slug:
-            guess = sym.lower()
-            if guess in available:
-                slug = guess
-
-        if not slug:
-            continue
-        if slug not in available:
-            continue
-
-        links.append(f"<a class='chip chip-coin' href='/coins/{slug}/'>{sym}</a>")
+    # 4) build links only if /coins/<slug>/ exists
+    links: list[str] = []
+    for sym in ordered:
+        slug = SYMBOL_TO_SLUG.get(sym, sym.lower())
+        if slug in available:
+            links.append(f"<a class='chip chip-coin' href='/coins/{slug}/'>{sym}</a>")
 
     if not links:
         return ""
@@ -962,8 +977,8 @@ def build_coin_hub_links_html(site_origin: str, trending=None, top_gainer=None, 
         "<section class='coin-hubs' aria-label='Related coins'>"
         "<div class='coin-hubs-h'>関連銘柄</div>"
         "<div class='coin-hubs-links'>"
-        + "".join(links)
-        + "</div></section>"
+        + "".join(links) +
+        "</div></section>"
     )
 
 def shorten_one_line(s: str, max_len: int = 70) -> str:
