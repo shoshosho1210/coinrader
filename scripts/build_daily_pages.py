@@ -879,96 +879,127 @@ import re
 
 from pathlib import Path
 
-# --- Coin hubs (related coin links) -----------------------------------------
+# --- Coin hubs: /coins/ 内部リンク生成 -----------------------------------------
 
-def list_existing_coin_slugs(coins_dir: str = "coins") -> set[str]:
+def list_existing_coin_slugs(coins_dir="coins"):
     """
-    Return a set of canonical slugs that exist under /coins/.
-    Expected examples:
-      coins/bitcoin/index.html
-      coins/bitcoin.html (legacy)
+    Return set of existing coin slugs under /coins/.
+    Accept both /coins/<slug>/ and /coins/<slug>/index.html forms.
     """
     import os
-
-    slugs: set[str] = set()
+    slugs = set()
     if not os.path.isdir(coins_dir):
         return slugs
 
     for name in os.listdir(coins_dir):
-        if name.startswith("."):
-            continue
         p = os.path.join(coins_dir, name)
-
-        # coins/<slug>/index.html
-        if os.path.isdir(p):
-            idx = os.path.join(p, "index.html")
-            if os.path.isfile(idx):
-                slugs.add(name)
-                continue
-
-        # coins/<slug>.html (legacy)
-        if os.path.isfile(p) and name.endswith(".html"):
-            slugs.add(name[:-5])
-
+        if not os.path.isdir(p):
+            continue
+        # /coins/<slug>/index.html があるものだけを有効扱い
+        if os.path.isfile(os.path.join(p, "index.html")):
+            slugs.add(name)
     return slugs
 
 
-def build_coin_hub_links_html(site_origin: str, trending: list[str] | None = None, top_gainer: dict | None = None) -> str:
+def _build_symbol_to_slug_map_from_coins_dir(coins_dir="coins"):
     """
-    Build small "related coins" hub links for daily pages.
-    - Use /coins/<slug>/ if the page exists.
-    - Map common tickers (BTC->bitcoin etc).
+    Scan /coins/<slug>/index.html and try to extract the ticker symbol.
+    Build mapping: SYMBOL (upper) -> slug.
     """
-    # 1) gather symbols (keep order, unique)
-    symbols: list[str] = []
-    if trending:
-        symbols.extend([s for s in trending if isinstance(s, str) and s.strip()])
+    import os, re
 
-    if isinstance(top_gainer, dict):
-        s = top_gainer.get("symbol")
-        if isinstance(s, str) and s.strip():
-            symbols.append(s.strip())
+    symbol_to_slug = {}
+    if not os.path.isdir(coins_dir):
+        return symbol_to_slug
 
-    seen = set()
-    ordered: list[str] = []
-    for s in symbols:
-        ss = s.strip().upper()
-        if not ss or ss in seen:
+    # よくある表記パターンを広めに拾う（安全側）
+    patterns = [
+        re.compile(r'"symbol"\s*:\s*"([A-Z0-9]{2,15})"'),                # JSON/LD 等
+        re.compile(r'\bSymbol\s*[:：]\s*([A-Z0-9]{2,15})\b', re.I),       # "Symbol: BTC"
+        re.compile(r'\bTicker\s*[:：]\s*([A-Z0-9]{2,15})\b', re.I),       # "Ticker: BTC"
+        re.compile(r'data-symbol\s*=\s*["\']([A-Z0-9]{2,15})["\']', re.I),
+        re.compile(r'<title[^>]*>.*?\(([A-Z0-9]{2,15})\).*?</title>', re.I | re.S),
+        re.compile(r'\b\(([A-Z0-9]{2,15})\)\b'),                         # 最後の保険
+    ]
+
+    for slug in os.listdir(coins_dir):
+        d = os.path.join(coins_dir, slug)
+        if not os.path.isdir(d):
             continue
-        seen.add(ss)
-        ordered.append(ss)
+        fp = os.path.join(d, "index.html")
+        if not os.path.isfile(fp):
+            continue
 
-    if not ordered:
+        try:
+            html = open(fp, "r", encoding="utf-8", errors="ignore").read()
+        except Exception:
+            continue
+
+        sym = None
+        for rgx in patterns:
+            m = rgx.search(html)
+            if m:
+                sym = m.group(1).upper()
+                break
+
+        # 見つからない場合でも、slug がそのままティッカーっぽければ拾う
+        if not sym:
+            if slug.upper().isalnum() and 2 <= len(slug) <= 15:
+                sym = slug.upper()
+
+        if sym and sym not in symbol_to_slug:
+            symbol_to_slug[sym] = slug
+
+    return symbol_to_slug
+
+
+def build_coin_hub_links_html(site_origin, trending=None, top_gainer=None, coins_dir="coins"):
+    """
+    Build '関連銘柄' chips.
+    - trending: list[str] e.g. ['BTC','BNKR','ZRO']
+    - top_gainer: dict e.g. {'symbol':'BNKR',...}
+    """
+    import html as _html
+
+    trending = trending or []
+    # top_gainer は dict/None 両対応
+    gsym = None
+    if isinstance(top_gainer, dict):
+        gsym = top_gainer.get("symbol") or top_gainer.get("ticker") or top_gainer.get("id")
+
+    # 対象シンボル（重複排除・順序維持）
+    seen = set()
+    syms = []
+    for s in trending + ([gsym] if gsym else []):
+        if not s:
+            continue
+        S = str(s).upper()
+        if S in seen:
+            continue
+        seen.add(S)
+        syms.append(S)
+
+    if not syms:
         return ""
 
-    # 2) available slugs under /coins/
-    available = list_existing_coin_slugs("coins")
+    available_slugs = list_existing_coin_slugs(coins_dir)
+    sym2slug = _build_symbol_to_slug_map_from_coins_dir(coins_dir)
 
-    # 3) ticker -> slug mapping (minimal / safe)
-    SYMBOL_TO_SLUG = {
-        "BTC": "bitcoin",
-        "ETH": "ethereum",
-        "SOL": "solana",
-        "XRP": "xrp",
-        "BNB": "bnb",
-        "ADA": "cardano",
-        "DOGE": "dogecoin",
-        "AVAX": "avalanche",
-        "DOT": "polkadot",
-        "LINK": "chainlink",
-        "MATIC": "polygon",
-        "TRX": "tron",
-        "LTC": "litecoin",
-        "BCH": "bitcoin-cash",
-        "ATOM": "cosmos",
-    }
+    links = []
+    for sym in syms:
+        slug = sym2slug.get(sym)
+        # slug が未解決なら従来通り slugify(symbol) も試す（後方互換）
+        if not slug:
+            slug_guess = sym.lower()
+            if slug_guess in available_slugs:
+                slug = slug_guess
 
-    # 4) build links only if /coins/<slug>/ exists
-    links: list[str] = []
-    for sym in ordered:
-        slug = SYMBOL_TO_SLUG.get(sym, sym.lower())
-        if slug in available:
-            links.append(f"<a class='chip chip-coin' href='/coins/{slug}/'>{sym}</a>")
+        if not slug:
+            # /coins/ 実ページが無いものはリンクしない（SEO的にも安全）
+            continue
+
+        href = f"/coins/{slug}/"
+        links.append(f"<a class='chip chip-coin' href='{href}'>{_html.escape(sym)}</a>")
 
     if not links:
         return ""
