@@ -154,11 +154,11 @@ def iso_today() -> str:
 def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi, trend, trending: List[str], top_gainer=None) -> Dict[str, str]:
     # title/description は検索結果でのクリック率を意識して具体的な数値を含める
     try:
-        rsi_s = f"{float(btc_rsi):.2f}" if btc_rsi is not None else "-"
+        rsi_s = str(btc_rsi) if btc_rsi is not None else "-"
     except Exception:
         rsi_s = "-"
     try:
-        trend_s = f"{float(trend):.1f}" if trend is not None else "-"
+        trend_s = str(trend) if trend is not None else "-"
     except Exception:
         trend_s = "-"
     fgi_s = str(sentiment_value) if sentiment_value is not None else "-"
@@ -1197,7 +1197,8 @@ def main() -> None:
         if not str(updated_at).strip():
             updated_at = f"{date_iso} 09:00"
 
-        seo_meta = build_seo_meta(date_iso, ymd, judge, fgi_value, btc_rsi, ma_dist, trending, top_gainer=top_gainer)
+        seo_meta = build_seo_meta(date_iso, ymd, judge, sent, rsi, trend, trending, top_gainer=top_gainer)
+
         jsonld = build_jsonld(
             seo_meta.get("CANONICAL",""),
             seo_meta.get("TITLE",""),
