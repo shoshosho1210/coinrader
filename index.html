@@ -8668,7 +8668,7 @@ async function updateAiInsight() {
         const isEn = (lang === 'en');
 
         const verdictJa = isBear ? '弱気 (BEAR)' : '強気 (BULL)';
-        const verdictEn = isBear ? 'BEARISH' : 'BULLISH (BULL)';
+        const verdictEn = isBear ? 'BEARISH' : 'BULLISH';
 
         badgeEl.querySelector('.status-text').textContent = isEn ? verdictEn : verdictJa;
 
