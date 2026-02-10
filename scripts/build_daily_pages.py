@@ -874,53 +874,114 @@ from pathlib import Path
 
 from urllib.parse import quote_plus
 
-def build_coin_hub_links_html(site_origin: str, trending_syms: List[str], top_gainer: dict = None, limit: int = 5) -> str:
+import os
+import re
+
+def list_existing_coin_slugs(coins_dir: str = "coins") -> set[str]:
     """
-    dailyページ内に「関連銘柄」チップを生成する。
-    - /coins/<slug>/ が存在するならそこへリンク（canonical優先）
-    - 存在しない場合は 404 を避けて /coins/?q=<SYMBOL> にフォールバック
-    NOTE: site_origin / top_gainer は既存呼び出し互換のため受け取る（ここでは未使用）
+    Return a set of canonical slugs that exist under /coins/.
+    Expected structure examples:
+      coins/bitcoin/index.html
+      coins/bitcoin.html (legacy)
+      coins/bitcoin/ (dir)
     """
-    if not trending_syms:
+    slugs: set[str] = set()
+    if not os.path.isdir(coins_dir):
+        return slugs
+
+    for name in os.listdir(coins_dir):
+        if name.startswith("."):
+            continue
+        p = os.path.join(coins_dir, name)
+
+        # coins/<slug>/index.html
+        if os.path.isdir(p):
+            idx = os.path.join(p, "index.html")
+            if os.path.isfile(idx):
+                slugs.add(name)
+                continue
+
+        # coins/<slug>.html (if any legacy remains)
+        if os.path.isfile(p) and name.endswith(".html"):
+            slugs.add(name[:-5])
+
+    return slugs
+
+
+def _to_slug_from_symbol(symbol: str) -> str | None:
+    """
+    Convert ticker symbol (e.g. BTC) -> canonical slug (e.g. bitcoin).
+    If you already have a mapping dict in this file, use it here.
+    """
+    if not symbol:
+        return None
+
+    s = str(symbol).strip().upper()
+
+    # ここは「既にあなたのスクリプト内にあるマップ」を優先して使う想定
+    # 例: SYMBOL_TO_COIN_SLUG = {"BTC":"bitcoin", ...}
+    try:
+        slug = SYMBOL_TO_COIN_SLUG.get(s)  # type: ignore[name-defined]
+        if slug:
+            return slug
+    except Exception:
+        pass
+
+    # fallback: 英数字/ハイフンのみ（最低限の安全策）
+    return re.sub(r"[^a-z0-9\-]+", "", s.lower()) or None
+
+
+def build_coin_hub_links_html(origin: str, trending=None, top_gainer=None) -> str:
+    """
+    Build 'related coins' chips for the daily page, linking to existing /coins/<slug>/ pages.
+    - trending: list[str] of symbols
+    - top_gainer: dict like {"symbol": "...", "change": ...}
+    """
+    available = list_existing_coin_slugs()  # set of existing canonical slugs under /coins/
+    if not available:
         return ""
 
-    available = list_existing_coin_slugs()  # set of existing canonical slugs under /coins/
-    links = []
+    symbols: list[str] = []
 
-    for sym in trending_syms[:limit]:
-        sym_u = (sym or "").strip().upper()
-        if not sym_u:
+    if isinstance(trending, (list, tuple)):
+        symbols.extend([x for x in trending if x])
+
+    if isinstance(top_gainer, dict):
+        gs = top_gainer.get("symbol")
+        if gs:
+            symbols.append(gs)
+
+    # de-dup while keeping order
+    seen = set()
+    uniq: list[str] = []
+    for s in symbols:
+        su = str(s).strip().upper()
+        if not su or su in seen:
             continue
+        seen.add(su)
+        uniq.append(su)
 
-        # canonical slug候補（マップ優先）
-        mapped = SYMBOL_TO_COIN_SLUG.get(sym_u)
-        slug_l = (mapped or sym_u.lower()).strip()
-
-        # alias(slug)は避けたい（/coins/btc 等）
-        if slug_l in COINS_ALIAS_SLUGS:
-            if mapped and mapped in available:
-                href = f"/coins/{mapped}/"
-            else:
-                href = f"/coins/?q={quote_plus(sym_u)}"
-        else:
-            if slug_l in available:
-                href = f"/coins/{slug_l}/"
-            else:
-                href = f"/coins/?q={quote_plus(sym_u)}"
-
-        links.append((href, sym_u))
+    links = []
+    for sym in uniq:
+        slug = _to_slug_from_symbol(sym)
+        if not slug:
+            continue
+        if slug not in available:
+            continue
+        # URLは相対でOK（originは将来 absolute を作りたい時のため残す）
+        links.append(f"<a class='chip chip-coin' href='/coins/{slug}/'>{sym}</a>")
 
     if not links:
         return ""
 
-    items = "\n".join([f"<a class='chip chip-coin' href='{h}'>{lab}</a>" for h, lab in links])
-
     return (
         "<section class='coin-hubs' aria-label='Related coins'>"
         "<div class='coin-hubs-h'>関連銘柄</div>"
-        f"<div class='coin-hubs-links'>{items}</div>"
-        "</section>"
+        "<div class='coin-hubs-links'>"
+        + "".join(links) +
+        "</div></section>"
     )
+
 
 
 def shorten_one_line(s: str, max_len: int = 70) -> str:
