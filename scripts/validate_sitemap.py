@@ -1,9 +1,11 @@
+
 #!/usr/bin/env python3
 """Sitemap quality checks (canonical-only policy) with optional auto-fix."""
 from __future__ import annotations
 
 import argparse
 import re
+from urllib.parse import urlparse
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from collections import Counter
@@ -107,6 +109,19 @@ def _scan(xml: str):
     return root, loc_els, locs, dups, bad
 
 
+def is_daily_latest(url: str) -> bool:
+    """Return True if the URL points to /daily/latest (with or without trailing slash)."""
+    try:
+        p = urlparse(url)
+        path = p.path or ""
+    except Exception:
+        return False
+    return path.rstrip("/") == "/daily/latest"
+
+def validate_exclude_daily_latest(locs: list[str]) -> list[str]:
+    """Sitemap should not include /daily/latest; only dated /daily/YYYYMMDD pages."""
+    return [u for u in locs if is_daily_latest(u)]
+
 def _autofix(xml: str) -> str:
     root = ET.fromstring(xml)
 
@@ -131,6 +146,9 @@ def _autofix(xml: str) -> str:
             continue
 
         canon = canonicalize(loc)
+        if is_daily_latest(canon):
+            removed += 1
+            continue
         # rewrite to canonical
         if loc_el is not None:
             loc_el.text = canon
@@ -146,8 +164,6 @@ def _autofix(xml: str) -> str:
     # preserve namespaces as much as ET allows
     return ET.tostring(root, encoding="unicode")
 
-import re
-from urllib.parse import urlparse
 
 def validate_dictionary_trailing_slash(locs: list[str]) -> list[str]:
     """
@@ -227,9 +243,7 @@ def main() -> int:
     xml = SITEMAP.read_text(encoding="utf-8")
     root, loc_els, locs, dups, bad = _scan(xml)
     # --- dictionary: trailing slash canonical enforcement ---
-    dict_bad = validate_dictionary_trailing_slash(locs)
 
-    daily_lastmod_bad = validate_daily_lastmod_required(root)
 
     if (dups or bad) and args.fix:
         fixed = _autofix(xml)
@@ -239,6 +253,10 @@ def main() -> int:
         root, loc_els, locs, dups, bad = _scan(xml)
         print("SITEMAP AUTO-FIX APPLIED")
 
+    # Validations (post-fix scan)
+    dict_bad = validate_dictionary_trailing_slash(locs)
+    daily_lastmod_bad = validate_daily_lastmod_required(locs, path, base_url=args.base_url)
+    daily_latest_bad = validate_exclude_daily_latest(locs)
     errors = []
     if not locs:
         errors.append("no <loc> entries found (sitemap namespace/format issue?)")
@@ -250,6 +268,9 @@ def main() -> int:
         errors.append(f"dictionary term URLs must end with '/': {dict_bad}")
     if daily_lastmod_bad:
         errors.append(f"/daily/YYYYMMDD entries must have correct <lastmod> (YYYY-MM-DD and match date): {daily_lastmod_bad}")
+    if daily_latest_bad:
+        errors.append(f"Sitemap must not include /daily/latest (only dated pages): {daily_latest_bad}")
+
 
     if errors:
         print("SITEMAP VALIDATION FAILED")
