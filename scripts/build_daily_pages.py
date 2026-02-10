@@ -1214,26 +1214,53 @@ def main() -> None:
         if "</head>" in html and "/* injected by build_daily_pages.py */" not in html:
             html = html.replace("</head>", COIN_HUBS_CSS + "\n</head>", 1)
           
-        # coin hubs: テンプレにプレースホルダが無くても差し込む
+        # coin hubs: テンプレにプレースホルダが無くても差し込む（安定アンカー方式）
         if coin_hubs_html:
-            # TAKEAWAYS の直後に入れるのが一番自然（無ければH1直後）
-            if takeaways_html and takeaways_html in html:
-                html = html.replace(takeaways_html, takeaways_html + "\n" + coin_hubs_html, 1)
-            elif re.search(r"</h1>", html):
-                html = re.sub(r"(</h1>)", r"\1\n" + coin_hubs_html, html, count=1)
-            elif re.search(r"<main\b[^>]*>", html):
-                html = re.sub(r"(<main\b[^>]*>)", r"\1\n" + coin_hubs_html, html, count=1)
-            elif re.search(r"<body\b[^>]*>", html):
+            inserted = False
+
+            # 1) まず「日付チップ(.chips)の直後」に入れる（ここが一番自然で崩れにくい）
+            if re.search(r"</div>\s*<!--\s*Main\s*-->", html):
+                html = re.sub(r"(</div>\s*<!--\s*Main\s*-->)", r"\1\n" + coin_hubs_html, html, count=1)
+                inserted = True
+            elif re.search(r"</div>\s*<div class=\"grid\">", html):
+                html = re.sub(r"(</div>\s*<div class=\"grid\">)", r"\1\n" + coin_hubs_html, html, count=1)
+                inserted = True
+            elif re.search(r"<div class=\"chips\">.*?</div>", html, flags=re.DOTALL):
+                # chips ブロック末尾の </div> の直後に入れる
+                html = re.sub(r"(<div class=\"chips\">.*?</div>)", r"\1\n" + coin_hubs_html, html, count=1, flags=re.DOTALL)
+                inserted = True
+
+            # 2) だめなら h1 直後
+            if (not inserted) and re.search(r"</div>\s*<!-- Meta", html):
+                html = re.sub(r"(</div>\s*<!-- Meta)", r"\1\n" + coin_hubs_html + "\n", html, count=1)
+                inserted = True
+            if (not inserted) and re.search(r"</div>\s*<div class=\"meta\">", html):
+                html = re.sub(r"(</div>\s*<div class=\"meta\">)", r"\1\n" + coin_hubs_html, html, count=1)
+                inserted = True
+
+            # 3) 最後の保険：<body>直後
+            if (not inserted) and re.search(r"<body\b[^>]*>", html):
                 html = re.sub(r"(<body\b[^>]*>)", r"\1\n" + coin_hubs_html, html, count=1)
       
-        # TAKEAWAYS: テンプレにプレースホルダが無い場合でも、本文冒頭へ安全に挿入する
+        # TAKEAWAYS: テンプレにプレースホルダが無い場合でも、wrap直後に安全に挿入する
         if takeaways_html and ("{{TAKEAWAYS" not in tmpl):
-            # まずH1直後、無ければ <main> 開始直後、無ければ <body> 直後に入れる
-            if re.search(r"</h1>", html):
-                html = re.sub(r"(</h1>)", r"\1\n" + takeaways_html, html, count=1)
-            elif re.search(r"<main\b[^>]*>", html):
+            inserted = False
+
+            # 1) <div class="wrap"> の直後（レイアウトに乗るので最優先）
+            if re.search(r"<div class=\"wrap\">", html):
+                html = re.sub(r"(<div class=\"wrap\">)", r"\1\n" + takeaways_html, html, count=1)
+                inserted = True
+
+            # 2) だめなら h1 直後
+            if (not inserted) and re.search(r"(</div>\s*<!-- Meta)", html):
+                html = re.sub(r"(</div>\s*<!-- Meta)", r"</div>\n" + takeaways_html + "\n<!-- Meta", html, count=1)
+                inserted = True
+
+            # 3) 最後の保険：<main> / <body>
+            if (not inserted) and re.search(r"<main\b[^>]*>", html):
                 html = re.sub(r"(<main\b[^>]*>)", r"\1\n" + takeaways_html, html, count=1)
-            elif re.search(r"<body\b[^>]*>", html):
+                inserted = True
+            if (not inserted) and re.search(r"<body\b[^>]*>", html):
                 html = re.sub(r"(<body\b[^>]*>)", r"\1\n" + takeaways_html, html, count=1)
 
         out_file = OUT_DIR / f"{ymd}.html"
