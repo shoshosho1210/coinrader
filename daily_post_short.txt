@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (02/10)
+🤖 CoinRader 市場速報 (02/11)
 分析: 弱気 (BEAR)
 
 🔹 Bitcoin 📉
-価格: ¥1103万
-前日比: -1.2%
-RSI(14): 51.5
-心理指数: 14 (Extreme Fear)
+価格: ¥1062万
+前日比: -3.1%
+RSI(14): 51.4
+心理指数: 9 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: BTC, ETH, ZKP
-急上昇銘柄: KITE (15%↑)
+トレンド入り: UP, MON, ZRO
+急上昇銘柄: PIPPIN (38%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260210.html
+https://coinrader.net/share/20260211.html
 
 #CoinRader #ビットコイン #暗号資産
