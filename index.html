@@ -5177,8 +5177,16 @@ td.text-down {
 <span class="status-text">ANALYZING...</span>
 </div>
 <div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報">
-  <span class="meta-pill" id="aiHorizonPill" data-i18n data-ja="対象: 短期(24h)" data-en="Horizon: Short-term (24h)">対象: 短期(24h)</span>
-  <span class="meta-pill" id="aiConfPill" data-i18n data-ja="確度: --" data-en="Confidence: --">確度: --</span>
+<span class="meta-pill" id="aiHorizonPill">
+  <span data-i18n data-ja="対象:" data-en="Horizon:">対象:</span>
+  <span id="aiHorizonVal">短期(24h)</span>
+</span>
+
+<span class="meta-pill" id="aiConfPill">
+  <span data-i18n data-ja="確度:" data-en="Confidence:">確度:</span>
+  <span id="aiConfVal">--</span>
+</span>
+
 </div>
 
 </div>
