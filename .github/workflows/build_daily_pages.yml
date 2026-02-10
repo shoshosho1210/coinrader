@@ -168,6 +168,93 @@ jobs:
           print(f"wrote sitemap.xml: {len(urls)} urls (daily={len(daily_ids)}) latest={latest}")
           PY
 
+      - name: Build sitemap.xml (static + daily lastmod + coins)
+        env:
+          CR_SITE_ORIGIN: https://coinrader.net
+        run: |
+          set -eux
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          ROOT = Path(".")
+          ORIGIN = "https://coinrader.net"
+
+          # ---- daily ids ----
+          daily_ids = []
+          for p in sorted((ROOT/"data/daily").glob("*.json")):
+              m = re.fullmatch(r"(\d{8})\.json", p.name)
+              if m:
+                  daily_ids.append(m.group(1))
+
+          latest = daily_ids[-1] if daily_ids else None
+
+          def ymd2iso(ymd: str) -> str:
+              return f"{ymd[0:4]}-{ymd[4:6]}-{ymd[6:8]}"
+
+          urls = []  # (loc, lastmod or None)
+
+          # ---- static / hub pages (lastmodなし or latestでOK) ----
+          static = [
+              "/", "/about", "/start", "/data-sources", "/ads-pr", "/privacy", "/disclaimer", "/contact",
+              "/coins/", "/dictionary/", "/guide/", "/daily/",
+              "/daily/latest", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait",
+          ]
+
+          # dictionary/ と guide/ は「実在するディレクトリ」を走査して自動追加（手動メンテ不要）
+          for base in ("dictionary", "guide"):
+              d = ROOT / base
+              if d.exists() and d.is_dir():
+                  # /dictionary/foo/ のようなディレクトリを拾う（index.htmlがある前提）
+                  for p in sorted(d.glob("*/")):
+                      if (p / "index.html").exists():
+                          static.append(f"/{base}/{p.name}/")
+
+          # coins 個別ページも走査して自動追加
+          coins_dir = ROOT / "coins"
+          if coins_dir.exists() and coins_dir.is_dir():
+              for p in sorted(coins_dir.glob("*/")):
+                  if (p / "index.html").exists():
+                      static.append(f"/coins/{p.name}/")
+
+          # 重複除去
+          seen = set()
+          static2 = []
+          for u in static:
+              if u not in seen:
+                  seen.add(u)
+                  static2.append(u)
+
+          # staticは lastmod を latest と同じにするならここを lm=... に
+          # まずは復活優先：静的にも latest を入れる（Google的には過剰更新だが実害は小）
+          if latest:
+              lm_static = ymd2iso(latest)
+              for u in static2:
+                  urls.append((f"{ORIGIN}{u}", lm_static))
+          else:
+              for u in static2:
+                  urls.append((f"{ORIGIN}{u}", None))
+
+          # ---- daily pages (正確なlastmod) ----
+          for ymd in daily_ids:
+              urls.append((f"{ORIGIN}/daily/{ymd}", ymd2iso(ymd)))
+
+          def url_block(loc: str, lastmod: str|None):
+              if lastmod:
+                  return f"<url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>"
+              return f"<url><loc>{loc}</loc></url>"
+
+          body = "\n".join(url_block(loc, lm) for loc, lm in urls)
+          xml = (
+              '<?xml version="1.0" encoding="UTF-8"?>\n'
+              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+              f"{body}\n"
+              "</urlset>\n"
+          )
+          Path("sitemap.xml").write_text(xml, encoding="utf-8")
+          print(f"wrote sitemap.xml: {len(urls)} urls (daily={len(daily_ids)}) latest={latest}")
+          PY
+
       - name: Validate sitemap (canonical-only)
         run: |
           python scripts/validate_sitemap.py
