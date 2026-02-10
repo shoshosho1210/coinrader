@@ -10086,6 +10086,11 @@ function createSparkline(prices, isUp) {
       if(!ja || !en) return;
       el.setAttribute('title', (lang === 'en') ? en : ja);
     });
+    
+    // ★追加：言語切替後にAI文言も追従させる
+    if (typeof updateAiInsight === 'function') {
+      try { updateAiInsight(); } catch(e) {}
+    }
   }
 
   btn.addEventListener('click', ()=>{
