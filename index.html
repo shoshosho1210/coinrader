@@ -9284,6 +9284,12 @@ const titleMarketMode = isEn ? 'Market mode (auto)' : '市場モード（自動�
 const titleFlipCond   = isEn ? 'When the verdict flips (auto)' : '判定が変わる条件（自動）';
 const titleTop3       = isEn ? 'Top 3 drivers' : '根拠TOP3';
 
+ifThenLines[0] = ifThenLines[0] || '';
+ifThenLines[1] = ifThenLines[1] || '';
+top3Lines[0]   = top3Lines[0]   || '';
+top3Lines[1]   = top3Lines[1]   || '';
+top3Lines[2]   = top3Lines[2]   || '';
+
 const htmlContent = `
   <div class="ai-mini">
     <div class="ai-regime-hero ${regimeCls}">
