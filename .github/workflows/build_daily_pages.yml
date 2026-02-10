@@ -144,52 +144,47 @@ jobs:
 
           urls = []  # (loc, lastmod or None)
 
-          # ---- static / hub pages (lastmodなし or latestでOK) ----
+          # ---- 静的/ハブ：lastmod無し（推奨） ----
           static = [
               "/", "/about", "/start", "/data-sources", "/ads-pr", "/privacy", "/disclaimer", "/contact",
-              "/coins/", "/dictionary/", "/guide/", "/daily/",
-              "/daily/latest", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait",
+              "/coins/", "/dictionary/", "/guide/",
           ]
+          # daily本体/タグ/最新は static に入れない（後で latest lastmod 付きで入れる）
 
-          # dictionary/ と guide/ は「実在するディレクトリ」を走査して自動追加（手動メンテ不要）
+          # dictionary/ と guide/ の個別ページ（存在するものだけ）も lastmod無しで追加
           for base in ("dictionary", "guide"):
               d = ROOT / base
               if d.exists() and d.is_dir():
-                  # /dictionary/foo/ のようなディレクトリを拾う（index.htmlがある前提）
                   for p in sorted(d.glob("*/")):
                       if (p / "index.html").exists():
                           static.append(f"/{base}/{p.name}/")
 
-          # coins 個別ページも走査して自動追加
+          # coins 個別ページ（存在するものだけ）も lastmod無しで追加
           coins_dir = ROOT / "coins"
           if coins_dir.exists() and coins_dir.is_dir():
               for p in sorted(coins_dir.glob("*/")):
                   if (p / "index.html").exists():
                       static.append(f"/coins/{p.name}/")
 
-          # 重複除去
+          # 重複除去して追加
           seen = set()
-          static2 = []
           for u in static:
-              if u not in seen:
-                  seen.add(u)
-                  static2.append(u)
+              if u in seen:
+                  continue
+              seen.add(u)
+              urls.append((f"{ORIGIN}{u}", None))
 
-          # staticは lastmod を latest と同じにするならここを lm=... に
-          # まずは復活優先：静的にも latest を入れる（Google的には過剰更新だが実害は小）
+          # ---- dailyハブ系：latest日付の lastmod ----
           if latest:
-              lm_static = ymd2iso(latest)
-              for u in static2:
-                  urls.append((f"{ORIGIN}{u}", lm_static))
-          else:
-              for u in static2:
-                  urls.append((f"{ORIGIN}{u}", None))
+              lm_latest = ymd2iso(latest)
+              for u in ("/daily/", "/daily/latest", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait"):
+                  urls.append((f"{ORIGIN}{u}", lm_latest))
 
-          # ---- daily pages (正確なlastmod) ----
+          # ---- daily pages：正確なlastmod ----
           for ymd in daily_ids:
               urls.append((f"{ORIGIN}/daily/{ymd}", ymd2iso(ymd)))
 
-          def url_block(loc: str, lastmod: str|None):
+          def url_block(loc: str, lastmod: str | None):
               if lastmod:
                   return f"<url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>"
               return f"<url><loc>{loc}</loc></url>"
@@ -203,6 +198,7 @@ jobs:
           )
           Path("sitemap.xml").write_text(xml, encoding="utf-8")
           print(f"wrote sitemap.xml: {len(urls)} urls (daily={len(daily_ids)}) latest={latest}")
+
           PY
 
       - name: Validate sitemap (canonical-only)
