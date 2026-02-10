@@ -191,8 +191,8 @@ jobs:
           # ---- dailyハブ系：latest日付の lastmod ----
           if latest:
               lm_latest = ymd2iso(latest)
-                  for u in ("/daily/", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait"):
-                      urls.append((f"{ORIGIN}{u}", lm_latest))
+              for u in ("/daily/", "/daily/latest", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait"):
+                  urls.append((f"{ORIGIN}{u}", lm_latest))
 
           # ---- daily pages：正確なlastmod ----
           for ymd in daily_ids:
