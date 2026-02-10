@@ -5699,12 +5699,20 @@ td.text-down {
   
   // --- Auto refresh (every 3 min when tab is visible) ---
   const AUTO_REFRESH_MS = 3 * 60 * 1000;
+let __autoRefreshTimer = null;
+function stopAutoRefresh(){
+  if (__autoRefreshTimer) {
+    clearTimeout(__autoRefreshTimer);
+    __autoRefreshTimer = null;
+  }
+}
+
   function startAutoRefresh(){
     let autoMs = 3 * 60 * 1000; // base 3min
     let failStreak = 0;
 
     const schedule = (delay) => {
-      setTimeout(async () => {
+      __autoRefreshTimer = setTimeout(async () => {
         try{
           if (document.visibilityState !== 'visible'){
             schedule(autoMs);
@@ -5890,6 +5898,19 @@ function readSnapshot(key){
   }
 
   // ============ Fetch helpers ============
+
+//  --- In-flight fetch guard (tab sleep対策) ---
+//  背景タブでは setTimeout が強く間引かれ、Abort が遅れて fetch が「待ちっぱなし」になることがあります。
+//  復帰時に残っている通信を強制中断できるよう、AbortController を追跡します。
+const __inflightControllers = new Set();
+function abortInFlightFetches(){
+  try{
+    for (const c of __inflightControllers) { try{ c.abort(); }catch(_e){} }
+    __inflightControllers.clear();
+  }catch(_e){}
+}
+
+
   async function cgFetch(url, options = {}){
     const headers = { ...(options.headers || {}) };
     if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
@@ -5897,14 +5918,17 @@ function readSnapshot(key){
   }
 
   async function fetchWithTimeout(url, timeoutMs = 15000, options = {}){
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try{
-      return await cgFetch(url, { ...options, signal: controller.signal });
-    } finally {
-      clearTimeout(timer);
-    }
+  const controller = new AbortController();
+  __inflightControllers.add(controller);
+
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try{
+    return await cgFetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+    __inflightControllers.delete(controller);
   }
+}
 
   // 429/5xx を少しだけリトライ（Retry-After対応）
   let LAST_HTTP_STATUS = 0;
@@ -9287,10 +9311,10 @@ let __initRunning = false;
     }
   }
 
-// --- 追加：タブ復帰時に即同期（バックグラウンド間引き対策） ---
+// --- 追加：タブ復帰時のフリーズ対策（バックグラウンド間引き + fetch待ちっぱなし対策） ---
 let __lastVisibilityRefreshAt = 0;
 
-document.addEventListener('visibilitychange', () => {
+function __resumeSync(reason){
   // 表示状態に戻った瞬間だけ走らせる
   if (document.visibilityState !== 'visible') return;
 
@@ -9299,18 +9323,22 @@ document.addEventListener('visibilitychange', () => {
   if (now - __lastVisibilityRefreshAt < 3000) return;
   __lastVisibilityRefreshAt = now;
 
+  // 背景タブ中に「待ちっぱなし」になった通信を中断して復帰を確実にする
+  try{ abortInFlightFetches(); }catch(_e){}
+  // まれに init のロックが残るケースの保険
+  try{ __initRunning = false; }catch(_e){}
+  try{ IN_AUTO_REFRESH = false; }catch(_e){}
+
+  // タイマー連鎖も復帰時にリスタート（間引き・ずれ対策）
+  try{ stopAutoRefresh(); }catch(_e){}
+  try{ startAutoRefresh(); }catch(_e){}
+
   // ここで即同期（「手動更新」扱いにしない）
-  init(false).catch(e => console.warn('visibility refresh failed', e));
-});
-window.addEventListener('focus', () => {
-  if (document.visibilityState !== 'visible') return;
+  init(false).catch(e => console.warn(`${reason} refresh failed`, e));
+}
 
-  const now = Date.now();
-  if (now - __lastVisibilityRefreshAt < 3000) return;
-  __lastVisibilityRefreshAt = now;
-
-  init(false).catch(e => console.warn('focus refresh failed', e));
-});
+document.addEventListener('visibilitychange', () => __resumeSync('visibility'));
+window.addEventListener('focus', () => __resumeSync('focus'));
 
 
   // --- Market Cap table: TOP10 default, expand to TOP20 (show extra columns) ---
