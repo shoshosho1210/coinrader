@@ -146,6 +146,13 @@ jobs:
           echo "---- grep CG_KEY ----"
           grep -n "const CG_KEY" coins/bitcoin/index.html || true
 
+
+      - name: Ensure IndexNow key file (optional)
+        if: ${{{{ secrets.INDEXNOW_KEY != '' }}}}
+        run: |
+          set -eux
+          echo "${{{{ secrets.INDEXNOW_KEY }}}}" > indexnow_key.txt
+
       - name: Commit generated pages
         run: |
           set -eux
@@ -164,6 +171,7 @@ jobs:
           git add -A coins
           git add -A data/coins
           git add -A dictionary
+          git add -A indexnow_key.txt || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -182,3 +190,33 @@ jobs:
           grep -n "coins/btc" sitemap.xml || echo "OK: no btc"
           grep -n "coins/eth" sitemap.xml || echo "OK: no eth"
           grep -n "coins/sol" sitemap.xml || echo "OK: no sol"
+
+
+      - name: Notify IndexNow (optional)
+        if: ${{{{ secrets.INDEXNOW_KEY != '' }}}}
+        env:
+          CR_SITE_ORIGIN: https://coinrader.net
+          INDEXNOW_KEY: ${{{{ secrets.INDEXNOW_KEY }}}}
+        run: |
+          set -eux
+          latest=$(ls -1 data/daily/*.json | sed 's#.*/##' | sed 's/\.json$//' | sort | tail -n 1)
+          echo "latest daily: $latest"
+
+          cat > /tmp/indexnow.json <<EOF
+          {
+            "host": "coinrader.net",
+            "key": "${INDEXNOW_KEY}",
+            "keyLocation": "${CR_SITE_ORIGIN}/indexnow_key.txt",
+            "urlList": [
+              "${CR_SITE_ORIGIN}/daily/${latest}",
+              "${CR_SITE_ORIGIN}/daily/",
+              "${CR_SITE_ORIGIN}/daily/latest",
+              "${CR_SITE_ORIGIN}/sitemap.xml"
+            ]
+          }
+          EOF
+
+          curl -sS -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data-binary @/tmp/indexnow.json
+
