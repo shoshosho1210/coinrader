@@ -56,6 +56,14 @@ STATIC_PATHS = [
     "/contact",
 ]
 COINS_ALIAS_SLUGS = {"btc", "eth", "sol"}  # sitemapに載せない（301で正規へ集約）
+# --- coins hub link map (daily -> /coins/<canonical>/ ) ---
+SYMBOL_TO_COIN_SLUG = {
+    "BTC": "bitcoin",
+    "ETH": "ethereum",
+    "SOL": "solana",
+    "XRP": "xrp",
+    # ここに必要なものを順次追加（例: "DOGE":"dogecoin"）
+}
 
 # scripts/ の1つ上を repo root として想定
 ROOT = Path(__file__).resolve().parents[1]
@@ -841,6 +849,60 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
     lis = "".join([f"<li>{escape_html(t)}</li>" for t in take])
     return f"<section class='takeaways' aria-label='Key Takeaways'><h2 class='takeaways-h'>Key Takeaways</h2><ul class='takeaways-ul'>{lis}</ul></section>"
 
+def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer: Dict[str, Any]) -> str:
+    """
+    dailyページ内に「関連銘柄（ハブ）」リンクを自動挿入する。
+    - canonical の /coins/<slug>/ のみを出す（/coins/btc など alias は出さない）
+    """
+    syms: List[str] = []
+
+    # 1) trending から上位（まずは3つで十分）
+    for s in (trending or [])[:3]:
+        if isinstance(s, str) and s.strip():
+            syms.append(s.strip().upper())
+
+    # 2) top_gainer があれば追加
+    if isinstance(top_gainer, dict):
+        tg = str(top_gainer.get("symbol", "")).strip().upper()
+        if tg:
+            syms.append(tg)
+
+    # 3) BTC は常に入れたいなら（不要ならこの2行は消してOK）
+    if "BTC" not in syms:
+        syms.insert(0, "BTC")
+
+    # uniq（順序維持）
+    seen = set()
+    uniq = []
+    for s in syms:
+        if s in seen:
+            continue
+        seen.add(s)
+        uniq.append(s)
+
+    # canonical slug に解決できるものだけリンク化
+    links = []
+    for sym in uniq:
+        slug = SYMBOL_TO_COIN_SLUG.get(sym)
+        if not slug:
+            continue
+        # 念のため alias slug は弾く（例: btc/eth/sol）
+        if slug.lower() in COINS_ALIAS_SLUGS:
+            continue
+        href = f"/coins/{slug}/"
+        links.append(f"<a class='chip chip-coin' href='{href}'>{escape_html(sym)}</a>")
+
+    if not links:
+        return ""
+
+    return (
+        "<section class='coin-hubs' aria-label='Related coins'>"
+        "<div class='coin-hubs-h'>関連銘柄</div>"
+        "<div class='coin-hubs-links'>"
+        + "\n".join(links) +
+        "</div></section>"
+    )
+
 def shorten_one_line(s: str, max_len: int = 70) -> str:
     s = (s or "").strip()
     if not s:
@@ -1093,7 +1155,8 @@ def main() -> None:
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
         why_html = build_reason_html(payload, judge)
         takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer)
-
+        coin_hubs_html = build_coin_hub_links_html(SITE_ORIGIN, trending, top_gainer)
+      
         html = tmpl
         repl = {
             "{{TITLE}}": title,
@@ -1128,6 +1191,18 @@ def main() -> None:
         for k, v in repl.items():
             html = html.replace(k, v)
 
+        # coin hubs: テンプレにプレースホルダが無くても差し込む
+        if coin_hubs_html:
+            # TAKEAWAYS の直後に入れるのが一番自然（無ければH1直後）
+            if takeaways_html and takeaways_html in html:
+                html = html.replace(takeaways_html, takeaways_html + "\n" + coin_hubs_html, 1)
+            elif re.search(r"</h1>", html):
+                html = re.sub(r"(</h1>)", r"\1\n" + coin_hubs_html, html, count=1)
+            elif re.search(r"<main\b[^>]*>", html):
+                html = re.sub(r"(<main\b[^>]*>)", r"\1\n" + coin_hubs_html, html, count=1)
+            elif re.search(r"<body\b[^>]*>", html):
+                html = re.sub(r"(<body\b[^>]*>)", r"\1\n" + coin_hubs_html, html, count=1)
+      
         # TAKEAWAYS: テンプレにプレースホルダが無い場合でも、本文冒頭へ安全に挿入する
         if takeaways_html and ("{{TAKEAWAYS" not in tmpl):
             # まずH1直後、無ければ <main> 開始直後、無ければ <body> 直後に入れる
