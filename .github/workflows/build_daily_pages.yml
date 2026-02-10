@@ -118,6 +118,20 @@ jobs:
             grep -nE "^/daily/.*\.html|^/daily/tags/.*\.html" _redirects || true
           fi
 
+      - name: Fetch coin snapshots (for /coins/* pages)
+        env:
+          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
+        run: |
+          mkdir -p data/coins
+          python scripts/fetch_coin_snapshots.py
+          
+      - name: Generate coin pages
+        env:
+          CR_SITE_ORIGIN: https://coinrader.net
+          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
+        run: |
+          python scripts/build_coin_pages.py
+
       - name: Build sitemap.xml (static + daily lastmod + coins)
         env:
           CR_SITE_ORIGIN: https://coinrader.net
@@ -204,20 +218,6 @@ jobs:
       - name: Validate sitemap (canonical-only)
         run: |
           python scripts/validate_sitemap.py
-
-      - name: Fetch coin snapshots (for /coins/* pages)
-        env:
-          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
-        run: |
-          mkdir -p data/coins
-          python scripts/fetch_coin_snapshots.py
-
-      - name: Generate coin pages
-        env:
-          CR_SITE_ORIGIN: https://coinrader.net
-          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
-        run: |
-          python scripts/build_coin_pages.py
 
       # debug は canonical 側（bitcoin）を見る
       - name: Debug coin page headers (after build)
