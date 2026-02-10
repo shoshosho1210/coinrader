@@ -905,8 +905,8 @@ def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer:
         slug = SYMBOL_TO_COIN_SLUG.get(sym)
         if not slug:
             continue
-        # 念のため alias slug は弾く（例: btc/eth/sol）
-        if slug.lower() in COINS_ALIAS_SLUGS:
+        # 念のため alias "symbol" は弾く（例: BTC/ETH/SOL の alias 管理）
+        if sym.lower() in COINS_ALIAS_SLUGS:
             continue
         href = f"/coins/{slug}/"
         links.append(f"<a class='chip chip-coin' href='{href}'>{escape_html(sym)}</a>")
@@ -1210,6 +1210,10 @@ def main() -> None:
         for k, v in repl.items():
             html = html.replace(k, v)
 
+        # --- inject minimal CSS (once) ---
+        if "</head>" in html and "/* injected by build_daily_pages.py */" not in html:
+            html = html.replace("</head>", COIN_HUBS_CSS + "\n</head>", 1)
+          
         # coin hubs: テンプレにプレースホルダが無くても差し込む
         if coin_hubs_html:
             # TAKEAWAYS の直後に入れるのが一番自然（無ければH1直後）
