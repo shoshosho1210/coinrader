@@ -148,10 +148,10 @@ jobs:
 
 
       - name: Ensure IndexNow key file (optional)
-        if: ${{{{ secrets.INDEXNOW_KEY != '' }}}}
+        if: ${{ secrets.INDEXNOW_KEY != '' }}
         run: |
           set -eux
-          echo "${{{{ secrets.INDEXNOW_KEY }}}}" > indexnow_key.txt
+          echo "${{ secrets.INDEXNOW_KEY }}" > indexnow_key.txt
 
       - name: Commit generated pages
         run: |
@@ -193,10 +193,10 @@ jobs:
 
 
       - name: Notify IndexNow (optional)
-        if: ${{{{ secrets.INDEXNOW_KEY != '' }}}}
+        if: ${{ secrets.INDEXNOW_KEY != '' }}
         env:
           CR_SITE_ORIGIN: https://coinrader.net
-          INDEXNOW_KEY: ${{{{ secrets.INDEXNOW_KEY }}}}
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
         run: |
           set -eux
           latest=$(ls -1 data/daily/*.json | sed 's#.*/##' | sed 's/\.json$//' | sort | tail -n 1)
