@@ -64,6 +64,8 @@ OUT_DIR  = ROOT / "daily"
 TEMPL_DIR = ROOT / "templates"
 
 SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
+# OGP: daily画像のURLプレフィックス（例: https://coinrader.net/ogp/daily）
+OGP_DAILY_PREFIX = os.environ.get("CR_OGP_DAILY_PREFIX", f"{SITE_ORIGIN}/ogp/daily").rstrip("/")
 TZ_NAME = "JST"
 
 
@@ -171,7 +173,8 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
         "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
         "publisher": {"@type": "Organization", "name": "CoinRader"},
     }
-    return json.dumps(data, ensure_ascii=False)
+    s = json.dumps(data, ensure_ascii=False)
+    return s.replace("</", "<\/")
 
 
 
@@ -777,6 +780,67 @@ def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
     ul_html = f"<ul class='why-list'>{li}</ul>" if li else ""
     return lead_html + ul_html
 
+
+def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: str, trend: str,
+                         trending: List[str], top_gainer: Dict[str, Any]) -> str:
+    """Key Takeaways: dailyページ冒頭に置く短い要点（AI引用されやすい箇条書き）。"""
+    take: List[str] = []
+    j = (judge or "").upper().strip()
+    jm = {
+        "BEAR": "AI判定：弱気優勢",
+        "BULL": "AI判定：強気優勢",
+        "WAIT": "AI判定：様子見",
+    }
+    if j in jm:
+        take.append(jm[j])
+
+    if sent and sent != "—":
+        lab = get_path(payload, "summary.fgi.label", default="")
+        if lab:
+            take.append(f"Fear & Greed：{sent}（{lab}）")
+        else:
+            take.append(f"Fear & Greed：{sent}")
+
+    if rsi and rsi != "—":
+        take.append(f"BTC RSI：{rsi}")
+
+    if trend and trend != "—":
+        take.append(f"Trend：{trend}")
+
+    # トレンド銘柄 TOP3
+    if trending:
+        top3 = [str(x).strip().upper() for x in (trending or [])[:3] if str(x).strip()]
+        if top3:
+            take.append(f"注目トレンド：{' / '.join(top3)}")
+
+    # 上昇トップ
+    if isinstance(top_gainer, dict):
+        sym = str(top_gainer.get("symbol", "")).strip().upper()
+        ch = top_gainer.get("change", None)
+        ch_s = ""
+        try:
+            if ch is not None and ch != "":
+                ch_s = f"{float(ch):.2f}".rstrip("0").rstrip(".")
+        except Exception:
+            ch_s = str(ch).strip() if ch is not None else ""
+        if sym and ch_s:
+            take.append(f"急上昇：{sym} +{ch_s}%")
+        elif sym:
+            take.append(f"急上昇：{sym}")
+
+    # reasons の1行目があるなら最後に添える（長すぎない範囲）
+    r1 = build_reason_1line(payload)
+    if r1:
+        take.append(r1)
+
+    # 3〜5行に絞る
+    take = [t for t in take if t][:5]
+    if not take:
+        return ""
+
+    lis = "".join([f"<li>{escape_html(t)}</li>" for t in take])
+    return f"<section class='takeaways' aria-label='Key Takeaways'><h2 class='takeaways-h'>Key Takeaways</h2><ul class='takeaways-ul'>{lis}</ul></section>"
+
 def shorten_one_line(s: str, max_len: int = 70) -> str:
     s = (s or "").strip()
     if not s:
@@ -974,6 +1038,7 @@ def main() -> None:
         title = seo_meta.get("TITLE") or f"BTC AI分析（{date_iso}）"
         desc  = seo_meta.get("DESCRIPTION") or f"CoinRaderの日次AI分析レポート（{date_iso}）。Fear&Greed={sent}, RSI={rsi}, Trend={trend}。"
         canonical = seo_meta.get("CANONICAL") or f"{SITE_ORIGIN}/daily/{ymd}"
+        og_image = f"{OGP_DAILY_PREFIX}/{ymd}.png"
 
         items.append({
             "ymd": ymd,
@@ -1027,6 +1092,7 @@ def main() -> None:
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
         why_html = build_reason_html(payload, judge)
+        takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer)
 
         html = tmpl
         repl = {
@@ -1046,6 +1112,14 @@ def main() -> None:
             "{{TREND}}": escape_html(str(trend)),
             "{{SENTIMENT_LABEL}}": escape_html(str(fgi_label)),
             "{{TRENDING_TOP3}}": escape_html(str(trend_top3)),
+            "{{TAKEAWAYS_HTML}}": takeaways_html,
+            "{{TAKEAWAYS}}": takeaways_html,
+            "{{OG_URL}}": canonical,
+            "{{TW_CARD}}": "summary_large_image",
+            "{{TW_TITLE}}": title,
+            "{{TW_DESCRIPTION}}": desc,
+            "{{OG_IMAGE}}": og_image,
+            "{{TW_IMAGE}}": og_image,
             "{{WHY_HTML}}": why_html,
             "{{WHY}}": why_html,
             "{{RECENT_DAYS_HTML}}": recent_days_html,
@@ -1053,6 +1127,16 @@ def main() -> None:
         }
         for k, v in repl.items():
             html = html.replace(k, v)
+
+        # TAKEAWAYS: テンプレにプレースホルダが無い場合でも、本文冒頭へ安全に挿入する
+        if takeaways_html and ("{{TAKEAWAYS" not in tmpl):
+            # まずH1直後、無ければ <main> 開始直後、無ければ <body> 直後に入れる
+            if re.search(r"</h1>", html):
+                html = re.sub(r"(</h1>)", r"\1\n" + takeaways_html, html, count=1)
+            elif re.search(r"<main\b[^>]*>", html):
+                html = re.sub(r"(<main\b[^>]*>)", r"\1\n" + takeaways_html, html, count=1)
+            elif re.search(r"<body\b[^>]*>", html):
+                html = re.sub(r"(<body\b[^>]*>)", r"\1\n" + takeaways_html, html, count=1)
 
         out_file = OUT_DIR / f"{ymd}.html"
         write_text(out_file, html)
@@ -1213,6 +1297,12 @@ def main() -> None:
             tag_html
         )
 
+
+        # og/twitter placeholders (if present in template)
+        tag_html = tag_html.replace("{{OG_URL}}", canon_url)
+        tag_html = tag_html.replace("{{TW_CARD}}", "summary_large_image")
+        tag_html = tag_html.replace("{{TW_TITLE}}", f"AI {judge_key} の日一覧 | CoinRader")
+        tag_html = tag_html.replace("{{TW_DESCRIPTION}}", new_desc)
         canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}"
         tag_html = re.sub(
             r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
