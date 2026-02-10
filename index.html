@@ -8664,13 +8664,21 @@ async function updateAiInsight() {
         if (box) box.setAttribute('data-signal', isNeutral ? 'neutral' : (isBear ? 'bear' : 'bull'));
 
         badgeEl.className = 'hud-status-badge ' + (isBear ? 'status-bearish' : 'status-bullish');
-        badgeEl.querySelector('.status-text').textContent = (isBear ? '弱気 (BEAR)' : '強気 (BULL)');
+        const lang = document.documentElement.lang || 'ja';
+        const isEn = (lang === 'en');
+
+        const verdictJa = isBear ? '弱気 (BEAR)' : '強気 (BULL)';
+        const verdictEn = isBear ? 'BEARISH (BEAR)' : 'BULLISH (BULL)';
+
+        badgeEl.querySelector('.status-text').textContent = isEn ? verdictEn : verdictJa;
 
         if (shortEl) {
-            const verdictTxt = badgeEl.querySelector('.status-text')?.textContent || '';
-            const rsiTxt = document.getElementById('hudRsiVal')?.textContent || '';
-            const fgTxt  = document.getElementById('hudFgVal')?.textContent || '';
-            shortEl.textContent = `結論：${verdictTxt}｜RSI ${rsiTxt}｜Fear&Greed ${fgTxt}`;
+          const verdictTxt = badgeEl.querySelector('.status-text')?.textContent || '';
+          const rsiTxt = document.getElementById('hudRsiVal')?.textContent || '';
+          const fgTxt  = document.getElementById('hudFgVal')?.textContent || '';
+          shortEl.textContent = isEn
+            ? `Verdict: ${verdictTxt} | RSI ${rsiTxt} | Fear & Greed ${fgTxt}`
+            : `結論：${verdictTxt}｜RSI ${rsiTxt}｜Fear&Greed ${fgTxt}`;
         }
 
         const icon = badgeEl.querySelector('.status-icon i');
