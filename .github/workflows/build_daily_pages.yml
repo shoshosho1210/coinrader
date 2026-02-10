@@ -118,56 +118,6 @@ jobs:
             grep -nE "^/daily/.*\.html|^/daily/tags/.*\.html" _redirects || true
           fi
 
-      - name: Build sitemap.xml with lastmod for daily
-        run: |
-          set -eux
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          from datetime import datetime
-
-          ROOT = Path(".")
-          ORIGIN = "https://coinrader.net"
-
-          # 8桁日付のdaily jsonだけ
-          daily_ids = []
-          for p in sorted((ROOT/"data/daily").glob("*.json")):
-              m = re.fullmatch(r"(\d{8})\.json", p.name)
-              if m:
-                  daily_ids.append(m.group(1))
-
-          latest = daily_ids[-1] if daily_ids else None
-          def ymd2iso(ymd: str) -> str:
-              return f"{ymd[0:4]}-{ymd[4:6]}-{ymd[6:8]}"
-
-          # ベースURL（最低限。必要に応じて増やす）
-          urls = []
-          if latest:
-              urls.append((f"{ORIGIN}/daily/", ymd2iso(latest)))
-              urls.append((f"{ORIGIN}/daily/latest", ymd2iso(latest)))
-          for ymd in daily_ids:
-              urls.append((f"{ORIGIN}/daily/{ymd}", ymd2iso(ymd)))
-
-          # ※ここで coins/guide 等も足すなら、lastmod=None で追加すればOK
-          # urls.append((f"{ORIGIN}/", None))
-
-          def url_block(loc: str, lastmod: str|None):
-              if lastmod:
-                  return f"<url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>"
-              return f"<url><loc>{loc}</loc></url>"
-
-          body = "\n".join(url_block(loc, lm) for loc, lm in urls)
-          xml = (
-              '<?xml version="1.0" encoding="UTF-8"?>\n'
-              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-              f"{body}\n"
-              "</urlset>\n"
-          )
-
-          Path("sitemap.xml").write_text(xml, encoding="utf-8")
-          print(f"wrote sitemap.xml: {len(urls)} urls (daily={len(daily_ids)}) latest={latest}")
-          PY
-
       - name: Build sitemap.xml (static + daily lastmod + coins)
         env:
           CR_SITE_ORIGIN: https://coinrader.net
