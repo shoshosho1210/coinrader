@@ -68,6 +68,21 @@ SYMBOL_TO_COIN_SLUG = {
     "XRP": "xrp",
     # ここに必要なものを順次追加（例: "DOGE":"dogecoin"）
 }
+# --- minimal CSS for injected blocks (coin hubs etc.) ---
+COIN_HUBS_CSS = """
+<style>
+/* injected by build_daily_pages.py */
+.coin-hubs{ margin:10px 0 6px; }
+.coin-hubs-h{ font-size:12px; opacity:.85; margin:0 0 6px; }
+.coin-hubs-links{ display:flex; gap:8px; flex-wrap:wrap; }
+.chip-coin{
+  display:inline-flex; align-items:center; gap:6px;
+  border:1px solid rgba(56,189,248,.35);
+  padding:4px 10px; border-radius:999px;
+  font-size:12px; text-decoration:none;
+}
+</style>
+""".strip()
 
 # scripts/ の1つ上を repo root として想定
 ROOT = Path(__file__).resolve().parents[1]
