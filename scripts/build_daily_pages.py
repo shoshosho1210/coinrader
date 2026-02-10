@@ -55,6 +55,10 @@ STATIC_PATHS = [
     "/disclaimer",
     "/contact",
 ]
+# COINS_ALIAS_SLUGS は /coins/btc 等の「別名スラッグ」を管理するための集合。
+# 目的:
+# - sitemap / 内部リンクで alias にリンクして重複URLを増やさない（canonical /coins/bitcoin/ に統一）
+# - daily → coins ハブリンク生成時も canonical を優先し、alias は弾く保険として使う
 COINS_ALIAS_SLUGS = {"btc", "eth", "sol"}  # sitemapに載せない（301で正規へ集約）
 # --- coins hub link map (daily -> /coins/<canonical>/ ) ---
 SYMBOL_TO_COIN_SLUG = {
