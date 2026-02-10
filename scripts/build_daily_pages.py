@@ -448,6 +448,7 @@ def rebuild_sitemap_with_daily(
     drop_locs = {
         f"{site_origin}/daily/index.html",
         f"{site_origin}/daily/latest",
+        f"{site_origin}/daily/latest.html",
         f"{site_origin}/daily/tags/bear.html",
         f"{site_origin}/daily/tags/bull.html",
         f"{site_origin}/daily/tags/wait.html",
@@ -487,7 +488,6 @@ def rebuild_sitemap_with_daily(
     # daily ルート（canonical: extensionless）
     daily_root_urls = [
         f"{site_origin}/daily/",
-        f"{site_origin}/daily/latest",
         f"{site_origin}/daily/tags/bear",
         f"{site_origin}/daily/tags/bull",
         f"{site_origin}/daily/tags/wait",
@@ -506,7 +506,7 @@ def rebuild_sitemap_with_daily(
         existing[u] = {
             "lastmod": latest_iso,
             "changefreq": "daily",
-            "priority": "0.9" if (u.endswith("/daily/") or u.endswith("/daily/latest")) else "0.6",
+            "priority": "0.9" if u.endswith("/daily/") else "0.6",
         }
 
     # 日次ページ
@@ -554,7 +554,6 @@ def rebuild_sitemap_with_daily(
     # daily系を最後にまとめて追加（重複排除）
     daily_first = [
         f"{site_origin}/daily/",
-        f"{site_origin}/daily/latest",
         f"{site_origin}/daily/tags/bear",
         f"{site_origin}/daily/tags/bull",
         f"{site_origin}/daily/tags/wait",
