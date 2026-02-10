@@ -8915,17 +8915,32 @@ const fgLabel = (v) => {
 };
 const rsiLabel = (v) => {
   if (v === null) return '—';
-  if (v <= 25) return '強い売られすぎ';
-  if (v <= 30) return '売られすぎ';
-  if (v >= 75) return '強い買われすぎ';
-  if (v >= 70) return '買われすぎ';
-  return '中立';
+  if (isEn){
+    if (v <= 25) return 'Strongly oversold';
+    if (v <= 30) return 'Oversold';
+    if (v >= 75) return 'Strongly overbought';
+    if (v >= 70) return 'Overbought';
+    return 'Neutral';
+  } else {
+    if (v <= 25) return '強い売られすぎ';
+    if (v <= 30) return '売られすぎ';
+    if (v >= 75) return '強い買われすぎ';
+    if (v >= 70) return '買われすぎ';
+    return '中立';
+  }
 };
+
 const trendLabel = (v) => {
   if (v === null) return '—';
-  if (v >= 2.0) return '上向き';
-  if (v <= -2.0) return '下向き';
-  return '横ばい';
+  if (isEn){
+    if (v >= 2.0) return 'Uptrend';
+    if (v <= -2.0) return 'Downtrend';
+    return 'Sideways';
+  } else {
+    if (v >= 2.0) return '上向き';
+    if (v <= -2.0) return '下向き';
+    return '横ばい';
+  }
 };
 
 const fmtPct = (v, digits=1) => (v === null) ? '—' : ((v >= 0 ? '+' : '') + v.toFixed(digits) + '%');
@@ -9033,11 +9048,18 @@ const reasons = [reasonRsi, reasonFg, reasonTrend];
 
 /* v34: 理由の並びを揃える（列固定） */
 function _aiSigTone(sigText){
-  const t = (sigText||'').toLowerCase();
-  if (t.includes('fear') || t.includes('下向き') || t.includes('売られすぎ')) return 'bear';
-  if (t.includes('greed') || t.includes('上向き') || t.includes('買われすぎ')) return 'bull';
+  const s = String(sigText||'');
+  const l = s.toLowerCase();
+
+  if (l.includes('fear') || l.includes('downtrend') || l.includes('oversold') ||
+      s.includes('下向き') || s.includes('売られすぎ')) return 'bear';
+
+  if (l.includes('greed') || l.includes('uptrend') || l.includes('overbought') ||
+      s.includes('上向き') || s.includes('買われすぎ')) return 'bull';
+
   return 'neutral';
 }
+
 function fgText(n){
   const v = Number(n);
   if (!isFinite(v)) return '—';
@@ -9053,7 +9075,7 @@ const reasonRows = [
     k:'RSI',
     v:(rsiNum===null||rsiNum===undefined)?'—':String(rsiNum),
     th:'<30/>70',
-    sig:(rsiNum===null||rsiNum===undefined)?'—':(rsiNum<30?'売られすぎ':(rsiNum>70?'買われすぎ':'中立'))
+    sig:(rsiNum==null)?'—':(rsiNum<30?(isEn?'Oversold':'売られすぎ'):(rsiNum>70?(isEn?'Overbought':'買われすぎ'):(isEn?'Neutral':'中立')))
   },
   {
     k:'Fear&Greed',
@@ -9069,8 +9091,10 @@ const reasonRows = [
   }
 ];
 const reasonGridHtml = `
-  <div class="ai-reasons-grid" role="table" aria-label="判断理由">
-    <div class="h">指標</div><div class="h">現在値</div><div class="h">判定</div>
+  <div class="ai-reasons-grid" role="table" aria-label="${isEn ? 'AI reasoning' : '判断理由'}">
+    <div class="h">${isEn ? 'Indicator' : '指標'}</div>
+    <div class="h">${isEn ? 'Current' : '現在値'}</div>
+    <div class="h">${isEn ? 'Signal' : '判定'}</div>
     ${reasonRows.map(r=>{
       const tone=_aiSigTone(r.sig);
       return `
