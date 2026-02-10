@@ -1574,12 +1574,19 @@ def main() -> None:
 
         write_text(out_path_html, tag_html)
 
-        # NOTE: tag pages are canonicalized to .html via _redirects, so do not generate extensionless files.
+        # Also generate extensionless tag page for canonical (/daily/tags/<tag>)
+        out_path_ext = tags_dir / f"{tag_lower}"
+        write_text(out_path_ext, tag_html)
+
+        # NOTE: tag pages are generated as both /daily/tags/<tag>.html and extensionless /daily/tags/<tag> for canonical.
 
     latest_target = f"{latest_ymd}.html"
     latest_page_path = OUT_DIR / latest_target
     latest_page_html = read_text(latest_page_path)
     write_text(OUT_DIR / "latest.html", latest_page_html)
+
+    # Also generate extensionless latest page for canonical (/daily/latest)
+    write_text(OUT_DIR / "latest", latest_page_html)
 
     rebuild_sitemap_with_daily(
         ROOT / "sitemap.xml",
