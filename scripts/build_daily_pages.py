@@ -868,14 +868,9 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
     lis = "".join([f"<li>{escape_html(t)}</li>" for t in take])
     return f"<section class='takeaways' aria-label='Key Takeaways'><h2 class='takeaways-h'>Key Takeaways</h2><ul class='takeaways-ul'>{lis}</ul></section>"
 
-def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer: Dict[str, Any]) -> str:
-    """
-    dailyページ内に「関連銘柄（coinsハブ）」リンクを自動挿入する。
-    - canonical の /coins/<slug>/ のみを出す（/coins/btc など alias は出さない）
-    - 参照名ブレ（SYMBOL_TO_COIN_SLUG / SYMBOL_TO_COIN_SLUGS）を吸収する
-    """
+from pathlib import Path
 
-    # 参照名ブレを吸収して「シンボル→slug表」を確実に取得
+def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer: Dict[str, Any]) -> str:
     symbol_map = (
         globals().get("SYMBOL_TO_COIN_SLUG")
         or globals().get("SYMBOL_TO_COIN_SLUGS")
@@ -884,44 +879,58 @@ def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer:
     if not isinstance(symbol_map, dict):
         symbol_map = {}
 
-    syms: List[str] = []
+    # /coins/ に実在するslug一覧を作る（ディレクトリ or html の両対応）
+    coins_dir = Path("coins")
+    available = set()
+    if coins_dir.exists():
+        for p in coins_dir.iterdir():
+            if p.is_dir():
+                available.add(p.name.lower())
+            elif p.is_file() and p.suffix == ".html":
+                available.add(p.stem.lower())
 
-    # 1) trending から上位（まずは3つで十分）
+    # 対象シンボル抽出
+    syms = []
     for s in (trending or [])[:3]:
         if isinstance(s, str) and s.strip():
             syms.append(s.strip().upper())
 
-    # 2) top_gainer があれば追加
     if isinstance(top_gainer, dict):
         tg = str(top_gainer.get("symbol", "")).strip().upper()
         if tg:
             syms.append(tg)
 
-    # 3) BTC は常に入れる（不要なら削除OK）
     if "BTC" not in syms:
         syms.insert(0, "BTC")
 
-    # uniq（順序維持）
-    seen = set()
-    uniq: List[str] = []
+    # uniq
+    seen, uniq = set(), []
     for s in syms:
-        if s in seen:
+        if s in seen: 
             continue
         seen.add(s)
         uniq.append(s)
 
-    links: List[str] = []
+    links = []
     for sym in uniq:
+        # 1) 対応表
         slug = symbol_map.get(sym) or symbol_map.get(sym.upper())
+
+        # 2) 対応表になければ sym をそのまま slug 候補に（BTC等の alias は弾く）
+        if not slug:
+            cand = sym.lower()
+            if cand not in COINS_ALIAS_SLUGS:
+                slug = cand
+
         if not slug:
             continue
 
         slug_l = str(slug).strip().lower()
-        if not slug_l:
+        if not slug_l or slug_l in COINS_ALIAS_SLUGS:
             continue
 
-        # 念のため alias slug は弾く（例: btc/eth/sol）
-        if slug_l in COINS_ALIAS_SLUGS:
+        # 3) /coins/ に実在するものだけ出す（これが安全）
+        if available and (slug_l not in available):
             continue
 
         href = f"/coins/{slug_l}/"
@@ -937,6 +946,7 @@ def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer:
         + "\n".join(links) +
         "</div></section>"
     )
+
 
 def shorten_one_line(s: str, max_len: int = 70) -> str:
     s = (s or "").strip()
