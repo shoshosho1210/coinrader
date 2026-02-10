@@ -83,6 +83,12 @@ COIN_HUBS_CSS = """
   padding:4px 10px; border-radius:999px;
   font-size:12px; text-decoration:none;
 }
+.chip-coin.is-missing{
+  opacity:.55;
+  border-style:dashed;
+  cursor:default;
+}
+.chip-coin.is-missing:hover{ text-decoration:none; filter:none; }
 </style>
 """.strip()
 
@@ -956,25 +962,23 @@ def _build_symbol_to_slug_map_from_coins_dir(coins_dir="coins"):
 def build_coin_hub_links_html(site_origin, trending=None, top_gainer=None, coins_dir="coins"):
     """
     Build '関連銘柄' chips.
-    - trending: list[str] e.g. ['BTC','BNKR','ZRO']
-    - top_gainer: dict e.g. {'symbol':'BNKR',...}
+    - If /coins/<slug>/ exists => link <a>
+    - If not exists => show disabled chip <span> so daily HTML still shows all symbols
     """
     import html as _html
 
     trending = trending or []
-    # top_gainer は dict/None 両対応
     gsym = None
     if isinstance(top_gainer, dict):
         gsym = top_gainer.get("symbol") or top_gainer.get("ticker") or top_gainer.get("id")
 
-    # 対象シンボル（重複排除・順序維持）
     seen = set()
     syms = []
     for s in trending + ([gsym] if gsym else []):
         if not s:
             continue
-        S = str(s).upper()
-        if S in seen:
+        S = str(s).upper().strip()
+        if not S or S in seen:
             continue
         seen.add(S)
         syms.append(S)
@@ -985,30 +989,35 @@ def build_coin_hub_links_html(site_origin, trending=None, top_gainer=None, coins
     available_slugs = list_existing_coin_slugs(coins_dir)
     sym2slug = _build_symbol_to_slug_map_from_coins_dir(coins_dir)
 
-    links = []
+    chips = []
     for sym in syms:
         slug = sym2slug.get(sym)
-        # slug が未解決なら従来通り slugify(symbol) も試す（後方互換）
+
+        # 既存の手動マップがあるなら優先（あなたの BTC=bitcoin 等）
+        try:
+            if not slug and isinstance(SYMBOL_TO_COIN_SLUG, dict):
+                slug = SYMBOL_TO_COIN_SLUG.get(sym)
+        except Exception:
+            pass
+
+        # 最後に ticker小文字スラッグも試す
         if not slug:
-            slug_guess = sym.lower()
-            if slug_guess in available_slugs:
-                slug = slug_guess
+            guess = sym.lower()
+            if guess in available_slugs:
+                slug = guess
 
-        if not slug:
-            # /coins/ 実ページが無いものはリンクしない（SEO的にも安全）
-            continue
-
-        href = f"/coins/{slug}/"
-        links.append(f"<a class='chip chip-coin' href='{href}'>{_html.escape(sym)}</a>")
-
-    if not links:
-        return ""
+        if slug and slug in available_slugs:
+            href = f"/coins/{slug}/"
+            chips.append(f"<a class='chip chip-coin' href='{href}'>{_html.escape(sym)}</a>")
+        else:
+            # coinsページが無い => 表示だけする（リンク無し）
+            chips.append(f"<span class='chip chip-coin is-missing' title='Coins page not available'>{_html.escape(sym)}</span>")
 
     return (
         "<section class='coin-hubs' aria-label='Related coins'>"
         "<div class='coin-hubs-h'>関連銘柄</div>"
         "<div class='coin-hubs-links'>"
-        + "".join(links) +
+        + "".join(chips) +
         "</div></section>"
     )
 
