@@ -1,37 +1,53 @@
 # --- Guide / Dictionary / Coins (extensionless canonical) ---
 
-/guide.html              /guide/                301
-/guide                  /guide/                301
+# guide hub
+/guide.html                 /guide/                   301
+/guide                      /guide/                   301
 
-/dictionary.html         /dictionary/           301
-/dictionary             /dictionary/           301
+# dictionary hub
+/dictionary.html            /dictionary/              301
+/dictionary                 /dictionary/              301
 
-/coins.html              /coins/               301
-/coins                 /coins/               301
+# coins hub
+/coins.html                 /coins/                   301
+/coins                      /coins/                   301
 
-# Optional: coin detail pretty URL (if you keep legacy *.html around)
-/coins/bitcoin.html      /coins/bitcoin/        301
-/coins/ethereum.html     /coins/ethereum/       301
-/coins/xrp.html          /coins/xrp/            301
 
-# Optional: dictionary term pretty URL (if you keep legacy *.html around)
-/dictionary/rsi.html             /dictionary/rsi/             301
-/dictionary/fear-and-greed.html  /dictionary/fear-and-greed/  301
-/dictionary/moving-average.html  /dictionary/moving-average/  301
-/dictionary/volume.html          /dictionary/volume/          301
-/dictionary/market-cap.html      /dictionary/market-cap/      301
-/dictionary/trend.html           /dictionary/trend/           301
+# --- Dictionary: legacy aliases / exceptions (MUST be before :slug) ---
 
-/dictionary/:slug    /dictionary/:slug/    301
-/dictionary/fear-greed-index/   /dictionary/fear-and-greed/   301
-/dictionary/fear-greed-index    /dictionary/fear-and-greed/   301
+/dictionary/fear-greed-index/     /dictionary/fear-and-greed/  301
+/dictionary/fear-greed-index      /dictionary/fear-and-greed/  301
 
-# coins canonicalize
-/coins/btc        /coins/bitcoin/   301
-/coins/btc/       /coins/bitcoin/   301
 
-/coins/eth        /coins/ethereum/  301
-/coins/eth/       /coins/ethereum/  301
+# --- Dictionary: legacy *.html (optional, keep if old links exist) ---
 
-/coins/sol        /coins/solana/    301
-/coins/sol/       /coins/solana/    301
+/dictionary/rsi.html              /dictionary/rsi/             301
+/dictionary/fear-and-greed.html   /dictionary/fear-and-greed/  301
+/dictionary/moving-average.html   /dictionary/moving-average/  301
+/dictionary/volume.html           /dictionary/volume/          301
+/dictionary/market-cap.html       /dictionary/market-cap/      301
+/dictionary/trend.html            /dictionary/trend/           301
+
+
+# --- Dictionary: catch-all (keep AFTER exceptions & html rules) ---
+
+/dictionary/:slug                /dictionary/:slug/            301
+
+
+# --- Coins: canonicalize tickers/aliases (before any generic rule if you add later) ---
+
+/coins/btc                       /coins/bitcoin/              301
+/coins/btc/                      /coins/bitcoin/              301
+
+/coins/eth                       /coins/ethereum/             301
+/coins/eth/                      /coins/ethereum/             301
+
+/coins/sol                       /coins/solana/               301
+/coins/sol/                      /coins/solana/               301
+
+
+# --- Coins: legacy *.html (optional, keep if old links exist) ---
+
+/coins/bitcoin.html              /coins/bitcoin/              301
+/coins/ethereum.html             /coins/ethereum/             301
+/coins/xrp.html                  /coins/xrp/                  301
