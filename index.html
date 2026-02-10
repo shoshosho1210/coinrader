@@ -5910,11 +5910,23 @@ function abortInFlightFetches(){
   }catch(_e){}
 }
 
-
   async function cgFetch(url, options = {}){
+    // CoinGecko が環境/タイミングによって CORS を返さず、ブラウザ直fetchが失敗することがあります。
+    // まず直叩き → 失敗時のみ CORS プロキシへフォールバックします（GET用途）。
     const headers = { ...(options.headers || {}) };
     if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
-    return fetch(url, { ...options, headers });
+    const baseOpts = { ...options, headers };
+    const proxyUrl = (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u);
+
+    try{
+      return await fetch(url, baseOpts);
+    }catch(e){
+      try{
+        return await fetch(proxyUrl(url), baseOpts);
+      }catch(_e2){
+        throw e;
+      }
+    }
   }
 
   async function fetchWithTimeout(url, timeoutMs = 15000, options = {}){
