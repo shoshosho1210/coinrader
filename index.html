@@ -5159,8 +5159,8 @@ td.text-down {
 <section aria-label="今日の注目" class="summary-block" id="sec-summary">
 <div class="section-header">
 <div>
-<div class="section-title">リアルタイム市場分析
-    </div>
+<div class="section-title" data-i18n data-ja="リアルタイム市場分析" data-en="Real-time Market Analysis">リアルタイム市場分析</div>
+
 </div>
 </div>
 <div class="ai-insight-box hud-panel" id="aiInsightBox">
@@ -5176,20 +5176,65 @@ td.text-down {
 </span>
 <span class="status-text">ANALYZING...</span>
 </div>
-<div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報"><span class="meta-pill" id="aiHorizonPill">対象: 短期(24h)</span><span class="meta-pill" id="aiConfPill">確度: --</span></div>
+<div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報">
+  <span class="meta-pill" id="aiHorizonPill" data-i18n data-ja="対象: 短期(24h)" data-en="Horizon: Short-term (24h)">対象: 短期(24h)</span>
+  <span class="meta-pill" id="aiConfPill" data-i18n data-ja="確度: --" data-en="Confidence: --">確度: --</span>
+</div>
+
 </div>
 <button class="hud-guide-btn" onclick="openPageModal('/guide', 'CoinRader 活用ガイド');">
-<i class="fa-solid fa-book-open" style="margin-right:4px;"></i> ガイド
-    </button>
+  <i class="fa-solid fa-book-open" style="margin-right:4px;"></i>
+  <span data-i18n data-ja="ガイド" data-en="Guide">ガイド</span>
+</button>
+
 </div>
 <div class="hud-shortline" id="aiInsightShort">—</div>
 <div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
-  <a id="aiDailyLatestLink" href="/daily/latest" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
-     aria-label="今日のAIレポート">今日のAIレポート</a>
-  <a id="aiDailyListLink" href="/daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
-     aria-label="過去のAIレポート">過去のAIレポート</a>
+<a id="aiDailyLatestLink" href="/daily/latest" style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
+   data-i18n data-ja="今日のAIレポート" data-en="Today's AI Report"
+   aria-label="今日のAIレポート">今日のAIレポート</a>
+
+<a id="aiDailyListLink" href="/daily/" style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
+   data-i18n data-ja="過去のAIレポート" data-en="Past AI Reports"
+   aria-label="過去のAIレポート">過去のAIレポート</a>
 </div>
-<div class="hud-metrics-row compact"><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">RSI</span><span class="pill-sub">過熱感</span></span><span class="pill-value text-glow" id="hudRsiVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudRsiBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">SENTIMENT</span><span class="pill-sub">市場心理</span></span><span class="pill-value text-glow" id="hudFgVal">--</span></div><div class="pill-bar-bg"><div class="pill-bar-fill" id="hudFgBar"></div></div></div><div class="hud-pill"><div class="pill-top"><span class="pill-labelwrap"><span class="pill-label">TREND</span><span class="pill-sub">強度</span></span><span class="pill-value text-glow" id="hudTrendVal">--</span></div><div class="pill-bar-bg trend"><div class="pill-bar-fill trend" id="hudTrendBar"></div></div></div></div>
+<div class="hud-metrics-row compact">
+  <div class="hud-pill"><div class="pill-top">
+    <span class="pill-labelwrap">
+      <span class="pill-label">RSI</span>
+      <span class="pill-sub">過熱感</span>
+    </span>
+    <span class="pill-value text-glow" id="hudRsiVal">--</span>
+  </div>
+    <div class="pill-bar-bg">
+      <div class="pill-bar-fill" id="hudRsiBar"></div>
+    </div>
+  </div>
+  <div class="hud-pill">
+    <div class="pill-top">
+      <span class="pill-labelwrap">
+        <span class="pill-label">SENTIMENT</span>
+        <span class="pill-sub">市場心理</span>
+      </span>
+      <span class="pill-value text-glow" id="hudFgVal">--</span>
+    </div>
+    <div class="pill-bar-bg">
+      <div class="pill-bar-fill" id="hudFgBar"></div>
+    </div>
+  </div>
+  <div class="hud-pill">
+    <div class="pill-top">
+      <span class="pill-labelwrap">
+        <span class="pill-label">TREND</span>
+        <span class="pill-sub">強度</span>
+      </span>
+      <span class="pill-value text-glow" id="hudTrendVal">--</span>
+    </div>
+    <div class="pill-bar-bg trend">
+      <div class="pill-bar-fill trend" id="hudTrendBar"></div>
+    </div>
+  </div>
+</div>
 <details class="hud-details">
 <summary class="hud-summary-btn">
 <span class="btn-text">AIの判断理由を見る（30秒）</span>
