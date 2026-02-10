@@ -872,11 +872,14 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
 
 from pathlib import Path
 
-def build_coin_hub_links_html(trending_syms: List[str], limit: int = 5) -> str:
+from urllib.parse import quote_plus
+
+def build_coin_hub_links_html(site_origin: str, trending_syms: List[str], top_gainer: dict = None, limit: int = 5) -> str:
     """
     dailyページ内に「関連銘柄」チップを生成する。
     - /coins/<slug>/ が存在するならそこへリンク（canonical優先）
     - 存在しない場合は 404 を避けて /coins/?q=<SYMBOL> にフォールバック
+    NOTE: site_origin / top_gainer は既存呼び出し互換のため受け取る（ここでは未使用）
     """
     if not trending_syms:
         return ""
@@ -895,20 +898,17 @@ def build_coin_hub_links_html(trending_syms: List[str], limit: int = 5) -> str:
 
         # alias(slug)は避けたい（/coins/btc 等）
         if slug_l in COINS_ALIAS_SLUGS:
-            # aliasなら、マップがあればマップへ、なければ検索へ
             if mapped and mapped in available:
                 href = f"/coins/{mapped}/"
             else:
                 href = f"/coins/?q={quote_plus(sym_u)}"
         else:
-            # 実体があるなら canonical へ、無ければ検索へ（404回避）
             if slug_l in available:
                 href = f"/coins/{slug_l}/"
             else:
                 href = f"/coins/?q={quote_plus(sym_u)}"
 
-        label = sym_u  # 表示はシンボルで統一（短くて見やすい）
-        links.append((href, label))
+        links.append((href, sym_u))
 
     if not links:
         return ""
@@ -921,6 +921,7 @@ def build_coin_hub_links_html(trending_syms: List[str], limit: int = 5) -> str:
         f"<div class='coin-hubs-links'>{items}</div>"
         "</section>"
     )
+
 
 def shorten_one_line(s: str, max_len: int = 70) -> str:
     s = (s or "").strip()
