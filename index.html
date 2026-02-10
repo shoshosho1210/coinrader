@@ -8575,11 +8575,23 @@ async function updateAiInsight() {
     if (diffMin > 60) {
         if (box) box.setAttribute('data-signal','stale');
         if (timeEl) {
-            timeEl.textContent = "[ DATA STALE: RELOAD REQUIRED ]";
-            timeEl.style.color = "#f87171";
+          timeEl.textContent = isEn ? "[ DATA STALE: RELOAD REQUIRED ]" : "[ データが古いです：更新が必要 ]";
+          timeEl.style.color = "#f87171";
         }
-        if (shortEl) shortEl.textContent = 'データ更新待ち：更新ボタンで最新化してください';
-        textEl.innerHTML = `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">表示中の市場データが古いため、AI分析を一時停止しています。<br>最新情報を取得するには「更新」ボタンを押してください。</div>`;
+        if (shortEl) {
+          shortEl.textContent = isEn
+            ? "Waiting for fresh data: please press Refresh."
+            : "データ更新待ち：更新ボタンで最新化してください";
+        }
+        textEl.innerHTML = isEn
+          ? `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">
+               Market data is stale, so AI analysis is paused.<br>
+               Press “Refresh” to fetch the latest data.
+             </div>`
+          : `<div style="color:#94a3b8; text-align:center; padding:30px; font-size:13px;">
+               表示中の市場データが古いため、AI分析を一時停止しています。<br>
+               最新情報を取得するには「更新」ボタンを押してください。
+             </div>`;
         if (box) box.setAttribute('data-signal','stale');
         return;
     }
