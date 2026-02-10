@@ -877,110 +877,97 @@ from urllib.parse import quote_plus
 import os
 import re
 
+from pathlib import Path
+
 def list_existing_coin_slugs(coins_dir: str = "coins") -> set[str]:
     """
-    Return a set of canonical slugs that exist under /coins/.
-    Expected structure examples:
-      coins/bitcoin/index.html
-      coins/bitcoin.html (legacy)
-      coins/bitcoin/ (dir)
+    /coins/<slug>/ (index.html) が存在する slug 一覧を返す
     """
+    base = Path(coins_dir)
+    if not base.exists():
+        return set()
+
     slugs: set[str] = set()
-    if not os.path.isdir(coins_dir):
-        return slugs
-
-    for name in os.listdir(coins_dir):
-        if name.startswith("."):
-            continue
-        p = os.path.join(coins_dir, name)
-
-        # coins/<slug>/index.html
-        if os.path.isdir(p):
-            idx = os.path.join(p, "index.html")
-            if os.path.isfile(idx):
-                slugs.add(name)
-                continue
-
-        # coins/<slug>.html (if any legacy remains)
-        if os.path.isfile(p) and name.endswith(".html"):
-            slugs.add(name[:-5])
-
+    # /coins/<slug>/index.html を想定
+    for p in base.glob("*/index.html"):
+        try:
+            slugs.add(p.parent.name)
+        except Exception:
+            pass
     return slugs
 
 
-def _to_slug_from_symbol(symbol: str) -> str | None:
+def build_coin_hub_links_html(site_origin: str, trending=None, top_gainer=None, coins_dir: str = "coins") -> str:
     """
-    Convert ticker symbol (e.g. BTC) -> canonical slug (e.g. bitcoin).
-    If you already have a mapping dict in this file, use it here.
+    Dailyページ用：関連銘柄(/coins/)へのリンクを生成する。
+    - trending: ["BTC","ETH",...] のようなシンボル配列を想定
+    - top_gainer: {"symbol":"BNKR", ...} のようなdictを想定
     """
-    if not symbol:
-        return None
+    # 既存 /coins/ slug を確認（存在するものだけリンクに出す）
+    available = list_existing_coin_slugs(coins_dir)
 
-    s = str(symbol).strip().upper()
-
-    # ここは「既にあなたのスクリプト内にあるマップ」を優先して使う想定
-    # 例: SYMBOL_TO_COIN_SLUG = {"BTC":"bitcoin", ...}
-    try:
-        slug = SYMBOL_TO_COIN_SLUG.get(s)  # type: ignore[name-defined]
-        if slug:
-            return slug
-    except Exception:
-        pass
-
-    # fallback: 英数字/ハイフンのみ（最低限の安全策）
-    return re.sub(r"[^a-z0-9\-]+", "", s.lower()) or None
-
-
-def build_coin_hub_links_html(origin: str, trending=None, top_gainer=None) -> str:
-    """
-    Build 'related coins' chips for the daily page, linking to existing /coins/<slug>/ pages.
-    - trending: list[str] of symbols
-    - top_gainer: dict like {"symbol": "...", "change": ...}
-    """
-    available = list_existing_coin_slugs()  # set of existing canonical slugs under /coins/
-    if not available:
-        return ""
-
-    symbols: list[str] = []
+    # まず候補シンボルを集める（重複排除・順序維持）
+    cand = []
+    def add_sym(s):
+        if not s:
+            return
+        s = str(s).strip().upper()
+        if not s:
+            return
+        if s not in cand:
+            cand.append(s)
 
     if isinstance(trending, (list, tuple)):
-        symbols.extend([x for x in trending if x])
+        for s in trending:
+            add_sym(s)
 
     if isinstance(top_gainer, dict):
-        gs = top_gainer.get("symbol")
-        if gs:
-            symbols.append(gs)
+        add_sym(top_gainer.get("symbol"))
 
-    # de-dup while keeping order
-    seen = set()
-    uniq: list[str] = []
-    for s in symbols:
-        su = str(s).strip().upper()
-        if not su or su in seen:
-            continue
-        seen.add(su)
-        uniq.append(su)
+    # シンボル→slug（最低限の代表銘柄だけ固定マップ、他は存在チェックで拾えるなら拾う）
+    SYMBOL_TO_SLUG = {
+        "BTC": "bitcoin",
+        "ETH": "ethereum",
+        "SOL": "solana",
+        "XRP": "xrp",
+        "BNB": "bnb",
+        "DOGE": "dogecoin",
+        "ADA": "cardano",
+        "TRX": "tron",
+        "AVAX": "avalanche",
+        "DOT": "polkadot",
+        "LINK": "chainlink",
+        "MATIC": "polygon",  # coins側のslugが "polygon" の場合
+    }
 
     links = []
-    for sym in uniq:
-        slug = _to_slug_from_symbol(sym)
+    for sym in cand:
+        slug = SYMBOL_TO_SLUG.get(sym)
+
+        # 固定マップに無い場合： /coins/<lower>/ が存在するならそれを使う（保守的に）
+        if not slug:
+            guess = sym.lower()
+            if guess in available:
+                slug = guess
+
         if not slug:
             continue
         if slug not in available:
             continue
-        # URLは相対でOK（originは将来 absolute を作りたい時のため残す）
+
         links.append(f"<a class='chip chip-coin' href='/coins/{slug}/'>{sym}</a>")
 
     if not links:
         return ""
 
-    return (
+    html = (
         "<section class='coin-hubs' aria-label='Related coins'>"
         "<div class='coin-hubs-h'>関連銘柄</div>"
         "<div class='coin-hubs-links'>"
-        + "".join(links) +
-        "</div></section>"
+        + "".join(links)
+        + "</div></section>"
     )
+    return html
 
 
 
