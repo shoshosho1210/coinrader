@@ -51,3 +51,22 @@
 /coins/bitcoin.html              /coins/bitcoin/              301
 /coins/ethereum.html             /coins/ethereum/             301
 /coins/xrp.html                  /coins/xrp/                  301
+
+# --- Daily (extensionless canonical) ---
+
+# daily hub
+/daily/index.html               /daily/                 301
+
+# daily latest (normalize)
+/daily/latest.html              /daily/latest           301
+/daily/latest/                  /daily/latest           301
+
+# daily date pages (if legacy *.html exist)
+/daily/:date.html               /daily/:date            301
+
+# daily tags (if legacy *.html exist)
+/daily/tags/:tag.html           /daily/tags/:tag        301
+
+# daily "latest" should be redirect-only (avoid duplicate HTML)
+/daily/latest                   /daily/20260211         302
+
