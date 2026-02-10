@@ -870,9 +870,20 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
 
 def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer: Dict[str, Any]) -> str:
     """
-    dailyページ内に「関連銘柄（ハブ）」リンクを自動挿入する。
+    dailyページ内に「関連銘柄（coinsハブ）」リンクを自動挿入する。
     - canonical の /coins/<slug>/ のみを出す（/coins/btc など alias は出さない）
+    - 参照名ブレ（SYMBOL_TO_COIN_SLUG / SYMBOL_TO_COIN_SLUGS）を吸収する
     """
+
+    # 参照名ブレを吸収して「シンボル→slug表」を確実に取得
+    symbol_map = (
+        globals().get("SYMBOL_TO_COIN_SLUG")
+        or globals().get("SYMBOL_TO_COIN_SLUGS")
+        or {}
+    )
+    if not isinstance(symbol_map, dict):
+        symbol_map = {}
+
     syms: List[str] = []
 
     # 1) trending から上位（まずは3つで十分）
@@ -886,29 +897,34 @@ def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer:
         if tg:
             syms.append(tg)
 
-    # 3) BTC は常に入れたいなら（不要ならこの2行は消してOK）
+    # 3) BTC は常に入れる（不要なら削除OK）
     if "BTC" not in syms:
         syms.insert(0, "BTC")
 
     # uniq（順序維持）
     seen = set()
-    uniq = []
+    uniq: List[str] = []
     for s in syms:
         if s in seen:
             continue
         seen.add(s)
         uniq.append(s)
 
-    # canonical slug に解決できるものだけリンク化
-    links = []
+    links: List[str] = []
     for sym in uniq:
-        slug = SYMBOL_TO_COIN_SLUG.get(sym)
+        slug = symbol_map.get(sym) or symbol_map.get(sym.upper())
         if not slug:
             continue
-        # 念のため alias "symbol" は弾く（例: BTC/ETH/SOL の alias 管理）
-        if sym.lower() in COINS_ALIAS_SLUGS:
+
+        slug_l = str(slug).strip().lower()
+        if not slug_l:
             continue
-        href = f"/coins/{slug}/"
+
+        # 念のため alias slug は弾く（例: btc/eth/sol）
+        if slug_l in COINS_ALIAS_SLUGS:
+            continue
+
+        href = f"/coins/{slug_l}/"
         links.append(f"<a class='chip chip-coin' href='{href}'>{escape_html(sym)}</a>")
 
     if not links:
