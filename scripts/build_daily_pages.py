@@ -929,8 +929,11 @@ def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer:
         if not slug_l or slug_l in COINS_ALIAS_SLUGS:
             continue
 
-        # 3) /coins/ に実在するものだけ出す（これが安全）
-        if available and (slug_l not in available):
+        # 3) /coins/ 実在チェックは「slugを推測したときだけ」かける
+        #    （対応表で確定したslugは出す＝後で coins ページを作ればOK）
+        came_from_map = bool(symbol_map.get(sym) or symbol_map.get(sym.upper()))
+
+        if available and (slug_l not in available) and (not came_from_map):
             continue
 
         href = f"/coins/{slug_l}/"
