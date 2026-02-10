@@ -207,8 +207,18 @@ jobs:
             echo "INDEXNOW_KEY not set; skip."
             exit 0
           fi
-          latest=$(ls -1 data/daily/*.json | sed 's#.*/##' | sed 's/\.json$//' | sort | tail -n 1)
-          echo "latest daily: $latest"
+          # 8桁日付のjsonだけを拾う（latest.json等を除外）
+          latest=$(
+            ls -1 data/daily/*.json \
+            | sed 's#.*/##' \
+            | sed 's/\.json$//' \
+            | grep -E '^[0-9]{8}$' \
+            | sort \
+            | tail -n 1
+          )
+
+          echo "latest daily: ${latest}"
+          test -n "${latest}"
 
           cat > /tmp/indexnow.json <<EOF
           {
