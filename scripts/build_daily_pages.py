@@ -1175,7 +1175,10 @@ def main() -> None:
         why_html = build_reason_html(payload, judge)
         takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer)
         coin_hubs_html = build_coin_hub_links_html(SITE_ORIGIN, trending, top_gainer)
-      
+
+        print("[DBG] trending=", trending, "top_gainer=", top_gainer)
+        print("[DBG] coin_hubs_html_len=", len(coin_hubs_html or ""))
+
         html = tmpl
         repl = {
             "{{TITLE}}": title,
