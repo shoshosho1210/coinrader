@@ -254,7 +254,7 @@ def main() -> int:
 
     # Validations (post-fix scan)
     dict_bad = validate_dictionary_trailing_slash(locs)
-    daily_lastmod_bad = validate_daily_lastmod_required(locs, path, base_url=args.base_url)
+    daily_lastmod_bad = validate_daily_lastmod_required(root)
     daily_latest_bad = validate_exclude_daily_latest(locs)
     errors = []
     if not locs:
