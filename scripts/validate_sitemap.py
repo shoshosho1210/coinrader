@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from collections import Counter
+from datetime import datetime
 
 ROOT = Path(__file__).resolve().parents[1]
 SITEMAP = ROOT / "sitemap.xml"
@@ -164,6 +165,60 @@ def validate_dictionary_trailing_slash(locs: list[str]) -> list[str]:
     bad = sorted({p for p in paths if re.fullmatch(r"/dictionary/[a-z0-9\-]+", p)})
     return bad
 
+def validate_daily_lastmod_required(root: ET.Element) -> list[str]:
+    """
+    /daily/YYYYMMDD は lastmod 必須、かつ YYYY-MM-DD 形式であることをチェック。
+    戻り値: 不備のある loc の一覧
+    """
+    bad = []
+
+    # namespace-agnostic: <url> を走査
+    for url_node in root.iter():
+        if not url_node.tag.endswith("url"):
+            continue
+
+        loc = None
+        lastmod = None
+        for child in url_node:
+            if child.tag.endswith("loc"):
+                loc = (child.text or "").strip()
+            elif child.tag.endswith("lastmod"):
+                lastmod = (child.text or "").strip()
+
+        if not loc:
+            continue
+
+        path = ""
+        try:
+            path = urlparse(loc).path or ""
+        except Exception:
+            continue
+
+        m = re.fullmatch(r"/daily/(\d{8})", path)
+        if not m:
+            continue
+
+        ymd = m.group(1)
+        expected = f"{ymd[0:4]}-{ymd[4:6]}-{ymd[6:8]}"
+
+        # lastmod 必須
+        if not lastmod:
+            bad.append(loc)
+            continue
+
+        # 形式チェック（YYYY-MM-DD）
+        try:
+            datetime.strptime(lastmod, "%Y-%m-%d")
+        except Exception:
+            bad.append(loc)
+            continue
+
+        # dailyは日付一致が望ましい（ズレていたらエラー）
+        if lastmod != expected:
+            bad.append(loc)
+
+    return sorted(set(bad))
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--fix", action="store_true", help="Auto-fix non-canonical/duplicate URLs in sitemap")
@@ -173,6 +228,8 @@ def main() -> int:
     root, loc_els, locs, dups, bad = _scan(xml)
     # --- dictionary: trailing slash canonical enforcement ---
     dict_bad = validate_dictionary_trailing_slash(locs)
+
+    daily_lastmod_bad = validate_daily_lastmod_required(root)
 
     if (dups or bad) and args.fix:
         fixed = _autofix(xml)
@@ -191,6 +248,8 @@ def main() -> int:
         errors.append(f"non-canonical URLs in sitemap: {bad}")
     if dict_bad:
         errors.append(f"dictionary term URLs must end with '/': {dict_bad}")
+    if daily_lastmod_bad:
+        errors.append(f"/daily/YYYYMMDD entries must have correct <lastmod> (YYYY-MM-DD and match date): {daily_lastmod_bad}")
 
     if errors:
         print("SITEMAP VALIDATION FAILED")
