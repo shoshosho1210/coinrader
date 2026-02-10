@@ -8924,8 +8924,30 @@ if (fgNum === null || rsiNum === null || maNum === null) {
   }
 }
 // UIへ反映
-if (horizonEl) horizonEl.textContent = `対象: ${horizonTxt}`;
-if (confEl) confEl.textContent = `確度: ${confidence}`;
+const isEn = (document.documentElement.lang === 'en');
+
+const horizonValEl = document.getElementById('aiHorizonVal');
+const confValEl    = document.getElementById('aiConfVal');
+
+// Horizon（値）: ここは固定でOK（将来増やすなら分岐で）
+if (horizonValEl) {
+  horizonValEl.textContent = isEn ? 'Short-term (24h)' : '短期(24h)';
+} else if (horizonEl) {
+  // 旧HTML互換（念のため）
+  horizonEl.textContent = isEn ? 'Horizon: Short-term (24h)' : '対象: 短期(24h)';
+}
+
+// Confidence（値）: ja のときだけ翻訳して見た目を揃える
+const confJaMap = { 'High':'高', 'Medium':'中', 'Low':'低' };
+const confDisplay = isEn ? confidence : (confJaMap[confidence] || confidence);
+
+if (confValEl) {
+  confValEl.textContent = confDisplay;
+} else if (confEl) {
+  // 旧HTML互換（念のため）
+  confEl.textContent = isEn ? `Confidence: ${confidence}` : `確度: ${confDisplay}`;
+}
+
 
 // 地合い（ポジション指示ではなく“市場環境”）
 let regime = 'レンジ（様子見）';
