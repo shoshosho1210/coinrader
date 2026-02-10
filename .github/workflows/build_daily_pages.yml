@@ -234,6 +234,13 @@ jobs:
           }
           EOF
 
-          curl -sS -X POST "https://api.indexnow.org/indexnow" \
+          curl -sS -D /tmp/indexnow_headers.txt \
+            -o /tmp/indexnow_body.txt \
+            -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
             --data-binary @/tmp/indexnow.json
+
+          echo "---- IndexNow status ----"
+          head -n 1 /tmp/indexnow_headers.txt || true
+          echo "---- IndexNow body ----"
+          cat /tmp/indexnow_body.txt || true
