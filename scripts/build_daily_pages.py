@@ -1298,12 +1298,13 @@ def main() -> None:
         )
 
 
+        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}"
+
         # og/twitter placeholders (if present in template)
         tag_html = tag_html.replace("{{OG_URL}}", canon_url)
         tag_html = tag_html.replace("{{TW_CARD}}", "summary_large_image")
         tag_html = tag_html.replace("{{TW_TITLE}}", f"AI {judge_key} の日一覧 | CoinRader")
         tag_html = tag_html.replace("{{TW_DESCRIPTION}}", new_desc)
-        canon_url = f"{SITE_ORIGIN}/daily/tags/{tag_lower}"
         tag_html = re.sub(
             r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
             f'<link rel="canonical" href="{escape_html(canon_url)}" />',
