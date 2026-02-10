@@ -219,6 +219,18 @@ def validate_daily_lastmod_required(root: ET.Element) -> list[str]:
 
     return sorted(set(bad))
 
+def validate_daily_latest_excluded(locs: list[str]) -> list[str]:
+    """/daily/latest は sitemap から除外する。"""
+    bad = []
+    for u in locs:
+        try:
+            path = urlparse(u).path or ""
+        except Exception:
+            continue
+        if path in {"/daily/latest", "/daily/latest/", "/daily/latest.html"}:
+            bad.append(u)
+    return sorted(set(bad))
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--fix", action="store_true", help="Auto-fix non-canonical/duplicate URLs in sitemap")
@@ -230,6 +242,7 @@ def main() -> int:
     dict_bad = validate_dictionary_trailing_slash(locs)
 
     daily_lastmod_bad = validate_daily_lastmod_required(root)
+    daily_latest_bad = validate_daily_latest_excluded(locs)
 
     if (dups or bad) and args.fix:
         fixed = _autofix(xml)
@@ -250,7 +263,9 @@ def main() -> int:
         errors.append(f"dictionary term URLs must end with '/': {dict_bad}")
     if daily_lastmod_bad:
         errors.append(f"/daily/YYYYMMDD entries must have correct <lastmod> (YYYY-MM-DD and match date): {daily_lastmod_bad}")
-
+    if daily_latest_bad:
+        errors.append(f"/daily/latest must not be included in sitemap: {daily_latest_bad}")
+    
     if errors:
         print("SITEMAP VALIDATION FAILED")
         for e in errors:
