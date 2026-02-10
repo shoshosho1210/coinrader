@@ -38,6 +38,8 @@ import glob
 import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from urllib.parse import quote_plus
+
 STATIC_PATHS = [
     "/",               # root
     "/about",
@@ -870,86 +872,55 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
 
 from pathlib import Path
 
-def build_coin_hub_links_html(site_origin: str, trending: List[str], top_gainer: Dict[str, Any]) -> str:
-    symbol_map = (
-        globals().get("SYMBOL_TO_COIN_SLUG")
-        or globals().get("SYMBOL_TO_COIN_SLUGS")
-        or {}
-    )
-    if not isinstance(symbol_map, dict):
-        symbol_map = {}
+def build_coin_hub_links_html(trending_syms: List[str], limit: int = 5) -> str:
+    """
+    dailyページ内に「関連銘柄」チップを生成する。
+    - /coins/<slug>/ が存在するならそこへリンク（canonical優先）
+    - 存在しない場合は 404 を避けて /coins/?q=<SYMBOL> にフォールバック
+    """
+    if not trending_syms:
+        return ""
 
-    # /coins/ に実在するslug一覧を作る（ディレクトリ or html の両対応）
-    coins_dir = Path("coins")
-    available = set()
-    if coins_dir.exists():
-        for p in coins_dir.iterdir():
-            if p.is_dir():
-                available.add(p.name.lower())
-            elif p.is_file() and p.suffix == ".html":
-                available.add(p.stem.lower())
-
-    # 対象シンボル抽出
-    syms = []
-    for s in (trending or [])[:3]:
-        if isinstance(s, str) and s.strip():
-            syms.append(s.strip().upper())
-
-    if isinstance(top_gainer, dict):
-        tg = str(top_gainer.get("symbol", "")).strip().upper()
-        if tg:
-            syms.append(tg)
-
-    if "BTC" not in syms:
-        syms.insert(0, "BTC")
-
-    # uniq
-    seen, uniq = set(), []
-    for s in syms:
-        if s in seen: 
-            continue
-        seen.add(s)
-        uniq.append(s)
-
+    available = list_existing_coin_slugs()  # set of existing canonical slugs under /coins/
     links = []
-    for sym in uniq:
-        # 1) 対応表
-        slug = symbol_map.get(sym) or symbol_map.get(sym.upper())
 
-        # 2) 対応表になければ sym をそのまま slug 候補に（BTC等の alias は弾く）
-        if not slug:
-            cand = sym.lower()
-            if cand not in COINS_ALIAS_SLUGS:
-                slug = cand
-
-        if not slug:
+    for sym in trending_syms[:limit]:
+        sym_u = (sym or "").strip().upper()
+        if not sym_u:
             continue
 
-        slug_l = str(slug).strip().lower()
-        if not slug_l or slug_l in COINS_ALIAS_SLUGS:
-            continue
+        # canonical slug候補（マップ優先）
+        mapped = SYMBOL_TO_COIN_SLUG.get(sym_u)
+        slug_l = (mapped or sym_u.lower()).strip()
 
-        # 3) /coins/ 実在チェックは「slugを推測したときだけ」かける
-        #    （対応表で確定したslugは出す＝後で coins ページを作ればOK）
-        came_from_map = bool(symbol_map.get(sym) or symbol_map.get(sym.upper()))
+        # alias(slug)は避けたい（/coins/btc 等）
+        if slug_l in COINS_ALIAS_SLUGS:
+            # aliasなら、マップがあればマップへ、なければ検索へ
+            if mapped and mapped in available:
+                href = f"/coins/{mapped}/"
+            else:
+                href = f"/coins/?q={quote_plus(sym_u)}"
+        else:
+            # 実体があるなら canonical へ、無ければ検索へ（404回避）
+            if slug_l in available:
+                href = f"/coins/{slug_l}/"
+            else:
+                href = f"/coins/?q={quote_plus(sym_u)}"
 
-        if available and (slug_l not in available) and (not came_from_map):
-            continue
-
-        href = f"/coins/{slug_l}/"
-        links.append(f"<a class='chip chip-coin' href='{href}'>{escape_html(sym)}</a>")
+        label = sym_u  # 表示はシンボルで統一（短くて見やすい）
+        links.append((href, label))
 
     if not links:
         return ""
 
+    items = "\n".join([f"<a class='chip chip-coin' href='{h}'>{lab}</a>" for h, lab in links])
+
     return (
         "<section class='coin-hubs' aria-label='Related coins'>"
         "<div class='coin-hubs-h'>関連銘柄</div>"
-        "<div class='coin-hubs-links'>"
-        + "\n".join(links) +
-        "</div></section>"
+        f"<div class='coin-hubs-links'>{items}</div>"
+        "</section>"
     )
-
 
 def shorten_one_line(s: str, max_len: int = 70) -> str:
     s = (s or "").strip()
