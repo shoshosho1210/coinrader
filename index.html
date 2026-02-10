@@ -8772,11 +8772,13 @@ async function updateAiInsight() {
         timeEl.style.opacity = "1"; // データがあれば濃く表示
     }
     // 5. 状態変化チェック
-    const currentState = `${sent}|${rsi}|${dom}|${maDist}`;
+    const lang = document.documentElement.lang || 'ja';
+    const currentState = `${lang}|${sent}|${rsi}|${dom}|${maDist}`;
     if (_last_ai_state === currentState) return;
 
     _ai_thinking = true;
     _last_ai_state = currentState;
+
 
     try {
 
@@ -8933,7 +8935,7 @@ const fmtInt = (v) => (v === null) ? '—' : String(Math.round(v));
 
 // v111: 対象期間/確度（ルールベース。予測ではなく“目安”）
 const horizonTxt = '短期(24h)';
-let confidence = 'Mid';
+let confidence = 'Medium';
 let highReasonTxt = '';
 if (fgNum === null || rsiNum === null || maNum === null) {
   confidence = 'Low';
@@ -8962,7 +8964,7 @@ if (horizonValEl) {
 }
 
 // Confidence（値）: ja のときだけ翻訳して見た目を揃える
-const confJaMap = { 'High':'高', 'Medium':'中', 'Low':'低' };
+const confJaMap = { 'High':'高', 'Medium':'中', 'Low':'低', 'Mid':'中' };
 const confDisplay = isEn ? confidence : (confJaMap[confidence] || confidence);
 
 if (confValEl) {
