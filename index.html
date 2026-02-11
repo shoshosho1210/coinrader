@@ -71,6 +71,76 @@
   </noscript>
 </head>
 <style>
+  /* FOMO Bar */
+  .fomo-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    margin: 0 4px 12px;
+    background: rgba(249, 115, 22, .04);
+    border: 1px solid rgba(249, 115, 22, .15);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .fomo-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f97316;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .fomo-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+  }
+
+  .fomo-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fomo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .04);
+    border: 1px solid rgba(255, 255, 255, .08);
+    font-size: 11px;
+    font-weight: 600;
+    color: #cbd5e1;
+    white-space: nowrap;
+    text-decoration: none !important;
+    transition: border-color .15s, background .15s;
+    flex-shrink: 0;
+  }
+
+  .fomo-pill:hover {
+    border-color: rgba(249, 115, 22, .4);
+    background: rgba(249, 115, 22, .06);
+  }
+
+  .fomo-pill .pct {
+    font-weight: 800;
+  }
+
+  .fomo-pill .pct.up {
+    color: #4ade80;
+  }
+
+  .fomo-pill .pct.dn {
+    color: #f87171;
+  }
+
   .hero {
     padding: 28px 0 16px;
   }
@@ -8769,6 +8839,14 @@
       </a>
     </div>
   </aside>
+
+  <!-- FOMO Bar: 急騰・注目銘柄ティッカー -->
+  <div class="fomo-bar" id="fomoBar" style="display:none;">
+    <div class="fomo-label"><i class="fa-solid fa-fire" style="color:#f97316;"></i> <span data-i18n data-ja="注目銘柄"
+        data-en="Trending">注目銘柄</span></div>
+    <div class="fomo-scroll" id="fomoScroll"></div>
+  </div>
+
   <section aria-label="今日の注目" class="summary-block" id="sec-summary">
     <div class="section-header">
       <div>
@@ -14366,6 +14444,73 @@
 
       return { bearContinue, review };
     }
+
+    // ===== FOMO Bar: 注目銘柄ティッカー =====
+    (async function initFomoBar() {
+      try {
+        const r = await fetch('/data/top_seed.json?ts=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) return;
+        const data = await r.json();
+        const coins = data.trending || [];
+        if (!coins.length) return;
+
+        // coin_id → slug 変換マップ
+        const ID_TO_SLUG = {
+          'bitcoin': 'bitcoin', 'ethereum': 'ethereum', 'tether': 'tether', 'ripple': 'xrp',
+          'binancecoin': 'bnb', 'solana': 'solana', 'usd-coin': 'usdc', 'dogecoin': 'dogecoin',
+          'cardano': 'cardano', 'tron': 'tron', 'avalanche-2': 'avalanche', 'chainlink': 'chainlink',
+          'shiba-inu': 'shiba-inu', 'sui': 'sui', 'stellar': 'stellar', 'polkadot': 'polkadot',
+          'bitcoin-cash': 'bitcoin-cash', 'hyperliquid': 'hyperliquid', 'uniswap': 'uniswap',
+          'litecoin': 'litecoin', 'hedera-hashgraph': 'hedera', 'near': 'near', 'aptos': 'aptos',
+          'pepe': 'pepe', 'internet-computer': 'internet-computer', 'dai': 'dai', 'aave': 'aave',
+          'ethereum-classic': 'ethereum-classic', 'matic-network': 'polygon', 'render-token': 'render',
+          'cosmos': 'cosmos', 'filecoin': 'filecoin', 'arbitrum': 'arbitrum', 'optimism': 'optimism',
+          'vechain': 'vechain', 'injective-protocol': 'injective', 'the-graph': 'the-graph',
+          'fantom': 'fantom', 'algorand': 'algorand', 'theta-token': 'theta', 'maker': 'maker',
+          'sei-network': 'sei', 'flow': 'flow', 'ondo-finance': 'ondo', 'pyth-network': 'pyth',
+          'jupiter-exchange-solana': 'jupiter', 'floki': 'floki', 'worldcoin-wld': 'worldcoin',
+          'bonk': 'bonk', 'blockstack': 'stacks'
+        };
+
+        // 変動率の絶対値でソート（注目度が高い順）
+        const sorted = [...coins].sort((a, b) =>
+          Math.abs(b.price_change_percentage_24h || 0) - Math.abs(a.price_change_percentage_24h || 0)
+        );
+
+        const container = document.getElementById('fomoScroll');
+        const bar = document.getElementById('fomoBar');
+        if (!container || !bar) return;
+
+        for (const c of sorted) {
+          const pct = c.price_change_percentage_24h;
+          if (pct == null || isNaN(pct)) continue;
+          const slug = ID_TO_SLUG[c.id] || c.id;
+          const sym = (c.symbol || '').toUpperCase();
+          const pctStr = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+          const cls = pct >= 0 ? 'up' : 'dn';
+
+          const a = document.createElement('a');
+          a.className = 'fomo-pill';
+          a.href = '/coins/' + slug + '/';
+          a.innerHTML = `<span>${sym}</span><span class="pct ${cls}">${pctStr}</span>`;
+          container.appendChild(a);
+        }
+
+        bar.style.display = 'flex';
+
+        // 自動スクロール
+        let scrollPos = 0;
+        function autoScroll() {
+          scrollPos += 0.5;
+          if (scrollPos >= container.scrollWidth - container.clientWidth) scrollPos = 0;
+          container.scrollLeft = scrollPos;
+          requestAnimationFrame(autoScroll);
+        }
+        if (container.scrollWidth > container.clientWidth) {
+          requestAnimationFrame(autoScroll);
+        }
+      } catch (e) { console.warn('FOMO bar error:', e); }
+    })();
 
   </script>
 
