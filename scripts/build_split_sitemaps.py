@@ -45,7 +45,7 @@ def build() -> tuple[int, int, int, str | None]:
     latest = daily_ids[-1] if daily_ids else None
 
     static_paths = [
-        "/", "/about", "/start", "/data-sources", "/ads-pr", "/privacy", "/disclaimer", "/contact",
+        "/", "/about", "/start", "/data-sources", "/ads-pr", "/privacy", "/disclaimer", "/contact", "/sponsor", "/en/",
         "/coins/", "/dictionary/", "/guide/",
     ]
 
