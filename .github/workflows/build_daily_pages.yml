@@ -66,6 +66,12 @@ jobs:
         run: |
           python scripts/build_dictionary_pages.py
 
+      - name: Sanity check dictionary canonical aliases
+        run: |
+          set -eux
+          test ! -d dictionary/fear-and-greed
+          test -z "$(find dictionary -maxdepth 2 -path 'dictionary/fear-and-greed/index.html' -print)"
+          
       - name: Check daily html links (no .html)
         run: |
           set -eux
