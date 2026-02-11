@@ -45,8 +45,8 @@ def build() -> tuple[int, int, int, str | None]:
     latest = daily_ids[-1] if daily_ids else None
 
     static_paths = [
-        "/", "/about", "/start", "/data-sources", "/ads-pr", "/privacy", "/disclaimer", "/contact", "/sponsor", "/en/",
-        "/coins/", "/dictionary/", "/guide/",
+        "/", "/about", "/start", "/data-sources", "/ads-pr", "/privacy", "/disclaimer", "/contact",
+        "/coins/", "/compare/", "/dictionary/", "/guide/",
     ]
 
     static_entries: list[tuple[str, str | None]] = []
@@ -68,6 +68,12 @@ def build() -> tuple[int, int, int, str | None]:
         for pdir in sorted(coins_dir.glob("*/")):
             if (pdir / "index.html").exists():
                 static_entries.append((f"{ORIGIN}/coins/{pdir.name}/", None))
+
+    compare_dir = ROOT / "compare"
+    if compare_dir.exists():
+        for pdir in sorted(compare_dir.glob("*/")):
+            if (pdir / "index.html").exists():
+                static_entries.append((f"{ORIGIN}/compare/{pdir.name}/", None))
 
     dictionary_entries: list[tuple[str, str | None]] = []
     dict_dir = ROOT / "dictionary"
