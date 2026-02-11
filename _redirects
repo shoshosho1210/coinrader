@@ -15,14 +15,14 @@
 
 # --- Dictionary: legacy aliases / exceptions (MUST be before :slug) ---
 
-/dictionary/fear-greed-index/     /dictionary/fear-and-greed/  301
-/dictionary/fear-greed-index      /dictionary/fear-and-greed/  301
-
+/dictionary/fear-and-greed/      /dictionary/fear-greed-index/  301
+/dictionary/fear-and-greed       /dictionary/fear-greed-index/  301
 
 # --- Dictionary: legacy *.html (optional, keep if old links exist) ---
 
 /dictionary/rsi.html              /dictionary/rsi/             301
-/dictionary/fear-and-greed.html   /dictionary/fear-and-greed/  301
+/dictionary/fear-and-greed.html   /dictionary/fear-greed-index/  301
+/dictionary/fear-greed-index.html /dictionary/fear-greed-index/  301
 /dictionary/moving-average.html   /dictionary/moving-average/  301
 /dictionary/volume.html           /dictionary/volume/          301
 /dictionary/market-cap.html       /dictionary/market-cap/      301
