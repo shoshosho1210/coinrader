@@ -208,17 +208,41 @@ def generate_sns_assets():
 
     # --- ③ HTMLコンテンツ ---
     # ★変更: 時刻を入れて毎回内容を変える
+    share_desc = (
+        f"{display_date}の暗号資産サマリー。"
+        f"FGI {fgi.get('value', '-')}, RSI {btc_rsi if btc_rsi else '-'}。"
+        f"注目: {trending_str}"
+    )
+    share_url = f"https://coinrader.net/share/{file_date}.html"
+    share_image = f"https://coinrader.net/assets/og/ogp_v2.png?v={file_date}"
+
     share_html = f"""<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>CoinRader {display_date}</title>
+  <meta name="description" content="{share_desc}">
+  <meta name="robots" content="noindex,follow,max-image-preview:large">
+  <link rel="canonical" href="{share_url}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CoinRader">
   <meta property="og:title" content="CoinRader - 今日の注目 {display_date}">
-  <meta property="og:url" content="https://coinrader.net/share/{file_date}.html">
-  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png?v={file_date}">
+  <meta property="og:description" content="{share_desc}">
+  <meta property="og:url" content="{share_url}">
+  <meta property="og:image" content="{share_image}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CoinRader - 今日の注目 {display_date}">
+  <meta name="twitter:description" content="{share_desc}">
+  <meta name="twitter:image" content="{share_image}">
+
+  <script type="application/ld+json">{{"@context":"https://schema.org","@type":"WebPage","name":"CoinRader Share {display_date}","description":"{share_desc}","url":"{share_url}"}}</script>
   <meta http-equiv="refresh" content="0;url=https://coinrader.net/?v={file_date}">
-  </head>
+</head>
 <body></body>
 </html>"""
 
