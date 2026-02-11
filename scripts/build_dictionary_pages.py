@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
+"""　
 CoinRader: /dictionary/ (用語集) を静的生成する
 - dictionary/index.html   -> /dictionary/
 - dictionary/<slug>/index.html -> /dictionary/<slug>
