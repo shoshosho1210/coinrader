@@ -1,0 +1,53 @@
+name: Refresh Top Cache
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: refresh-top-cache
+  cancel-in-progress: true
+
+jobs:
+  refresh-top-cache:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Build top cache payload
+        env:
+          CR_COINGECKO_KEY: ${{ secrets.CG_DEMO_KEY }}
+        run: |
+          python scripts/build_top_cache.py
+
+      - name: Commit and push cache update
+        run: |
+          set -eux
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f data/top_cache.json
+
+          if git diff --cached --quiet; then
+            echo "No cache changes"
+            exit 0
+          fi
+
+          git commit -m "chore: refresh top cache [skip ci]"
+          git push origin HEAD:main
