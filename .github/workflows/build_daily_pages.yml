@@ -140,103 +140,12 @@ jobs:
         run: |
           python scripts/build_coin_pages.py
 
-      - name: Build sitemap.xml (static + daily lastmod + coins)
+      - name: Build sitemaps (static/dictionary/daily + index)
         env:
           CR_SITE_ORIGIN: https://coinrader.net
         run: |
           set -eux
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          ROOT = Path('.')
-          ORIGIN = 'https://coinrader.net'
-          DICT_ALIAS_SLUGS = {'fear-and-greed'}
-
-          def ymd2iso(ymd: str) -> str:
-              return f"{ymd[0:4]}-{ymd[4:6]}-{ymd[6:8]}"
-
-          def make_urlset(entries):
-              body = []
-              for loc, lastmod in entries:
-                  if lastmod:
-                      body.append(f"<url><loc>{loc}</loc><lastmod>{lastmod}</lastmod></url>")
-                  else:
-                      body.append(f"<url><loc>{loc}</loc></url>")
-              return (
-                  '<?xml version="1.0" encoding="UTF-8"?>\n'
-                  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-                  + '\n'.join(body)
-                  + '\n</urlset>\n'
-              )
-          
-          daily_ids = []
-          for fp in sorted((ROOT / 'data/daily').glob('*.json')):
-              m = re.fullmatch(r'(\d{8})\.json', fp.name)
-              if m:
-                  daily_ids.append(m.group(1))
-          latest = daily_ids[-1] if daily_ids else None
-
-          static_paths = [
-              '/', '/about', '/start', '/data-sources', '/ads-pr', '/privacy', '/disclaimer', '/contact',
-              '/coins/', '/dictionary/', '/guide/',
-          ]
-          static_entries = []
-          seen = set()
-          for u in static_paths:
-              if u in seen:
-                  continue
-              seen.add(u)
-              static_entries.append((f"{ORIGIN}{u}", None))
-
-          guide_dir = ROOT / 'guide'
-          if guide_dir.exists():
-              for pdir in sorted(guide_dir.glob('*/')):
-                  if (pdir / 'index.html').exists():
-                      static_entries.append((f"{ORIGIN}/guide/{pdir.name}/", None))
-
-          coins_dir = ROOT / 'coins'
-          if coins_dir.exists():
-              for pdir in sorted(coins_dir.glob('*/')):
-                  if (pdir / 'index.html').exists():
-                      static_entries.append((f"{ORIGIN}/coins/{pdir.name}/", None))
-
-          dictionary_entries = []
-          dict_dir = ROOT / 'dictionary'
-          if dict_dir.exists():
-              for pdir in sorted(dict_dir.glob('*/')):
-                  slug = pdir.name.rstrip('/')
-                  if slug in DICT_ALIAS_SLUGS:
-                      continue
-                  if (pdir / 'index.html').exists():
-                      dictionary_entries.append((f"{ORIGIN}/dictionary/{slug}/", None))
-
-          daily_entries = []   
-          if latest:
-              lm_latest = ymd2iso(latest)
-              for u in ('/daily/', '/daily/tags/bear', '/daily/tags/bull', '/daily/tags/wait'):
-                  daily_entries.append((f"{ORIGIN}{u}", lm_latest))
-          for ymd in daily_ids:
-              daily_entries.append((f"{ORIGIN}/daily/{ymd}", ymd2iso(ymd)))
-
-          # write split sitemaps
-          Path('sitemap-static.xml').write_text(make_urlset(static_entries), encoding='utf-8')
-          Path('sitemap-dictionary.xml').write_text(make_urlset(dictionary_entries), encoding='utf-8')
-          Path('sitemap-daily.xml').write_text(make_urlset(daily_entries), encoding='utf-8')
-
-          # write sitemap index
-          index_xml = (
-              '<?xml version="1.0" encoding="UTF-8"?>'
-              '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-              f'  <sitemap><loc>{ORIGIN}/sitemap-static.xml</loc></sitemap>\n'
-              f'  <sitemap><loc>{ORIGIN}/sitemap-dictionary.xml</loc></sitemap>\n'
-              f'  <sitemap><loc>{ORIGIN}/sitemap-daily.xml</loc></sitemap>\n'
-              '</sitemapindex>\n'
-          )
-          Path('sitemap.xml').write_text(index_xml, encoding='utf-8')
-
-          print(f"wrote split sitemaps: static={len(static_entries)} dictionary={len(dictionary_entries)} daily={len(daily_entries)} latest={latest}")
-          PY
+          python scripts/build_split_sitemaps.py
 
       - name: Validate sitemap (canonical-only)
         run: |
@@ -276,7 +185,7 @@ jobs:
 
           # alias 残骸の掃除（必要なものだけ追加。例：coins/sol を消したい場合）
           rm -rf coins/sol || true
-          git add -A daily sitemap.xml _redirects
+          git add -A daily sitemap.xml sitemap-static.xml sitemap-dictionary.xml sitemap-daily.xml _redirects
           git add -f daily/tags/*.html
           git add -A coins
           git add -A data/coins
