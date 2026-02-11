@@ -67,21 +67,56 @@ def _iter_loc_elements(root: ET.Element):
         if el.tag.endswith("loc"):
             yield el
 
+def _read_sitemap_urlset(path: Path, seen: set[Path]) -> tuple[list[str], list[ET.Element]]:
+    if path in seen or not path.exists():
+        return [], []
+    seen.add(path)
+
+    root = ET.fromstring(path.read_text(encoding="utf-8"))
+    if root.tag.endswith("urlset"):
+        locs = [((el.text or "").strip()) for el in _iter_loc_elements(root) if (el.text or "").strip()]
+        return locs, [root]
+
+    if root.tag.endswith("sitemapindex"):
+        locs: list[str] = []
+        roots: list[ET.Element] = []
+        for sm in root:
+            if not sm.tag.endswith("sitemap"):
+                continue
+            child_loc = None
+            for c in sm:
+                if c.tag.endswith("loc"):
+                    child_loc = (c.text or "").strip()
+                    break
+            if not child_loc:
+                continue
+            child_name = Path(child_loc).name
+            child_path = ROOT / child_name
+            c_locs, c_roots = _read_sitemap_urlset(child_path, seen)
+            locs.extend(c_locs)
+            roots.extend(c_roots)
+        return locs, roots
+
+    return [], []
+
 
 def _scan(xml: str):
     root = ET.fromstring(xml)
-    loc_els = list(_iter_loc_elements(root))
-    locs = [((el.text or "").strip()) for el in loc_els if (el.text or "").strip()]
+    if root.tag.endswith("sitemapindex"):
+        locs, roots = _read_sitemap_urlset(SITEMAP, set())
+        loc_els = []
+    else:
+        roots = [root]
+        loc_els = list(_iter_loc_elements(root))
+        locs = [((el.text or "").strip()) for el in loc_els if (el.text or "").strip()]
 
-    # duplicates based on canonicalized loc (because different forms are effectively same)
     canon = [canonicalize(u) for u in locs]
     cnt = Counter(canon)
     dups = sorted([u for u, c in cnt.items() if c > 1])
 
-    # non-canonical: loc itself isn't equal to canonicalized
     bad = sorted([u for u in locs if canonicalize(u) != u])
 
-    return root, loc_els, locs, dups, bad
+    return root, roots, loc_els, locs, dups, bad
 
 
 def _autofix(xml: str) -> str:
@@ -214,21 +249,23 @@ def main() -> int:
     args = parser.parse_args()
 
     xml = SITEMAP.read_text(encoding="utf-8")
-    root, loc_els, locs, dups, bad = _scan(xml)
+    root, roots, loc_els, locs, dups, bad = _scan(xml)
     # --- dictionary: trailing slash canonical enforcement ---
     dict_bad = validate_dictionary_trailing_slash(locs)
 
-    daily_lastmod_bad = validate_daily_lastmod_required(root)
+    daily_lastmod_bad = sorted(set(sum((validate_daily_lastmod_required(r) for r in roots), [])))
     daily_latest_bad = validate_daily_latest_excluded(locs)
 
-    if (dups or bad) and args.fix:
+    if (dups or bad) and args.fix and root.tag.endswith("urlset"):
         fixed = _autofix(xml)
         # Keep xml declaration
         SITEMAP.write_text('<?xml version="1.0" encoding="UTF-8"?>\n' + fixed + '\n', encoding="utf-8")
         xml = SITEMAP.read_text(encoding="utf-8")
-        root, loc_els, locs, dups, bad = _scan(xml)
+        root, roots, loc_els, locs, dups, bad = _scan(xml)
         print("SITEMAP AUTO-FIX APPLIED")
-
+    elif args.fix and root.tag.endswith("sitemapindex"):
+        print("SITEMAP AUTO-FIX SKIPPED: sitemapindex mode")
+    
     errors = []
     if not locs:
         errors.append("no <loc> entries found (sitemap namespace/format issue?)")
