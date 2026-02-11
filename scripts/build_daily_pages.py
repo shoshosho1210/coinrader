@@ -199,7 +199,7 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
           
     article_id = canonical + "#article"
     faq_id = canonical + "#faq"
-    breadcrumb_id = canonical + "#breadcrum
+    breadcrumb_id = canonical + "#breadcrumb"
     data = {
         "@context": "https://schema.org",
         "@graph": [
