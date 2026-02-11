@@ -144,7 +144,8 @@ jobs:
 
           ROOT = Path(".")
           ORIGIN = "https://coinrader.net"
-
+          DICT_ALIAS_SLUGS = {"fear-and-greed"}
+          
           # ---- daily ids ----
           daily_ids = []
           for p in sorted((ROOT/"data/daily").glob("*.json")):
@@ -171,8 +172,11 @@ jobs:
               d = ROOT / base
               if d.exists() and d.is_dir():
                   for p in sorted(d.glob("*/")):
+                      slug = p.name.rstrip("/")
+                      if base == "dictionary" and slug in DICT_ALIAS_SLUGS:
+                          continue
                       if (p / "index.html").exists():
-                          static.append(f"/{base}/{p.name}/")
+                          static.append(f"/{base}/{slug}/")
 
           # coins 個別ページ（存在するものだけ）も lastmod無しで追加
           coins_dir = ROOT / "coins"
