@@ -177,7 +177,7 @@ def render(seed: dict) -> dict[str, str]:
             "</tr>"
         )
 
-    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    generated = (seed.get("generated_at") or datetime.now(timezone.utc).isoformat()).replace("T", " ")[:16] + " UTC"
     note = f'<div class="msg" style="grid-column:1 / -1; font-size:11px;">初期表示は事前生成データ（{generated}）です。表示後に最新化します。</div>'
 
     return {
@@ -192,29 +192,54 @@ def render(seed: dict) -> dict[str, str]:
     }
 
 
+def _replace_one(text: str, pattern: str, replacement: str) -> str:
+    out, n = re.subn(pattern, replacement, text, count=1, flags=re.DOTALL)
+    if n != 1:
+        raise RuntimeError(f"target not found for pattern: {pattern}")
+    return out
+
+
 def apply_seed_to_index(html: str, snippets: dict[str, str]) -> str:
-    replacements = {
-        '<ol class="summary-ol" id="summaryTrendList"><li class="summary-li muted">データ取得中…</li></ol>':
-            f'<ol class="summary-ol" id="summaryTrendList">{snippets["summaryTrendList"]}</ol>',
-        '<ol class="summary-ol" id="summaryUpList"><li class="summary-li muted">データ取得中…</li></ol>':
-            f'<ol class="summary-ol" id="summaryUpList">{snippets["summaryUpList"]}</ol>',
-        '<ol class="summary-ol" id="summaryMcapTopList"><li class="summary-li muted">データ取得中…</li></ol>':
-            f'<ol class="summary-ol" id="summaryMcapTopList">{snippets["summaryMcapTopList"]}</ol>',
-        '<div class="grid" id="grid-trend"><div class="msg">データ取得中…</div></div>':
-            f'<div class="grid" id="grid-trend">{snippets["grid-trend"]}</div>',
-        '<div class="grid" id="grid-gainers"><div class="msg">データ取得中…</div></div>':
-            f'<div class="grid" id="grid-gainers">{snippets["grid-gainers"]}</div>',
-        '<div class="grid" id="grid-volume"><div class="msg">データ取得中…</div></div>':
-            f'<div class="grid" id="grid-volume">{snippets["grid-volume"]}</div>',
-        '<div class="grid" id="grid-alt-volume"><div class="msg">データ取得中…</div></div>':
-            f'<div class="grid" id="grid-alt-volume">{snippets["grid-alt-volume"]}</div>',
-        '<tbody id="mcapTableBody">\n</tbody>':
-            f'<tbody id="mcapTableBody">{snippets["mcapTableBody"]}</tbody>',
-    }
-    for old, new in replacements.items():
-        if old not in html:
-            raise RuntimeError(f"placeholder not found: {old[:50]}...")
-        html = html.replace(old, new, 1)
+    html = _replace_one(
+        html,
+        r'<ol class="summary-ol" id="summaryTrendList">.*?</ol>',
+        f'<ol class="summary-ol" id="summaryTrendList">{snippets["summaryTrendList"]}</ol>',
+    )
+    html = _replace_one(
+        html,
+        r'<ol class="summary-ol" id="summaryUpList">.*?</ol>',
+        f'<ol class="summary-ol" id="summaryUpList">{snippets["summaryUpList"]}</ol>',
+    )
+    html = _replace_one(
+        html,
+        r'<ol class="summary-ol" id="summaryMcapTopList">.*?</ol>',
+        f'<ol class="summary-ol" id="summaryMcapTopList">{snippets["summaryMcapTopList"]}</ol>',
+    )
+    html = _replace_one(
+        html,
+        r'<div class="grid" id="grid-trend">.*?</div>\s*</section>',
+        f'<div class="grid" id="grid-trend">{snippets["grid-trend"]}</div>\n</section>',
+    )
+    html = _replace_one(
+        html,
+        r'<div class="grid" id="grid-gainers">.*?</div>\s*</section>',
+        f'<div class="grid" id="grid-gainers">{snippets["grid-gainers"]}</div>\n</section>',
+    )
+    html = _replace_one(
+        html,
+        r'<div class="grid" id="grid-volume">.*?</div>\s*</section>',
+        f'<div class="grid" id="grid-volume">{snippets["grid-volume"]}</div>\n</section>',
+    )
+    html = _replace_one(
+        html,
+        r'<div class="grid" id="grid-alt-volume">.*?</div>\s*</section>',
+        f'<div class="grid" id="grid-alt-volume">{snippets["grid-alt-volume"]}</div>\n</section>',
+    )
+    html = _replace_one(
+        html,
+        r'<tbody id="mcapTableBody">.*?</tbody>',
+        f'<tbody id="mcapTableBody">{snippets["mcapTableBody"]}</tbody>',
+    )
     return html
 
 
