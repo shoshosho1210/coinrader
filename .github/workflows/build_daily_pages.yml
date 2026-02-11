@@ -57,6 +57,7 @@ jobs:
         env:
           CR_SITE_ORIGIN: https://coinrader.net
         run: |
+          python scripts/build_top_cache.py
           python scripts/build_daily_pages.py
 
       - name: Generate dictionary pages
@@ -259,6 +260,7 @@ jobs:
           git add -A coins
           git add -A data/coins
           git add -A dictionary
+          git add -f data/top_cache.json
           git add -A indexnow_key.txt || true
 
           if git diff --cached --quiet; then
