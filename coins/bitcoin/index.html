@@ -3,51 +3,323 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bitcoin (BTC) 今日の指標・市況まとめ | CoinRader</title>
-  <meta name="description" content="Bitcoin (BTC) の価格・24h/7d変動・出来高・時価総額などをまとめて確認。毎日更新。CoinRader。" />
-  <link rel="canonical" href="https://coinrader.net/coins/btc/" />
+  <title>Bitcoin (BTC) 今日の価格・チャート・市況まとめ | CoinRader</title>
+  <meta name="description" content="Bitcoin (BTC) のリアルタイム価格・24h/7d変動率・出来高・時価総額をまとめて確認。AIによる市場分析付き。CoinRader。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://coinrader.net/coins/{{SLUG}}/" />
+
+  <!-- OGP -->
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CoinRader" />
+  <meta property="og:title" content="Bitcoin (BTC) 今日の価格・市況まとめ | CoinRader" />
+  <meta property="og:description" content="Bitcoin (BTC) の価格・変動率・出来高・時価総額をリアルタイム表示。" />
+  <meta property="og:url" content="https://coinrader.net/coins/{{SLUG}}/" />
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bitcoin (BTC) 今日の価格・市況まとめ | CoinRader" />
+  <meta name="twitter:description" content="Bitcoin (BTC) の価格・変動率・出来高・時価総額をリアルタイム表示。" />
+  <meta name="twitter:image" content="https://coinrader.net/assets/og/ogp_v2.png" />
+
+  <!-- Favicon -->
+  <link href="/assets/icons/favicon.ico" rel="icon" />
+  <link href="/assets/icons/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "CoinRader", "item": "https://coinrader.net/"},
+      {"@type": "ListItem", "position": 2, "name": "Coins", "item": "https://coinrader.net/coins/"},
+      {"@type": "ListItem", "position": 3, "name": "Bitcoin (BTC)"}
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: WebPage + FinancialProduct (動的に価格を注入) -->
+  <script type="application/ld+json" id="jsonld-coin">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Bitcoin (BTC) 今日の価格・市況まとめ",
+    "description": "Bitcoin (BTC) の価格・24h/7d変動率・出来高・時価総額をリアルタイム表示。",
+    "url": "https://coinrader.net/coins/{{SLUG}}/",
+    "isPartOf": {"@type": "WebSite", "name": "CoinRader", "url": "https://coinrader.net/"},
+    "about": {
+      "@type": "Thing",
+      "name": "Bitcoin",
+      "alternateName": "BTC",
+      "description": "Bitcoin (BTC) は暗号資産（仮想通貨）です。"
+    }
+  }
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+
   <style>
-    :root { color-scheme: dark; }
-    body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial; background:#0f172a; color:#e5e7eb; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px 40px; }
+    :root { color-scheme: dark; --accent: #38bdf8; --bg: #0f172a; --card: #111827; --border: rgba(148,163,184,0.18); }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif; background:var(--bg); color:#e5e7eb; }
     a { color:#7dd3fc; text-decoration:none; }
     a:hover { text-decoration: underline; }
-    .muted { color:#94a3b8; }
-    .h1 { font-size: 22px; font-weight: 800; margin: 10px 0 6px; }
-    .sub { font-size: 13px; color:#94a3b8; margin-bottom: 16px; }
-    .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; }
-    @media (max-width: 720px){ .grid { grid-template-columns: 1fr; } }
-    .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(148,163,184,0.18); border-radius: 14px; padding: 14px; }
-    .k { font-size: 12px; color:#94a3b8; }
-    .v { font-size: 20px; font-weight: 800; margin-top: 6px; }
-    .sep { height:1px; background: rgba(148,163,184,0.18); margin: 14px 0; }
-    .err { color: #fca5a5; font-size: 13px; white-space: pre-wrap; }
+
+    /* Header */
+    .pageHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
+      border-radius:14px; background:rgba(255,255,255,.02);
+      margin:0 0 18px; gap:12px;
+    }
+    .brandLogo { height:36px; width:auto; }
+    .headerNav { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a {
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:700;
+      padding:8px 10px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s, background .15s;
+      white-space:nowrap;
+    }
+    .headerNav a:hover { transform:translateY(-1px); border-color:rgba(56,189,248,.35); background:rgba(56,189,248,.06); }
+
+    /* Container */
+    .container { max-width:980px; margin:0 auto; padding:18px; }
+
+    /* Breadcrumb */
+    .breadcrumb { font-size:13px; color:#94a3b8; margin-bottom:8px; }
+    .breadcrumb a { color:#7dd3fc; }
+
+    /* Title */
+    .coin-title { display:flex; align-items:center; gap:12px; margin:10px 0 6px; }
+    .coin-title img { width:36px; height:36px; border-radius:50%; }
+    .coin-title h1 { font-size:24px; font-weight:800; margin:0; line-height:1.2; }
+    .coin-title .sym { font-size:16px; color:#94a3b8; font-weight:600; }
+    .sub { font-size:13px; color:#94a3b8; margin-bottom:16px; line-height:1.6; }
+
+    /* Grid */
+    .grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+    @media (max-width:720px) { .grid { grid-template-columns:1fr; } }
+
+    /* Card */
+    .card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; padding:14px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: rgba(56,189,248,.3); }
+    .k { font-size:12px; color:#94a3b8; display:flex; align-items:center; gap:6px; }
+    .k i { color:var(--accent); opacity:.8; }
+    .v { font-size:22px; font-weight:800; margin-top:6px; color:#f8fafc; }
+    .v-sub { font-size:12px; color:#94a3b8; margin-top:4px; }
+    .positive { color:#4ade80; }
+    .negative { color:#f87171; }
+
+    /* Separator */
+    .sep { height:1px; background:var(--border); margin:18px 0; }
+
+    /* Memo / Error */
+    .memo-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; }
+    .err { color:#fca5a5; font-size:13px; white-space:pre-wrap; }
+
+    /* Related coins */
+    .related-section { margin-top:24px; }
+    .related-title { font-size:14px; font-weight:700; color:#f9fafb; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .related-title i { color:var(--accent); }
+    .related-chips { display:flex; gap:8px; flex-wrap:wrap; }
+    .chip {
+      display:inline-flex; align-items:center; gap:6px;
+      border:1px solid rgba(56,189,248,.3);
+      padding:6px 12px; border-radius:999px;
+      font-size:12px; color:#cbd5e1; text-decoration:none !important;
+      transition: background .15s, border-color .15s;
+    }
+    .chip:hover { background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.5); }
+
+    /* Internal links */
+    .internal-links { margin-top:18px; }
+    .internal-links a {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 14px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03);
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:13px; font-weight:600;
+      transition: transform .15s, border-color .15s;
+      margin-right:8px; margin-bottom:8px;
+    }
+    .internal-links a:hover { transform:translateY(-1px); border-color:rgba(56,189,248,.35); }
+
+    /* Footer */
+    .site-footer {
+      background:rgba(10,16,28,0.4); border-top:1px solid rgba(255,255,255,0.05);
+      padding:16px 12px; margin-top:40px; width:100%;
+    }
+    .footer-inner {
+      max-width:980px; margin:0 auto;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:15px;
+    }
+    .footer-brand { display:flex; align-items:center; gap:10px; }
+    .footer-logo { height:36px !important; width:auto; opacity:.8; }
+    .footer-tagline { font-size:11px; color:#64748b; white-space:nowrap; }
+    .footer-nav { display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a { color:#94a3b8; font-size:11.5px; text-decoration:none !important; white-space:nowrap; transition:color .2s; }
+    .footer-nav a:hover { color:#38bdf8; }
+    .footer-copyright {
+      max-width:980px; margin:10px auto 0; padding-top:8px;
+      border-top:1px solid rgba(255,255,255,0.02);
+      text-align:center; font-size:10px; color:#475569;
+    }
+    @media (max-width:768px) {
+      .footer-inner { flex-direction:column; text-align:center; gap:12px; }
+      .footer-nav { justify-content:center; gap:8px 12px; }
+      .footer-brand { flex-direction:column; gap:6px; }
+      .headerNav { justify-content:flex-end; }
+      .coin-title h1 { font-size:20px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="muted"><a href="/">トップ</a> / <a href="/coins/">Coins</a> / BTC</div>
-    <h1 class="h1">Bitcoin (BTC)</h1>
-    <div class="sub">主要指標の簡易表示。マーケット全体は <a href="/daily/latest">/daily/latest</a>。</div>
+  <div class="container">
+    <!-- Header -->
+    <header class="pageHeader" role="banner">
+      <a class="brandLink" href="/" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
+      </a>
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="/"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="/coins/"><i class="fa-solid fa-coins"></i><span>Coins</span></a>
+        <a href="/daily/latest"><i class="fa-solid fa-chart-line"></i><span>Daily</span></a>
+      </nav>
+    </header>
 
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="/">トップ</a> / <a href="/coins/">Coins</a> / <span>BTC</span>
+    </nav>
+
+    <!-- Title with icon -->
+    <div class="coin-title">
+      <img id="coinIcon" src="" alt="Bitcoin logo" style="display:none" />
+      <div>
+        <h1>Bitcoin <span class="sym">(BTC)</span></h1>
+      </div>
+    </div>
+    <div class="sub">
+      Bitcoin の主要指標をリアルタイム表示。24時間・7日間の変動率、出来高、時価総額を一目で確認できます。<br>
+      マーケット全体の分析は <a href="/daily/latest">今日のAIレポート</a> をご覧ください。
+    </div>
+
+    <!-- KPI Grid -->
     <div class="grid">
-      <div class="card"><div class="k">価格 (JPY)</div><div class="v" id="price">--</div><div class="muted" id="price_sub"></div></div>
-      <div class="card"><div class="k">24h / 7d 変動</div><div class="v" id="chg">--</div><div class="muted" id="chg_sub"></div></div>
-      <div class="card"><div class="k">出来高 (24h)</div><div class="v" id="vol">--</div><div class="muted">取引の活発度の目安</div></div>
-      <div class="card"><div class="k">時価総額</div><div class="v" id="mcap">--</div><div class="muted">市場規模の目安</div></div>
+      <div class="card">
+        <div class="k"><i class="fa-solid fa-yen-sign"></i>価格 (JPY)</div>
+        <div class="v" id="price">--</div>
+        <div class="v-sub" id="price_sub"></div>
+      </div>
+      <div class="card">
+        <div class="k"><i class="fa-solid fa-arrow-trend-up"></i>24h / 7d 変動</div>
+        <div class="v" id="chg">--</div>
+        <div class="v-sub" id="chg_sub"></div>
+      </div>
+      <div class="card">
+        <div class="k"><i class="fa-solid fa-chart-bar"></i>出来高 (24h)</div>
+        <div class="v" id="vol">--</div>
+        <div class="v-sub">取引の活発度の目安</div>
+      </div>
+      <div class="card">
+        <div class="k"><i class="fa-solid fa-database"></i>時価総額</div>
+        <div class="v" id="mcap">--</div>
+        <div class="v-sub" id="mcap_sub"></div>
+      </div>
     </div>
 
     <div class="sep"></div>
 
-    <div class="card">
-      <div class="k">メモ</div>
-      <div class="muted" id="memo">読み込み中…</div>
+    <!-- Additional info -->
+    <div class="grid">
+      <div class="card">
+        <div class="k"><i class="fa-solid fa-trophy"></i>ATH (過去最高値)</div>
+        <div class="v" id="ath">--</div>
+        <div class="v-sub" id="ath_sub"></div>
+      </div>
+      <div class="card">
+        <div class="k"><i class="fa-solid fa-circle-info"></i>供給量</div>
+        <div class="v" id="supply">--</div>
+        <div class="v-sub" id="supply_sub"></div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- Memo -->
+    <div class="memo-card">
+      <div class="k"><i class="fa-solid fa-robot"></i>簡易AI判定</div>
+      <div style="margin-top:8px; color:#cbd5e1; font-size:14px; line-height:1.6;" id="memo">読み込み中…</div>
       <div class="err" id="err"></div>
+    </div>
+
+    <!-- Internal links -->
+    <div class="internal-links">
+      <a href="/daily/latest"><i class="fa-solid fa-chart-line"></i>今日のAIレポート</a>
+      <a href="/dictionary/rsi/"><i class="fa-solid fa-book"></i>RSIとは？</a>
+      <a href="/dictionary/fear-greed-index/"><i class="fa-solid fa-book"></i>恐怖指数とは？</a>
+      <a href="/guide/"><i class="fa-solid fa-graduation-cap"></i>使い方ガイド</a>
+    </div>
+
+    <!-- Related Coins -->
+    <div class="related-section">
+      <div class="related-title"><i class="fa-solid fa-link"></i>他の銘柄を見る</div>
+      <div class="related-chips" id="relatedCoins">
+        {{RELATED_COINS_HTML}}
+      </div>
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png" />
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="/">ホーム</a>
+        <a href="/coins/">Coins</a>
+        <a href="/daily/latest">Daily</a>
+        <a href="/about">運営者情報</a>
+        <a href="/contact">お問い合わせ</a>
+        <a href="/privacy">プライバシー</a>
+        <a href="/disclaimer">免責事項</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 CoinRader. All rights reserved. ｜ 本サイトは投資助言ではありません。
+    </div>
+  </footer>
+
 <script>
-  const SYMBOL = "btc"; // btc / eth / sol / xrp
+  const SYMBOL = "btc";
+  const COIN_ID = "bitcoin";
+  const NAME = "Bitcoin";
 
   const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
   const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
@@ -55,8 +327,15 @@
     if (n == null || isNaN(n)) return "--";
     const x = Number(n);
     if (x >= 1e12) return (x/1e12).toFixed(2) + "兆円";
-    if (x >= 1e9)  return (x/1e9).toFixed(2) + "十億円";
+    if (x >= 1e8)  return (x/1e8).toFixed(2) + "億円";
     return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
+  };
+  const fmtSupply = (n) => {
+    if (n == null || isNaN(n)) return "--";
+    const x = Number(n);
+    if (x >= 1e9) return (x/1e9).toFixed(2) + "B";
+    if (x >= 1e6) return (x/1e6).toFixed(2) + "M";
+    return x.toLocaleString("ja-JP",{maximumFractionDigits:0});
   };
 
   const snapUrl = `/data/coins/${SYMBOL}.json?ts=${Date.now()}`;
@@ -71,22 +350,56 @@
 
       const m = j.market;
       const chg7d = (m.price_change_percentage_7d_in_currency ?? m.price_change_percentage_7d ?? null);
+      const chg24h = m.price_change_percentage_24h;
 
+      // Icon
+      if (m.image) {
+        const icon = document.getElementById("coinIcon");
+        icon.src = m.image;
+        icon.style.display = "block";
+      }
+
+      // Price
       document.getElementById("price").textContent = fmtJPY(m.current_price);
       document.getElementById("price_sub").textContent =
-        "高値/安値(24h): " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
+        "24h高値/安値: " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
 
-      document.getElementById("chg").textContent =
-        fmtPct(m.price_change_percentage_24h) + " / " + fmtPct(chg7d);
-
+      // Change
+      const chgEl = document.getElementById("chg");
+      const chg24text = fmtPct(chg24h);
+      const chg7dtext = fmtPct(chg7d);
+      chgEl.innerHTML = `<span class="${chg24h >= 0 ? 'positive' : 'negative'}">${chg24text}</span> / <span class="${chg7d >= 0 ? 'positive' : 'negative'}">${chg7dtext}</span>`;
       document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
 
+      // Volume & Market Cap
       document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
       document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+      if (m.market_cap_rank) {
+        document.getElementById("mcap_sub").textContent = "時価総額ランキング: #" + m.market_cap_rank;
+      }
 
-      const tone = (m.price_change_percentage_24h >= 0) ? "上向き" : "下向き";
-      document.getElementById("memo").textContent = "簡易判定: " + tone + "（24h変動ベース）";
+      // ATH
+      document.getElementById("ath").textContent = fmtJPY(m.ath);
+      if (m.ath_date) {
+        const athDate = new Date(m.ath_date).toLocaleDateString("ja-JP");
+        document.getElementById("ath_sub").textContent = athDate + " (" + fmtPct(m.ath_change_percentage) + ")";
+      }
+
+      // Supply
+      document.getElementById("supply").textContent = fmtSupply(m.circulating_supply);
+      const maxSup = m.max_supply ? fmtSupply(m.max_supply) : "上限なし";
+      document.getElementById("supply_sub").textContent = "最大供給量: " + maxSup;
+
+      // Memo
+      let memoText = "";
+      if (chg24h >= 5) memoText = "🔥 強い上昇局面。出来高も確認を。";
+      else if (chg24h >= 1) memoText = "📈 やや上向き。直近のモメンタムは良好。";
+      else if (chg24h >= -1) memoText = "➡️ ほぼ横ばい。方向感の定まらない展開。";
+      else if (chg24h >= -5) memoText = "📉 やや下落傾向。サポートラインに注目。";
+      else memoText = "⚠️ 大幅な下落局面。リスク管理を優先。";
+      document.getElementById("memo").textContent = memoText;
       document.getElementById("err").textContent = "";
+
     }catch(e){
       document.getElementById("err").textContent = String(e?.message || e);
       document.getElementById("memo").textContent = "データ取得に失敗しました。";
@@ -97,13 +410,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
