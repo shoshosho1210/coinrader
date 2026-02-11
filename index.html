@@ -9542,12 +9542,28 @@ window.addEventListener('focus', () => __resumeSync('focus'));
     const cls = up ? 'up' : 'down';
     return `<span class="t-delta ${cls}">${sym}${Math.abs(n).toFixed(digits)}${suffix}</span>`;
   }
+
+  async function loadTopMacroCache(){
+    try{
+      const res = await fetch('data/top_cache.json', { cache: 'no-store' });
+      if (!res.ok) return null;
+      const json = await res.json();
+      return (json && typeof json === 'object') ? json : null;
+    }catch(_e){
+      return null;
+    }
+  }
+  
   async function updateMacroTicker(){
     try{
+      const macroCache = await loadTopMacroCache();
       // BTC / ETH JPY from marketsTop (preferred)
       let btc = (Array.isArray(marketsTop) ? marketsTop.find(c=>c && c.id==='bitcoin') : null);
       let eth = (Array.isArray(marketsTop) ? marketsTop.find(c=>c && c.id==='ethereum') : null);
 
+      if (!btc && macroCache?.btc_jpy != null) btc = { current_price: Number(macroCache.btc_jpy) };
+      if (!eth && macroCache?.eth_jpy != null) eth = { current_price: Number(macroCache.eth_jpy) };
+      
       // Fallback: simple price (JPY)
       if ((!btc || !eth) && typeof fetchJsonRetry === 'function'){
         try{
@@ -9570,7 +9586,7 @@ window.addEventListener('focus', () => __resumeSync('focus'));
       }
 
       // BTC Dominance
-      let btcDom = null;
+      let btcDom = (macroCache?.btc_dom != null) ? Number(macroCache.btc_dom) : null;
       try{
         const g = await fetchJsonRetry('https://api.coingecko.com/api/v3/global');
         btcDom = g?.data?.market_cap_percentage?.btc;
@@ -9599,7 +9615,7 @@ window.addEventListener('focus', () => __resumeSync('focus'));
       }
 
       // Fear & Greed Index
-      let fgScore = null, fgClass = '';
+      let fgScore = (macroCache?.fear_greed?.value != null) ? Number(macroCache.fear_greed.value) : null, fgClass = (macroCache?.fear_greed?.label || '');
       try{
         const fg = await fetchJsonRetry('https://api.alternative.me/fng/?limit=1&format=json');
         fgScore = Number(fg?.data?.[0]?.value);
@@ -9627,7 +9643,7 @@ window.addEventListener('focus', () => __resumeSync('focus'));
       }
 
       // USD/JPY (show rate)
-      let usdJpy = null;
+      let usdJpy = (macroCache?.usd_jpy != null) ? Number(macroCache.usd_jpy) : null;
       try{
         const fx = await fetchJsonRetry('https://open.er-api.com/v6/latest/USD');
         usdJpy = fx?.rates?.JPY;
