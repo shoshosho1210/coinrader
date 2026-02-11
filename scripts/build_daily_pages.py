@@ -199,7 +199,7 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
           
     article_id = canonical + "#article"
     faq_id = canonical + "#faq"
-    breadcrumb_id = canonical + "#breadcrumb"
+    breadcrumb_id = canonical + "#breadcrum
     data = {
         "@context": "https://schema.org",
         "@graph": [
@@ -325,8 +325,6 @@ def build_similar_days_html(current: Dict[str, Any], candidates: List[Dict[str, 
         + "".join(rows)
         + "</ul></section>"
     )
-
-
 
 
 def build_recent_days_html(dated_all: List[str], current_ymd: str, n: int = 7) -> str:
@@ -1392,9 +1390,6 @@ def main() -> None:
         takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer)
         coin_hubs_html = build_coin_hub_links_html(SITE_ORIGIN, trending, top_gainer)
 
-        print("[DBG] trending=", trending, "top_gainer=", top_gainer)
-        print("[DBG] coin_hubs_html_len=", len(coin_hubs_html or ""))
-
         html = tmpl
         repl = {
             "{{TITLE}}": title,
@@ -1463,12 +1458,13 @@ def main() -> None:
             if (not inserted) and re.search(r"<body\b[^>]*>", html):
                 html = re.sub(r"(<body\b[^>]*>)", r"\1\n" + coin_hubs_html, html, count=1)
               
-            # Similar Days: テンプレにプレースホルダが無い場合は FAQ の直前に差し込む
-            if similar_days_html and ("{{SIMILAR_DAYS" not in tmpl):
-              if "<!-- FAQ -->" in html:
+        # Similar Days: テンプレにプレースホルダが無い場合は FAQ の直前に差し込む
+        if similar_days_html and ("{{SIMILAR_DAYS" not in tmpl):
+            if "<!-- FAQ -->" in html:
                 html = html.replace("<!-- FAQ -->", similar_days_html + "\n\n    <!-- FAQ -->", 1)
-              elif re.search(r'<section class="card faq"', html):
+            elif re.search(r'<section class="card faq"', html):
                 html = re.sub(r'(<section class="card faq")', similar_days_html + r"\n\n    \1", html, count=1)
+
                 
         # TAKEAWAYS: テンプレにプレースホルダが無い場合でも、wrap直後に安全に挿入する
         if takeaways_html and ("{{TAKEAWAYS" not in tmpl):
@@ -1698,12 +1694,6 @@ def main() -> None:
             raise RuntimeError("tag page: heading replacement failed (div.h1)")
 
         write_text(out_path_html, tag_html)
-
-        # Also generate extensionless tag page for canonical (/daily/tags/<tag>)
-        out_path_ext = tags_dir / f"{tag_lower}"
-        write_text(out_path_ext, tag_html)
-
-        # NOTE: tag pages are generated as both /daily/tags/<tag>.html and extensionless /daily/tags/<tag> for canonical.
 
     latest_target = f"{latest_ymd}.html"
     latest_page_path = OUT_DIR / latest_target
