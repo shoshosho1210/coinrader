@@ -63,6 +63,7 @@ STATIC_PATHS = [
 # - sitemap / 内部リンクで alias にリンクして重複URLを増やさない（canonical /coins/bitcoin/ に統一）
 # - daily → coins ハブリンク生成時も canonical を優先し、alias は弾く保険として使う
 COINS_ALIAS_SLUGS = {"btc", "eth", "sol"}  # sitemapに載せない（301で正規へ集約）
+DICTIONARY_ALIAS_SLUGS = {"fear-and-greed"}  # /dictionary/fear-greed-index/ に301で集約
 # --- coins hub link map (daily -> /coins/<canonical>/ ) ---
 SYMBOL_TO_COIN_SLUG = {
     "BTC": "bitcoin",
@@ -497,7 +498,7 @@ def rebuild_sitemap_with_daily(
     # Subpages
     _ensure_urls(_collect_dir_index_urls("guide", "/guide/"), changefreq="weekly", priority="0.6")
     _ensure_urls([u for u in _collect_dir_index_urls("coins", "/coins/") if (u.rsplit('/',2)[-2] not in COINS_ALIAS_SLUGS)], changefreq="daily", priority="0.7")
-    _ensure_urls(_collect_dir_index_urls("dictionary", "/dictionary/"), changefreq="monthly", priority="0.5")
+    _ensure_urls([u for u in _collect_dir_index_urls("dictionary", "/dictionary/") if u.rsplit("/", 3)[-2] not in DICTIONARY_ALIAS_SLUGS], changefreq="monthly", priority="0.5")
     pages = list(daily_pages or [])
     pages_sorted = sorted(pages, key=lambda d: str(d.get("ymd") or ""), reverse=True)
     latest_iso = (pages_sorted[0].get("date_iso") if pages_sorted else "") or iso_today()
@@ -512,6 +513,11 @@ def rebuild_sitemap_with_daily(
             if not loc.endswith("/"):
                 existing.pop(loc, None)
 
+    # dictionary alias cleanup (redirect-only URLs should not be indexed)
+    for alias in DICTIONARY_ALIAS_SLUGS:
+        existing.pop(f"{site_origin}/dictionary/{alias}/", None)
+        existing.pop(f"{site_origin}/dictionary/{alias}", None)
+  
     # --- coins/guide canonical cleanup ---
     # hubs must end with '/', and subpages should also end with '/'
     for bad in (f"{site_origin}/coins", f"{site_origin}/guide", f"{site_origin}/daily", f"{site_origin}/dictionary"):
@@ -551,6 +557,8 @@ def rebuild_sitemap_with_daily(
                 continue
             if not re.fullmatch(r"[a-z0-9\-]+", slug):
                 continue
+            if slug in DICTIONARY_ALIAS_SLUGS:
+                continue
             u = f"{site_origin}/dictionary/{slug}/"
             existing[u] = {
                 "lastmod": latest_iso,
@@ -570,6 +578,8 @@ def rebuild_sitemap_with_daily(
         f"{site_origin}/daily/tags/bear/",
         f"{site_origin}/daily/tags/bull/",
         f"{site_origin}/daily/tags/wait/",
+        f"{site_origin}/dictionary/fear-and-greed/",
+        f"{site_origin}/dictionary/fear-and-greed",
     }
 
     for loc in list(existing.keys()):
@@ -690,7 +700,7 @@ def rebuild_sitemap_with_daily(
     if (sitemap_path.parent / "dictionary").exists():
         for idx_html in sorted((sitemap_path.parent / "dictionary").glob("*/index.html")):
             slug = idx_html.parent.name
-            if re.fullmatch(r"[a-z0-9\-]+", slug):
+            if re.fullmatch(r"[a-z0-9\-]+", slug) and slug not in DICTIONARY_ALIAS_SLUGS:
                 u = f"{site_origin}/dictionary/{slug}/"
                 dict_terms.append(u)
 
