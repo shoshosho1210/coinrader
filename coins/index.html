@@ -3,33 +3,412 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Coins | CoinRader</title>
-  <meta name="description" content="主要暗号資産の銘柄別ページ一覧。" />
+  <title>暗号資産 銘柄一覧 (Top 50) | CoinRader</title>
+  <meta name="description" content="主要暗号資産50銘柄の価格・変動率・時価総額を一覧で確認。Bitcoin, Ethereum, Solana 等。CoinRader。" />
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://coinrader.net/coins/" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CoinRader" />
+  <meta property="og:title" content="暗号資産 銘柄一覧 (Top 50) | CoinRader" />
+  <meta property="og:description" content="主要暗号資産50銘柄の価格・変動率を一覧で確認。" />
+  <meta property="og:url" content="https://coinrader.net/coins/" />
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="暗号資産 銘柄一覧 | CoinRader" />
+  <meta name="twitter:image" content="https://coinrader.net/assets/og/ogp_v2.png" />
+  <link href="/assets/icons/favicon.ico" rel="icon" />
+  <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+  <meta name="theme-color" content="#0f172a" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "CoinRader", "item": "https://coinrader.net/"},
+      {"@type": "ListItem", "position": 2, "name": "Coins"}
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
   <style>
-    :root { color-scheme: dark; }
-    body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial; background:#0f172a; color:#e5e7eb; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px 40px; }
+    :root { color-scheme: dark; --accent: #38bdf8; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif; background:#0f172a; color:#e5e7eb; }
     a { color:#7dd3fc; text-decoration:none; }
-    a:hover { text-decoration: underline; }
-    .h1 { font-size: 22px; font-weight: 800; margin: 10px 0 6px; }
-    .muted { color:#94a3b8; }
-    ul { line-height:1.9; }
+    a:hover { text-decoration:underline; }
+    .container { max-width:1100px; margin:0 auto; padding:18px; }
+    .pageHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
+      border-radius:14px; background:rgba(255,255,255,.02);
+      margin:0 0 18px; gap:12px;
+    }
+    .brandLogo { height:36px; width:auto; }
+    .headerNav { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a {
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:700;
+      padding:8px 10px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s;
+      white-space:nowrap;
+    }
+    .headerNav a:hover { transform:translateY(-1px); border-color:rgba(56,189,248,.35); }
+    .breadcrumb { font-size:13px; color:#94a3b8; margin-bottom:8px; }
+    .breadcrumb a { color:#7dd3fc; }
+    h1 { font-size:22px; font-weight:800; margin:10px 0 6px; }
+    .sub { font-size:13px; color:#94a3b8; margin-bottom:18px; }
+    .coin-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap:10px;
+    }
+    .coin-card {
+      display:flex; align-items:center; gap:10px;
+      background:#111827; border:1px solid rgba(148,163,184,.18);
+      border-radius:12px; padding:12px 14px;
+      text-decoration:none !important; color:#e5e7eb;
+      transition: transform .15s, border-color .2s, box-shadow .2s;
+    }
+    .coin-card:hover {
+      transform:translateY(-2px);
+      border-color:rgba(56,189,248,.4);
+      box-shadow:0 8px 20px rgba(0,0,0,.3);
+    }
+    .coin-rank {
+      font-size:12px; font-weight:800; color:#94a3b8;
+      min-width:28px; text-align:center;
+    }
+    .coin-name { font-size:14px; font-weight:700; color:#f9fafb; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .coin-sym { font-size:12px; color:#94a3b8; margin-left:auto; white-space:nowrap; }
+    .site-footer {
+      background:rgba(10,16,28,0.4); border-top:1px solid rgba(255,255,255,0.05);
+      padding:16px 12px; margin-top:40px; width:100%;
+    }
+    .footer-inner {
+      max-width:1100px; margin:0 auto;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:15px;
+    }
+    .footer-brand { display:flex; align-items:center; gap:10px; }
+    .footer-logo { height:36px !important; width:auto; opacity:.8; }
+    .footer-tagline { font-size:11px; color:#64748b; }
+    .footer-nav { display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a { color:#94a3b8; font-size:11.5px; text-decoration:none !important; }
+    .footer-nav a:hover { color:#38bdf8; }
+    .footer-copyright {
+      max-width:1100px; margin:10px auto 0; padding-top:8px;
+      border-top:1px solid rgba(255,255,255,0.02);
+      text-align:center; font-size:10px; color:#475569;
+    }
+    @media (max-width:768px) {
+      .footer-inner { flex-direction:column; text-align:center; }
+      .footer-nav { justify-content:center; gap:8px 12px; }
+      .footer-brand { flex-direction:column; gap:6px; }
+      .headerNav { justify-content:flex-end; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="muted"><a href="/">トップ</a> / <span class="muted">Coins</span></div>
-    <h1 class="h1">Coins</h1>
-    <div class="muted">銘柄別ページ一覧。</div>
-    <div style="margin-top:14px;">
-      <ul>
-        <li><a href='/coins/bitcoin/'>Bitcoin (BTC)</a></li>
-<li><a href='/coins/ethereum/'>Ethereum (ETH)</a></li>
-<li><a href='/coins/solana/'>Solana (SOL)</a></li>
-<li><a href='/coins/xrp/'>XRP (XRP)</a></li>
-      </ul>
+  <div class="container">
+    <header class="pageHeader" role="banner">
+      <a href="/" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
+      </a>
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="/"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="/daily/latest"><i class="fa-solid fa-chart-line"></i><span>Daily</span></a>
+        <a href="/dictionary/"><i class="fa-solid fa-book"></i><span>用語集</span></a>
+      </nav>
+    </header>
+
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="/">トップ</a> / <span>Coins</span>
+    </nav>
+
+    <h1><i class="fa-solid fa-coins" style="color:#38bdf8;margin-right:8px;"></i>暗号資産 銘柄一覧</h1>
+    <div class="sub">主要50銘柄の個別ページ。各銘柄のリアルタイム価格・変動率・時価総額を確認できます。</div>
+
+    <div class="coin-grid">
+      <a href="/coins/bitcoin/" class="coin-card">
+        <span class="coin-rank">#1</span>
+        <span class="coin-name">Bitcoin</span>
+        <span class="coin-sym">BTC</span>
+      </a>
+      <a href="/coins/ethereum/" class="coin-card">
+        <span class="coin-rank">#2</span>
+        <span class="coin-name">Ethereum</span>
+        <span class="coin-sym">ETH</span>
+      </a>
+      <a href="/coins/tether/" class="coin-card">
+        <span class="coin-rank">#3</span>
+        <span class="coin-name">Tether</span>
+        <span class="coin-sym">USDT</span>
+      </a>
+      <a href="/coins/xrp/" class="coin-card">
+        <span class="coin-rank">#4</span>
+        <span class="coin-name">XRP</span>
+        <span class="coin-sym">XRP</span>
+      </a>
+      <a href="/coins/bnb/" class="coin-card">
+        <span class="coin-rank">#5</span>
+        <span class="coin-name">BNB</span>
+        <span class="coin-sym">BNB</span>
+      </a>
+      <a href="/coins/solana/" class="coin-card">
+        <span class="coin-rank">#6</span>
+        <span class="coin-name">Solana</span>
+        <span class="coin-sym">SOL</span>
+      </a>
+      <a href="/coins/usdc/" class="coin-card">
+        <span class="coin-rank">#7</span>
+        <span class="coin-name">USDC</span>
+        <span class="coin-sym">USDC</span>
+      </a>
+      <a href="/coins/dogecoin/" class="coin-card">
+        <span class="coin-rank">#8</span>
+        <span class="coin-name">Dogecoin</span>
+        <span class="coin-sym">DOGE</span>
+      </a>
+      <a href="/coins/cardano/" class="coin-card">
+        <span class="coin-rank">#9</span>
+        <span class="coin-name">Cardano</span>
+        <span class="coin-sym">ADA</span>
+      </a>
+      <a href="/coins/tron/" class="coin-card">
+        <span class="coin-rank">#10</span>
+        <span class="coin-name">TRON</span>
+        <span class="coin-sym">TRX</span>
+      </a>
+      <a href="/coins/avalanche/" class="coin-card">
+        <span class="coin-rank">#11</span>
+        <span class="coin-name">Avalanche</span>
+        <span class="coin-sym">AVAX</span>
+      </a>
+      <a href="/coins/chainlink/" class="coin-card">
+        <span class="coin-rank">#12</span>
+        <span class="coin-name">Chainlink</span>
+        <span class="coin-sym">LINK</span>
+      </a>
+      <a href="/coins/shiba-inu/" class="coin-card">
+        <span class="coin-rank">#13</span>
+        <span class="coin-name">Shiba Inu</span>
+        <span class="coin-sym">SHIB</span>
+      </a>
+      <a href="/coins/sui/" class="coin-card">
+        <span class="coin-rank">#14</span>
+        <span class="coin-name">Sui</span>
+        <span class="coin-sym">SUI</span>
+      </a>
+      <a href="/coins/stellar/" class="coin-card">
+        <span class="coin-rank">#15</span>
+        <span class="coin-name">Stellar</span>
+        <span class="coin-sym">XLM</span>
+      </a>
+      <a href="/coins/polkadot/" class="coin-card">
+        <span class="coin-rank">#16</span>
+        <span class="coin-name">Polkadot</span>
+        <span class="coin-sym">DOT</span>
+      </a>
+      <a href="/coins/bitcoin-cash/" class="coin-card">
+        <span class="coin-rank">#17</span>
+        <span class="coin-name">Bitcoin Cash</span>
+        <span class="coin-sym">BCH</span>
+      </a>
+      <a href="/coins/hyperliquid/" class="coin-card">
+        <span class="coin-rank">#18</span>
+        <span class="coin-name">Hyperliquid</span>
+        <span class="coin-sym">HYPE</span>
+      </a>
+      <a href="/coins/uniswap/" class="coin-card">
+        <span class="coin-rank">#19</span>
+        <span class="coin-name">Uniswap</span>
+        <span class="coin-sym">UNI</span>
+      </a>
+      <a href="/coins/litecoin/" class="coin-card">
+        <span class="coin-rank">#20</span>
+        <span class="coin-name">Litecoin</span>
+        <span class="coin-sym">LTC</span>
+      </a>
+      <a href="/coins/hedera/" class="coin-card">
+        <span class="coin-rank">#21</span>
+        <span class="coin-name">Hedera</span>
+        <span class="coin-sym">HBAR</span>
+      </a>
+      <a href="/coins/near/" class="coin-card">
+        <span class="coin-rank">#22</span>
+        <span class="coin-name">NEAR Protocol</span>
+        <span class="coin-sym">NEAR</span>
+      </a>
+      <a href="/coins/aptos/" class="coin-card">
+        <span class="coin-rank">#23</span>
+        <span class="coin-name">Aptos</span>
+        <span class="coin-sym">APT</span>
+      </a>
+      <a href="/coins/pepe/" class="coin-card">
+        <span class="coin-rank">#24</span>
+        <span class="coin-name">Pepe</span>
+        <span class="coin-sym">PEPE</span>
+      </a>
+      <a href="/coins/internet-computer/" class="coin-card">
+        <span class="coin-rank">#25</span>
+        <span class="coin-name">Internet Computer</span>
+        <span class="coin-sym">ICP</span>
+      </a>
+      <a href="/coins/dai/" class="coin-card">
+        <span class="coin-rank">#26</span>
+        <span class="coin-name">Dai</span>
+        <span class="coin-sym">DAI</span>
+      </a>
+      <a href="/coins/aave/" class="coin-card">
+        <span class="coin-rank">#27</span>
+        <span class="coin-name">Aave</span>
+        <span class="coin-sym">AAVE</span>
+      </a>
+      <a href="/coins/ethereum-classic/" class="coin-card">
+        <span class="coin-rank">#28</span>
+        <span class="coin-name">Ethereum Classic</span>
+        <span class="coin-sym">ETC</span>
+      </a>
+      <a href="/coins/polygon/" class="coin-card">
+        <span class="coin-rank">#29</span>
+        <span class="coin-name">Polygon</span>
+        <span class="coin-sym">POL</span>
+      </a>
+      <a href="/coins/render/" class="coin-card">
+        <span class="coin-rank">#30</span>
+        <span class="coin-name">Render</span>
+        <span class="coin-sym">RENDER</span>
+      </a>
+      <a href="/coins/cosmos/" class="coin-card">
+        <span class="coin-rank">#31</span>
+        <span class="coin-name">Cosmos</span>
+        <span class="coin-sym">ATOM</span>
+      </a>
+      <a href="/coins/filecoin/" class="coin-card">
+        <span class="coin-rank">#32</span>
+        <span class="coin-name">Filecoin</span>
+        <span class="coin-sym">FIL</span>
+      </a>
+      <a href="/coins/arbitrum/" class="coin-card">
+        <span class="coin-rank">#33</span>
+        <span class="coin-name">Arbitrum</span>
+        <span class="coin-sym">ARB</span>
+      </a>
+      <a href="/coins/optimism/" class="coin-card">
+        <span class="coin-rank">#34</span>
+        <span class="coin-name">Optimism</span>
+        <span class="coin-sym">OP</span>
+      </a>
+      <a href="/coins/vechain/" class="coin-card">
+        <span class="coin-rank">#35</span>
+        <span class="coin-name">VeChain</span>
+        <span class="coin-sym">VET</span>
+      </a>
+      <a href="/coins/injective/" class="coin-card">
+        <span class="coin-rank">#36</span>
+        <span class="coin-name">Injective</span>
+        <span class="coin-sym">INJ</span>
+      </a>
+      <a href="/coins/the-graph/" class="coin-card">
+        <span class="coin-rank">#37</span>
+        <span class="coin-name">The Graph</span>
+        <span class="coin-sym">GRT</span>
+      </a>
+      <a href="/coins/fantom/" class="coin-card">
+        <span class="coin-rank">#38</span>
+        <span class="coin-name">Fantom</span>
+        <span class="coin-sym">FTM</span>
+      </a>
+      <a href="/coins/algorand/" class="coin-card">
+        <span class="coin-rank">#39</span>
+        <span class="coin-name">Algorand</span>
+        <span class="coin-sym">ALGO</span>
+      </a>
+      <a href="/coins/theta/" class="coin-card">
+        <span class="coin-rank">#40</span>
+        <span class="coin-name">Theta Network</span>
+        <span class="coin-sym">THETA</span>
+      </a>
+      <a href="/coins/maker/" class="coin-card">
+        <span class="coin-rank">#41</span>
+        <span class="coin-name">Maker</span>
+        <span class="coin-sym">MKR</span>
+      </a>
+      <a href="/coins/sei/" class="coin-card">
+        <span class="coin-rank">#42</span>
+        <span class="coin-name">Sei</span>
+        <span class="coin-sym">SEI</span>
+      </a>
+      <a href="/coins/flow/" class="coin-card">
+        <span class="coin-rank">#43</span>
+        <span class="coin-name">Flow</span>
+        <span class="coin-sym">FLOW</span>
+      </a>
+      <a href="/coins/ondo/" class="coin-card">
+        <span class="coin-rank">#44</span>
+        <span class="coin-name">Ondo Finance</span>
+        <span class="coin-sym">ONDO</span>
+      </a>
+      <a href="/coins/pyth/" class="coin-card">
+        <span class="coin-rank">#45</span>
+        <span class="coin-name">Pyth Network</span>
+        <span class="coin-sym">PYTH</span>
+      </a>
+      <a href="/coins/jupiter/" class="coin-card">
+        <span class="coin-rank">#46</span>
+        <span class="coin-name">Jupiter</span>
+        <span class="coin-sym">JUP</span>
+      </a>
+      <a href="/coins/floki/" class="coin-card">
+        <span class="coin-rank">#47</span>
+        <span class="coin-name">FLOKI</span>
+        <span class="coin-sym">FLOKI</span>
+      </a>
+      <a href="/coins/worldcoin/" class="coin-card">
+        <span class="coin-rank">#48</span>
+        <span class="coin-name">Worldcoin</span>
+        <span class="coin-sym">WLD</span>
+      </a>
+      <a href="/coins/bonk/" class="coin-card">
+        <span class="coin-rank">#49</span>
+        <span class="coin-name">Bonk</span>
+        <span class="coin-sym">BONK</span>
+      </a>
+      <a href="/coins/stacks/" class="coin-card">
+        <span class="coin-rank">#50</span>
+        <span class="coin-name">Stacks</span>
+        <span class="coin-sym">STX</span>
+      </a>
     </div>
   </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png" />
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="/">ホーム</a>
+        <a href="/coins/">Coins</a>
+        <a href="/daily/latest">Daily</a>
+        <a href="/about">運営者情報</a>
+        <a href="/contact">お問い合わせ</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      &copy; 2026 CoinRader. All rights reserved. ｜ 本サイトは投資助言ではありません。
+    </div>
+  </footer>
 </body>
 </html>
