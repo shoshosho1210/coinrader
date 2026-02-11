@@ -36,6 +36,7 @@ import re
 import json
 import glob
 import datetime
+import math
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import quote_plus
@@ -187,29 +188,144 @@ def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi
 
 
 def build_jsonld(canonical: str, title: str, description: str, date_iso: str, updated_at_jst: str) -> str:
-    # 日次ページは Article として扱う
-    # updated_at_jst: 'YYYY-MM-DD 09:00' のような文字列を想定
+    # 日次ページは Article + FAQPage + BreadcrumbList を出力
+    # updated_at_jst: 'YYYY-MM-DD HH:MM' のような文字列を想定
     def to_iso(dt_s: str) -> str:
         try:
-            # allow 'YYYY-MM-DD HH:MM' (JST)
             dt = datetime.datetime.strptime(dt_s, "%Y-%m-%d %H:%M")
-            # JST +09:00
             return dt.replace(tzinfo=datetime.timezone(datetime.timedelta(hours=9))).isoformat()
         except Exception:
             return date_iso + "T09:00:00+09:00"
-
+          
+    article_id = canonical + "#article"
+    faq_id = canonical + "#faq"
+    breadcrumb_id = canonical + "#breadcrumb"
     data = {
         "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": title,
-        "description": description,
-        "datePublished": date_iso + "T09:00:00+09:00",
-        "dateModified": to_iso(updated_at_jst),
-        "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
-        "publisher": {"@type": "Organization", "name": "CoinRader"},
+        "@graph": [
+            {
+                "@type": "Article",
+                "@id": article_id,
+                "headline": title,
+                "description": description,
+                "datePublished": date_iso + "T09:00:00+09:00",
+                "dateModified": to_iso(updated_at_jst),
+                "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
+                "publisher": {"@type": "Organization", "name": "CoinRader"},
+            },
+            {
+                "@type": "FAQPage",
+                "@id": faq_id,
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "このAI判断は投資助言ですか？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。",
+                        },
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "更新頻度は？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。",
+                        },
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Fear & GreedやRSIが低いと必ず買いですか？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。",
+                        },
+                    },
+                ],
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": breadcrumb_id,
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "CoinRader", "item": SITE_ORIGIN + "/"},
+                    {"@type": "ListItem", "position": 2, "name": "Daily", "item": SITE_ORIGIN + "/daily/"},
+                    {"@type": "ListItem", "position": 3, "name": date_iso, "item": canonical},
+                ],
+            },
+        ],
     }
     s = json.dumps(data, ensure_ascii=False)
     return s.replace("</", "<\/")
+
+def _safe_float(v: Any) -> Optional[float]:
+    try:
+        if v is None:
+            return None
+        return float(v)
+    except Exception:
+        return None
+
+
+def build_similar_days_html(current: Dict[str, Any], candidates: List[Dict[str, Any]], limit: int = 5) -> str:
+    c_fgi = _safe_float(current.get("fgi_value"))
+    c_rsi = _safe_float(current.get("btc_rsi"))
+    c_trend = _safe_float(current.get("ma_dist"))
+    c_judge = str(current.get("judge") or "").upper()
+    c_ymd = str(current.get("ymd") or "")
+    if not c_ymd:
+        return ""
+
+    scored: List[tuple[float, Dict[str, Any]]] = []
+    for cand in candidates:
+        ymd = str(cand.get("ymd") or "")
+        if (not ymd) or ymd == c_ymd:
+            continue
+
+        points = []
+        for key, cur, scale in (("fgi_value", c_fgi, 100.0), ("btc_rsi", c_rsi, 100.0), ("ma_dist", c_trend, 20.0)):
+            val = _safe_float(cand.get(key))
+            if cur is None or val is None:
+                continue
+            points.append((val - cur) / scale)
+
+        if not points:
+            continue
+
+        dist = math.sqrt(sum(p * p for p in points))
+        if c_judge and str(cand.get("judge") or "").upper() == c_judge:
+            dist *= 0.92
+        scored.append((dist, cand))
+
+    if not scored:
+        return ""
+
+    scored.sort(key=lambda x: x[0])
+    rows: List[str] = []
+    for dist, cand in scored[:limit]:
+        sim = max(0.0, 100.0 - (dist * 100.0))
+        date_iso = escape_html(str(cand.get("date_iso") or cand.get("ymd") or ""))
+        href = f"/daily/{escape_html(str(cand.get('ymd') or ''))}"
+        judge = escape_html(str(cand.get("judge") or ""))
+        score = f"{sim:.1f}".rstrip("0").rstrip(".")
+        rows.append(
+            "<li class='similar-item'>"
+            f"<a href='{href}'>{date_iso}</a>"
+            f"<span class='similar-meta'>AI {judge} / 類似度 {score}</span>"
+            "</li>"
+        )
+
+    if not rows:
+        return ""
+
+    return (
+        "<section class='card similar-days' style='margin-top:12px' aria-label='Similar Days'>"
+        "<h2>過去の類似日 TOP5</h2>"
+        "<p class='similar-note'>FGI / RSI / Trend の近さで過去日を表示しています（投資助言ではありません）。</p>"
+        "<ul class='similar-list'>"
+        + "".join(rows)
+        + "</ul></section>"
+    )
+
 
 
 
@@ -1271,6 +1387,7 @@ def main() -> None:
         trend_top3 = " / ".join(trending[:3]) if trending else ""
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
+        similar_days_html = build_similar_days_html(it, items, limit=5)
         why_html = build_reason_html(payload, judge)
         takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer)
         coin_hubs_html = build_coin_hub_links_html(SITE_ORIGIN, trending, top_gainer)
@@ -1308,6 +1425,8 @@ def main() -> None:
             "{{WHY}}": why_html,
             "{{RECENT_DAYS_HTML}}": recent_days_html,
             "{{RECENT_DAYS}}": recent_days_html,
+            "{{SIMILAR_DAYS_HTML}}": similar_days_html,
+            "{{SIMILAR_DAYS}}": similar_days_html,
         }
         for k, v in repl.items():
             html = html.replace(k, v)
@@ -1343,7 +1462,14 @@ def main() -> None:
             # 3) 最後の保険：<body>直後
             if (not inserted) and re.search(r"<body\b[^>]*>", html):
                 html = re.sub(r"(<body\b[^>]*>)", r"\1\n" + coin_hubs_html, html, count=1)
-      
+              
+            # Similar Days: テンプレにプレースホルダが無い場合は FAQ の直前に差し込む
+            if similar_days_html and ("{{SIMILAR_DAYS" not in tmpl):
+              if "<!-- FAQ -->" in html:
+                html = html.replace("<!-- FAQ -->", similar_days_html + "\n\n    <!-- FAQ -->", 1)
+              elif re.search(r'<section class="card faq"', html):
+                html = re.sub(r'(<section class="card faq")', similar_days_html + r"\n\n    \1", html, count=1)
+                
         # TAKEAWAYS: テンプレにプレースホルダが無い場合でも、wrap直後に安全に挿入する
         if takeaways_html and ("{{TAKEAWAYS" not in tmpl):
             inserted = False
