@@ -61,29 +61,6 @@ def canonicalize(url: str) -> str:
 
     return u
 
-    # /daily/index.html -> /daily/
-    if u.endswith("/daily/index.html"):
-        return u.replace("/daily/index.html", "/daily/")
-
-    # /daily/latest.html -> /daily/latest
-    if u.endswith("/daily/latest.html"):
-        return u.replace("/daily/latest.html", "/daily/latest")
-
-    # tags: /daily/tags/bear(.html) -> /daily/tags/bear
-    for t in ("bear", "bull", "wait"):
-        if u.endswith(f"/daily/tags/{t}.html"):
-            return u.replace(f"/daily/tags/{t}.html", f"/daily/tags/{t}")
-        if u.endswith(f"/daily/tags/{t}"):
-            return u
-
-    # daily pages: /daily/YYYYMMDD(.html) -> /daily/YYYYMMDD
-    m = re.search(r"/daily/(\d{8})(?:\.html)?$", u)
-    if m:
-        return u.replace(".html", "")
-
-    return u
-
-
 def _iter_loc_elements(root: ET.Element):
     # namespace-agnostic: find any element whose localname is "loc"
     for el in root.iter():
