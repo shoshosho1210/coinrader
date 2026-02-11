@@ -1256,6 +1256,25 @@ def build_reason_1line(payload: Dict[str, Any]) -> str:
 
     return shorten_one_line(candidates[0] if candidates else "")
 
+def update_daily_latest_redirect(latest_ymd: str) -> None:
+    """Keep `_redirects` /daily/latest target synced to latest daily date."""
+    redirects_path = ROOT / "_redirects"
+    if not redirects_path.exists():
+        return
+
+    text = redirects_path.read_text(encoding="utf-8")
+    target = f"/daily/latest                   /daily/{latest_ymd}         302"
+    pattern = re.compile(r"^/daily/latest\s+/daily/\d{8}\s+302\s*$", re.MULTILINE)
+
+    if pattern.search(text):
+        text = pattern.sub(target, text, count=1)
+    else:
+        if not text.endswith("\n"):
+            text += "\n"
+        text += "\n# daily latest (auto-generated target)\n"
+        text += target + "\n"
+
+    redirects_path.write_text(text, encoding="utf-8")
 
 def main() -> None:
     tmpl = read_text(TEMPL_DIR / "daily_template.html")
@@ -1705,6 +1724,7 @@ def main() -> None:
 
         write_text(out_path_html, tag_html)
 
+    update_daily_latest_redirect(latest_ymd)
     latest_target = f"{latest_ymd}.html"
     latest_page_path = OUT_DIR / latest_target
     latest_page_html = read_text(latest_page_path)
