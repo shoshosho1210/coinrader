@@ -1,0 +1,14 @@
+{
+  "fetched_at": "2026-02-11T14:15:30.906190+00:00",
+  "ttl_seconds": 300,
+  "btc_jpy": null,
+  "eth_jpy": null,
+  "btc_dom": null,
+  "fear_greed": {
+    "value": null,
+    "label": ""
+  },
+  "usd_jpy": null,
+  "stale": true,
+  "stale_reason": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+}
