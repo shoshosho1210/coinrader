@@ -1,15 +1,12 @@
 {
-  "fetched_at": "2026-02-11T20:22:29.811400+00:00",
+  "fetched_at": "2026-02-11T21:50:20.338850+00:00",
   "ttl_seconds": 300,
-  "btc_jpy": 10336447,
-  "eth_jpy": 298533,
-  "btc_dom": 56.883928166921194,
+  "btc_jpy": 10405369,
+  "eth_jpy": 302704,
+  "btc_dom": 56.85326930824952,
   "fear_greed": {
     "value": "11",
     "label": "Extreme Fear"
   },
-  "usd_jpy": 154.631977,
-  "stale": true,
-  "stale_reason": "The read operation timed out",
-  "stale_at": "2026-02-11T21:05:06.209470+00:00"
+  "usd_jpy": 154.631977
 }
