@@ -130,6 +130,14 @@
       font-weight:900;
     }
 
+    /* Similar days */
+    .similar-days h2{font-size:16px;margin:0 0 8px}
+    .similar-note{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.55}
+    .similar-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+    .similar-item{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.02)}
+    .similar-item a{font-weight:700;color:var(--fg)}
+    .similar-meta{font-size:12px;color:var(--muted)}
+    
     /* FAQ */
     .faq h2{font-size:16px;margin:0 0 10px}
     .faq details{border-top:1px solid rgba(255,255,255,.08);padding:10px 0}
@@ -326,7 +334,8 @@
         </div>
       </aside>
     </div>
-
+    {{SIMILAR_DAYS_HTML}}
+    
     <!-- FAQ -->
     <section class="card faq" style="margin-top:12px" aria-label="FAQ">
       <h2 data-i18n data-ja="よくある質問" data-en="FAQ">よくある質問</h2>
