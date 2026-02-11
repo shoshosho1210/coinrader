@@ -15,6 +15,7 @@ from __future__ import annotations
 import os
 import re
 import datetime as dt
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +23,7 @@ OUT_DIR = ROOT / "dictionary"
 TEMPL_DIR = ROOT / "templates"
 
 SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
-
+LEGACY_ALIAS_DIRS = ["fear-and-greed"]
 
 TERMS = [
     {
@@ -164,6 +165,11 @@ def iso_today() -> str:
 
 
 def main() -> None:
+    for alias in LEGACY_ALIAS_DIRS:
+        alias_dir = OUT_DIR / alias
+        if alias_dir.exists():
+            shutil.rmtree(alias_dir)
+
     tmpl_term = read_text(TEMPL_DIR / "dictionary_term.html")
     tmpl_index = read_text(TEMPL_DIR / "dictionary_index.html")
 
