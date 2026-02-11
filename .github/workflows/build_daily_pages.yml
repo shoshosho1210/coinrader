@@ -164,16 +164,12 @@ jobs:
                   else:
                       body.append(f"<url><loc>{loc}</loc></url>")
               return (
-                  '<?xml version="1.0" encoding="UTF-8"?>'
-                  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-                  + '
-                  '.join(body)
-                  + '
-                  </urlset>'
+                  '<?xml version="1.0" encoding="UTF-8"?>\n'
+                  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                  + '\n'.join(body)
+                  + '\n</urlset>\n'
               )
-
           
-          # ---- daily ids ----
           daily_ids = []
           for fp in sorted((ROOT / 'data/daily').glob('*.json')):
               m = re.fullmatch(r'(\d{8})\.json', fp.name)
@@ -181,13 +177,11 @@ jobs:
                   daily_ids.append(m.group(1))
           latest = daily_ids[-1] if daily_ids else None
 
-          # ---- static/hub urls ----
           static_paths = [
               '/', '/about', '/start', '/data-sources', '/ads-pr', '/privacy', '/disclaimer', '/contact',
-              '/coins/', '/dictionary/', '/guide/',          
+              '/coins/', '/dictionary/', '/guide/',
           ]
           static_entries = []
-
           seen = set()
           for u in static_paths:
               if u in seen:
@@ -195,21 +189,18 @@ jobs:
               seen.add(u)
               static_entries.append((f"{ORIGIN}{u}", None))
 
-          # guide pages
           guide_dir = ROOT / 'guide'
           if guide_dir.exists():
               for pdir in sorted(guide_dir.glob('*/')):
                   if (pdir / 'index.html').exists():
                       static_entries.append((f"{ORIGIN}/guide/{pdir.name}/", None))
 
-          # coins pages
           coins_dir = ROOT / 'coins'
           if coins_dir.exists():
               for pdir in sorted(coins_dir.glob('*/')):
                   if (pdir / 'index.html').exists():
                       static_entries.append((f"{ORIGIN}/coins/{pdir.name}/", None))
 
-          # dictionary pages (separate sitemap)
           dictionary_entries = []
           dict_dir = ROOT / 'dictionary'
           if dict_dir.exists():
@@ -220,8 +211,7 @@ jobs:
                   if (pdir / 'index.html').exists():
                       dictionary_entries.append((f"{ORIGIN}/dictionary/{slug}/", None))
 
-          # ---- daily urls ----
-          daily_entries = []              
+          daily_entries = []   
           if latest:
               lm_latest = ymd2iso(latest)
               for u in ('/daily/', '/daily/tags/bear', '/daily/tags/bull', '/daily/tags/wait'):
@@ -237,13 +227,14 @@ jobs:
           # write sitemap index
           index_xml = (
               '<?xml version="1.0" encoding="UTF-8"?>'
-              '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-              f'  <sitemap><loc>{ORIGIN}/sitemap-static.xml</loc></sitemap>'
-              f'  <sitemap><loc>{ORIGIN}/sitemap-dictionary.xml</loc></sitemap>'
-              f'  <sitemap><loc>{ORIGIN}/sitemap-daily.xml</loc></sitemap>'
-              '</sitemapindex>'
+              '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+              f'  <sitemap><loc>{ORIGIN}/sitemap-static.xml</loc></sitemap>\n'
+              f'  <sitemap><loc>{ORIGIN}/sitemap-dictionary.xml</loc></sitemap>\n'
+              f'  <sitemap><loc>{ORIGIN}/sitemap-daily.xml</loc></sitemap>\n'
+              '</sitemapindex>\n'
           )
           Path('sitemap.xml').write_text(index_xml, encoding='utf-8')
+
           print(f"wrote split sitemaps: static={len(static_entries)} dictionary={len(dictionary_entries)} daily={len(daily_entries)} latest={latest}")
           PY
 
