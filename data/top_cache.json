@@ -8,5 +8,8 @@
     "value": "11",
     "label": "Extreme Fear"
   },
-  "usd_jpy": 154.631977
+  "usd_jpy": 154.631977,
+  "stale": true,
+  "stale_reason": "The read operation timed out",
+  "stale_at": "2026-02-11T21:05:06.209470+00:00"
 }
