@@ -82,6 +82,7 @@ def fetch_markets(coin_ids: list[str], api_key: str | None) -> list[dict]:
         "vs_currency": "jpy",
         "ids": ",".join(coin_ids),
         "price_change_percentage": "24h,7d",
+        "sparkline": "true",
         "per_page": 250,
     }
     headers = {}
