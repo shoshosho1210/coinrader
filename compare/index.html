@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>暗号資産 比較ページ一覧 (190ペア) | CoinRader</title>
+  <meta name="description" content="主要暗号資産の比較ページ一覧。Bitcoin vs Ethereum、Solana vs Cardano など190ペアの価格・時価総額を比較。CoinRader。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://coinrader.net/compare/" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CoinRader" />
+  <meta property="og:title" content="暗号資産 比較一覧 | CoinRader" />
+  <meta property="og:description" content="主要暗号資産190ペアの比較。価格・時価総額・変動率を並べて確認。" />
+  <meta property="og:url" content="https://coinrader.net/compare/" />
+  <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link href="/assets/icons/favicon.ico" rel="icon" />
+  <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+  <meta name="theme-color" content="#0f172a" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TDEBXC7DH6');
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "CoinRader", "item": "https://coinrader.net/"},
+      {"@type": "ListItem", "position": 2, "name": "Compare"}
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+  <style>
+    :root { color-scheme: dark; --accent: #38bdf8; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif; background:#0f172a; color:#e5e7eb; }
+    a { color:#7dd3fc; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .container { max-width:1100px; margin:0 auto; padding:18px; }
+    .pageHeader {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
+      border-radius:14px; background:rgba(255,255,255,.02);
+      margin:0 0 18px; gap:12px;
+    }
+    .brandLogo { height:36px; width:auto; }
+    .headerNav { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .headerNav a {
+      display:inline-flex; align-items:center; gap:8px;
+      color:#cbd5e1; text-decoration:none !important;
+      font-size:12px; font-weight:700;
+      padding:8px 10px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+      transition: transform .15s, border-color .15s; white-space:nowrap;
+    }
+    .headerNav a:hover { transform:translateY(-1px); border-color:rgba(56,189,248,.35); }
+    .breadcrumb { font-size:13px; color:#94a3b8; margin-bottom:8px; }
+    .breadcrumb a { color:#7dd3fc; }
+    h1 { font-size:22px; font-weight:800; margin:10px 0 6px; }
+    .sub { font-size:13px; color:#94a3b8; margin-bottom:18px; }
+    .cmp-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:10px;
+    }
+    .cmp-card {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      background:#111827; border:1px solid rgba(148,163,184,.18);
+      border-radius:12px; padding:14px 16px;
+      text-decoration:none !important; color:#e5e7eb;
+      transition: transform .15s, border-color .2s, box-shadow .2s;
+    }
+    .cmp-card:hover {
+      transform:translateY(-2px); border-color:rgba(56,189,248,.4);
+      box-shadow:0 8px 20px rgba(0,0,0,.3);
+    }
+    .cmp-a, .cmp-b { font-size:14px; font-weight:700; }
+    .cmp-vs { font-size:11px; font-weight:800; color:#38bdf8; letter-spacing:1px; }
+    .site-footer {
+      background:rgba(10,16,28,0.4); border-top:1px solid rgba(255,255,255,0.05);
+      padding:16px 12px; margin-top:40px; width:100%;
+    }
+    .footer-inner {
+      max-width:1100px; margin:0 auto;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:15px;
+    }
+    .footer-brand { display:flex; align-items:center; gap:10px; }
+    .footer-logo { height:36px !important; width:auto; opacity:.8; }
+    .footer-tagline { font-size:11px; color:#64748b; }
+    .footer-nav { display:flex; gap:12px; flex-wrap:wrap; }
+    .footer-nav a { color:#94a3b8; font-size:11.5px; text-decoration:none !important; }
+    .footer-nav a:hover { color:#38bdf8; }
+    .footer-copyright {
+      max-width:1100px; margin:10px auto 0; padding-top:8px;
+      border-top:1px solid rgba(255,255,255,0.02);
+      text-align:center; font-size:10px; color:#475569;
+    }
+    @media (max-width:768px) {
+      .footer-inner { flex-direction:column; text-align:center; }
+      .footer-nav { justify-content:center; gap:8px 12px; }
+      .headerNav { justify-content:flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="pageHeader" role="banner">
+      <a href="/" aria-label="CoinRader ホーム">
+        <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
+      </a>
+      <nav class="headerNav" aria-label="ページメニュー">
+        <a href="/"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+        <a href="/coins/"><i class="fa-solid fa-coins"></i><span>Coins</span></a>
+        <a href="/daily/latest"><i class="fa-solid fa-chart-line"></i><span>Daily</span></a>
+      </nav>
+    </header>
+
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="/">トップ</a> / <span>比較</span>
+    </nav>
+
+    <h1><i class="fa-solid fa-scale-balanced" style="color:#38bdf8;margin-right:8px;"></i>暗号資産 比較</h1>
+    <div class="sub">主要190ペアの暗号資産を並べて比較。価格・時価総額・変動率を一目で確認できます。</div>
+
+    <div class="cmp-grid">
+      <a href="/compare/bitcoin-vs-ethereum/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Ethereum</span></a>
+      <a href="/compare/bitcoin-vs-xrp/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">XRP</span></a>
+      <a href="/compare/bitcoin-vs-bnb/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">BNB</span></a>
+      <a href="/compare/bitcoin-vs-solana/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Solana</span></a>
+      <a href="/compare/bitcoin-vs-dogecoin/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Dogecoin</span></a>
+      <a href="/compare/bitcoin-vs-cardano/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Cardano</span></a>
+      <a href="/compare/bitcoin-vs-tron/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/bitcoin-vs-avalanche/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/bitcoin-vs-chainlink/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/bitcoin-vs-polkadot/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/bitcoin-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/bitcoin-vs-litecoin/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/bitcoin-vs-near/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/bitcoin-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/bitcoin-vs-uniswap/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/bitcoin-vs-sui/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/bitcoin-vs-stellar/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/bitcoin-vs-hedera/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/bitcoin-vs-aptos/" class="cmp-card"><span class="cmp-a">Bitcoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/ethereum-vs-xrp/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">XRP</span></a>
+      <a href="/compare/ethereum-vs-bnb/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">BNB</span></a>
+      <a href="/compare/ethereum-vs-solana/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Solana</span></a>
+      <a href="/compare/ethereum-vs-dogecoin/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Dogecoin</span></a>
+      <a href="/compare/ethereum-vs-cardano/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Cardano</span></a>
+      <a href="/compare/ethereum-vs-tron/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/ethereum-vs-avalanche/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/ethereum-vs-chainlink/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/ethereum-vs-polkadot/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/ethereum-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/ethereum-vs-litecoin/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/ethereum-vs-near/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/ethereum-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/ethereum-vs-uniswap/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/ethereum-vs-sui/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/ethereum-vs-stellar/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/ethereum-vs-hedera/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/ethereum-vs-aptos/" class="cmp-card"><span class="cmp-a">Ethereum</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/xrp-vs-bnb/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">BNB</span></a>
+      <a href="/compare/xrp-vs-solana/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Solana</span></a>
+      <a href="/compare/xrp-vs-dogecoin/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Dogecoin</span></a>
+      <a href="/compare/xrp-vs-cardano/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Cardano</span></a>
+      <a href="/compare/xrp-vs-tron/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/xrp-vs-avalanche/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/xrp-vs-chainlink/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/xrp-vs-polkadot/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/xrp-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/xrp-vs-litecoin/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/xrp-vs-near/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/xrp-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/xrp-vs-uniswap/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/xrp-vs-sui/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/xrp-vs-stellar/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/xrp-vs-hedera/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/xrp-vs-aptos/" class="cmp-card"><span class="cmp-a">XRP</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/bnb-vs-solana/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Solana</span></a>
+      <a href="/compare/bnb-vs-dogecoin/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Dogecoin</span></a>
+      <a href="/compare/bnb-vs-cardano/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Cardano</span></a>
+      <a href="/compare/bnb-vs-tron/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/bnb-vs-avalanche/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/bnb-vs-chainlink/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/bnb-vs-polkadot/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/bnb-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/bnb-vs-litecoin/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/bnb-vs-near/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/bnb-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/bnb-vs-uniswap/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/bnb-vs-sui/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/bnb-vs-stellar/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/bnb-vs-hedera/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/bnb-vs-aptos/" class="cmp-card"><span class="cmp-a">BNB</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/solana-vs-dogecoin/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Dogecoin</span></a>
+      <a href="/compare/solana-vs-cardano/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Cardano</span></a>
+      <a href="/compare/solana-vs-tron/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/solana-vs-avalanche/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/solana-vs-chainlink/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/solana-vs-polkadot/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/solana-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/solana-vs-litecoin/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/solana-vs-near/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/solana-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/solana-vs-uniswap/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/solana-vs-sui/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/solana-vs-stellar/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/solana-vs-hedera/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/solana-vs-aptos/" class="cmp-card"><span class="cmp-a">Solana</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/dogecoin-vs-cardano/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Cardano</span></a>
+      <a href="/compare/dogecoin-vs-tron/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/dogecoin-vs-avalanche/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/dogecoin-vs-chainlink/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/dogecoin-vs-polkadot/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/dogecoin-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/dogecoin-vs-litecoin/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/dogecoin-vs-near/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/dogecoin-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/dogecoin-vs-uniswap/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/dogecoin-vs-sui/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/dogecoin-vs-stellar/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/dogecoin-vs-hedera/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/dogecoin-vs-aptos/" class="cmp-card"><span class="cmp-a">Dogecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/cardano-vs-tron/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">TRON</span></a>
+      <a href="/compare/cardano-vs-avalanche/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/cardano-vs-chainlink/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/cardano-vs-polkadot/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/cardano-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/cardano-vs-litecoin/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/cardano-vs-near/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/cardano-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/cardano-vs-uniswap/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/cardano-vs-sui/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/cardano-vs-stellar/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/cardano-vs-hedera/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/cardano-vs-aptos/" class="cmp-card"><span class="cmp-a">Cardano</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/tron-vs-avalanche/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Avalanche</span></a>
+      <a href="/compare/tron-vs-chainlink/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/tron-vs-polkadot/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/tron-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/tron-vs-litecoin/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/tron-vs-near/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/tron-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/tron-vs-uniswap/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/tron-vs-sui/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/tron-vs-stellar/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/tron-vs-hedera/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/tron-vs-aptos/" class="cmp-card"><span class="cmp-a">TRON</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/avalanche-vs-chainlink/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Chainlink</span></a>
+      <a href="/compare/avalanche-vs-polkadot/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/avalanche-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/avalanche-vs-litecoin/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/avalanche-vs-near/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/avalanche-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/avalanche-vs-uniswap/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/avalanche-vs-sui/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/avalanche-vs-stellar/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/avalanche-vs-hedera/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/avalanche-vs-aptos/" class="cmp-card"><span class="cmp-a">Avalanche</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/chainlink-vs-polkadot/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Polkadot</span></a>
+      <a href="/compare/chainlink-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/chainlink-vs-litecoin/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/chainlink-vs-near/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/chainlink-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/chainlink-vs-uniswap/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/chainlink-vs-sui/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/chainlink-vs-stellar/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/chainlink-vs-hedera/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/chainlink-vs-aptos/" class="cmp-card"><span class="cmp-a">Chainlink</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/polkadot-vs-bitcoin-cash/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Bitcoin Cash</span></a>
+      <a href="/compare/polkadot-vs-litecoin/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/polkadot-vs-near/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/polkadot-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/polkadot-vs-uniswap/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/polkadot-vs-sui/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/polkadot-vs-stellar/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/polkadot-vs-hedera/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/polkadot-vs-aptos/" class="cmp-card"><span class="cmp-a">Polkadot</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/bitcoin-cash-vs-litecoin/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Litecoin</span></a>
+      <a href="/compare/bitcoin-cash-vs-near/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/bitcoin-cash-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/bitcoin-cash-vs-uniswap/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/bitcoin-cash-vs-sui/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/bitcoin-cash-vs-stellar/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/bitcoin-cash-vs-hedera/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/bitcoin-cash-vs-aptos/" class="cmp-card"><span class="cmp-a">Bitcoin Cash</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/litecoin-vs-near/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">NEAR Protocol</span></a>
+      <a href="/compare/litecoin-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/litecoin-vs-uniswap/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/litecoin-vs-sui/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/litecoin-vs-stellar/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/litecoin-vs-hedera/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/litecoin-vs-aptos/" class="cmp-card"><span class="cmp-a">Litecoin</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/near-vs-shiba-inu/" class="cmp-card"><span class="cmp-a">NEAR Protocol</span><span class="cmp-vs">VS</span><span class="cmp-b">Shiba Inu</span></a>
+      <a href="/compare/near-vs-uniswap/" class="cmp-card"><span class="cmp-a">NEAR Protocol</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/near-vs-sui/" class="cmp-card"><span class="cmp-a">NEAR Protocol</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/near-vs-stellar/" class="cmp-card"><span class="cmp-a">NEAR Protocol</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/near-vs-hedera/" class="cmp-card"><span class="cmp-a">NEAR Protocol</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/near-vs-aptos/" class="cmp-card"><span class="cmp-a">NEAR Protocol</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/shiba-inu-vs-uniswap/" class="cmp-card"><span class="cmp-a">Shiba Inu</span><span class="cmp-vs">VS</span><span class="cmp-b">Uniswap</span></a>
+      <a href="/compare/shiba-inu-vs-sui/" class="cmp-card"><span class="cmp-a">Shiba Inu</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/shiba-inu-vs-stellar/" class="cmp-card"><span class="cmp-a">Shiba Inu</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/shiba-inu-vs-hedera/" class="cmp-card"><span class="cmp-a">Shiba Inu</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/shiba-inu-vs-aptos/" class="cmp-card"><span class="cmp-a">Shiba Inu</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/uniswap-vs-sui/" class="cmp-card"><span class="cmp-a">Uniswap</span><span class="cmp-vs">VS</span><span class="cmp-b">Sui</span></a>
+      <a href="/compare/uniswap-vs-stellar/" class="cmp-card"><span class="cmp-a">Uniswap</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/uniswap-vs-hedera/" class="cmp-card"><span class="cmp-a">Uniswap</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/uniswap-vs-aptos/" class="cmp-card"><span class="cmp-a">Uniswap</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/sui-vs-stellar/" class="cmp-card"><span class="cmp-a">Sui</span><span class="cmp-vs">VS</span><span class="cmp-b">Stellar</span></a>
+      <a href="/compare/sui-vs-hedera/" class="cmp-card"><span class="cmp-a">Sui</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/sui-vs-aptos/" class="cmp-card"><span class="cmp-a">Sui</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/stellar-vs-hedera/" class="cmp-card"><span class="cmp-a">Stellar</span><span class="cmp-vs">VS</span><span class="cmp-b">Hedera</span></a>
+      <a href="/compare/stellar-vs-aptos/" class="cmp-card"><span class="cmp-a">Stellar</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+      <a href="/compare/hedera-vs-aptos/" class="cmp-card"><span class="cmp-a">Hedera</span><span class="cmp-vs">VS</span><span class="cmp-b">Aptos</span></a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png" />
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <div class="footer-nav">
+        <a href="/">ホーム</a><a href="/coins/">Coins</a><a href="/compare/">比較</a>
+        <a href="/daily/latest">Daily</a><a href="/about">運営者情報</a>
+      </div>
+    </div>
+    <div class="footer-copyright">&copy; 2026 CoinRader. All rights reserved. ｜ 本サイトは投資助言ではありません。</div>
+  </footer>
+</body>
+</html>
