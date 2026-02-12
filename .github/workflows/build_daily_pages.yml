@@ -140,6 +140,12 @@ jobs:
         run: |
           python scripts/build_coin_pages.py
 
+      - name: Generate compare pages
+        env:
+          CR_SITE_ORIGIN: https://coinrader.net
+        run: |
+          python scripts/build_compare_pages.py
+
       - name: Build sitemaps (static/dictionary/daily + index)
         env:
           CR_SITE_ORIGIN: https://coinrader.net
@@ -188,6 +194,7 @@ jobs:
           git add -A daily sitemap.xml sitemap-static.xml sitemap-dictionary.xml sitemap-daily.xml _redirects
           git add -f daily/tags/*.html
           git add -A coins
+          git add -A compare
           git add -A data/coins
           git add -A dictionary
           git add -f data/top_cache.json
