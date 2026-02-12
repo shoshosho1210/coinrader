@@ -27,24 +27,30 @@ OUT_COMPARE_DIR = ROOT / "compare"
 SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
 
 # 比較ページを生成する対象銘柄（上位の注目度が高い銘柄のみ）
-# 全50の組合せは 50C2=1225 になり多すぎるため、上位15銘柄に絞る
+# 全50の組合せは 50C2=1225 になり多すぎるため、上位20銘柄に絞る (20C2=190)
 TOP_COINS_FOR_COMPARE = [
-    {"slug": "bitcoin",    "symbol": "btc",  "coin_id": "bitcoin",      "name": "Bitcoin"},
-    {"slug": "ethereum",   "symbol": "eth",  "coin_id": "ethereum",     "name": "Ethereum"},
-    {"slug": "xrp",        "symbol": "xrp",  "coin_id": "ripple",       "name": "XRP"},
-    {"slug": "bnb",        "symbol": "bnb",  "coin_id": "binancecoin",  "name": "BNB"},
-    {"slug": "solana",     "symbol": "sol",  "coin_id": "solana",       "name": "Solana"},
-    {"slug": "dogecoin",   "symbol": "doge", "coin_id": "dogecoin",     "name": "Dogecoin"},
-    {"slug": "cardano",    "symbol": "ada",  "coin_id": "cardano",      "name": "Cardano"},
-    {"slug": "avalanche",  "symbol": "avax", "coin_id": "avalanche-2",  "name": "Avalanche"},
-    {"slug": "chainlink",  "symbol": "link", "coin_id": "chainlink",    "name": "Chainlink"},
-    {"slug": "polkadot",   "symbol": "dot",  "coin_id": "polkadot",     "name": "Polkadot"},
-    {"slug": "litecoin",   "symbol": "ltc",  "coin_id": "litecoin",     "name": "Litecoin"},
-    {"slug": "shiba-inu",  "symbol": "shib", "coin_id": "shiba-inu",    "name": "Shiba Inu"},
-    {"slug": "uniswap",    "symbol": "uni",  "coin_id": "uniswap",      "name": "Uniswap"},
-    {"slug": "sui",        "symbol": "sui",  "coin_id": "sui",          "name": "Sui"},
-    {"slug": "stellar",    "symbol": "xlm",  "coin_id": "stellar",      "name": "Stellar"},
+    {"slug": "bitcoin",      "symbol": "btc",  "coin_id": "bitcoin",            "name": "Bitcoin"},
+    {"slug": "ethereum",     "symbol": "eth",  "coin_id": "ethereum",           "name": "Ethereum"},
+    {"slug": "xrp",          "symbol": "xrp",  "coin_id": "ripple",             "name": "XRP"},
+    {"slug": "bnb",          "symbol": "bnb",  "coin_id": "binancecoin",        "name": "BNB"},
+    {"slug": "solana",       "symbol": "sol",  "coin_id": "solana",             "name": "Solana"},
+    {"slug": "dogecoin",     "symbol": "doge", "coin_id": "dogecoin",           "name": "Dogecoin"},
+    {"slug": "cardano",      "symbol": "ada",  "coin_id": "cardano",            "name": "Cardano"},
+    {"slug": "tron",         "symbol": "trx",  "coin_id": "tron",               "name": "TRON"},
+    {"slug": "avalanche",    "symbol": "avax", "coin_id": "avalanche-2",        "name": "Avalanche"},
+    {"slug": "chainlink",    "symbol": "link", "coin_id": "chainlink",          "name": "Chainlink"},
+    {"slug": "polkadot",     "symbol": "dot",  "coin_id": "polkadot",           "name": "Polkadot"},
+    {"slug": "bitcoin-cash", "symbol": "bch",  "coin_id": "bitcoin-cash",       "name": "Bitcoin Cash"},
+    {"slug": "litecoin",     "symbol": "ltc",  "coin_id": "litecoin",           "name": "Litecoin"},
+    {"slug": "near",         "symbol": "near", "coin_id": "near",               "name": "NEAR Protocol"},
+    {"slug": "shiba-inu",    "symbol": "shib", "coin_id": "shiba-inu",          "name": "Shiba Inu"},
+    {"slug": "uniswap",      "symbol": "uni",  "coin_id": "uniswap",            "name": "Uniswap"},
+    {"slug": "sui",          "symbol": "sui",  "coin_id": "sui",                "name": "Sui"},
+    {"slug": "stellar",      "symbol": "xlm",  "coin_id": "stellar",            "name": "Stellar"},
+    {"slug": "hedera",       "symbol": "hbar", "coin_id": "hedera-hashgraph",   "name": "Hedera"},
+    {"slug": "aptos",        "symbol": "apt",  "coin_id": "aptos",              "name": "Aptos"},
 ]
+
 
 
 def read_text(p: Path) -> str:
