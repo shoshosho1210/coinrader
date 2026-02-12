@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Uniswap vs Stellar 比較 — 価格・時価総額・変動率 | CoinRader</title>
+    <meta name="description"
+        content="Uniswap (UNI) と Stellar (XLM) を徹底比較。価格、時価総額、24h/7d変動率、出来高をリアルタイムで並べて確認。CoinRader。" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://coinrader.net/compare/uniswap-vs-stellar/" />
+
+    <!-- OGP -->
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CoinRader" />
+    <meta property="og:title" content="Uniswap vs Stellar 比較 | CoinRader" />
+    <meta property="og:description" content="Uniswap (UNI) と Stellar (XLM) の価格・時価総額・変動率を並べて比較。" />
+    <meta property="og:url" content="https://coinrader.net/compare/uniswap-vs-stellar/" />
+    <meta property="og:image" content="https://coinrader.net/assets/og/ogp_v2.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicon -->
+    <link href="/assets/icons/favicon.ico" rel="icon" />
+    <link href="/assets/icons/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- GA -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-TDEBXC7DH6');
+    </script>
+
+    <!-- JSON-LD: BreadcrumbList -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "CoinRader", "item": "https://coinrader.net/"},
+      {"@type": "ListItem", "position": 2, "name": "Compare", "item": "https://coinrader.net/compare/"},
+      {"@type": "ListItem", "position": 3, "name": "Uniswap vs Stellar"}
+    ]
+  }
+  </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        referrerpolicy="no-referrer" />
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --accent: #38bdf8;
+            --bg: #0f172a;
+            --card: #111827;
+            --border: rgba(148, 163, 184, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+            background: var(--bg);
+            color: #e5e7eb;
+        }
+
+        a {
+            color: #7dd3fc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 18px;
+        }
+
+        /* Header */
+        .pageHeader {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .02);
+            margin: 0 0 18px;
+            gap: 12px;
+        }
+
+        .brandLogo {
+            height: 36px;
+            width: auto;
+        }
+
+        .headerNav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .headerNav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #cbd5e1;
+            text-decoration: none !important;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .02);
+            transition: transform .15s, border-color .15s;
+            white-space: nowrap;
+        }
+
+        .headerNav a:hover {
+            transform: translateY(-1px);
+            border-color: rgba(56, 189, 248, .35);
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .breadcrumb a {
+            color: #7dd3fc;
+        }
+
+        /* Title */
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 10px 0 6px;
+            line-height: 1.3;
+        }
+
+        .sub {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* VS Header */
+        .vs-header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .vs-coin {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .vs-coin img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .vs-coin .name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .vs-coin .sym {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .vs-badge {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Comparison Table */
+        .cmp-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        .cmp-table th,
+        .cmp-table td {
+            padding: 10px 14px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+        }
+
+        .cmp-table th {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .cmp-table th:first-child,
+        .cmp-table td:first-child {
+            text-align: left;
+            color: #94a3b8;
+        }
+
+        .cmp-table td {
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .cmp-table tr:hover td {
+            background: rgba(56, 189, 248, .04);
+        }
+
+        .positive {
+            color: #4ade80;
+        }
+
+        .negative {
+            color: #f87171;
+        }
+
+        .winner {
+            background: rgba(56, 189, 248, .08) !important;
+            border-radius: 6px;
+        }
+
+        /* Related */
+        .related-section {
+            margin-top: 24px;
+        }
+
+        .related-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f9fafb;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .related-title i {
+            color: var(--accent);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(56, 189, 248, .3);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #cbd5e1;
+            text-decoration: none !important;
+            transition: background .15s;
+            margin: 0 6px 6px 0;
+        }
+
+        .chip:hover {
+            background: rgba(56, 189, 248, .08);
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(10, 16, 28, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px 12px;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo {
+            height: 36px !important;
+            width: auto;
+            opacity: .8;
+        }
+
+        .footer-tagline {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            color: #94a3b8;
+            font-size: 11.5px;
+            text-decoration: none !important;
+        }
+
+        .footer-nav a:hover {
+            color: #38bdf8;
+        }
+
+        .footer-copyright {
+            max-width: 1100px;
+            margin: 10px auto 0;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            text-align: center;
+            font-size: 10px;
+            color: #475569;
+        }
+
+        @media (max-width:768px) {
+            .vs-header {
+                grid-template-columns: 1fr;
+            }
+
+            .vs-badge {
+                padding: 4px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-nav {
+                justify-content: center;
+                gap: 8px 12px;
+            }
+
+            .headerNav {
+                justify-content: flex-end;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="pageHeader" role="banner">
+            <a href="/" aria-label="CoinRader ホーム">
+                <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader" />
+            </a>
+            <nav class="headerNav" aria-label="ページメニュー">
+                <a href="/"><i class="fa-solid fa-house"></i><span>ホーム</span></a>
+                <a href="/coins/"><i class="fa-solid fa-coins"></i><span>Coins</span></a>
+                <a href="/compare/"><i class="fa-solid fa-scale-balanced"></i><span>比較</span></a>
+            </nav>
+        </header>
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb" aria-label="パンくずリスト">
+            <a href="/">トップ</a> / <a href="/compare/">比較</a> / <span>Uniswap vs Stellar</span>
+        </nav>
+
+        <h1>Uniswap vs Stellar — 徹底比較</h1>
+        <div class="sub">
+            <a href="/coins/uniswap/">Uniswap (UNI)</a> と <a href="/coins/stellar/">Stellar
+                (XLM)</a> の主要指標をリアルタイムで並べて比較。どちらが優位か一目でわかります。
+        </div>
+
+        <!-- VS Header -->
+        <div class="vs-header">
+            <div class="vs-coin">
+                <img id="iconA" src="" alt="Uniswap" style="display:none" />
+                <div>
+                    <div class="name" id="nameA">Uniswap</div>
+                    <div class="sym">UNI</div>
+                </div>
+            </div>
+            <div class="vs-badge">VS</div>
+            <div class="vs-coin">
+                <img id="iconB" src="" alt="Stellar" style="display:none" />
+                <div>
+                    <div class="name" id="nameB">Stellar</div>
+                    <div class="sym">XLM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <table class="cmp-table">
+            <thead>
+                <tr>
+                    <th>指標</th>
+                    <th>UNI</th>
+                    <th>XLM</th>
+                </tr>
+            </thead>
+            <tbody id="cmpBody">
+                <tr>
+                    <td>現在価格 (JPY)</td>
+                    <td id="prA">--</td>
+                    <td id="prB">--</td>
+                </tr>
+                <tr>
+                    <td>時価総額</td>
+                    <td id="mcA">--</td>
+                    <td id="mcB">--</td>
+                </tr>
+                <tr>
+                    <td>時価総額ランク</td>
+                    <td id="rkA">--</td>
+                    <td id="rkB">--</td>
+                </tr>
+                <tr>
+                    <td>24h 変動率</td>
+                    <td id="c24A">--</td>
+                    <td id="c24B">--</td>
+                </tr>
+                <tr>
+                    <td>7d 変動率</td>
+                    <td id="c7A">--</td>
+                    <td id="c7B">--</td>
+                </tr>
+                <tr>
+                    <td>出来高 (24h)</td>
+                    <td id="vlA">--</td>
+                    <td id="vlB">--</td>
+                </tr>
+                <tr>
+                    <td>ATH (過去最高値)</td>
+                    <td id="athA">--</td>
+                    <td id="athB">--</td>
+                </tr>
+                <tr>
+                    <td>ATH比</td>
+                    <td id="athcA">--</td>
+                    <td id="athcB">--</td>
+                </tr>
+                <tr>
+                    <td>流通供給量</td>
+                    <td id="csA">--</td>
+                    <td id="csB">--</td>
+                </tr>
+                <tr>
+                    <td>最大供給量</td>
+                    <td id="msA">--</td>
+                    <td id="msB">--</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Links -->
+        <div class="related-section">
+            <div class="related-title"><i class="fa-solid fa-link"></i>個別ページ</div>
+            <a class="chip" href="/coins/uniswap/">Uniswap (UNI) 詳細</a>
+            <a class="chip" href="/coins/stellar/">Stellar (XLM) 詳細</a>
+            <a class="chip" href="/daily/latest">今日のAIレポート</a>
+        </div>
+
+        <div class="related-section">
+            <div class="related-title"><i class="fa-solid fa-scale-balanced"></i>他の比較</div>
+            <div id="otherCompares">
+                <a class="chip" href="/compare/bitcoin-vs-ethereum/">Bitcoin vs Ethereum</a>
+    <a class="chip" href="/compare/bitcoin-vs-xrp/">Bitcoin vs XRP</a>
+    <a class="chip" href="/compare/bitcoin-vs-bnb/">Bitcoin vs BNB</a>
+    <a class="chip" href="/compare/bitcoin-vs-solana/">Bitcoin vs Solana</a>
+    <a class="chip" href="/compare/bitcoin-vs-dogecoin/">Bitcoin vs Dogecoin</a>
+    <a class="chip" href="/compare/bitcoin-vs-cardano/">Bitcoin vs Cardano</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png" />
+                <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+            </div>
+            <div class="footer-nav">
+                <a href="/">ホーム</a><a href="/coins/">Coins</a><a href="/compare/">比較</a>
+                <a href="/daily/latest">Daily</a><a href="/about">運営者情報</a>
+            </div>
+        </div>
+        <div class="footer-copyright">&copy; 2026 CoinRader. All rights reserved. ｜ 本サイトは投資助言ではありません。</div>
+    </footer>
+
+    <script>
+        const SYM_A = "uni";
+        const SYM_B = "xlm";
+
+        const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP", { maximumFractionDigits: 0 }) + "円";
+        const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n >= 0 ? "+" : "") + Number(n).toFixed(2) + "%");
+        const fmtBig = (n) => {
+            if (n == null || isNaN(n)) return "--";
+            const x = Number(n);
+            if (x >= 1e12) return (x / 1e12).toFixed(2) + "兆円";
+            if (x >= 1e8) return (x / 1e8).toFixed(2) + "億円";
+            return x.toLocaleString("ja-JP", { maximumFractionDigits: 0 }) + "円";
+        };
+        const fmtSup = (n) => {
+            if (n == null || isNaN(n)) return "--";
+            const x = Number(n);
+            if (x >= 1e9) return (x / 1e9).toFixed(2) + "B";
+            if (x >= 1e6) return (x / 1e6).toFixed(2) + "M";
+            return x.toLocaleString("ja-JP", { maximumFractionDigits: 0 });
+        };
+
+        async function load(sym) {
+            const r = await fetch(`/data/coins/${sym}.json?ts=${Date.now()}`, { cache: "no-store" });
+            if (!r.ok) throw new Error(r.status);
+            const j = await r.json();
+            if (!j || !j.market) throw new Error("missing market");
+            return j.market;
+        }
+
+        function pctClass(n) { return (n == null || isNaN(n)) ? "" : (n >= 0 ? "positive" : "negative"); }
+
+        function fill(m, suffix) {
+            document.getElementById("pr" + suffix).textContent = fmtJPY(m.current_price);
+            document.getElementById("mc" + suffix).textContent = fmtBig(m.market_cap);
+            document.getElementById("rk" + suffix).textContent = m.market_cap_rank ? "#" + m.market_cap_rank : "--";
+
+            const c24 = m.price_change_percentage_24h;
+            const el24 = document.getElementById("c24" + suffix);
+            el24.textContent = fmtPct(c24);
+            el24.className = pctClass(c24);
+
+            const c7 = m.price_change_percentage_7d_in_currency ?? m.price_change_percentage_7d ?? null;
+            const el7 = document.getElementById("c7" + suffix);
+            el7.textContent = fmtPct(c7);
+            el7.className = pctClass(c7);
+
+            document.getElementById("vl" + suffix).textContent = fmtBig(m.total_volume);
+            document.getElementById("ath" + suffix).textContent = fmtJPY(m.ath);
+            const athc = document.getElementById("athc" + suffix);
+            athc.textContent = fmtPct(m.ath_change_percentage);
+            athc.className = pctClass(m.ath_change_percentage);
+
+            document.getElementById("cs" + suffix).textContent = fmtSup(m.circulating_supply);
+            document.getElementById("ms" + suffix).textContent = m.max_supply ? fmtSup(m.max_supply) : "上限なし";
+
+            // Icon
+            if (m.image) {
+                const icon = document.getElementById("icon" + suffix);
+                icon.src = m.image;
+                icon.style.display = "block";
+            }
+
+            return m;
+        }
+
+        async function main() {
+            try {
+                const [mA, mB] = await Promise.all([load(SYM_A), load(SYM_B)]);
+                fill(mA, "A");
+                fill(mB, "B");
+            } catch (e) {
+                console.error("compare load error:", e);
+            }
+        }
+        main();
+    </script>
+</body>
+
+</html>
