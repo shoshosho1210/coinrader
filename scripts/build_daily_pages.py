@@ -1713,9 +1713,9 @@ def _list_existing_dict_slugs(dict_dir: str = "dictionary") -> set:
 TERM_TO_DICT_SLUG = {
     "RSI": "rsi",
     "相対力指数": "rsi",
-    "Fear & Greed": "fear-and-greed",
-    "恐怖指数": "fear-and-greed",
-    "FGI": "fear-and-greed",
+    "Fear & Greed": "fear-greed-index",
+    "恐怖指数": "fear-greed-index",
+    "FGI": "fear-greed-index",
     "移動平均": "moving-average",
     "MA": "moving-average",
     "ボリンジャーバンド": "bollinger-bands",
