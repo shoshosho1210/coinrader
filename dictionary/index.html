@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -8,113 +7,25 @@
   <meta name="description" content="CoinRaderの暗号資産・指標用語集。RSI、Fear&Greed、移動平均などを短く解説。" />
   <link rel="canonical" href="https://coinrader.net/dictionary/" />
   <style>
-    :root {
-      --bg: #0f172a;
-      --fg: #e5e7eb;
-      --muted: #94a3b8;
-      --line: #1f2937;
-      --accent: #38bdf8;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans JP", sans-serif;
-      background: var(--bg);
-      color: var(--fg)
-    }
-
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px 16px 44px
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none
-    }
-
-    a:hover {
-      text-decoration: underline
-    }
-
-    .head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 0 0 14px
-    }
-
-    .brand {
-      display: flex;
-      gap: 10px;
-      align-items: center
-    }
-
-    .logo {
-      height: 24px;
-      width: auto
-    }
-
-    h1 {
-      font-size: 22px;
-      margin: 10px 0 6px
-    }
-
-    .sub {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 0 0 14px;
-      line-height: 1.6
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px
-    }
-
-    @media(max-width:720px) {
-      .grid {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .card {
-      display: block;
-      padding: 14px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, .08);
-      background: rgba(255, 255, 255, .03);
-      color: inherit
-    }
-
-    .card:hover {
-      border-color: rgba(56, 189, 248, .35);
-      text-decoration: none;
-      filter: brightness(1.04)
-    }
-
-    .card-title {
-      font-weight: 800;
-      margin: 0 0 6px
-    }
-
-    .card-desc {
-      color: rgba(229, 231, 235, .86);
-      font-size: 13px;
-      line-height: 1.5
-    }
-
-    .foot {
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 12px
-    }
+    :root{--bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--line:#1f2937;--accent:#38bdf8;}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--fg)}
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 44px}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
+    .brand{display:flex;gap:10px;align-items:center}
+    .logo{height:24px;width:auto}
+    h1{font-size:22px;margin:10px 0 6px}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.6}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}}
+    .card{display:block;padding:14px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:inherit}
+    .card:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.04)}
+    .card-title{font-weight:800;margin:0 0 6px}
+    .card-desc{color:rgba(229,231,235,.86);font-size:13px;line-height:1.5}
+    .foot{margin-top:18px;color:var(--muted);font-size:12px}
   </style>
 </head>
-
 <body>
   <div class="wrap">
     <div class="head">
@@ -125,8 +36,7 @@
         <div style="color:var(--muted);font-size:13px">CoinRader / Dictionary</div>
       </div>
       <div>
-        <a href="/daily/"
-          style="font-size:12px;border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;color:var(--fg);background:rgba(255,255,255,.04)">Daily一覧</a>
+        <a href="/daily/" style="font-size:12px;border:1px solid rgba(255,255,255,.14);padding:6px 10px;border-radius:999px;color:var(--fg);background:rgba(255,255,255,.04)">Daily一覧</a>
       </div>
     </div>
 
@@ -134,130 +44,36 @@
     <div class="sub">CoinRaderで頻出の指標・用語を、短く分かりやすくまとめます。</div>
 
     <div class="grid">
-      <a class='card' href='/dictionary/rsi'>
-        <div class='card-title'>RSI</div>
-        <div class='card-desc'>RSI（相対力指数）は、買われ過ぎ・売られ過ぎを判断する代表的なオシレーター指標です。</div>
-      </a>
-      <a class='card' href='/dictionary/fear-greed-index'>
-        <div class='card-title'>Fear &amp; Greed Index（恐怖指数）</div>
-        <div class='card-desc'>市場の心理状態（恐怖/強欲）を数値化した指標。極端値は反転のヒントになります。</div>
-      </a>
-      <a class='card' href='/dictionary/moving-average'>
-        <div class='card-title'>移動平均（MA）</div>
-        <div class='card-desc'>価格の平均を滑らかにして、トレンドの方向や勢いを把握する指標です。</div>
-      </a>
-      <a class='card' href='/dictionary/volume'>
-        <div class='card-title'>出来高（Volume）</div>
-        <div class='card-desc'>取引がどれだけ活発かを示す指標。上昇/下落の“納得感”に関わります。</div>
-      </a>
-      <a class='card' href='/dictionary/trend'>
-        <div class='card-title'>Trend（CoinRaderのトレンド指標）</div>
-        <div class='card-desc'>CoinRaderのDailyにあるTrendは、MA距離などから“地合い”を把握するための数値です。</div>
-      </a>
-      <a class='card' href='/dictionary/market-cap'>
-        <div class='card-title'>時価総額（Market Cap）</div>
-        <div class='card-desc'>時価総額は、暗号資産プロジェクトの規模感を示す代表指標です。</div>
-      </a>
-      <a class='card' href='/dictionary/dominance'>
-        <div class='card-title'>ドミナンス（Dominance）</div>
-        <div class='card-desc'>市場全体の時価総額に占めるBTCやETHの比率。資金の偏りを見る指標です。</div>
-      </a>
-      <a class='card' href='/dictionary/support-resistance'>
-        <div class='card-title'>サポート/レジスタンス</div>
-        <div class='card-desc'>価格が反発しやすい下値帯（サポート）と、上値が重くなりやすい帯（レジスタンス）。</div>
-      </a>
-      <a class='card' href='/dictionary/breakout'>
-        <div class='card-title'>ブレイクアウト</div>
-        <div class='card-desc'>レンジ上限や重要ラインを上抜け/下抜けして、新しい値動きが始まる局面。</div>
-      </a>
-      <a class='card' href='/dictionary/volatility'>
-        <div class='card-title'>ボラティリティ（Volatility）</div>
-        <div class='card-desc'>価格変動の大きさ。高いほど短期チャンスとリスクの両方が増えます。</div>
-      </a>
-      <a class='card' href='/dictionary/atr'>
-        <div class='card-title'>ATR（Average True Range）</div>
-        <div class='card-desc'>値幅の平均を使ってボラティリティを測るテクニカル指標です。</div>
-      </a>
-      <a class='card' href='/dictionary/funding-rate'>
-        <div class='card-title'>資金調達率（Funding Rate）</div>
-        <div class='card-desc'>無期限先物でロング/ショートの偏りを示す指標。過熱感の把握に有効です。</div>
-      </a>
-      <a class='card' href='/dictionary/open-interest'>
-        <div class='card-title'>建玉（Open Interest）</div>
-        <div class='card-desc'>未決済の先物ポジション総量。市場参加の熱量や偏りを表します。</div>
-      </a>
-      <a class='card' href='/dictionary/liquidation'>
-        <div class='card-title'>清算（Liquidation）</div>
-        <div class='card-desc'>証拠金不足でポジションが強制決済されること。急騰急落の引き金になりやすい。</div>
-      </a>
-      <a class='card' href='/dictionary/altcoin-season'>
-        <div class='card-title'>アルトシーズン</div>
-        <div class='card-desc'>BTCよりアルトコインが相対的に強くなりやすい局面を指します。</div>
-      </a>
-      <a class='card' href='/dictionary/on-chain-data'>
-        <div class='card-title'>オンチェーンデータ</div>
-        <div class='card-desc'>ブロックチェーン上のトランザクションやアクティブアドレスなどの実需指標。</div>
-      </a>
-      <a class='card' href='/dictionary/hash-rate'>
-        <div class='card-title'>ハッシュレート</div>
-        <div class='card-desc'>マイニングネットワークの計算力。PoWチェーンの安全性や競争状況を示します。</div>
-      </a>
-      <a class='card' href='/dictionary/staking'>
-        <div class='card-title'>ステーキング</div>
-        <div class='card-desc'>トークンを預けてネットワーク維持に参加し、報酬を得る仕組みです。</div>
-      </a>
-      <a class='card' href='/dictionary/apy'>
-        <div class='card-title'>APY（年換算利回り）</div>
-        <div class='card-desc'>複利を考慮した年換算利回り。ステーキングやDeFiで頻出する指標です。</div>
-      </a>
-      <a class='card' href='/dictionary/defi'>
-        <div class='card-title'>DeFi（分散型金融）</div>
-        <div class='card-desc'>中央管理者なしで金融サービスを提供するエコシステムの総称。</div>
-      </a>
-      <a class='card' href='/dictionary/gas-fee'>
-        <div class='card-title'>ガス代（Gas Fee）</div>
-        <div class='card-desc'>ブロックチェーン取引時に必要な手数料。ネットワーク混雑で変動します。</div>
-      </a>
-      <a class='card' href='/dictionary/slippage'>
-        <div class='card-title'>スリッページ</div>
-        <div class='card-desc'>注文価格と約定価格のズレ。流動性が薄いほど発生しやすい。</div>
-      </a>
-      <a class='card' href='/dictionary/stop-loss'>
-        <div class='card-title'>損切り（Stop Loss）</div>
-        <div class='card-desc'>損失拡大を防ぐため、あらかじめ決めた価格で撤退するルール。</div>
-      </a>
-      <a class='card' href='/dictionary/risk-reward'>
-        <div class='card-title'>リスクリワード比</div>
-        <div class='card-desc'>想定利益と想定損失の比率。トレード設計の基本となる考え方です。</div>
-      </a>
-      <a class='card' href='/dictionary/dca'>
-        <div class='card-title'>DCA（ドルコスト平均法）</div>
-        <div class='card-desc'>価格に関係なく定期的に同額を積み立てる投資法。長期向けの代表戦略。</div>
-      </a>
-      <a class='card' href='/dictionary/halving'>
-        <div class='card-title'>半減期（Halving）</div>
-        <div class='card-desc'>ビットコインの新規発行量が一定周期で半減するイベント。供給面で注目されます。</div>
-      </a>
-      <a class='card' href='/dictionary/bitcoin-etf'>
-        <div class='card-title'>ビットコインETF</div>
-        <div class='card-desc'>証券口座からビットコイン価格へアクセスできる金融商品。機関資金流入の観点で重要。</div>
-      </a>
-      <a class='card' href='/dictionary/bollinger-bands'>
-        <div class='card-title'>ボリンジャーバンド（Bollinger Bands）</div>
-        <div class='card-desc'>移動平均線を中心に標準偏差で上下のバンドを描くテクニカル指標。変動幅やスクイーズを確認。</div>
-      </a>
-      <a class='card' href='/dictionary/ath'>
-        <div class='card-title'>ATH（過去最高値）</div>
-        <div class='card-desc'>All-Time High。過去最高価格からの距離で過熱感や割安感を判断する基準値。</div>
-      </a>
-      <a class='card' href='/dictionary/macd'>
-        <div class='card-title'>MACD（移動平均収束拡散手法）</div>
-        <div class='card-desc'>短期と長期のEMA差でトレンドの方向性と勢いを判断。ゴールデン/デッドクロスに注目。</div>
-      </a>
+      <a class='card' href='/dictionary/rsi'><div class='card-title'>RSI</div><div class='card-desc'>RSI（相対力指数）は、買われ過ぎ・売られ過ぎを判断する代表的なオシレーター指標です。</div></a>
+<a class='card' href='/dictionary/fear-greed-index'><div class='card-title'>Fear &amp; Greed Index（恐怖指数）</div><div class='card-desc'>市場の心理状態（恐怖/強欲）を数値化した指標。極端値は反転のヒントになります。</div></a>
+<a class='card' href='/dictionary/moving-average'><div class='card-title'>移動平均（MA）</div><div class='card-desc'>価格の平均を滑らかにして、トレンドの方向や勢いを把握する指標です。</div></a>
+<a class='card' href='/dictionary/volume'><div class='card-title'>出来高（Volume）</div><div class='card-desc'>取引がどれだけ活発かを示す指標。上昇/下落の“納得感”に関わります。</div></a>
+<a class='card' href='/dictionary/trend'><div class='card-title'>Trend（CoinRaderのトレンド指標）</div><div class='card-desc'>CoinRaderのDailyにあるTrendは、MA距離などから“地合い”を把握するための数値です。</div></a>
+<a class='card' href='/dictionary/market-cap'><div class='card-title'>時価総額（Market Cap）</div><div class='card-desc'>時価総額は、暗号資産プロジェクトの規模感を示す代表指標です。</div></a>
+<a class='card' href='/dictionary/dominance'><div class='card-title'>ドミナンス（Dominance）</div><div class='card-desc'>市場全体の時価総額に占めるBTCやETHの比率。資金の偏りを見る指標です。</div></a>
+<a class='card' href='/dictionary/support-resistance'><div class='card-title'>サポート/レジスタンス</div><div class='card-desc'>価格が反発しやすい下値帯（サポート）と、上値が重くなりやすい帯（レジスタンス）。</div></a>
+<a class='card' href='/dictionary/breakout'><div class='card-title'>ブレイクアウト</div><div class='card-desc'>レンジ上限や重要ラインを上抜け/下抜けして、新しい値動きが始まる局面。</div></a>
+<a class='card' href='/dictionary/volatility'><div class='card-title'>ボラティリティ（Volatility）</div><div class='card-desc'>価格変動の大きさ。高いほど短期チャンスとリスクの両方が増えます。</div></a>
+<a class='card' href='/dictionary/atr'><div class='card-title'>ATR（Average True Range）</div><div class='card-desc'>値幅の平均を使ってボラティリティを測るテクニカル指標です。</div></a>
+<a class='card' href='/dictionary/funding-rate'><div class='card-title'>資金調達率（Funding Rate）</div><div class='card-desc'>無期限先物でロング/ショートの偏りを示す指標。過熱感の把握に有効です。</div></a>
+<a class='card' href='/dictionary/open-interest'><div class='card-title'>建玉（Open Interest）</div><div class='card-desc'>未決済の先物ポジション総量。市場参加の熱量や偏りを表します。</div></a>
+<a class='card' href='/dictionary/liquidation'><div class='card-title'>清算（Liquidation）</div><div class='card-desc'>証拠金不足でポジションが強制決済されること。急騰急落の引き金になりやすい。</div></a>
+<a class='card' href='/dictionary/altcoin-season'><div class='card-title'>アルトシーズン</div><div class='card-desc'>BTCよりアルトコインが相対的に強くなりやすい局面を指します。</div></a>
+<a class='card' href='/dictionary/on-chain-data'><div class='card-title'>オンチェーンデータ</div><div class='card-desc'>ブロックチェーン上のトランザクションやアクティブアドレスなどの実需指標。</div></a>
+<a class='card' href='/dictionary/hash-rate'><div class='card-title'>ハッシュレート</div><div class='card-desc'>マイニングネットワークの計算力。PoWチェーンの安全性や競争状況を示します。</div></a>
+<a class='card' href='/dictionary/staking'><div class='card-title'>ステーキング</div><div class='card-desc'>トークンを預けてネットワーク維持に参加し、報酬を得る仕組みです。</div></a>
+<a class='card' href='/dictionary/apy'><div class='card-title'>APY（年換算利回り）</div><div class='card-desc'>複利を考慮した年換算利回り。ステーキングやDeFiで頻出する指標です。</div></a>
+<a class='card' href='/dictionary/defi'><div class='card-title'>DeFi（分散型金融）</div><div class='card-desc'>中央管理者なしで金融サービスを提供するエコシステムの総称。</div></a>
+<a class='card' href='/dictionary/gas-fee'><div class='card-title'>ガス代（Gas Fee）</div><div class='card-desc'>ブロックチェーン取引時に必要な手数料。ネットワーク混雑で変動します。</div></a>
+<a class='card' href='/dictionary/slippage'><div class='card-title'>スリッページ</div><div class='card-desc'>注文価格と約定価格のズレ。流動性が薄いほど発生しやすい。</div></a>
+<a class='card' href='/dictionary/stop-loss'><div class='card-title'>損切り（Stop Loss）</div><div class='card-desc'>損失拡大を防ぐため、あらかじめ決めた価格で撤退するルール。</div></a>
+<a class='card' href='/dictionary/risk-reward'><div class='card-title'>リスクリワード比</div><div class='card-desc'>想定利益と想定損失の比率。トレード設計の基本となる考え方です。</div></a>
+<a class='card' href='/dictionary/dca'><div class='card-title'>DCA（ドルコスト平均法）</div><div class='card-desc'>価格に関係なく定期的に同額を積み立てる投資法。長期向けの代表戦略。</div></a>
+<a class='card' href='/dictionary/halving'><div class='card-title'>半減期（Halving）</div><div class='card-desc'>ビットコインの新規発行量が一定周期で半減するイベント。供給面で注目されます。</div></a>
+<a class='card' href='/dictionary/bitcoin-etf'><div class='card-title'>ビットコインETF</div><div class='card-desc'>証券口座からビットコイン価格へアクセスできる金融商品。機関資金流入の観点で重要。</div></a>
     </div>
 
-    <div class="foot">Lastmod: 2026-02-12 — 全30用語</div>
+    <div class="foot">Lastmod: 2026-02-12</div>
   </div>
 </body>
-
 </html>
