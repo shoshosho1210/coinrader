@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pepe (PEPE) 今日の価格・チャート・市況まとめ | CoinRader</title>
-  <meta name="description" content="Pepe (PEPE) のリアルタイム価格・24h/7d変動率・出来高・時価総額をまとめて確認。AIによる市場分析付き。CoinRader。" />
+  <meta name="description"
+    content="Pepe (PEPE) のリアルタイム価格・24h/7d変動率・出来高・時価総額をまとめて確認。AIによる市場分析付き。CoinRader。" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://coinrader.net/coins/pepe/" />
 
@@ -35,7 +37,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-TDEBXC7DH6');
   </script>
@@ -72,131 +74,402 @@
   </script>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    referrerpolicy="no-referrer" />
 
   <style>
-    :root { color-scheme: dark; --accent: #38bdf8; --bg: #0f172a; --card: #111827; --border: rgba(148,163,184,0.18); }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif; background:var(--bg); color:#e5e7eb; }
-    a { color:#7dd3fc; text-decoration:none; }
-    a:hover { text-decoration: underline; }
+    :root {
+      color-scheme: dark;
+      --accent: #38bdf8;
+      --bg: #0f172a;
+      --card: #111827;
+      --border: rgba(148, 163, 184, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+      background: var(--bg);
+      color: #e5e7eb;
+    }
+
+    a {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
 
     /* Header */
     .pageHeader {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; border:1px solid rgba(255,255,255,.1);
-      border-radius:14px; background:rgba(255,255,255,.02);
-      margin:0 0 18px; gap:12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .02);
+      margin: 0 0 18px;
+      gap: 12px;
     }
-    .brandLogo { height:36px; width:auto; }
-    .headerNav { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+    .brandLogo {
+      height: 36px;
+      width: auto;
+    }
+
+    .headerNav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .headerNav a {
-      display:inline-flex; align-items:center; gap:8px;
-      color:#cbd5e1; text-decoration:none !important;
-      font-size:12px; font-weight:700;
-      padding:8px 10px; border-radius:10px;
-      border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+      text-decoration: none !important;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .02);
       transition: transform .15s, border-color .15s, background .15s;
-      white-space:nowrap;
+      white-space: nowrap;
     }
-    .headerNav a:hover { transform:translateY(-1px); border-color:rgba(56,189,248,.35); background:rgba(56,189,248,.06); }
+
+    .headerNav a:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, .35);
+      background: rgba(56, 189, 248, .06);
+    }
 
     /* Container */
-    .container { max-width:980px; margin:0 auto; padding:18px; }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px;
+    }
 
     /* Breadcrumb */
-    .breadcrumb { font-size:13px; color:#94a3b8; margin-bottom:8px; }
-    .breadcrumb a { color:#7dd3fc; }
+    .breadcrumb {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .breadcrumb a {
+      color: #7dd3fc;
+    }
 
     /* Title */
-    .coin-title { display:flex; align-items:center; gap:12px; margin:10px 0 6px; }
-    .coin-title img { width:36px; height:36px; border-radius:50%; }
-    .coin-title h1 { font-size:24px; font-weight:800; margin:0; line-height:1.2; }
-    .coin-title .sym { font-size:16px; color:#94a3b8; font-weight:600; }
-    .sub { font-size:13px; color:#94a3b8; margin-bottom:16px; line-height:1.6; }
+    .coin-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 10px 0 6px;
+    }
+
+    .coin-title img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+    }
+
+    .coin-title h1 {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .coin-title .sym {
+      font-size: 16px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .sub {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
 
     /* Grid */
-    .grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
-    @media (max-width:720px) { .grid { grid-template-columns:1fr; } }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width:720px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
     /* Card */
     .card {
-      background:var(--card); border:1px solid var(--border);
-      border-radius:14px; padding:14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
       transition: border-color .2s;
     }
-    .card:hover { border-color: rgba(56,189,248,.3); }
-    .k { font-size:12px; color:#94a3b8; display:flex; align-items:center; gap:6px; }
-    .k i { color:var(--accent); opacity:.8; }
-    .v { font-size:22px; font-weight:800; margin-top:6px; color:#f8fafc; }
-    .v-sub { font-size:12px; color:#94a3b8; margin-top:4px; }
-    .positive { color:#4ade80; }
-    .negative { color:#f87171; }
+
+    .card:hover {
+      border-color: rgba(56, 189, 248, .3);
+    }
+
+    .k {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .k i {
+      color: var(--accent);
+      opacity: .8;
+    }
+
+    .v {
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 6px;
+      color: #f8fafc;
+    }
+
+    .v-sub {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .positive {
+      color: #4ade80;
+    }
+
+    .negative {
+      color: #f87171;
+    }
 
     /* Separator */
-    .sep { height:1px; background:var(--border); margin:18px 0; }
+    .sep {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+    }
 
     /* Memo / Error */
-    .memo-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; }
-    .err { color:#fca5a5; font-size:13px; white-space:pre-wrap; }
+    .memo-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .err {
+      color: #fca5a5;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
 
     /* Related coins */
-    .related-section { margin-top:24px; }
-    .related-title { font-size:14px; font-weight:700; color:#f9fafb; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-    .related-title i { color:var(--accent); }
-    .related-chips { display:flex; gap:8px; flex-wrap:wrap; }
+    .related-section {
+      margin-top: 24px;
+    }
+
+    .related-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f9fafb;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .related-title i {
+      color: var(--accent);
+    }
+
+    .related-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .chip {
-      display:inline-flex; align-items:center; gap:6px;
-      border:1px solid rgba(56,189,248,.3);
-      padding:6px 12px; border-radius:999px;
-      font-size:12px; color:#cbd5e1; text-decoration:none !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(56, 189, 248, .3);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #cbd5e1;
+      text-decoration: none !important;
       transition: background .15s, border-color .15s;
     }
-    .chip:hover { background:rgba(56,189,248,.08); border-color:rgba(56,189,248,.5); }
+
+    .chip:hover {
+      background: rgba(56, 189, 248, .08);
+      border-color: rgba(56, 189, 248, .5);
+    }
 
     /* Internal links */
-    .internal-links { margin-top:18px; }
-    .internal-links a {
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 14px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03);
-      color:#cbd5e1; text-decoration:none !important;
-      font-size:13px; font-weight:600;
-      transition: transform .15s, border-color .15s;
-      margin-right:8px; margin-bottom:8px;
+    .internal-links {
+      margin-top: 18px;
     }
-    .internal-links a:hover { transform:translateY(-1px); border-color:rgba(56,189,248,.35); }
+
+    .internal-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      background: rgba(255, 255, 255, .03);
+      color: #cbd5e1;
+      text-decoration: none !important;
+      font-size: 13px;
+      font-weight: 600;
+      transition: transform .15s, border-color .15s;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .internal-links a:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, .35);
+    }
+
+    /* Sparkline chart */
+    .sparkline-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .sparkline-title {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .sparkline-svg {
+      width: 100%;
+      max-width: 600px;
+      height: 60px;
+    }
 
     /* Footer */
     .site-footer {
-      background:rgba(10,16,28,0.4); border-top:1px solid rgba(255,255,255,0.05);
-      padding:16px 12px; margin-top:40px; width:100%;
+      background: rgba(10, 16, 28, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 16px 12px;
+      margin-top: 40px;
+      width: 100%;
     }
+
     .footer-inner {
-      max-width:980px; margin:0 auto;
-      display:flex; justify-content:space-between; align-items:center;
-      flex-wrap:wrap; gap:15px;
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
     }
-    .footer-brand { display:flex; align-items:center; gap:10px; }
-    .footer-logo { height:36px !important; width:auto; opacity:.8; }
-    .footer-tagline { font-size:11px; color:#64748b; white-space:nowrap; }
-    .footer-nav { display:flex; gap:12px; flex-wrap:wrap; }
-    .footer-nav a { color:#94a3b8; font-size:11.5px; text-decoration:none !important; white-space:nowrap; transition:color .2s; }
-    .footer-nav a:hover { color:#38bdf8; }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-logo {
+      height: 36px !important;
+      width: auto;
+      opacity: .8;
+    }
+
+    .footer-tagline {
+      font-size: 11px;
+      color: #64748b;
+      white-space: nowrap;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav a {
+      color: #94a3b8;
+      font-size: 11.5px;
+      text-decoration: none !important;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+
+    .footer-nav a:hover {
+      color: #38bdf8;
+    }
+
     .footer-copyright {
-      max-width:980px; margin:10px auto 0; padding-top:8px;
-      border-top:1px solid rgba(255,255,255,0.02);
-      text-align:center; font-size:10px; color:#475569;
+      max-width: 980px;
+      margin: 10px auto 0;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      text-align: center;
+      font-size: 10px;
+      color: #475569;
     }
+
     @media (max-width:768px) {
-      .footer-inner { flex-direction:column; text-align:center; gap:12px; }
-      .footer-nav { justify-content:center; gap:8px 12px; }
-      .footer-brand { flex-direction:column; gap:6px; }
-      .headerNav { justify-content:flex-end; }
-      .coin-title h1 { font-size:20px; }
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .footer-nav {
+        justify-content: center;
+        gap: 8px 12px;
+      }
+
+      .footer-brand {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .headerNav {
+        justify-content: flex-end;
+      }
+
+      .coin-title h1 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <!-- Header -->
@@ -270,6 +543,14 @@
 
     <div class="sep"></div>
 
+    <!-- Sparkline 7d -->
+    <div class="sparkline-card" id="sparklineCard" style="display:none;">
+      <div class="sparkline-title"><i class="fa-solid fa-chart-area"></i> 7日間の価格推移</div>
+      <div id="sparklineChart"></div>
+    </div>
+
+    <div class="sep"></div>
+
     <!-- Memo -->
     <div class="memo-card">
       <div class="k"><i class="fa-solid fa-robot"></i>簡易AI判定</div>
@@ -323,97 +604,127 @@
     </div>
   </footer>
 
-<script>
-  const SYMBOL = "pepe";
-  const COIN_ID = "pepe";
-  const NAME = "Pepe";
+  <script>
+    const SYMBOL = "pepe";
+    const COIN_ID = "pepe";
+    const NAME = "Pepe";
 
-  const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP",{maximumFractionDigits:0})+"円";
-  const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n>=0?"+":"")+Number(n).toFixed(2)+"%");
-  const fmtJPYBig = (n) => {
-    if (n == null || isNaN(n)) return "--";
-    const x = Number(n);
-    if (x >= 1e12) return (x/1e12).toFixed(2) + "兆円";
-    if (x >= 1e8)  return (x/1e8).toFixed(2) + "億円";
-    return x.toLocaleString("ja-JP",{maximumFractionDigits:0}) + "円";
-  };
-  const fmtSupply = (n) => {
-    if (n == null || isNaN(n)) return "--";
-    const x = Number(n);
-    if (x >= 1e9) return (x/1e9).toFixed(2) + "B";
-    if (x >= 1e6) return (x/1e6).toFixed(2) + "M";
-    return x.toLocaleString("ja-JP",{maximumFractionDigits:0});
-  };
+    const fmtJPY = (n) => (n == null || isNaN(n)) ? "--" : Number(n).toLocaleString("ja-JP", { maximumFractionDigits: 0 }) + "円";
+    const fmtPct = (n) => (n == null || isNaN(n)) ? "--" : ((n >= 0 ? "+" : "") + Number(n).toFixed(2) + "%");
+    const fmtJPYBig = (n) => {
+      if (n == null || isNaN(n)) return "--";
+      const x = Number(n);
+      if (x >= 1e12) return (x / 1e12).toFixed(2) + "兆円";
+      if (x >= 1e8) return (x / 1e8).toFixed(2) + "億円";
+      return x.toLocaleString("ja-JP", { maximumFractionDigits: 0 }) + "円";
+    };
+    const fmtSupply = (n) => {
+      if (n == null || isNaN(n)) return "--";
+      const x = Number(n);
+      if (x >= 1e9) return (x / 1e9).toFixed(2) + "B";
+      if (x >= 1e6) return (x / 1e6).toFixed(2) + "M";
+      return x.toLocaleString("ja-JP", { maximumFractionDigits: 0 });
+    };
 
-  const snapUrl = `/data/coins/${SYMBOL}.json?ts=${Date.now()}`;
+    const snapUrl = `/data/coins/${SYMBOL}.json?ts=${Date.now()}`;
 
-  async function main(){
-    try{
-      const r = await fetch(snapUrl, { cache: "no-store" });
-      if(!r.ok) throw new Error("snapshot fetch failed: " + r.status);
+    async function main() {
+      try {
+        const r = await fetch(snapUrl, { cache: "no-store" });
+        if (!r.ok) throw new Error("snapshot fetch failed: " + r.status);
 
-      const j = await r.json();
-      if(!j || !j.market) throw new Error("snapshot json missing 'market'");
+        const j = await r.json();
+        if (!j || !j.market) throw new Error("snapshot json missing 'market'");
 
-      const m = j.market;
-      const chg7d = (m.price_change_percentage_7d_in_currency ?? m.price_change_percentage_7d ?? null);
-      const chg24h = m.price_change_percentage_24h;
+        const m = j.market;
+        const chg7d = (m.price_change_percentage_7d_in_currency ?? m.price_change_percentage_7d ?? null);
+        const chg24h = m.price_change_percentage_24h;
 
-      // Icon
-      if (m.image) {
-        const icon = document.getElementById("coinIcon");
-        icon.src = m.image;
-        icon.style.display = "block";
+        // Icon
+        if (m.image) {
+          const icon = document.getElementById("coinIcon");
+          icon.src = m.image;
+          icon.style.display = "block";
+        }
+
+        // Price
+        document.getElementById("price").textContent = fmtJPY(m.current_price);
+        document.getElementById("price_sub").textContent =
+          "24h高値/安値: " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
+
+        // Change
+        const chgEl = document.getElementById("chg");
+        const chg24text = fmtPct(chg24h);
+        const chg7dtext = fmtPct(chg7d);
+        chgEl.innerHTML = `<span class="${chg24h >= 0 ? 'positive' : 'negative'}">${chg24text}</span> / <span class="${chg7d >= 0 ? 'positive' : 'negative'}">${chg7dtext}</span>`;
+        document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
+
+        // Volume & Market Cap
+        document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
+        document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
+        if (m.market_cap_rank) {
+          document.getElementById("mcap_sub").textContent = "時価総額ランキング: #" + m.market_cap_rank;
+        }
+
+        // ATH
+        document.getElementById("ath").textContent = fmtJPY(m.ath);
+        if (m.ath_date) {
+          const athDate = new Date(m.ath_date).toLocaleDateString("ja-JP");
+          document.getElementById("ath_sub").textContent = athDate + " (" + fmtPct(m.ath_change_percentage) + ")";
+        }
+
+        // Supply
+        document.getElementById("supply").textContent = fmtSupply(m.circulating_supply);
+        const maxSup = m.max_supply ? fmtSupply(m.max_supply) : "上限なし";
+        document.getElementById("supply_sub").textContent = "最大供給量: " + maxSup;
+
+        // Sparkline
+        const sparkPrices = m.sparkline_in_7d?.price;
+        if (sparkPrices && sparkPrices.length >= 2) {
+          const card = document.getElementById('sparklineCard');
+          const chart = document.getElementById('sparklineChart');
+          if (card && chart) {
+            card.style.display = '';
+            const w = 600, h = 60, pad = 2;
+            const mn = Math.min(...sparkPrices), mx = Math.max(...sparkPrices);
+            const rng = mx - mn || 1;
+            const pts = sparkPrices.map((p, i) => {
+              const x = pad + (i / (sparkPrices.length - 1)) * (w - pad * 2);
+              const y = pad + (1 - (p - mn) / rng) * (h - pad * 2);
+              return `${x.toFixed(1)},${y.toFixed(1)}`;
+            });
+            const isUp = sparkPrices[sparkPrices.length - 1] >= sparkPrices[0];
+            const col = isUp ? '#4ade80' : '#f87171';
+            const gradId = 'spGrad';
+            chart.innerHTML = `<svg class="sparkline-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+            <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="${col}" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="${col}" stop-opacity="0.02"/>
+            </linearGradient></defs>
+            <polygon points="${pad},${h - pad} ${pts.join(' ')} ${w - pad},${h - pad}" fill="url(#${gradId})" stroke="none"/>
+            <polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>`;
+          }
+        }
+
+        // Memo
+        let memoText = "";
+        if (chg24h >= 5) memoText = "🔥 強い上昇局面。出来高も確認を。";
+        else if (chg24h >= 1) memoText = "📈 やや上向き。直近のモメンタムは良好。";
+        else if (chg24h >= -1) memoText = "➡️ ほぼ横ばい。方向感の定まらない展開。";
+        else if (chg24h >= -5) memoText = "📉 やや下落傾向。サポートラインに注目。";
+        else memoText = "⚠️ 大幅な下落局面。リスク管理を優先。";
+        document.getElementById("memo").textContent = memoText;
+        document.getElementById("err").textContent = "";
+
+      } catch (e) {
+        document.getElementById("err").textContent = String(e?.message || e);
+        document.getElementById("memo").textContent = "データ取得に失敗しました。";
       }
-
-      // Price
-      document.getElementById("price").textContent = fmtJPY(m.current_price);
-      document.getElementById("price_sub").textContent =
-        "24h高値/安値: " + fmtJPY(m.high_24h) + " / " + fmtJPY(m.low_24h);
-
-      // Change
-      const chgEl = document.getElementById("chg");
-      const chg24text = fmtPct(chg24h);
-      const chg7dtext = fmtPct(chg7d);
-      chgEl.innerHTML = `<span class="${chg24h >= 0 ? 'positive' : 'negative'}">${chg24text}</span> / <span class="${chg7d >= 0 ? 'positive' : 'negative'}">${chg7dtext}</span>`;
-      document.getElementById("chg_sub").textContent = "ATH比: " + fmtPct(m.ath_change_percentage);
-
-      // Volume & Market Cap
-      document.getElementById("vol").textContent = fmtJPYBig(m.total_volume);
-      document.getElementById("mcap").textContent = fmtJPYBig(m.market_cap);
-      if (m.market_cap_rank) {
-        document.getElementById("mcap_sub").textContent = "時価総額ランキング: #" + m.market_cap_rank;
-      }
-
-      // ATH
-      document.getElementById("ath").textContent = fmtJPY(m.ath);
-      if (m.ath_date) {
-        const athDate = new Date(m.ath_date).toLocaleDateString("ja-JP");
-        document.getElementById("ath_sub").textContent = athDate + " (" + fmtPct(m.ath_change_percentage) + ")";
-      }
-
-      // Supply
-      document.getElementById("supply").textContent = fmtSupply(m.circulating_supply);
-      const maxSup = m.max_supply ? fmtSupply(m.max_supply) : "上限なし";
-      document.getElementById("supply_sub").textContent = "最大供給量: " + maxSup;
-
-      // Memo
-      let memoText = "";
-      if (chg24h >= 5) memoText = "🔥 強い上昇局面。出来高も確認を。";
-      else if (chg24h >= 1) memoText = "📈 やや上向き。直近のモメンタムは良好。";
-      else if (chg24h >= -1) memoText = "➡️ ほぼ横ばい。方向感の定まらない展開。";
-      else if (chg24h >= -5) memoText = "📉 やや下落傾向。サポートラインに注目。";
-      else memoText = "⚠️ 大幅な下落局面。リスク管理を優先。";
-      document.getElementById("memo").textContent = memoText;
-      document.getElementById("err").textContent = "";
-
-    }catch(e){
-      document.getElementById("err").textContent = String(e?.message || e);
-      document.getElementById("memo").textContent = "データ取得に失敗しました。";
     }
-  }
-  main();
-</script>
+    main();
+  </script>
 
 </body>
+
 </html>
