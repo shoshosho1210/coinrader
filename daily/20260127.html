@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -14,245 +15,704 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <style>
-    :root{
-      --bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--card:#111827;--line:#1f2937;--accent:#38bdf8;
+    :root {
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #94a3b8;
+      --card: #111827;
+      --line: #1f2937;
+      --accent: #38bdf8;
     }
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;
-      background:var(--bg);
-      color:var(--fg);
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
     }
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
+
+    a {
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
 
     /* ---------- Header (same as daily_index) ---------- */
-    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
-    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
-    .appHeader-inner{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
-      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 16px 48px;
     }
-    .brand{display:flex;align-items:center;gap:12px;min-width:0}
-    .brandLogo{height:24px;width:auto;display:block}
-    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:6px 12px;font-size:12px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
-      color:var(--fg);text-decoration:none
+
+    .appHeader {
+      position: sticky;
+      top: 12px;
+      z-index: 1000;
+      margin: 0 0 14px
     }
-    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
-    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
+
+    .appHeader-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, .92);
+      backdrop-filter: blur(10px)
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0
+    }
+
+    .brandLogo {
+      height: 24px;
+      width: auto;
+      display: block
+    }
+
+    .crumb {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(255, 255, 255, .04);
+      color: var(--fg);
+      text-decoration: none
+    }
+
+    .btn:hover {
+      border-color: rgba(56, 189, 248, .35);
+      text-decoration: none;
+      filter: brightness(1.08)
+    }
+
+    .btn-primary {
+      border-color: rgba(56, 189, 248, .35);
+      background: rgba(56, 189, 248, .10)
+    }
 
     /* ---------- Page heading ---------- */
-    .h1{font-size:26px;font-weight:800;letter-spacing:.2px;margin:12px 0 6px}
-    .meta{color:var(--muted);font-size:13px;margin:0 0 10px}
+    .h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin: 12px 0 6px
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 10px
+    }
 
     /* ---------- Chips ---------- */
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 10px}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      font-size:12px;color:var(--fg);
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 10px
     }
-    .chip small{color:var(--muted);font-weight:700;letter-spacing:.2px}
-    .chip:hover{text-decoration:none;filter:brightness(1.1)}
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .04);
+      font-size: 12px;
+      color: var(--fg);
+    }
+
+    .chip small {
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .2px
+    }
+
+    .chip:hover {
+      text-decoration: none;
+      filter: brightness(1.1)
+    }
 
     /* ---------- Main grid/cards ---------- */
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    @media(min-width:860px){.grid{grid-template-columns:1.2fr .8fr}}
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px
+    }
 
-    .card{
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:18px
+    @media(min-width:860px) {
+      .grid {
+        grid-template-columns: 1.2fr .8fr
+      }
     }
-    .badge{
-      display:inline-block;
-      padding:4px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      font-size:12px;color:var(--muted)
+
+    .card {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px
     }
-    .judge{font-size:22px;font-weight:900;margin:8px 0 10px;letter-spacing:.2px}
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .04);
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .judge {
+      font-size: 22px;
+      font-weight: 900;
+      margin: 8px 0 10px;
+      letter-spacing: .2px
+    }
 
     /* WHY list */
-    .why ul{margin:10px 0 0 18px; padding:0}
-    .why li{margin:6px 0; line-height:1.6}
-    .why li::marker{color:rgba(148,163,184,.65)}
-    .judge-lead{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(56,189,248,.22);
-      background:rgba(56,189,248,.08);
-      color:var(--fg);
-      font-weight:800;
-      letter-spacing:.2px;
+    .why ul {
+      margin: 10px 0 0 18px;
+      padding: 0
+    }
+
+    .why li {
+      margin: 6px 0;
+      line-height: 1.6
+    }
+
+    .why li::marker {
+      color: rgba(148, 163, 184, .65)
+    }
+
+    .judge-lead {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, .22);
+      background: rgba(56, 189, 248, .08);
+      color: var(--fg);
+      font-weight: 800;
+      letter-spacing: .2px;
     }
 
     /* KPI */
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .kpi{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:12px;
-      padding:12px;
-      background:rgba(255,255,255,.02)
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px
     }
-    .kpi .label{color:var(--muted);font-size:11px;letter-spacing:.06em;opacity:.85}
-    .kpi .val{font-size:20px;font-weight:900;margin-top:5px}
+
+    .kpi {
+      border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, .02)
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .06em;
+      opacity: .85
+    }
+
+    .kpi .val {
+      font-size: 20px;
+      font-weight: 900;
+      margin-top: 5px
+    }
 
     /* NAV links (inside right card) */
-    .navlinks{margin-top:14px; display:grid; gap:10px}
-    .navlink{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 12px;
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:12px;
-      background:rgba(255,255,255,.02);
-      color:var(--fg);
-      text-decoration:none;
+    .navlinks {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px
     }
-    .navlink:hover{
-      border-color: rgba(56,189,248,.35);
-      text-decoration:none;
-      filter:brightness(1.08);
+
+    .navlink {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid rgba(148, 163, 184, .18);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .02);
+      color: var(--fg);
+      text-decoration: none;
     }
-    .navlink::after{
-      content:"›";
-      color:rgba(148,163,184,.8);
-      font-weight:900;
+
+    .navlink:hover {
+      border-color: rgba(56, 189, 248, .35);
+      text-decoration: none;
+      filter: brightness(1.08);
+    }
+
+    .navlink::after {
+      content: "›";
+      color: rgba(148, 163, 184, .8);
+      font-weight: 900;
     }
 
     /* Similar days */
-    .similar-days h2{font-size:16px;margin:0 0 8px}
-    .similar-note{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.55}
-    .similar-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-    .similar-item{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.02)}
-    .similar-item a{font-weight:700;color:var(--fg)}
-    .similar-meta{font-size:12px;color:var(--muted)}
-    
-    /* FAQ */
-    .faq h2{font-size:16px;margin:0 0 10px}
-    .faq details{border-top:1px solid rgba(255,255,255,.08);padding:10px 0}
-    .faq summary{cursor:pointer;color:var(--fg);font-weight:800}
-    .faq .a{color:var(--muted);margin-top:6px;line-height:1.7}
+    .similar-days h2 {
+      font-size: 16px;
+      margin: 0 0 8px
+    }
 
-    @media (max-width: 520px){
-      .appHeader-inner{align-items:flex-start}
-      .nav{justify-content:flex-start}
-      .kpi .val{font-size:18px}
+    .similar-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55
+    }
+
+    .similar-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px
+    }
+
+    .similar-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, .02)
+    }
+
+    .similar-item a {
+      font-weight: 700;
+      color: var(--fg)
+    }
+
+    .similar-meta {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    /* FAQ */
+    .faq h2 {
+      font-size: 16px;
+      margin: 0 0 10px
+    }
+
+    .faq details {
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding: 10px 0
+    }
+
+    .faq summary {
+      cursor: pointer;
+      color: var(--fg);
+      font-weight: 800
+    }
+
+    .faq .a {
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.7
+    }
+
+    @media (max-width: 520px) {
+      .appHeader-inner {
+        align-items: flex-start
+      }
+
+      .nav {
+        justify-content: flex-start
+      }
+
+      .kpi .val {
+        font-size: 18px
+      }
     }
 
     /* ---------- Footer (same as daily_index / daily_latest) ---------- */
-    .site-footer{
-      margin-top:28px;
-      border-top:1px solid rgba(255,255,255,.08);
-      padding:18px 0 10px;
-      color:var(--muted);
+    .site-footer {
+      margin-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding: 18px 0 10px;
+      color: var(--muted);
     }
-    .footer-inner{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
+
+    .footer-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .footer-brand{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width:220px;
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 220px;
     }
-    .footer-logo{
-      height:26px;
-      width:auto;
-      max-width:220px;
-      object-fit:contain;
-      display:block;
-      image-rendering:auto;
+
+    .footer-logo {
+      height: 26px;
+      width: auto;
+      max-width: 220px;
+      object-fit: contain;
+      display: block;
+      image-rendering: auto;
     }
-    .footer-tagline{
-      font-size:12px;
-      color:rgba(148,163,184,.9);
-      line-height:1.35;
+
+    .footer-tagline {
+      font-size: 12px;
+      color: rgba(148, 163, 184, .9);
+      line-height: 1.35;
     }
-    .footer-nav{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px 12px;
-      justify-content:flex-end;
+
+    .footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      justify-content: flex-end;
     }
-    .footer-nav a{
-      color:rgba(148,163,184,.95);
-      font-size:12px;
-      padding:6px 10px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:999px;
-      background:rgba(255,255,255,.03);
-      text-decoration:none;
+
+    .footer-nav a {
+      color: rgba(148, 163, 184, .95);
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .03);
+      text-decoration: none;
     }
-    .footer-nav a:hover{
-      border-color:rgba(56,189,248,.35);
-      filter:brightness(1.06);
-      text-decoration:none;
+
+    .footer-nav a:hover {
+      border-color: rgba(56, 189, 248, .35);
+      filter: brightness(1.06);
+      text-decoration: none;
     }
-    .footer-copyright{
-      margin-top:12px;
-      font-size:12px;
-      opacity:.85;
+
+    .footer-copyright {
+      margin-top: 12px;
+      font-size: 12px;
+      opacity: .85;
     }
 
     /* ---------- SEO / How-to block ---------- */
-    .seo-lead{
-      margin:8px 0 12px;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(56,189,248,.22);
-      background:rgba(56,189,248,.08);
-      color:var(--fg);
-      font-weight:800;
-      letter-spacing:.2px;
-      line-height:1.65;
-    }
-    .seo-grid{
-      display:grid;
-      gap:10px;
-      grid-template-columns:1fr;
-      margin-top:8px;
-    }
-    @media(min-width:860px){.seo-grid{grid-template-columns:1fr 1fr}}
-    .seo-item{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:12px;
-      padding:12px;
-      background:rgba(255,255,255,.02);
-    }
-    .seo-h{font-weight:900;margin-bottom:6px}
-    .seo-p{color:rgba(229,231,235,.88);line-height:1.7}
-    .seo-links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
-    }
-    .seo-note{
-      margin-top:10px;
-      font-size:12px;
-      color:rgba(148,163,184,.95);
-      line-height:1.5;
+    .seo-lead {
+      margin: 8px 0 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, .22);
+      background: rgba(56, 189, 248, .08);
+      color: var(--fg);
+      font-weight: 800;
+      letter-spacing: .2px;
+      line-height: 1.65;
     }
 
+    .seo-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+      margin-top: 8px;
+    }
+
+    @media(min-width:860px) {
+      .seo-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .seo-item {
+      border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, .02);
+    }
+
+    .seo-h {
+      font-weight: 900;
+      margin-bottom: 6px
+    }
+
+    .seo-p {
+      color: rgba(229, 231, 235, .88);
+      line-height: 1.7
+    }
+
+    .seo-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .seo-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(148, 163, 184, .95);
+      line-height: 1.5;
+    }
+
+    /* ---------- Scenario Analysis ---------- */
+    .scenario-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+      margin-top: 10px
+    }
+
+    @media(min-width:860px) {
+      .scenario-grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+    }
+
+    .scenario-card {
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 12px;
+      padding: 14px;
+      background: rgba(255, 255, 255, .02);
+      border-left: 3px solid;
+    }
+
+    .scenario-active {
+      background: rgba(255, 255, 255, .05)
+    }
+
+    .scenario-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px
+    }
+
+    .scenario-emoji {
+      font-size: 20px
+    }
+
+    .scenario-title {
+      font-weight: 900;
+      font-size: 14px
+    }
+
+    .scenario-now {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, .15);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .scenario-row {
+      margin: 6px 0
+    }
+
+    .scenario-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 2px
+    }
+
+    .scenario-val {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--fg)
+    }
+
+    .scenario-conf {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      text-align: right
+    }
+
+    .scenario-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.5
+    }
+
+    /* ---------- CoinRader Score ---------- */
+    .score-gauge {
+      text-align: center;
+      margin: 12px 0 8px
+    }
+
+    .score-num {
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1
+    }
+
+    .score-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .score-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .08);
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .3s
+    }
+
+    .score-conf {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right
+    }
+
+    .score-drivers {
+      margin-top: 10px
+    }
+
+    .score-drivers-h {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+
+    .score-drivers ul {
+      margin: 4px 0 0 18px;
+      padding: 0
+    }
+
+    .score-drivers li {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 2px 0
+    }
+
+    .score-detail {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      padding-top: 8px
+    }
+
+    .score-detail summary {
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--accent)
+    }
+
+    .score-comps {
+      margin-top: 8px
+    }
+
+    .score-comp {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      font-size: 12px;
+    }
+
+    .comp-name {
+      color: var(--muted)
+    }
+
+    .comp-raw {
+      font-weight: 700
+    }
+
+    .comp-weight {
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .score-method {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.5
+    }
+
+    /* ---------- Dictionary Links ---------- */
+    .dict-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .chip-dict {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(168, 85, 247, .35);
+      background: rgba(168, 85, 247, .08);
+      font-size: 12px;
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    .chip-dict:hover {
+      border-color: rgba(168, 85, 247, .6);
+      filter: brightness(1.1);
+      text-decoration: none
+    }
+
+    .dict-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px
+    }
   </style>
 
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@graph": [{"@type": "Article", "@id": "https://coinrader.net/daily/20260127#article", "headline": "BTC AI分析 2026-01-27｜Fear&Greed — / RSI — / Trend —（CoinRader）", "description": "2026-01-27のBTCをAIが日次分析。市場心理(Fear&Greed)=—、RSI=—、Trend=—。総合判断=WAIT。注目トレンド:ULTIMA/AXS/HYPE.", "datePublished": "2026-01-27T09:00:00+09:00", "dateModified": "2026-01-27T09:00:00+09:00", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://coinrader.net/daily/20260127"}, "publisher": {"@type": "Organization", "name": "CoinRader"}}, {"@type": "FAQPage", "@id": "https://coinrader.net/daily/20260127#faq", "mainEntity": [{"@type": "Question", "name": "このAI判断は投資助言ですか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。"}}, {"@type": "Question", "name": "更新頻度は？", "acceptedAnswer": {"@type": "Answer", "text": "このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。"}}, {"@type": "Question", "name": "Fear & GreedやRSIが低いと必ず買いですか？", "acceptedAnswer": {"@type": "Answer", "text": "必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。"}}]}, {"@type": "BreadcrumbList", "@id": "https://coinrader.net/daily/20260127#breadcrumb", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "CoinRader", "item": "https://coinrader.net/"}, {"@type": "ListItem", "position": 2, "name": "Daily", "item": "https://coinrader.net/daily/"}, {"@type": "ListItem", "position": 3, "name": "2026-01-27", "item": "https://coinrader.net/daily/20260127"}]}]}
+  </script>
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "今日はなぜこのような状況のですか？", "acceptedAnswer": {"@type": "Answer", "text": "複数の市場指標を総合した結果です。"}}, {"@type": "Question", "name": "強気に転換する条件は？", "acceptedAnswer": {"@type": "Answer", "text": "FGI 45以上 + RSI 55超え + MA距離のプラス転換が揃うと強気トレンドの兆候です。"}}, {"@type": "Question", "name": "弱気になった場合、何を見るべき？", "acceptedAnswer": {"@type": "Answer", "text": "FGI 25以下、RSI 30割れ、MA距離 -8%超えが弱気加速のシグナルです。出来高の急増も注視してください。"}}, {"@type": "Question", "name": "このAI判断は投資助言ですか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。CoinRader は情報提供ダッシュボードであり、投資助言ではありません。"}}]}
   </script>
 <style>
 /* injected by build_daily_pages.py */
@@ -294,7 +754,8 @@
           <a class="btn btn-primary" href="/daily/latest" data-i18n data-ja="最新" data-en="Latest">最新</a>
           <a class="btn" href="/guide" data-i18n data-ja="活用ガイド" data-en="Guide">活用ガイド</a>
           <!-- Language toggle -->
-          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">EN</button>
+          <button class="btn" type="button" id="langToggle" aria-label="Switch language"
+            aria-pressed="false">EN</button>
         </nav>
       </div>
     </header>
@@ -359,82 +820,63 @@
 
         <div class="navlinks">
           <a class="navlink" href="/" data-i18n data-ja="ダッシュボードへ" data-en="Go to Dashboard">ダッシュボードへ</a>
-          <a class="navlink" href="/guide" data-i18n data-ja="指標の見方（Trend / RSI）" data-en="How to read indicators (Trend / RSI)">
+          <a class="navlink" href="/guide" data-i18n data-ja="指標の見方（Trend / RSI）"
+            data-en="How to read indicators (Trend / RSI)">
             指標の見方（Trend / RSI）
           </a>
         </div>
       </aside>
     </div>
+
+    <!-- Scenario Analysis -->
+    <section class='card scenarios' aria-label='Scenario Analysis' style='margin-top:14px'><div class='badge'>SCENARIO ANALYSIS</div><div class='scenario-conf'>Confidence: Low</div><div class='scenario-grid'><div class='scenario-card' style='border-color:#22c55e'><div class='scenario-head'><span class='scenario-emoji'>📈</span><span class='scenario-title'>強気シナリオ</span></div><div class='scenario-row'><div class='scenario-label'>条件（Trigger）</div><div class='scenario-val'>FGI 45以上 + RSI 55超え</div></div><div class='scenario-row'><div class='scenario-label'>無効化（Invalidation）</div><div class='scenario-val'>FGI 25以下に再悪化 or MA距離 -8%以下に急落</div></div><div class='scenario-row'><div class='scenario-label'>注目ポイント</div><div class='scenario-val'>RSI の55上抜け確認</div></div></div><div class='scenario-card' style='border-color:#ef4444'><div class='scenario-head'><span class='scenario-emoji'>📉</span><span class='scenario-title'>弱気シナリオ</span></div><div class='scenario-row'><div class='scenario-label'>条件（Trigger）</div><div class='scenario-val'>FGI 25以下 + RSI 30以下で弱気加速</div></div><div class='scenario-row'><div class='scenario-label'>無効化（Invalidation）</div><div class='scenario-val'>FGI 50以上に回復 + RSI 55超え（センチメント反転）</div></div><div class='scenario-row'><div class='scenario-label'>注目ポイント</div><div class='scenario-val'>MA距離のマイナス拡大とBTC出来高の減少</div></div></div><div class='scenario-card scenario-active' style='border-color:#f59e0b'><div class='scenario-head'><span class='scenario-emoji'>↔️</span><span class='scenario-title'>レンジシナリオ</span> <span class='scenario-now'>現在の判定に近い</span></div><div class='scenario-row'><div class='scenario-label'>条件（Trigger）</div><div class='scenario-val'>RSI 40-60圏内に収束 + MA距離 ±3%以内</div></div><div class='scenario-row'><div class='scenario-label'>無効化（Invalidation）</div><div class='scenario-val'>FGI が 25以下 or 75以上に急変（方向感の発生）</div></div><div class='scenario-row'><div class='scenario-label'>注目ポイント</div><div class='scenario-val'>出来高が平均以下の低調な推移が続くか</div></div></div></div><div class='scenario-note' data-i18n data-ja='※ シナリオは市場データから自動生成された仮説であり、投資助言ではありません。' data-en='* Scenarios are auto-generated hypotheses from market data, not investment advice.'>※ シナリオは市場データから自動生成された仮説であり、投資助言ではありません。</div></section>
+
+    <!-- CoinRader Score -->
     
+
     
-    <!-- FAQ -->
-    <section class="card faq" style="margin-top:12px" aria-label="FAQ">
-      <h2 data-i18n data-ja="よくある質問" data-en="FAQ">よくある質問</h2>
 
-      <details>
-        <summary data-i18n data-ja="このAI判断は投資助言ですか？" data-en="Is this AI judgment investment advice?">このAI判断は投資助言ですか？</summary>
-        <div class="a" data-i18n
-             data-ja="いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。"
-             data-en="No. CoinRader is for informational purposes only. Please make your own trading decisions.">
-          いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。
-        </div>
-      </details>
+    <!-- Dynamic FAQ (data-driven) -->
+    <section class='card faq' style='margin-top:12px' aria-label='FAQ'><h2 data-i18n data-ja='よくある質問' data-en='FAQ'>よくある質問</h2><details><summary>今日はなぜこのような状況のですか？</summary><div class='a'>複数の市場指標を総合した結果です。ただし、これは現時点のデータ分析であり、今後の値動きを保証するものではありません。</div></details><details><summary>強気に転換する条件は？</summary><div class='a'>FGI 55以上の維持 + RSI 55超え + MA距離のプラス拡大が揃うと、持続的な強気トレンドと見なしやすくなります。単一指標だけでの判断は避けてください。</div></details><details><summary>弱気になった場合、何を見るべき？</summary><div class='a'>FGI 25以下への悪化、RSI 30割れ、MA距離の -8%超え拡大が弱気加速のシグナルです。特に出来高の急増を伴う場合は警戒が必要です。</div></details><details><summary>このAI判断は投資助言ですか？</summary><div class='a'>いいえ。CoinRader は公開市場データをルールベースで分析した情報提供ダッシュボードです。売買判断はご自身の責任で行ってください。</div></details></section>
 
-      <details>
-        <summary data-i18n data-ja="更新頻度は？" data-en="How often is it updated?">更新頻度は？</summary>
-        <div class="a" data-i18n
-             data-ja="このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。"
-             data-en="This page is updated daily (JST). Some indicators on the top page may refresh every few minutes.">
-          このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。
-        </div>
-      </details>
-
-      <details>
-        <summary data-i18n data-ja="Fear &amp; GreedやRSIが低いと「必ず買い」？" data-en="If Fear &amp; Greed and RSI are low, does it mean 'buy for sure'?">
-          Fear &amp; GreedやRSIが低いと「必ず買い」？
-        </summary>
-        <div class="a" data-i18n
-             data-ja="必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。"
-             data-en="Not necessarily. They are rough indicators of sentiment/overheating, and should be interpreted with market context (trend, volume, etc.).">
-          必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。
-        </div>
-      </details>
-    </section>
+    <!-- Dictionary Links -->
+    <section class='card dict-links' style='margin-top:12px' aria-label='Related terms'><div class='badge' data-i18n data-ja='今日学ぶべき用語' data-en='Key Terms'>今日学ぶべき用語</div><div style='height:8px'></div><div class='dict-chips'><a class='chip chip-dict' href='/dictionary/rsi/'>RSI</a><a class='chip chip-dict' href='/dictionary/moving-average/'>移動平均</a><a class='chip chip-dict' href='/dictionary/market-cap/'>時価総額</a><a class='chip chip-dict' href='/dictionary/dominance/'>ドミナンス</a><a class='chip chip-dict' href='/dictionary/volume/'>出来高</a></div><div class='dict-note' data-i18n data-ja='レポートで使用している指標の詳細解説はこちら' data-en='Learn more about the indicators used in this report'>レポートで使用している指標の詳細解説はこちら</div></section>
     <!-- How to read / SEO block -->
     <section class="card seo" style="margin-top:12px" aria-label="How to read">
       <div class="badge" data-i18n data-ja="使い方" data-en="How to read">使い方</div>
       <div style="height:10px"></div>
 
       <div class="seo-lead" data-i18n
-           data-ja="今日のAI判定（WAIT）→ 市場心理（Fear &amp; Greed: —）→ 短期の温度感（RSI: —）→ 方向感（Trend: —）の順に見ると迷いません。"
-           data-en="A simple flow: AI judgment (WAIT) → sentiment (Fear &amp; Greed: —) → short-term heat (RSI: —) → direction (Trend: —).">
-        今日のAI判定（WAIT）→ 市場心理（Fear &amp; Greed: —）→ 短期の温度感（RSI: —）→ 方向感（Trend: —）の順に見ると迷いません。
+        data-ja="今日のAI判定（WAIT）→ 市場心理（Fear &amp; Greed: —）→ 短期の温度感（RSI: —）→ 方向感（Trend: —）の順に見ると迷いません。"
+        data-en="A simple flow: AI judgment (WAIT) → sentiment (Fear &amp; Greed: —) → short-term heat (RSI: —) → direction (Trend: —).">
+        今日のAI判定（WAIT）→ 市場心理（Fear &amp; Greed: —）→ 短期の温度感（RSI: —）→ 方向感（Trend:
+        —）の順に見ると迷いません。
       </div>
 
       <div class="seo-grid">
         <div class="seo-item">
           <div class="seo-h" data-i18n data-ja="RSI（相対力指数）" data-en="RSI">RSI（相対力指数）</div>
           <div class="seo-p" data-i18n
-               data-ja="一般に70以上は過熱、30以下は売られ過ぎの目安です。今日のRSIは —。単独ではなく、Trendやニュースと合わせて解釈してください。"
-               data-en="A rough guide: 70+ overheated, 30- oversold. Today: —. Interpret with Trend/news, not alone.">
+            data-ja="一般に70以上は過熱、30以下は売られ過ぎの目安です。今日のRSIは —。単独ではなく、Trendやニュースと合わせて解釈してください。"
+            data-en="A rough guide: 70+ overheated, 30- oversold. Today: —. Interpret with Trend/news, not alone.">
             一般に70以上は過熱、30以下は売られ過ぎの目安です。今日のRSIは —。単独ではなく、Trendやニュースと合わせて解釈してください。
           </div>
         </div>
 
         <div class="seo-item">
-          <div class="seo-h" data-i18n data-ja="Fear &amp; Greed（恐怖・欲望）" data-en="Fear &amp; Greed">Fear &amp; Greed（恐怖・欲望）</div>
+          <div class="seo-h" data-i18n data-ja="Fear &amp; Greed（恐怖・欲望）" data-en="Fear &amp; Greed">Fear &amp;
+            Greed（恐怖・欲望）</div>
           <div class="seo-p" data-i18n
-               data-ja="市場心理を数値化した参考指標です。今日の値は —（）。極端な水準では反転の“候補日”として注目されやすくなります。"
-               data-en="A sentiment gauge. Today: — (). Extreme levels often attract attention as potential turning points.">
+            data-ja="市場心理を数値化した参考指標です。今日の値は —（）。極端な水準では反転の“候補日”として注目されやすくなります。"
+            data-en="A sentiment gauge. Today: — (). Extreme levels often attract attention as potential turning points.">
             市場心理を数値化した参考指標です。今日の値は —（）。極端な水準では反転の“候補日”として注目されやすくなります。
           </div>
         </div>
 
         <div class="seo-item">
           <div class="seo-h" data-i18n data-ja="Trend（移動平均との距離）" data-en="Trend (MA distance)">Trend（移動平均との距離）</div>
-          <div class="seo-p" data-i18n
-               data-ja="方向感を掴むための目安です。今日のTrendは —。大きなプラスは上向き、マイナスは下向き圧力の参考になります。"
-               data-en="A quick directional proxy. Today: —. Large positive suggests upward momentum; negative suggests downward pressure.">
+          <div class="seo-p" data-i18n data-ja="方向感を掴むための目安です。今日のTrendは —。大きなプラスは上向き、マイナスは下向き圧力の参考になります。"
+            data-en="A quick directional proxy. Today: —. Large positive suggests upward momentum; negative suggests downward pressure.">
             方向感を掴むための目安です。今日のTrendは —。大きなプラスは上向き、マイナスは下向き圧力の参考になります。
           </div>
         </div>
@@ -449,9 +891,8 @@
         <a class="btn" href="/daily/tags/wait">WAIT</a>
       </div>
 
-      <div class="seo-note" data-i18n
-           data-ja="※ CoinRaderは投資助言ではありません。情報提供・学習用途としてご利用ください。"
-           data-en="*CoinRader is not investment advice. Use for informational/learning purposes.">
+      <div class="seo-note" data-i18n data-ja="※ CoinRaderは投資助言ではありません。情報提供・学習用途としてご利用ください。"
+        data-en="*CoinRader is not investment advice. Use for informational/learning purposes.">
         ※ CoinRaderは投資助言ではありません。情報提供・学習用途としてご利用ください。
       </div>
     </section>
@@ -460,11 +901,9 @@
     <footer class="site-footer">
       <div class="footer-inner">
         <div class="footer-brand">
-          <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
-          <span class="footer-tagline"
-                data-i18n
-                data-ja="客観的な暗号資産分析ダッシュボード"
-                data-en="Objective crypto analytics dashboard">
+          <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png" />
+          <span class="footer-tagline" data-i18n data-ja="客観的な暗号資産分析ダッシュボード"
+            data-en="Objective crypto analytics dashboard">
             客観的な暗号資産分析ダッシュボード
           </span>
         </div>
@@ -485,35 +924,36 @@
   </div>
 
   <script>
-  (function(){
-    const btn = document.getElementById('langToggle');
-    if(!btn) return;
+    (function () {
+      const btn = document.getElementById('langToggle');
+      if (!btn) return;
 
-    const KEY = 'cr_lang';
-    const saved = localStorage.getItem(KEY) || 'ja';
+      const KEY = 'cr_lang';
+      const saved = localStorage.getItem(KEY) || 'ja';
 
-    function apply(lang){
-      document.documentElement.lang = lang;
-      btn.textContent = (lang === 'en') ? 'JP' : 'EN';
-      btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+      function apply(lang) {
+        document.documentElement.lang = lang;
+        btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+        btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
 
-      document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const ja = el.getAttribute('data-ja');
-        const en = el.getAttribute('data-en');
-        if(!ja || !en) return;
-        el.innerHTML = (lang === 'en') ? en : ja;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const ja = el.getAttribute('data-ja');
+          const en = el.getAttribute('data-en');
+          if (!ja || !en) return;
+          el.innerHTML = (lang === 'en') ? en : ja;
+        });
+      }
+
+      btn.addEventListener('click', () => {
+        const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+        localStorage.setItem(KEY, next);
+        apply(next);
       });
-    }
 
-    btn.addEventListener('click', ()=>{
-      const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
-      localStorage.setItem(KEY, next);
-      apply(next);
-    });
-
-    apply(saved);
-  })();
+      apply(saved);
+    })();
   </script>
 
 </body>
+
 </html>
