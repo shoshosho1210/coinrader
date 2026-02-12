@@ -9104,6 +9104,43 @@
       </div>
     </details>
   </section>
+
+  <!-- CoinRader Score + Scenario -->
+  <section id="sec-coinrader-score" class="summary-block" style="display:none;">
+    <div style="max-width:980px;margin:0 auto;padding:0 16px;">
+      <div style="display:grid;gap:12px;grid-template-columns:1fr;margin-top:4px;">
+        <!-- Score Card -->
+        <div id="crScoreCard"
+          style="border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;background:rgba(255,255,255,.03);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span
+              style="font-size:11px;color:#94a3b8;border:1px solid rgba(148,163,184,.25);padding:2px 8px;border-radius:999px;">COINRADER
+              SCORE</span>
+            <span id="crScoreScenario"
+              style="font-size:11px;padding:2px 8px;border-radius:999px;font-weight:700;"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="text-align:center;min-width:60px;">
+              <div id="crScoreNum" style="font-size:36px;font-weight:900;line-height:1;">--</div>
+              <div id="crScoreLabel" style="font-size:11px;color:#94a3b8;margin-top:2px;">計算中</div>
+            </div>
+            <div style="flex:1;">
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;">
+                <div id="crScoreBar" style="height:100%;border-radius:3px;width:0%;transition:width .5s;"></div>
+              </div>
+              <div id="crScoreDrivers"
+                style="margin-top:8px;font-size:12px;color:rgba(229,231,235,.85);line-height:1.5;"></div>
+            </div>
+          </div>
+          <div style="margin-top:8px;text-align:right;">
+            <a href="/daily/latest" style="font-size:11px;color:#38bdf8;text-decoration:none;" data-i18n
+              data-ja="詳細はDailyレポートへ →" data-en="See Daily Report →">詳細はDailyレポートへ →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section aria-label="投資の準備" class="cta-block"
     style="border-color: rgba(56, 189, 248, 0.25); background: rgba(15, 23, 42, 0.85); box-shadow: 0 0 15px rgba(56, 189, 248, 0.08);">
     <div class="cta-inner">
@@ -14127,6 +14164,59 @@
         { transform: 'scale(0.95)', opacity: 0.7 },
         { transform: 'scale(1)', opacity: 1 }
       ], { duration: 300, easing: 'ease-out' });
+
+      // --- 6. CoinRader Score (top page) ---
+      try {
+        const fgi = parseFloat(data.evidence.fng) || 0;
+        const rsi = parseFloat(data.evidence.rsi) || 0;
+        const trendStr = String(data.evidence.trend || '0');
+        const maDist = parseFloat(trendStr.replace('%', '')) || 0;
+        // BTC 24h change from summary if available
+        const btc24h = parseFloat(data.evidence.btc_24h_change || '0') || 0;
+
+        // Weighted score (same formula as build_daily_pages.py)
+        const w = { fgi: 35, rsi: 30, ma: 20, chg: 15 };
+        const nFgi = Math.max(0, Math.min(100, fgi));
+        const nRsi = Math.max(0, Math.min(100, rsi));
+        const nMa = Math.max(0, Math.min(100, (maDist + 20) * (100 / 40)));
+        const nChg = Math.max(0, Math.min(100, (btc24h + 10) * (100 / 20)));
+        const totalW = w.fgi + w.rsi + w.ma + w.chg;
+        const score = Math.round((nFgi * w.fgi + nRsi * w.rsi + nMa * w.ma + nChg * w.chg) / totalW);
+
+        // Determine label + color
+        let sLabel, sColor;
+        if (score >= 70) { sLabel = '強気寄り'; sColor = '#4ade80'; }
+        else if (score >= 40) { sLabel = '中立'; sColor = '#facc15'; }
+        else { sLabel = '弱気寄り'; sColor = '#f87171'; }
+
+        // Scenario badge
+        let scenarioText, scenarioBg;
+        if (data.verdict === 'bullish') { scenarioText = '📈 強気シナリオ'; scenarioBg = 'rgba(74,222,128,.12)'; }
+        else if (data.verdict === 'bearish') { scenarioText = '📉 弱気シナリオ'; scenarioBg = 'rgba(248,113,113,.12)'; }
+        else { scenarioText = '📊 レンジシナリオ'; scenarioBg = 'rgba(148,163,184,.12)'; }
+
+        // Drivers (top 3)
+        const drivers = [
+          { name: 'FGI', val: fgi, dir: fgi >= 50 ? '↑' : '↓' },
+          { name: 'RSI', val: rsi, dir: rsi >= 50 ? '↑' : '↓' },
+          { name: 'MA距離', val: maDist.toFixed(1) + '%', dir: maDist >= 0 ? '↑' : '↓' },
+        ];
+        const driverHtml = drivers.map(d => `<span style="margin-right:12px;">${d.name} ${d.val} ${d.dir}</span>`).join('');
+
+        // Render
+        const secEl = document.getElementById('sec-coinrader-score');
+        if (secEl) secEl.style.display = '';
+        const numEl = document.getElementById('crScoreNum');
+        if (numEl) { numEl.textContent = score; numEl.style.color = sColor; }
+        const lblEl = document.getElementById('crScoreLabel');
+        if (lblEl) lblEl.textContent = sLabel;
+        const barEl = document.getElementById('crScoreBar');
+        if (barEl) { barEl.style.width = score + '%'; barEl.style.background = sColor; }
+        const drvEl = document.getElementById('crScoreDrivers');
+        if (drvEl) drvEl.innerHTML = driverHtml;
+        const scnEl = document.getElementById('crScoreScenario');
+        if (scnEl) { scnEl.textContent = scenarioText; scnEl.style.background = scenarioBg; scnEl.style.color = '#e5e7eb'; }
+      } catch (e) { console.warn('CoinRader Score error:', e); }
     }
 
     /* --- Sparkline (Mini Chart) Generator --- */
