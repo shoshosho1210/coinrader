@@ -164,6 +164,7 @@ def localize_daily_html_en(
     html = re.sub(r'<html\s+lang="ja">', '<html lang="en">', html, count=1)
     html = html.replace('CoinRader</a> / <a href="/daily/">Daily</a>', 'CoinRader</a> / <a href="/en/daily/">Daily</a>')
     html = html.replace('href="/daily/', 'href="/en/daily/')
+    html = html.replace("href='/daily/", "href='/en/daily/")
 
     html = re.sub(
         r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
@@ -210,6 +211,13 @@ def localize_daily_html_en(
         "弱気になった場合、何を見るべき？": "What should I watch in a bearish phase?",
         "いいえ。CoinRader は公開市場データをルールベースで分析した情報提供ダッシュボードです。売買判断はご自身の責任で行ってください。": "No. CoinRader is an informational dashboard based on public market data. Make trading decisions at your own discretion.",
         "客観的な暗号資産分析ダッシュボード": "Objective crypto analytics dashboard",
+        "関連銘柄": "Related coins",
+        "過去の類似日 TOP5": "Top 5 similar past days",
+        "FGI / RSI / Trend の近さで過去日を表示しています（投資助言ではありません）。": "Past days are ranked by similarity of FGI / RSI / Trend (not investment advice).",
+        "類似度": "Similarity",
+        "一覧": "List",
+        "最新": "Latest",
+        "前日": "Previous day",
     }
     for ja, en in en_replacements.items():
         html = html.replace(ja, en)
@@ -2211,6 +2219,7 @@ def main() -> None:
         )
         write_text(OUT_DIR_EN / f"{ymd}.html", en_html)
 
+
         trend_top3 = "/".join(trending[:3]) if trending else ""
 
         top_gainer_label = ""
@@ -2330,6 +2339,7 @@ def main() -> None:
     en_index_html = en_index_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
     en_index_html = en_index_html.replace('客観的な暗号資産分析ダッシュボード', 'Objective crypto analytics dashboard')
     write_text(OUT_DIR_EN / "index.html", en_index_html)
+
 
     tags_dir = OUT_DIR / "tags"
     tags_dir.mkdir(parents=True, exist_ok=True)
