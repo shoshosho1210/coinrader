@@ -14542,7 +14542,7 @@
         count: lowPowerMode ? 22 : 70,
         dist: lowPowerMode ? 90 : 140,
         speed: lowPowerMode ? 0.08 : 0.2,
-        baseColor: '56, 189, 248
+        baseColor: '56, 189, 248'
       };
 
       function resize() {
@@ -14585,7 +14585,7 @@
       function init() {
         particles = [];
         const count = window.innerWidth < 600 ? 35 : config.count;
-        for (let i = 0; i < config.count; i++) particles.push(new Particle());
+        for (let i = 0; i < count; i++) particles.push(new Particle());
       }
 
       function drawFrame() {
