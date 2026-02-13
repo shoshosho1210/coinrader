@@ -10022,6 +10022,7 @@
           throw e;
         }
       }
+
       try {
         return await fetch(url, baseOpts);
       } catch (e) {
@@ -12606,18 +12607,20 @@
         const day = String(d.getDate()).padStart(2, '0');
         return `${y}${m}${day}`;
       };
-
+      const DAILY_MIN_DATE = '20260126';
       const candidates = [];
       const targetDate = new Date(now);
       targetDate.setDate(now.getDate() - daysAgo);
-      candidates.push(formatDate(targetDate));
+      const targetName = formatDate(targetDate);
+      candidates.push(targetName < DAILY_MIN_DATE ? DAILY_MIN_DATE : targetName);
 
       if (daysAgo === 0) {
         const yesterday = new Date(now);
         yesterday.setDate(now.getDate() - 1);
-        candidates.push(formatDate(yesterday));
+        const yName = formatDate(yesterday);
+        candidates.push(yName < DAILY_MIN_DATE ? DAILY_MIN_DATE : yName);
       }
-      candidates.push("20260126");
+      candidates.push(DAILY_MIN_DATE);
 
       const cacheBuster = Math.floor(Date.now() / 60000);
 
@@ -13762,27 +13765,37 @@
     }
 
 
-    (async function boot() {
+    (function boot() {
       try { syncHeaderHeight(); setupOverviewToggle(); setupMcapToggle(); setupSideMenu(); } catch (_e) { }
 
       tickRefreshButton();
 
-      // 1. まずメインデータを取得
-      await init(false);
+      const runBootSync = async () => {
+        // 1. まずメインデータを取得
+        await init(false);
 
-      // 2. 2秒休む (API制限回避)
-      await sleep(2000);
+        // 2. 2秒休む (API制限回避)
+        await sleep(2000);
 
-      // 3. マクロデータを取得
-      try { await updateMacroTicker(); } catch (_e) { }
+        // 3. マクロデータを取得
+        try { await updateMacroTicker(); } catch (_e) { }
 
-      try { startUpdatedTicker(); } catch (_e) { }
-      try { startAutoRefresh(); } catch (_e) { }
+        try { startUpdatedTicker(); } catch (_e) { }
+        try { startAutoRefresh(); } catch (_e) { }
 
-      // 4. さらに2秒休んでからAI分析
-      await sleep(2000);
-      updateAiInsight().catch(e => console.warn("AI insight failed", e));
-
+        // 4. さらに2秒休んでからAI分析
+        await sleep(2000);
+        updateAiInsight().catch(e => console.warn("AI insight failed", e));
+      };
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          runBootSync().catch(e => console.warn('boot failed', e));
+        }, { timeout: 2500 });
+      } else {
+        window.addEventListener('load', () => {
+          setTimeout(() => runBootSync().catch(e => console.warn('boot failed', e)), 600);
+        }, { once: true });
+      }
     })();
 
     // ※注: 元々あった document.addEventListener('DOMContentLoaded', ...) の updateMacroTicker 呼び出しは
