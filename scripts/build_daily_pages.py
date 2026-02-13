@@ -147,7 +147,16 @@ def to_en_daily_url(path: str) -> str:
     return path.replace('/daily/', '/en/daily/').replace('/daily"', '/en/daily"')
 
 
-def localize_daily_html_en(html: str, canonical: str, ja_url: str) -> str:
+def localize_daily_html_en(
+    html: str,
+    canonical: str,
+    ja_url: str,
+    en_title: str,
+    en_desc: str,
+    en_h1: str,
+    en_jsonld: str,
+    en_faq_jsonld: str,
+) -> str:
     """Post-process JA daily HTML into EN route variant (/en/daily/*)."""
     en_canonical = canonical.replace(f"{SITE_ORIGIN}/daily/", f"{SITE_ORIGIN}/en/daily/")
     en_url = en_canonical
@@ -163,6 +172,18 @@ def localize_daily_html_en(html: str, canonical: str, ja_url: str) -> str:
         count=1,
     )
     html = re.sub(r'<meta\s+property="og:url"\s+content="[^"]*"\s*/?>', f'<meta property="og:url" content="{escape_html(en_url)}" />', html, count=1)
+    html = re.sub(r'<title>.*?</title>', f'<title>{escape_html(en_title)}</title>', html, flags=re.DOTALL, count=1)
+    html = re.sub(r'<meta\s+name="description"\s+content="[^"]*"\s*/?>', f'<meta name="description" content="{escape_html(en_desc)}" />', html, count=1)
+    html = re.sub(r'<meta\s+property="og:title"\s+content="[^"]*"\s*/?>', f'<meta property="og:title" content="{escape_html(en_title)}" />', html, count=1)
+    html = re.sub(r'<meta\s+property="og:description"\s+content="[^"]*"\s*/?>', f'<meta property="og:description" content="{escape_html(en_desc)}" />', html, count=1)
+    html = re.sub(r'<div class="h1">.*?</div>', f'<div class="h1">{escape_html(en_h1)}</div>', html, flags=re.DOTALL, count=1)
+    script_pat = re.compile(r'<script type="application/ld\+json">\s*.*?\s*</script>', re.DOTALL)
+    html = script_pat.sub(f'<script type="application/ld+json">\n  {en_jsonld}\n  </script>', html, count=1)
+    m = script_pat.search(html)
+    if m:
+        m2 = script_pat.search(html, m.end())
+        if m2:
+            html = html[:m2.start()] + f'<script type="application/ld+json">\n  {en_faq_jsonld}\n  </script>' + html[m2.end():]
 
     hreflang = (
         f'<link rel="alternate" hreflang="ja" href="{escape_html(ja_url)}" />\n'
@@ -175,6 +196,63 @@ def localize_daily_html_en(html: str, canonical: str, ja_url: str) -> str:
     html = html.replace("const saved = localStorage.getItem(KEY) || 'ja';", "const saved = localStorage.getItem(KEY) || 'en';")
     return html
 
+
+def build_seo_meta_en(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi, trend, trending: List[str], top_gainer=None) -> Dict[str, str]:
+    fgi_s = str(sentiment_value) if sentiment_value is not None else "-"
+    rsi_s = str(btc_rsi) if btc_rsi is not None else "-"
+    trend_s = str(trend) if trend is not None else "-"
+    trend_str = "/".join([t.upper() for t in (trending or [])][:3])
+    gain_str = ""
+    if isinstance(top_gainer, dict) and top_gainer.get("symbol"):
+        ch = top_gainer.get("change")
+        try:
+            ch_s = f"{float(ch):.2f}" if ch is not None else ""
+        except Exception:
+            ch_s = str(ch) if ch is not None else ""
+        gain_str = f" Top gainer: {top_gainer.get('symbol').upper()}(+{ch_s}%)" if ch_s else f" Top gainer: {top_gainer.get('symbol').upper()}"
+
+    title = f"BTC Daily AI Analysis {date_iso} | Fear & Greed {fgi_s} / RSI {rsi_s} / Trend {trend_s} (CoinRader)"
+    desc = f"Daily BTC AI analysis for {date_iso}. Sentiment(Fear & Greed)={fgi_s}, RSI={rsi_s}, Trend={trend_s}. Overall: {judge}. Trending: {trend_str}.{gain_str}".strip()
+    canonical = f"{SITE_ORIGIN}/en/daily/{ymd}"
+    return {"TITLE": title, "DESCRIPTION": desc, "CANONICAL": canonical}
+
+
+def build_jsonld_en(canonical: str, title: str, description: str, date_iso: str, updated_at_jst: str) -> str:
+    data = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Article",
+                "@id": canonical + "#article",
+                "headline": title,
+                "description": description,
+                "datePublished": date_iso + "T09:00:00+09:00",
+                "dateModified": date_iso + "T09:00:00+09:00" if not updated_at_jst else date_iso + "T09:00:00+09:00",
+                "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
+                "publisher": {"@type": "Organization", "name": "CoinRader"},
+            },
+            {
+                "@type": "FAQPage",
+                "@id": canonical + "#faq",
+                "mainEntity": [
+                    {"@type": "Question", "name": "Is this investment advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. CoinRader provides informational analytics only."}},
+                    {"@type": "Question", "name": "How often is this page updated?", "acceptedAnswer": {"@type": "Answer", "text": "This page is updated daily (JST)."}},
+                    {"@type": "Question", "name": "Does low Fear & Greed or RSI always mean buy?", "acceptedAnswer": {"@type": "Answer", "text": "No. Use them with trend and market context."}},
+                ],
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": canonical + "#breadcrumb",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "CoinRader", "item": f"{SITE_ORIGIN}/"},
+                    {"@type": "ListItem", "position": 2, "name": "Daily", "item": f"{SITE_ORIGIN}/en/daily/"},
+                    {"@type": "ListItem", "position": 3, "name": date_iso, "item": canonical},
+                ],
+            },
+        ],
+    }
+    return json.dumps(data, ensure_ascii=False)
+  
 def escape_html(s: str) -> str:
     return (s.replace("&", "&amp;")
               .replace("<", "&lt;")
@@ -2085,8 +2163,33 @@ def main() -> None:
 
         out_file = OUT_DIR / f"{ymd}.html"
         write_text(out_file, html)
-        en_html = localize_daily_html_en(html, canonical=canonical, ja_url=f"{SITE_ORIGIN}/daily/{ymd}")
+      
+        seo_meta_en = build_seo_meta_en(date_iso, ymd, judge, sent, rsi, trend, trending, top_gainer=top_gainer)
+        en_title = seo_meta_en["TITLE"]
+        en_desc = seo_meta_en["DESCRIPTION"]
+        en_h1 = f"BTC Daily AI Analysis ({date_iso})"
+        en_jsonld = build_jsonld_en(seo_meta_en["CANONICAL"], en_title, en_desc, date_iso, str(updated_at))
+        en_faq_jsonld = json.dumps({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {"@type": "Question", "name": "Is this investment advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. CoinRader provides informational analytics only."}},
+                {"@type": "Question", "name": "How often is this updated?", "acceptedAnswer": {"@type": "Answer", "text": "Updated daily (JST)."}},
+                {"@type": "Question", "name": "How should I use RSI and Fear & Greed?", "acceptedAnswer": {"@type": "Answer", "text": "Use these as reference indicators with trend and broader market context."}},
+            ]
+        }, ensure_ascii=False)
+        en_html = localize_daily_html_en(
+            html,
+            canonical=canonical,
+            ja_url=f"{SITE_ORIGIN}/daily/{ymd}",
+            en_title=en_title,
+            en_desc=en_desc,
+            en_h1=en_h1,
+            en_jsonld=en_jsonld,
+            en_faq_jsonld=en_faq_jsonld,
+        )
         write_text(OUT_DIR_EN / f"{ymd}.html", en_html)
+
 
         trend_top3 = "/".join(trending[:3]) if trending else ""
 
@@ -2200,6 +2303,9 @@ def main() -> None:
     en_index_html = en_index_html.replace('<title>Daily AIレポート一覧 | CoinRader</title>', '<title>Daily AI Reports | CoinRader</title>')
     en_index_html = en_index_html.replace('<h1>Daily AIレポート一覧</h1>', '<h1>Daily AI Reports</h1>')
     en_index_html = en_index_html.replace('最新: <a href="/en/daily/latest">latest</a>', 'Latest: <a href="/en/daily/latest">latest</a>')
+    en_index_html = en_index_html.replace('注目 ', 'Trending ')
+    en_index_html = en_index_html.replace('上昇 ', 'Gainer ')
+    en_index_html = en_index_html.replace('注目トレンドは ', 'Trending: ')
     write_text(OUT_DIR_EN / "index.html", en_index_html)
 
     tags_dir = OUT_DIR / "tags"
@@ -2309,8 +2415,16 @@ def main() -> None:
         en_tag_html = en_tag_html.replace('href="/daily/', 'href="/en/daily/')
         en_tag_html = en_tag_html.replace('<a href="/">CoinRader</a> / Daily', '<a href="/en/">CoinRader</a> / Daily')
         en_tag_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>', f'<link rel="canonical" href="{SITE_ORIGIN}/en/daily/tags/{tag_lower}" />', en_tag_html, count=1)
+        en_tag_desc_map = {
+            "bear": "List of days where the AI judgment is BEAR.",
+            "bull": "List of days where the AI judgment is BULL.",
+            "wait": "List of days where the AI judgment is WAIT.",
+        }
+        en_tag_html = re.sub(r"<title>.*?</title>", f"<title>AI {judge_key} Days | CoinRader</title>", en_tag_html, flags=re.DOTALL)
+        en_tag_html = re.sub(r'<meta\s+name="description"\s+content="[^"]*"\s*/?>', f'<meta name="description" content="{en_tag_desc_map.get(tag_lower, "Daily AI report list by judgment.")}" />', en_tag_html, count=1)
         en_tag_html = en_tag_html.replace(f'AI {judge_key} の日一覧', f'AI {judge_key} Days')
         en_tag_html = en_tag_html.replace('最新: <a href="/en/daily/latest">latest</a>', 'Latest: <a href="/en/daily/latest">latest</a>')
+        en_tag_html = en_tag_html.replace('客観的な暗号資産分析ダッシュボード', 'Objective crypto analytics dashboard')
         write_text(OUT_DIR_EN / "tags" / f"{tag_lower}.html", en_tag_html)
 
     update_daily_latest_redirect(latest_ymd)
@@ -2322,11 +2436,7 @@ def main() -> None:
     # Also generate extensionless latest page for canonical (/daily/latest)
     write_text(OUT_DIR / "latest", latest_page_html)
 
-    latest_page_html_en = localize_daily_html_en(
-        latest_page_html,
-        canonical=f"{SITE_ORIGIN}/daily/{latest_ymd}",
-        ja_url=f"{SITE_ORIGIN}/daily/{latest_ymd}",
-    )
+    latest_page_html_en = read_text(OUT_DIR_EN / latest_target)
     write_text(OUT_DIR_EN / "latest.html", latest_page_html_en)
     write_text(OUT_DIR_EN / "latest", latest_page_html_en)
 
