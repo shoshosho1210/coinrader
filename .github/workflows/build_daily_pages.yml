@@ -191,7 +191,7 @@ jobs:
 
           # alias 残骸の掃除（必要なものだけ追加。例：coins/sol を消したい場合）
           rm -rf coins/sol || true
-          git add -A daily sitemap.xml sitemap-static.xml sitemap-dictionary.xml sitemap-daily.xml _redirects
+              git add -A daily en/daily sitemap.xml sitemap-static.xml sitemap-dictionary.xml sitemap-daily.xml _redirects
           git add -f daily/tags/*.html
           git add -A coins
           git add -A compare
