@@ -753,8 +753,8 @@
           </div>
         </div>
         <nav class="nav" aria-label="Daily navigation">
-          <a class="btn" href="/en/daily/" data-i18n data-ja="一覧" data-en="List">一覧</a>
-          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-ja="最新" data-en="Latest">最新</a>
+          <a class="btn" href="/en/daily/" data-i18n data-ja="List" data-en="List">List</a>
+          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-ja="Latest" data-en="Latest">Latest</a>
           <a class="btn" href="/guide" data-i18n data-ja="活用ガイド" data-en="Guide">活用ガイド</a>
           <!-- Language toggle -->
           <button class="btn" type="button" id="langToggle" aria-label="Switch language"
@@ -777,22 +777,22 @@
 
     <!-- Date chips -->
     <div class="chips">
-      <a class='chip chip-nav' href='/daily/20260127'>← 前日</a>
-      <a class='chip chip-nav' href='/daily/20260129'>翌日 →</a>
-      <a class='chip' href='/daily/20260207'><small>02/07</small></a>
-      <a class='chip' href='/daily/20260208'><small>02/08</small></a>
-      <a class='chip' href='/daily/20260209'><small>02/09</small></a>
-      <a class='chip' href='/daily/20260210'><small>02/10</small></a>
-      <a class='chip' href='/daily/20260211'><small>02/11</small></a>
-      <a class='chip' href='/daily/20260212'><small>02/12</small></a>
-      <a class='chip' href='/daily/20260213'><small>02/13</small></a>
-      <a class='chip is-active' href='/daily/20260128' aria-current='page' style='border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10)'><small>01/28</small></a>
-      <a class='chip' href='/daily/'><small>LIST</small>一覧</a>
-      <a class='chip' href='/daily/latest'><small>NEW</small>最新</a>
+      <a class='chip chip-nav' href='/en/daily/20260127'>← Previous day</a>
+      <a class='chip chip-nav' href='/en/daily/20260129'>翌日 →</a>
+      <a class='chip' href='/en/daily/20260207'><small>02/07</small></a>
+      <a class='chip' href='/en/daily/20260208'><small>02/08</small></a>
+      <a class='chip' href='/en/daily/20260209'><small>02/09</small></a>
+      <a class='chip' href='/en/daily/20260210'><small>02/10</small></a>
+      <a class='chip' href='/en/daily/20260211'><small>02/11</small></a>
+      <a class='chip' href='/en/daily/20260212'><small>02/12</small></a>
+      <a class='chip' href='/en/daily/20260213'><small>02/13</small></a>
+      <a class='chip is-active' href='/en/daily/20260128' aria-current='page' style='border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10)'><small>01/28</small></a>
+      <a class='chip' href='/en/daily/'><small>LIST</small>List</a>
+      <a class='chip' href='/en/daily/latest'><small>NEW</small>Latest</a>
     </div>
 
     <!-- Main -->
-<section class='coin-hubs' aria-label='Related coins'><div class='coin-hubs-h'>関連銘柄</div><div class='coin-hubs-links'><a class='chip chip-coin' href='/coins/hyperliquid/'>HYPE</a><span class='chip chip-coin is-missing' title='Coins page not available'>PIPPIN</span><span class='chip chip-coin is-missing' title='Coins page not available'>ASTER</span></div></section>
+<section class='coin-hubs' aria-label='Related coins'><div class='coin-hubs-h'>Related coins</div><div class='coin-hubs-links'><a class='chip chip-coin' href='/coins/hyperliquid/'>HYPE</a><span class='chip chip-coin is-missing' title='Coins page not available'>PIPPIN</span><span class='chip chip-coin is-missing' title='Coins page not available'>ASTER</span></div></section>
     <div class="grid">
       <section class="card" aria-label="AI Judge">
         <div class="badge">AI JUDGE</div>
@@ -839,7 +839,7 @@
     <!-- CoinRader Score -->
     <section class='card score-card' aria-label='CoinRader Score' style='margin-top:14px'><div class='badge'>COINRADER SCORE</div><div class='score-gauge'><div class='score-num' style='color:#ef4444'>27</div><div class='score-label'>弱気寄り</div><div class='score-bar'><div class='score-fill' style='width:27.4%;background:#ef4444'></div></div></div><div class='score-conf'>Confidence: Mid</div><div class='score-drivers'><div class='score-drivers-h'>主要ドライバー</div><ul><li>BTC RSI(14) 16 ↓</li><li>Fear &amp; Greed Index 29 ↓</li><li>BTC 24h変動 -0.7% →</li></ul></div><details class='score-detail'><summary data-i18n data-ja='算出根拠を表示' data-en='Show calculation'>算出根拠を表示</summary><div class='score-comps'><div class='score-comp'><span class='comp-name'>Fear &amp; Greed Index</span><span class='comp-raw'>29</span><span class='comp-weight'>×35%</span></div><div class='score-comp'><span class='comp-name'>BTC RSI(14)</span><span class='comp-raw'>16</span><span class='comp-weight'>×30%</span></div><div class='score-comp'><span class='comp-name'>BTC 24h変動</span><span class='comp-raw'>-0.7%</span><span class='comp-weight'>×15%</span></div></div><div class='score-method' data-i18n data-ja='CoinRader Score = 各指標の正規化値(0-100) × 重みの加重平均。数値が高いほど強気シグナル。' data-en='CoinRader Score = weighted average of normalized indicators (0-100). Higher = more bullish.'>CoinRader Score = 各指標の正規化値(0-100) × 重みの加重平均。数値が高いほど強気シグナル。</div></details></section>
 
-    <section class='card similar-days' style='margin-top:12px' aria-label='Similar Days'><h2>過去の類似日 TOP5</h2><p class='similar-note'>FGI / RSI / Trend の近さで過去日を表示しています（投資助言ではありません）。</p><ul class='similar-list'><li class='similar-item'><a href='/daily/20260129'>2026-01-29</a><span class='similar-meta'>AI WAIT / 類似度 96.6</span></li><li class='similar-item'><a href='/daily/20260131'>2026-01-31</a><span class='similar-meta'>AI WAIT / 類似度 91.7</span></li><li class='similar-item'><a href='/daily/20260130'>2026-01-30</a><span class='similar-meta'>AI WAIT / 類似度 88</span></li><li class='similar-item'><a href='/daily/20260201'>2026-02-01</a><span class='similar-meta'>AI WAIT / 類似度 86.1</span></li><li class='similar-item'><a href='/daily/20260211'>2026-02-11</a><span class='similar-meta'>AI WAIT / 類似度 79.7</span></li></ul></section>
+    <section class='card similar-days' style='margin-top:12px' aria-label='Similar Days'><h2>Top 5 similar past days</h2><p class='similar-note'>Past days are ranked by similarity of FGI / RSI / Trend (not investment advice).</p><ul class='similar-list'><li class='similar-item'><a href='/en/daily/20260129'>2026-01-29</a><span class='similar-meta'>AI WAIT / Similarity 96.6</span></li><li class='similar-item'><a href='/en/daily/20260131'>2026-01-31</a><span class='similar-meta'>AI WAIT / Similarity 91.7</span></li><li class='similar-item'><a href='/en/daily/20260130'>2026-01-30</a><span class='similar-meta'>AI WAIT / Similarity 88</span></li><li class='similar-item'><a href='/en/daily/20260201'>2026-02-01</a><span class='similar-meta'>AI WAIT / Similarity 86.1</span></li><li class='similar-item'><a href='/en/daily/20260211'>2026-02-11</a><span class='similar-meta'>AI WAIT / Similarity 79.7</span></li></ul></section>
 
     <!-- Dynamic FAQ (data-driven) -->
     <section class='card faq' style='margin-top:12px' aria-label='FAQ'><h2 data-i18n data-ja='FAQ' data-en='FAQ'>FAQ</h2><details><summary>今日はなぜこのような状況のですか？</summary><div class='a'>Fear &amp; Greed Index が 29 と弱気寄りのセンチメントです、BTC RSI が 16 と売られ過ぎ水準。ただし、これは現時点のデータ分析であり、今後の値動きを保証するものではありません。</div></details><details><summary>What would signal a bullish reversal?</summary><div class='a'>現在 FGI が 29 と低水準ですが、45以上に回復し、RSI が 55 を上回ると強気転換の兆候と見なせます。ただし BTC 出来高の増加も併せて確認することが重要です。</div></details><details><summary>What should I watch in a bearish phase?</summary><div class='a'>FGI 25以下への悪化、RSI 30割れ、MA距離の -8%超え拡大が弱気加速のシグナルです。特に出来高の急増を伴う場合は警戒が必要です。</div></details><details><summary>Is this AI judgment investment advice?</summary><div class='a'>No. CoinRader is an informational dashboard based on public market data. Make trading decisions at your own discretion.</div></details></section>
@@ -889,8 +889,8 @@
 
       <div class="seo-links">
         <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
-        <a class="btn" href="/en/daily/" data-i18n data-ja="過去AIレポート一覧" data-en="Daily list">過去AIレポート一覧</a>
-        <a class="btn" href="/en/daily/latest" data-i18n data-ja="最新レポート" data-en="Latest report">最新レポート</a>
+        <a class="btn" href="/en/daily/" data-i18n data-ja="過去AIレポートList" data-en="Daily list">過去AIレポートList</a>
+        <a class="btn" href="/en/daily/latest" data-i18n data-ja="Latestレポート" data-en="Latest report">Latestレポート</a>
         <a class="btn" href="/en/daily/tags/bull">BULL</a>
         <a class="btn" href="/en/daily/tags/bear">BEAR</a>
         <a class="btn" href="/en/daily/tags/wait">WAIT</a>
