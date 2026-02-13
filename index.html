@@ -10013,7 +10013,15 @@
       if (COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = COINGECKO_API_KEY;
       const baseOpts = { ...options, headers };
       const proxyUrl = (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u);
+      const shouldProxyFirst = /api\.binance\.com/i.test(url);
 
+      if (shouldProxyFirst) {
+        try {
+          return await fetch(proxyUrl(url), baseOpts);
+        } catch (e) {
+          throw e;
+        }
+      }
       try {
         return await fetch(url, baseOpts);
       } catch (e) {
