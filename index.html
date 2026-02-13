@@ -49,12 +49,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
       rel="stylesheet" />
   </noscript>
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-TDEBXC7DH6');
+    function loadAnalytics() {
+      if (window.__gaLoaded) return;
+      window.__gaLoaded = true;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-TDEBXC7DH6');
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadAnalytics, { timeout: 3000 });
+    } else {
+      window.addEventListener('load', function () {
+        setTimeout(loadAnalytics, 1500);
+      }, { once: true });
+    }
   </script>
   <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebSite", "name": "CoinRader", "url": "https://coinrader.net/", "inLanguage": "ja", "description": "暗号資産市場の主要指標をまとめ、AIで相場状況の示唆を提供するダッシュボード。"}
@@ -201,7 +215,10 @@
     color: rgba(229, 231, 235, .55);
     font-size: 12px
   }
-
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 900px;
+  }
   /* PC/スマホの改行制御 */
   .br-sp {
     display: none
@@ -9164,7 +9181,7 @@
 
   </section>
 
-  <section id="sec-trend">
+  <section id="sec-trend" class="cv-auto">
     <div class="section-header">
       <div>
         <div class="section-title">トレンド TOP5</div>
@@ -9247,7 +9264,7 @@
     </div>
   </section>
 
-  <section id="sec-gainers">
+  <section id="sec-gainers" class="cv-auto">
     <div class="section-header">
       <div>
         <div class="section-title">上昇率 TOP5</div>
@@ -9330,7 +9347,7 @@
       </div>
     </div>
   </section>
-  <section id="sec-volume">
+  <section id="sec-volume" class="cv-auto">
     <div class="section-header">
       <div>
         <div class="section-title">出来高 TOP5</div>
@@ -9413,7 +9430,7 @@
       </div>
     </div>
   </section>
-  <section id="sec-alt-volume">
+  <section id="sec-alt-volume" class="cv-auto">
     <div class="section-header">
       <div>
         <div class="section-title">出来高（アルト）TOP5</div>
@@ -9464,7 +9481,7 @@
       </div>
     </div>
   </section>
-  <section id="sec-mcap" class="mcap-collapsed">
+  <section id="sec-mcap" class="mcap-collapsed cv-auto">
     <div class="section-header">
       <div>
         <div class="section-title">時価総額 TOP20</div>
@@ -9535,7 +9552,7 @@
       </table>
     </div>
   </section>
-  <section id="sec-overview">
+  <section id="sec-overview" class="cv-auto">
     <div class="section-header">
       <div>
         <div class="section-title">市場概況</div>
