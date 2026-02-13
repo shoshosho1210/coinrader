@@ -68,4 +68,4 @@
 /daily/tags/:tag.html           /daily/tags/:tag        301
 
 # daily "latest" should be redirect-only (avoid duplicate HTML)
-/daily/latest                   /daily/20260213         302
+/daily/latest                   /daily/20260214         302
