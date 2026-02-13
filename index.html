@@ -9691,9 +9691,32 @@
 
     <div class="msg" id="overviewMsg" style="display:none"></div>
   </section>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
-    if (typeof Chart !== "undefined" && Chart.registerables) { Chart.register.apply(null, Chart.registerables); }
+    let __chartJsLoader = null;
+    function loadChartJs() {
+      if (__chartJsLoader) return __chartJsLoader;
+      __chartJsLoader = new Promise((resolve) => {
+        if (typeof Chart !== "undefined") {
+          try { if (Chart.registerables) Chart.register.apply(null, Chart.registerables); } catch (_e) { }
+          resolve(true);
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        s.async = true;
+        s.onload = () => {
+          try { if (typeof Chart !== "undefined" && Chart.registerables) Chart.register.apply(null, Chart.registerables); } catch (_e) { }
+          resolve(true);
+        };
+        s.onerror = () => {
+          console.warn('[charts] chart.js load failed');
+          resolve(false);
+        };
+        document.head.appendChild(s);
+      });
+      return __chartJsLoader;
+    }
 
     // ============ CoinGecko API Key（運営者用）===========
     // 公開サイトでは入力欄を出さない方がUXが良いため、キーはここに固定してください。
@@ -11649,7 +11672,13 @@
     }
 
 
-    function ensureChartjs() { return (typeof Chart !== 'undefined'); }
+    function ensureChartjs() {
+      if (typeof Chart === 'undefined') {
+        void loadChartJs();
+        return false;
+      }
+      return true;
+    }
 
     function computeRSISeries(prices, period = 14) {
       // Wilder's RSI. Returns an array same length as prices (first values are null).
@@ -13769,7 +13798,13 @@
       try { syncHeaderHeight(); setupOverviewToggle(); setupMcapToggle(); setupSideMenu(); } catch (_e) { }
 
       tickRefreshButton();
-
+      
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => { void loadChartJs(); }, { timeout: 1500 });
+      } else {
+        setTimeout(() => { void loadChartJs(); }, 300);
+      }
+      
       const runBootSync = async () => {
         // 1. まずメインデータを取得
         await init(false);
@@ -13787,6 +13822,7 @@
         await sleep(2000);
         updateAiInsight().catch(e => console.warn("AI insight failed", e));
       };
+
       if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
           runBootSync().catch(e => console.warn('boot failed', e));
