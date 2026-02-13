@@ -10193,7 +10193,6 @@
     }
 
     function fireCtaClick({ cta_id, placement, partner, pr, link_url }) {
-      console.log('fireCtaClick called', { cta_id, placement, partner, pr, link_url, gtag: typeof gtag });
       if (typeof gtag !== 'function') return;
       gtag('event', 'cta_click', {
         cta_id: cta_id || '',
@@ -10201,8 +10200,7 @@
         partner: partner || '',
         pr: Number(pr) || 0,
         link_url: link_url || '',
-        transport_type: 'beacon',
-        debug_mode: true
+        transport_type: 'beacon'
       });
     }
 
@@ -14029,7 +14027,6 @@
     // (X share removed)
 
     function renderAiHud(data) {
-      console.log("Updating AI HUD with:", data);
 
       // 1. DOM要素の取得
       const ui = {
