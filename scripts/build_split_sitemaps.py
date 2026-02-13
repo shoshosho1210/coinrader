@@ -90,8 +90,11 @@ def build() -> tuple[int, int, int, str | None]:
         lm_latest = ymd2iso(latest)
         for u in ("/daily/", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait"):
             daily_entries.append((f"{ORIGIN}{u}", lm_latest))
+        for u in ("/en/daily/", "/en/daily/tags/bear", "/en/daily/tags/bull", "/en/daily/tags/wait"):
+            daily_entries.append((f"{ORIGIN}{u}", lm_latest))
     for ymd in daily_ids:
         daily_entries.append((f"{ORIGIN}/daily/{ymd}", ymd2iso(ymd)))
+        daily_entries.append((f"{ORIGIN}/en/daily/{ymd}", ymd2iso(ymd)))
 
     (ROOT / "sitemap-static.xml").write_text(make_urlset(static_entries), encoding="utf-8")
     (ROOT / "sitemap-dictionary.xml").write_text(make_urlset(dictionary_entries), encoding="utf-8")
