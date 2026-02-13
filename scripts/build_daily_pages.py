@@ -196,6 +196,19 @@ def localize_daily_html_en(
 
     html = html.replace("const saved = localStorage.getItem(KEY) || 'ja';", "const saved = localStorage.getItem(KEY) || 'en';")
 
+    # On /en route, make the language switch explicit via URL (to JA daily page)
+    # so we don't depend on in-page JA fallback attributes.
+    ja_path = ja_url.replace(SITE_ORIGIN, "")
+    html = re.sub(
+        r'<button class="btn" type="button" id="langToggle" aria-label="Switch language"\s*aria-pressed="false">EN</button>',
+        f'<a class="btn" href="{escape_html(ja_path)}" aria-label="Switch to Japanese page">JP</a>',
+        html,
+        count=1,
+    )
+
+    script_pat_toggle = re.compile(r'<script>\s*\(function \(\) \{.*?apply\(saved\);\s*\}\)\(\);\s*</script>', re.DOTALL)
+    html = script_pat_toggle.sub('', html, count=1)
+  
     # Prefer English static copy on /en pages (SEO / no-JS friendly)
     en_replacements = {
         "AI判定": "AI judgment",
