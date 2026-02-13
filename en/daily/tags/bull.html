@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI BULL Days（強気局面） | CoinRader</title>
+  <meta name="description" content="AI判定がBULLの日を一覧化。強気局面の推移を日次で確認できます。" />
+  <link rel="canonical" href="https://coinrader.net/en/daily/tags/bull" />
+
+  <style>
+    :root{--bg:#0f172a;--fg:#e5e7eb;--muted:#94a3b8;--line:#1f2937;--accent:#38bdf8;}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans JP",sans-serif;
+      background:var(--bg);color:var(--fg);
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 48px;}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ---------- Header (sticky) ---------- */
+    .appHeader{position:sticky;top:12px;z-index:1000;margin:0 0 14px}
+    .appHeader-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:rgba(15,23,42,.92);backdrop-filter:blur(10px)
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brandLogo{height:24px;width:auto;display:block}
+    .crumb{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 12px;font-size:12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+      color:var(--fg);text-decoration:none
+    }
+    .btn:hover{border-color:rgba(56,189,248,.35);text-decoration:none;filter:brightness(1.08)}
+    .btn-primary{border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.10)}
+
+    h1{font-size:22px;margin:12px 0 6px}
+    .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+
+    /* ---------- Tabs (judge) ---------- */
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 12px}
+    .tab{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+      font-size:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+      color:var(--fg);text-decoration:none
+    }
+    .tab:hover{background:rgba(255,255,255,.06);text-decoration:none}
+    .tab small{opacity:.75;font-size:11px}
+    .tab.current{border-color:rgba(56,189,248,.6);background:rgba(56,189,248,.10);font-weight:700}
+    .tab-bear{border-color:rgba(239,68,68,.35)}
+    .tab-bull{border-color:rgba(34,197,94,.35)}
+    .tab-wait{border-color:rgba(234,179,8,.35)}
+
+    /* ---------- Controls (search + count) ---------- */
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+    .search{flex:1;min-width:240px}
+    .search input{
+      width:100%;padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);
+      color:var(--fg);outline:none
+    }
+    .search input::placeholder{color:rgba(148,163,184,.8)}
+    .count{color:var(--muted);font-size:12.5px;white-space:nowrap}
+
+    /* ---------- List / Rows ---------- */
+    .list{border-top:1px solid rgba(255,255,255,.06)}
+    .row{padding:0;border-bottom:0;margin:10px 0}
+    .date{font-weight:800}
+    .meta{color:var(--muted);font-size:12px}
+
+    .rowlink{
+      display:block;
+      position:relative;
+      padding:14px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.03);
+      text-decoration:none;
+      color:inherit;
+    }
+    .rowlink:hover{border-color: rgba(255,255,255,.14);text-decoration:none;filter:brightness(1.04)}
+
+    .rowlink::after{
+      content:"›";
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      opacity:.55;
+      font-size:22px;
+      line-height:1;
+      pointer-events:none;
+    }
+
+    .rowlink .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      line-height:1.2;
+      padding-right:34px;
+    }
+
+    .rowlink .date{ font-weight:800; margin-bottom:8px; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+
+    .pill-ai{ font-weight:800; letter-spacing:.2px }
+    .pill-ai.bull{ border-color:rgba(34,197,94,.35); }
+    .pill-ai.bear{ border-color:rgba(239,68,68,.35); }
+    .pill-ai.wait{ border-color:rgba(234,179,8,.35); }
+    .pill-hot{ border-color:rgba(56,189,248,.35); }
+    .pill-up{ border-color:rgba(167,139,250,.35); }
+    .pill-kpi{ opacity:.72; }
+
+    .pill-reason{
+      max-width:520px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    @media (max-width: 900px){ .pill-reason{ max-width: 320px; } }
+    @media (max-width: 520px){ .pill-reason{ max-width: 220px; } }
+
+    @media (max-width: 520px){
+      .pill{ font-size:11px; padding:6px 8px; }
+      .rowlink .meta{ gap:6px; }
+      .pill{ padding:5px 7px; }
+      .appHeader-inner{align-items:flex-start}
+      .nav{justify-content:flex-start}
+      .search{min-width:100%}
+    }
+
+    /* ---------- Empty state ---------- */
+    .empty{
+      display:none;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      padding:14px;
+      border:1px dashed rgba(255,255,255,.12);
+      border-radius:14px;
+    }
+
+    /* ---------- Footer (match daily/latest) ---------- */
+    .site-footer{
+      margin-top:24px;
+      border-top:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+    }
+    .site-footer .footer-inner{
+      max-width:980px;
+      margin:0 auto;
+      padding:18px 16px;
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .site-footer .footer-brand{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-width:220px;
+    }
+    .site-footer .footer-logo{
+      height:28px;
+      width:auto;
+      max-width:180px;
+      display:block;
+      opacity:.95;
+      object-fit:contain;
+      flex:0 0 auto;
+    }
+    .site-footer .footer-tagline{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .site-footer .footer-nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .site-footer .footer-nav a{
+      color:var(--muted);
+      font-size:12px;
+      text-decoration:none;
+      border:1px solid rgba(148,163,184,.16);
+      background:rgba(255,255,255,.02);
+      padding:6px 10px;
+      border-radius:999px;
+    }
+    .site-footer .footer-nav a:hover{
+      color:var(--fg);
+      border-color:rgba(56,189,248,.35);
+      text-decoration:none;
+    }
+    .site-footer .footer-copyright{
+      max-width:980px;
+      margin:0 auto;
+      padding:0 16px 16px;
+      color:var(--muted);
+      font-size:12px;
+      opacity:.9;
+    }
+  .rowreason{margin-top:6px;font-size:13px;line-height:1.55;color:rgba(229,231,235,.88)}
+  .rowlink{display:block}
+  </style>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "AI BULL Days（CoinRader）", "description": "CoinRaderのAI判定がBULLの日をまとめた一覧ページ。", "url": "https://coinrader.net/daily/tags/bull", "mainEntity": {"@type": "ItemList", "itemListOrder": "https://schema.org/ItemListOrderDescending", "numberOfItems": 0, "itemListElement": []}, "publisher": {"@type": "Organization", "name": "CoinRader"}}</script>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header class="appHeader" role="banner">
+      <div class="appHeader-inner">
+        <div class="brand">
+          <a href="/" aria-label="CoinRader ホーム">
+            <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
+          </a>
+          <div class="crumb"><a href="/en/">CoinRader</a> / Daily</div>
+        </div>
+
+        <nav class="nav" aria-label="主要リンク">
+          <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
+          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-ja="最新" data-en="Latest">最新</a>
+          <a class="btn" href="/en/daily/" data-i18n data-ja="一覧" data-en="All">一覧</a>
+          <a class="btn" href="/guide" data-i18n data-ja="ガイド" data-en="Guide">ガイド</a>
+
+          <!-- ★追加：言語切替ボタン -->
+          <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">
+            EN
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ★ここも data-i18n を付けるなら付けてOK（あなたがA/B/C済ならそのままでもOK） -->
+    <h1>AI BULL Days</h1>
+    <div class="sub" data-i18n
+      data-ja="最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。"
+      data-en="Browse daily AI reports with key metrics (FGI / RSI / Trend).">
+      最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。
+    </div>
+
+    <div class="tabs">
+      <a class="tab" href="/en/daily/"><small>ALL</small>一覧</a>
+      <a class="tab tab-bear" href="/en/daily/tags/bear"><small>AI</small>BEAR</a>
+      <a class="tab tab-bull current" href="/en/daily/tags/bull"><small>AI</small>BULL</a>
+      <a class="tab tab-wait" href="/en/daily/tags/wait"><small>AI</small>WAIT</a>
+    </div>
+
+    <div class="controls">
+      <div class="search">
+        <!-- ★placeholder を切替対応 -->
+        <input id="q" type="search"
+          placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
+          data-ph-ja="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
+          data-ph-en="Search: date / hot coins / top gainers / summary ..." />
+      </div>
+      <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
+    </div>
+    <p style="margin:10px 0 14px;color:rgba(229,231,235,.85);line-height:1.6">
+      毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。
+    </p>
+    <div class="list" id="list">
+      
+    </div>
+
+    <!-- ★empty も切替対応 -->
+    <div class="empty" id="empty" data-i18n data-ja="該当するレポートがありません。" data-en="No matching reports found.">
+      該当するレポートがありません。
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img alt="CoinRader" class="footer-logo" src="/assets/icons/logo_horizontal_v4.png"/>
+        <span class="footer-tagline">客観的な暗号資産分析ダッシュボード</span>
+      </div>
+      <nav class="footer-nav">
+        <a href="/guide">活用ガイド</a>
+        <a href="/start">始め方</a>
+        <a href="/coins/">Coins</a>
+        <a href="/data-sources">データ</a>
+        <a href="/about">運営</a>
+        <a href="/contact">連絡</a>
+        <a href="/disclaimer">免責</a>
+        <a href="/privacy">法務</a>
+      </nav>
+    </div>
+    <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // --- page filter (client-side) ---
+    const q = document.getElementById('q');
+    const list = document.getElementById('list');
+    const empty = document.getElementById('empty');
+    const shownEl = document.getElementById('shown');
+    const totalEl = document.getElementById('total');
+
+    function normalize(s){
+      return (s || '').toLowerCase().replace(/\s+/g,' ').trim();
+    }
+
+    function apply(){
+      const term = normalize(q.value);
+      const rows = [...list.querySelectorAll('.row')];
+      totalEl.textContent = String(rows.length);
+
+      let shown = 0;
+      rows.forEach(row=>{
+        const text = normalize(row.innerText);
+        const ok = !term || text.includes(term);
+        row.style.display = ok ? '' : 'none';
+        if(ok) shown++;
+      });
+
+      shownEl.textContent = String(shown);
+      empty.style.display = shown ? 'none' : 'block';
+    }
+
+    q.addEventListener('input', apply);
+    window.addEventListener('DOMContentLoaded', apply);
+  </script>
+
+  <!-- ★追加：言語切替（data-i18n + placeholder 対応） -->
+  <script>
+  (function(){
+    const btn = document.getElementById('langToggle');
+    if(!btn) return;
+
+    const KEY = 'cr_lang';
+    const saved = localStorage.getItem(KEY) || document.documentElement.lang || 'ja';
+
+    function applyLang(lang){
+      document.documentElement.lang = lang;
+      btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+      btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+
+      // text nodes
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const ja = el.getAttribute('data-ja');
+        const en = el.getAttribute('data-en');
+        if(!ja || !en) return;
+        el.textContent = (lang === 'en') ? en : ja;
+      });
+
+      // placeholders (minimum)
+      const q = document.getElementById('q');
+      if(q){
+        const phJa = q.getAttribute('data-ph-ja');
+        const phEn = q.getAttribute('data-ph-en');
+        if(phJa && phEn){
+          q.setAttribute('placeholder', (lang === 'en') ? phEn : phJa);
+        }
+      }
+    }
+
+    btn.addEventListener('click', ()=>{
+      const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+      localStorage.setItem(KEY, next);
+      applyLang(next);
+    });
+
+    applyLang(saved);
+  })();
+  </script>
+
+<!-- build:20260213 -->
+</body>
+</html>
