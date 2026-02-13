@@ -2142,7 +2142,7 @@ def main() -> None:
             "ymd": ymd,
             "date_iso": date_iso,
             "title": title,
-            "href": f"{ymd}",
+            "href": f"/daily/{ymd}",
             "judge": str(judge),
             "fgi": sent,
             "btc_rsi": rsi,
@@ -2268,6 +2268,7 @@ def main() -> None:
     en_index_html = en_index_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます.気になる日の<strong>要約</strong>を見て、詳細ページへ.', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
     en_index_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み。', r'MA distance is \1, showing downside pressure.', en_index_html)
     en_index_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み\.', r'MA distance is \1, showing downside pressure.', en_index_html)
+    en_index_html = re.sub(r'(Trending: [^<]+)。', r'\1.', en_index_html)
     en_index_html = normalize_i18n_for_en_html(en_index_html)
     write_text(OUT_DIR_EN / "index.html", en_index_html)
 
@@ -2421,6 +2422,7 @@ def main() -> None:
         en_tag_html = en_tag_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます.気になる日の<strong>要約</strong>を見て、詳細ページへ.', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
         en_tag_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み。', r'MA distance is \1, showing downside pressure.', en_tag_html)
         en_tag_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み\.', r'MA distance is \1, showing downside pressure.', en_tag_html)
+        en_tag_html = re.sub(r'(Trending: [^<]+)。', r'\1.', en_tag_html)
         en_tag_html = normalize_i18n_for_en_html(en_tag_html)
       
         tag_jsonld_en = {
