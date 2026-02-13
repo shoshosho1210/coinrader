@@ -98,6 +98,7 @@ COIN_HUBS_CSS = """
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data" / "daily"
 OUT_DIR  = ROOT / "daily"
+OUT_DIR_EN = ROOT / "en" / "daily"
 TEMPL_DIR = ROOT / "templates"
 
 SITE_ORIGIN = os.environ.get("CR_SITE_ORIGIN", "https://coinrader.net").rstrip("/")
@@ -139,6 +140,40 @@ def read_text_optional_with_path(paths: List[Path]) -> tuple[Path, str]:
 def write_text(p: Path, s: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(s, encoding="utf-8")
+
+
+def to_en_daily_url(path: str) -> str:
+    """Map /daily/... URLs to /en/daily/... for EN build."""
+    return path.replace('/daily/', '/en/daily/').replace('/daily"', '/en/daily"')
+
+
+def localize_daily_html_en(html: str, canonical: str, ja_url: str) -> str:
+    """Post-process JA daily HTML into EN route variant (/en/daily/*)."""
+    en_canonical = canonical.replace(f"{SITE_ORIGIN}/daily/", f"{SITE_ORIGIN}/en/daily/")
+    en_url = en_canonical
+
+    html = re.sub(r'<html\s+lang="ja">', '<html lang="en">', html, count=1)
+    html = html.replace('CoinRader</a> / <a href="/daily/">Daily</a>', 'CoinRader</a> / <a href="/en/daily/">Daily</a>')
+    html = html.replace('href="/daily/', 'href="/en/daily/')
+
+    html = re.sub(
+        r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>',
+        f'<link rel="canonical" href="{escape_html(en_canonical)}" />',
+        html,
+        count=1,
+    )
+    html = re.sub(r'<meta\s+property="og:url"\s+content="[^"]*"\s*/?>', f'<meta property="og:url" content="{escape_html(en_url)}" />', html, count=1)
+
+    hreflang = (
+        f'<link rel="alternate" hreflang="ja" href="{escape_html(ja_url)}" />\n'
+        f'  <link rel="alternate" hreflang="en" href="{escape_html(en_url)}" />\n'
+        f'  <link rel="alternate" hreflang="x-default" href="{escape_html(ja_url)}" />'
+    )
+    if 'hreflang="ja"' not in html:
+        html = html.replace('</head>', f'  {hreflang}\n</head>', 1)
+
+    html = html.replace("const saved = localStorage.getItem(KEY) || 'ja';", "const saved = localStorage.getItem(KEY) || 'en';")
+    return html
 
 def escape_html(s: str) -> str:
     return (s.replace("&", "&amp;")
@@ -1797,7 +1832,8 @@ def main() -> None:
         raise SystemExit(f"No daily json files found in: {DATA_DIR}")
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-
+    OUT_DIR_EN.mkdir(parents=True, exist_ok=True)
+  
     latest_ymd = dated[-1]
 
     items: List[Dict[str, Any]] = []
@@ -2049,6 +2085,8 @@ def main() -> None:
 
         out_file = OUT_DIR / f"{ymd}.html"
         write_text(out_file, html)
+        en_html = localize_daily_html_en(html, canonical=canonical, ja_url=f"{SITE_ORIGIN}/daily/{ymd}")
+        write_text(OUT_DIR_EN / f"{ymd}.html", en_html)
 
         trend_top3 = "/".join(trending[:3]) if trending else ""
 
@@ -2153,6 +2191,17 @@ def main() -> None:
     index_html = inject_build_marker_once(index_html, latest_ymd)
     write_text(OUT_DIR / "index.html", index_html)
 
+    en_index_html = index_html
+    en_index_html = re.sub(r'<html\s+lang="ja">', '<html lang="en">', en_index_html, count=1)
+    en_index_html = en_index_html.replace('href="/daily/', 'href="/en/daily/')
+    en_index_html = en_index_html.replace('<a href="/">CoinRader</a> / Daily', '<a href="/en/">CoinRader</a> / Daily')
+    en_index_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>', f'<link rel="canonical" href="{SITE_ORIGIN}/en/daily/" />', en_index_html, count=1)
+    en_index_html = en_index_html.replace('CoinRaderの日次AIレポート一覧。最新日から過去へ遡って閲覧できます。', 'Browse CoinRader daily AI reports from the latest date backward.')
+    en_index_html = en_index_html.replace('<title>Daily AIレポート一覧 | CoinRader</title>', '<title>Daily AI Reports | CoinRader</title>')
+    en_index_html = en_index_html.replace('<h1>Daily AIレポート一覧</h1>', '<h1>Daily AI Reports</h1>')
+    en_index_html = en_index_html.replace('最新: <a href="/en/daily/latest">latest</a>', 'Latest: <a href="/en/daily/latest">latest</a>')
+    write_text(OUT_DIR_EN / "index.html", en_index_html)
+
     tags_dir = OUT_DIR / "tags"
     tags_dir.mkdir(parents=True, exist_ok=True)
 
@@ -2255,6 +2304,15 @@ def main() -> None:
 
         write_text(out_path_html, tag_html)
 
+        en_tag_html = tag_html
+        en_tag_html = re.sub(r'<html\s+lang="ja">', '<html lang="en">', en_tag_html, count=1)
+        en_tag_html = en_tag_html.replace('href="/daily/', 'href="/en/daily/')
+        en_tag_html = en_tag_html.replace('<a href="/">CoinRader</a> / Daily', '<a href="/en/">CoinRader</a> / Daily')
+        en_tag_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>', f'<link rel="canonical" href="{SITE_ORIGIN}/en/daily/tags/{tag_lower}" />', en_tag_html, count=1)
+        en_tag_html = en_tag_html.replace(f'AI {judge_key} の日一覧', f'AI {judge_key} Days')
+        en_tag_html = en_tag_html.replace('最新: <a href="/en/daily/latest">latest</a>', 'Latest: <a href="/en/daily/latest">latest</a>')
+        write_text(OUT_DIR_EN / "tags" / f"{tag_lower}.html", en_tag_html)
+
     update_daily_latest_redirect(latest_ymd)
     latest_target = f"{latest_ymd}.html"
     latest_page_path = OUT_DIR / latest_target
@@ -2263,6 +2321,14 @@ def main() -> None:
 
     # Also generate extensionless latest page for canonical (/daily/latest)
     write_text(OUT_DIR / "latest", latest_page_html)
+
+    latest_page_html_en = localize_daily_html_en(
+        latest_page_html,
+        canonical=f"{SITE_ORIGIN}/daily/{latest_ymd}",
+        ja_url=f"{SITE_ORIGIN}/daily/{latest_ymd}",
+    )
+    write_text(OUT_DIR_EN / "latest.html", latest_page_html_en)
+    write_text(OUT_DIR_EN / "latest", latest_page_html_en)
 
     rebuild_sitemap_with_daily(
         ROOT / "sitemap.xml",
