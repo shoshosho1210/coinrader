@@ -222,6 +222,17 @@ def localize_daily_html_en(
     for ja, en in en_replacements.items():
         html = html.replace(ja, en)
 
+    # Make /en pages no-JS friendly by rendering data-en text as initial innerHTML
+    i18n_block_pat = re.compile(
+        r'(<(?P<tag>[a-zA-Z0-9]+)\b[^>]*\bdata-i18n\b[^>]*\bdata-en="(?P<en>[^"]*)"[^>]*>)(?P<body>.*?)(</(?P=tag)>)',
+        re.DOTALL,
+    )
+
+    def _i18n_to_en(m: re.Match) -> str:
+        return f"{m.group(1)}{m.group('en')}{m.group(5)}"
+
+    html = i18n_block_pat.sub(_i18n_to_en, html)
+
     return html
 
 
@@ -280,7 +291,6 @@ def build_jsonld_en(canonical: str, title: str, description: str, date_iso: str,
         ],
     }
     return json.dumps(data, ensure_ascii=False)
-
 
 def escape_html(s: str) -> str:
     return (s.replace("&", "&amp;")
@@ -2486,7 +2496,7 @@ def main() -> None:
     latest_page_html_en = read_text(OUT_DIR_EN / latest_target)
     write_text(OUT_DIR_EN / "latest.html", latest_page_html_en)
     write_text(OUT_DIR_EN / "latest", latest_page_html_en)
-
+  
     rebuild_sitemap_with_daily(
         ROOT / "sitemap.xml",
         site_origin=SITE_ORIGIN,
