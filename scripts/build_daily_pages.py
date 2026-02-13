@@ -577,6 +577,57 @@ def build_same_judge_days_html(judge: str, judge_days_all: List[str], current_ym
 def escape_xml(s: str) -> str:
     return (s or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&apos;")
 
+def _rss_pubdate_from_ymd(ymd: str) -> str:
+    dt = datetime.datetime.strptime(ymd, "%Y%m%d")
+    return dt.strftime("%a, %d %b %Y 09:00:00 +0900")
+
+
+def build_daily_rss_feed(pages_desc: list[dict[str, Any]], *, lang: str = "ja") -> str:
+    site_origin = SITE_ORIGIN.rstrip("/")
+    is_en = (lang == "en")
+    base = f"{site_origin}/en/daily" if is_en else f"{site_origin}/daily"
+    title = "CoinRader Daily AI Reports" if is_en else "CoinRader Daily AIレポート"
+    desc = (
+        "Daily BTC AI analysis updates with FGI / RSI / Trend."
+        if is_en else
+        "BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。"
+    )
+    lang_code = "en-US" if is_en else "ja-JP"
+    last_build = _rss_pubdate_from_ymd(pages_desc[0]["ymd"]) if pages_desc else datetime.datetime.now().strftime("%a, %d %b %Y %H:%M:%S +0900")
+
+    items: list[str] = []
+    for p in pages_desc[:30]:
+        item_title = p.get("title") or f"Daily Report {p.get('date_iso', '')}"
+        rel = f"/en/daily/{p['ymd']}" if is_en else f"/daily/{p['ymd']}"
+        link = f"{site_origin}{rel}"
+        item_desc = p.get("reason_1line") or ""
+        items.append(
+            "\n".join([
+                "    <item>",
+                f"      <title>{escape_xml(str(item_title))}</title>",
+                f"      <link>{escape_xml(link)}</link>",
+                f"      <guid>{escape_xml(link)}</guid>",
+                f"      <pubDate>{_rss_pubdate_from_ymd(p['ymd'])}</pubDate>",
+                f"      <description>{escape_xml(str(item_desc))}</description>",
+                "    </item>",
+            ])
+        )
+
+    return "\n".join([
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<rss version="2.0">',
+        "  <channel>",
+        f"    <title>{escape_xml(title)}</title>",
+        f"    <link>{escape_xml(base + '/')}</link>",
+        f"    <description>{escape_xml(desc)}</description>",
+        f"    <language>{lang_code}</language>",
+        f"    <lastBuildDate>{last_build}</lastBuildDate>",
+        *items,
+        "  </channel>",
+        "</rss>",
+        "",
+    ])
+
 
 def rebuild_sitemap_with_daily(
     sitemap_path: Path,
@@ -2154,6 +2205,9 @@ def main() -> None:
 
     pages_desc = sorted(pages, key=lambda p: p.get("ymd",""), reverse=True)
 
+    write_text(OUT_DIR / "feed.xml", build_daily_rss_feed(pages_desc, lang="ja"))
+    write_text(OUT_DIR_EN / "feed.xml", build_daily_rss_feed(pages_desc, lang="en"))
+  
     def _pill(text: str, cls: str = "") -> str:
         if not text:
             return ""
