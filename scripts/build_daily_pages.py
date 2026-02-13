@@ -597,10 +597,13 @@ def build_daily_rss_feed(pages_desc: list[dict[str, Any]], *, lang: str = "ja") 
 
     items: list[str] = []
     for p in pages_desc[:30]:
-        item_title = p.get("title") or f"Daily Report {p.get('date_iso', '')}"
+        item_title = (
+            (p.get("title_en") if is_en else p.get("title"))
+            or f"Daily Report {p.get('date_iso', '')}"
+        )
         rel = f"/en/daily/{p['ymd']}" if is_en else f"/daily/{p['ymd']}"
         link = f"{site_origin}{rel}"
-        item_desc = p.get("reason_1line") or ""
+        item_desc = (p.get("description_en") if is_en else p.get("reason_1line")) or ""
         items.append(
             "\n".join([
                 "    <item>",
@@ -627,8 +630,7 @@ def build_daily_rss_feed(pages_desc: list[dict[str, Any]], *, lang: str = "ja") 
         "</rss>",
         "",
     ])
-
-
+  
 def rebuild_sitemap_with_daily(
     sitemap_path: Path,
     *,
@@ -2193,6 +2195,8 @@ def main() -> None:
             "ymd": ymd,
             "date_iso": date_iso,
             "title": title,
+            "title_en": en_title,
+            "description_en": en_desc,
             "href": f"/daily/{ymd}",
             "judge": str(judge),
             "fgi": sent,
