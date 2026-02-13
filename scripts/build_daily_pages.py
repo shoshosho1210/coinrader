@@ -2255,6 +2255,12 @@ def main() -> None:
     en_index_html = en_index_html.replace('連絡', 'Contact')
     en_index_html = en_index_html.replace('免責', 'Disclaimer')
     en_index_html = en_index_html.replace('法務', 'Legal')
+    en_index_html = re.sub(
+        r'<button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">\s*EN\s*</button>',
+        '<a class="btn" href="/daily/" aria-label="Switch to Japanese page">JP</a>',
+        en_index_html,
+        count=1,
+    )
     en_index_html = en_index_html.replace(' 件', ' results')
     en_index_html = en_index_html.replace('一覧', 'All')
     en_index_html = en_index_html.replace('検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など', 'Search: date / hot coins / top gainers / summary ...')
@@ -2402,6 +2408,12 @@ def main() -> None:
         en_tag_html = en_tag_html.replace('連絡', 'Contact')
         en_tag_html = en_tag_html.replace('免責', 'Disclaimer')
         en_tag_html = en_tag_html.replace('法務', 'Legal')
+        en_tag_html = re.sub(
+            r'<button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">\s*EN\s*</button>',
+            f'<a class="btn" href="/daily/tags/{tag_lower}" aria-label="Switch to Japanese page">JP</a>',
+            en_tag_html,
+            count=1,
+        )
         en_tag_html = en_tag_html.replace(' 件', ' results')
         en_tag_html = en_tag_html.replace('一覧', 'All')
         en_tag_html = en_tag_html.replace('検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など', 'Search: date / hot coins / top gainers / summary ...')
