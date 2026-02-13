@@ -224,23 +224,23 @@
 
 <body>
   <div class="wrap">
-    <!-- Header -->
+    
     <header class="appHeader" role="banner">
       <div class="appHeader-inner">
         <div class="brand">
-          <a href="/" aria-label="CoinRader ホーム">
+          <a href="/" aria-label="CoinRader Home">
             <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
           </a>
           <div class="crumb"><a href="/en/">CoinRader</a> / Daily</div>
         </div>
 
-        <nav class="nav" aria-label="主要リンク">
-          <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
-          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-ja="最新" data-en="Latest">最新</a>
-          <a class="btn" href="/en/daily/" data-i18n data-ja="一覧" data-en="All">一覧</a>
-          <a class="btn" href="/guide" data-i18n data-ja="ガイド" data-en="Guide">ガイド</a>
+        <nav class="nav" aria-label="Primary links">
+          <a class="btn" href="/" data-i18n data-en="Dashboard">Dashboard</a>
+          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-en="Latest">Latest</a>
+          <a class="btn" href="/en/daily/" data-i18n data-en="All">All</a>
+          <a class="btn" href="/guide" data-i18n data-en="Guide">Guide</a>
 
-          <!-- ★追加：言語切替ボタン -->
+          
           <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">
             EN
           </button>
@@ -248,16 +248,14 @@
       </div>
     </header>
 
-    <!-- ★ここも data-i18n を付けるなら付けてOK（あなたがA/B/C済ならそのままでもOK） -->
-    <h1 data-i18n data-ja="Daily AIレポート一覧" data-en="Daily AI Reports">Daily AIレポート一覧</h1>
+    
+    <h1 data-i18n data-en="Daily AI Reports">Daily AI Reports</h1>
     <div class="sub" data-i18n
-      data-ja="Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date."
-      data-en="Browse daily AI reports with key metrics (FGI / RSI / Trend).">
-      Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date.
-    </div>
+     
+      data-en="Browse daily AI reports with key metrics (FGI / RSI / Trend).">Browse daily AI reports with key metrics (FGI / RSI / Trend).</div>
 
     <div class="tabs">
-      <a class="tab current" href="/en/daily/"><small>ALL</small>一覧</a>
+      <a class="tab current" href="/en/daily/"><small>ALL</small>All</a>
       <a class="tab tab-bear" href="/en/daily/tags/bear"><small>AI</small>BEAR</a>
       <a class="tab tab-bull" href="/en/daily/tags/bull"><small>AI</small>BULL</a>
       <a class="tab tab-wait" href="/en/daily/tags/wait"><small>AI</small>WAIT</a>
@@ -265,46 +263,44 @@
 
     <div class="controls">
       <div class="search">
-        <!-- ★placeholder を切替対応 -->
+        
         <input id="q" type="search"
-          placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
-          data-ph-ja="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
+          placeholder="Search: date / hot coins / top gainers / summary ..."
+         
           data-ph-en="Search: date / hot coins / top gainers / summary ..." />
       </div>
-      <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
+      <div class="count"><span id="shown">0</span> / <span id="total">0</span> results</div>
     </div>
     <p style="margin:10px 0 14px;color:rgba(229,231,235,.85);line-height:1.6">
       Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.
     </p>
     <div class="list" id="list">
-      <div class='row'><a class='rowlink' href='20260213'><div class='date'>2026-02-13</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 9</span><span class='pill pill-kpi'>RSI 44.7</span><span class='pill pill-kpi'>Trend -13.5%</span><span class='pill pill-hot'>Trending OM/ESP/BTC</span><span class='pill pill-up'>Gainer H +21.88%</span></div><div class='rowreason'>MA距離が -13.53% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260212'><div class='date'>2026-02-12</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 5</span><span class='pill pill-kpi'>RSI 58.2</span><span class='pill pill-kpi'>Trend -13.3%</span><span class='pill pill-hot'>Trending ESP/BERA/AZTEC</span><span class='pill pill-up'>Gainer TIBBIR +57.17%</span></div><div class='rowreason'>MA距離が -13.27% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260211'><div class='date'>2026-02-11</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 11</span><span class='pill pill-kpi'>RSI 28.8</span><span class='pill pill-kpi'>Trend -13%</span><span class='pill pill-hot'>Trending ZRO/BTC/ZAMA</span><span class='pill pill-up'>Gainer ZRO +42.13%</span></div><div class='rowreason'>BTC RSI が 28.76 で売られ過ぎ水準。</div></a></div>
-<div class='row'><a class='rowlink' href='20260210'><div class='date'>2026-02-10</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 9</span><span class='pill pill-kpi'>RSI 40.2</span><span class='pill pill-kpi'>Trend -12.8%</span><span class='pill pill-hot'>Trending BNKR/ZRO/BTC</span><span class='pill pill-up'>Gainer BNKR +45.48%</span></div><div class='rowreason'>MA距離が -12.81% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260209'><div class='date'>2026-02-09</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 33.7</span><span class='pill pill-kpi'>Trend -12.6%</span><span class='pill pill-hot'>Trending BTC/AXS/HYPE</span><span class='pill pill-up'>Gainer PIPPIN +14.48%</span></div><div class='rowreason'>MA距離が -12.61% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260208'><div class='date'>2026-02-08</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 7</span><span class='pill pill-kpi'>RSI 59.4</span><span class='pill pill-kpi'>Trend -12.4%</span><span class='pill pill-hot'>Trending BTC/ASTER/HYPE</span><span class='pill pill-up'>Gainer PIPPIN +26.43%</span></div><div class='rowreason'>MA距離が -12.37% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260207'><div class='date'>2026-02-07</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 6</span><span class='pill pill-kpi'>RSI 44.2</span><span class='pill pill-kpi'>Trend -12.2%</span><span class='pill pill-hot'>Trending BTC/SOL/ETH</span><span class='pill pill-up'>Gainer AMP +12.05%</span></div><div class='rowreason'>MA距離が -12.2% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260206'><div class='date'>2026-02-06</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 9</span><span class='pill pill-kpi'>RSI 46.2</span><span class='pill pill-kpi'>Trend -12.1%</span><span class='pill pill-hot'>Trending BTC/SOL/HYPE</span><span class='pill pill-up'>Gainer DCR +33.37%</span></div><div class='rowreason'>MA距離が -12.05% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260205'><div class='date'>2026-02-05</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 12</span><span class='pill pill-kpi'>RSI 33.4</span><span class='pill pill-kpi'>Trend -11.8%</span><span class='pill pill-hot'>Trending BTC/SOL/HYPE</span><span class='pill pill-up'>Gainer WHITEWHALE +10.85%</span></div><div class='rowreason'>MA距離が -11.77% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260204'><div class='date'>2026-02-04</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 46.9</span><span class='pill pill-kpi'>Trend -11.6%</span><span class='pill pill-hot'>Trending BTC/ZAMA/SOL</span><span class='pill pill-up'>Gainer RIVER +27.72%</span></div><div class='rowreason'>MA距離が -11.62% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260203'><div class='date'>2026-02-03</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 17</span><span class='pill pill-kpi'>RSI 47.8</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>Trending HYPE/TRIA/PENGU</span><span class='pill pill-up'>Gainer STX +19.02%</span></div><div class='rowreason'>MA距離が -11.51% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260202'><div class='date'>2026-02-02</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 50.2</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>Trending ZAMA/RIVER/BTC</span><span class='pill pill-up'>Gainer STABLE +30.84%</span></div><div class='rowreason'>MA距離が -11.52% で弱含み。</div></a></div>
-<div class='row'><a class='rowlink' href='20260201'><div class='date'>2026-02-01</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 14.2</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>Trending RIVER/ZK/BTC</span><span class='pill pill-up'>Gainer ZK +30.84%</span></div><div class='rowreason'>BTC RSI が 14.22 で売られ過ぎ水準。</div></a></div>
-<div class='row'><a class='rowlink' href='20260131'><div class='date'>2026-01-31</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 2</span><span class='pill pill-kpi'>RSI 15.3</span><span class='pill pill-kpi'>Trend -11.3%</span><span class='pill pill-hot'>Trending USOR/MOLT/INX</span><span class='pill pill-up'>Gainer CC +9.09%</span></div><div class='rowreason'>BTC RSI が 15.28 で売られ過ぎ水準。</div></a></div>
-<div class='row'><a class='rowlink' href='20260130'><div class='date'>2026-01-30</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 16</span><span class='pill pill-kpi'>RSI 14.8</span><span class='pill pill-kpi'>Trend -11.3%</span><span class='pill pill-hot'>Trending BTC/ULTIMA/HYPE</span><span class='pill pill-up'>Gainer SENT +5.29%</span></div><div class='rowreason'>BTC RSI が 14.76 で売られ過ぎ水準。</div></a></div>
-<div class='row'><a class='rowlink' href='20260129'><div class='date'>2026-01-29</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 26</span><span class='pill pill-kpi'>RSI 18.1</span><span class='pill pill-kpi'>Trend -11.2%</span><span class='pill pill-hot'>Trending BIRB/IRYS/GWEI</span><span class='pill pill-up'>Gainer SENT +38.31%</span></div><div class='rowreason'>BTC RSI が 18.08 で売られ過ぎ水準。</div></a></div>
-<div class='row'><a class='rowlink' href='20260128'><div class='date'>2026-01-28</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 29</span><span class='pill pill-kpi'>RSI 16</span><span class='pill pill-kpi'>Trend —</span><span class='pill pill-hot'>Trending HYPE/PIPPIN/ASTER</span><span class='pill pill-up'>Gainer PIPPIN +66.49%</span></div><div class='rowreason'>BTC RSI が 15.96 で売られ過ぎ水準。</div></a></div>
+      <div class='row'><a class='rowlink' href='20260213'><div class='date'>2026-02-13</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 9</span><span class='pill pill-kpi'>RSI 44.7</span><span class='pill pill-kpi'>Trend -13.5%</span><span class='pill pill-hot'>Trending OM/ESP/BTC</span><span class='pill pill-up'>Gainer H +21.88%</span></div><div class='rowreason'>MA distance is -13.53%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260212'><div class='date'>2026-02-12</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 5</span><span class='pill pill-kpi'>RSI 58.2</span><span class='pill pill-kpi'>Trend -13.3%</span><span class='pill pill-hot'>Trending ESP/BERA/AZTEC</span><span class='pill pill-up'>Gainer TIBBIR +57.17%</span></div><div class='rowreason'>MA distance is -13.27%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260211'><div class='date'>2026-02-11</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 11</span><span class='pill pill-kpi'>RSI 28.8</span><span class='pill pill-kpi'>Trend -13%</span><span class='pill pill-hot'>Trending ZRO/BTC/ZAMA</span><span class='pill pill-up'>Gainer ZRO +42.13%</span></div><div class='rowreason'>BTC RSI is 28.76, in oversold territory.</div></a></div>
+<div class='row'><a class='rowlink' href='20260210'><div class='date'>2026-02-10</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 9</span><span class='pill pill-kpi'>RSI 40.2</span><span class='pill pill-kpi'>Trend -12.8%</span><span class='pill pill-hot'>Trending BNKR/ZRO/BTC</span><span class='pill pill-up'>Gainer BNKR +45.48%</span></div><div class='rowreason'>MA distance is -12.81%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260209'><div class='date'>2026-02-09</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 33.7</span><span class='pill pill-kpi'>Trend -12.6%</span><span class='pill pill-hot'>Trending BTC/AXS/HYPE</span><span class='pill pill-up'>Gainer PIPPIN +14.48%</span></div><div class='rowreason'>MA distance is -12.61%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260208'><div class='date'>2026-02-08</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 7</span><span class='pill pill-kpi'>RSI 59.4</span><span class='pill pill-kpi'>Trend -12.4%</span><span class='pill pill-hot'>Trending BTC/ASTER/HYPE</span><span class='pill pill-up'>Gainer PIPPIN +26.43%</span></div><div class='rowreason'>MA distance is -12.37%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260207'><div class='date'>2026-02-07</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 6</span><span class='pill pill-kpi'>RSI 44.2</span><span class='pill pill-kpi'>Trend -12.2%</span><span class='pill pill-hot'>Trending BTC/SOL/ETH</span><span class='pill pill-up'>Gainer AMP +12.05%</span></div><div class='rowreason'>MA distance is -12.2%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260206'><div class='date'>2026-02-06</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 9</span><span class='pill pill-kpi'>RSI 46.2</span><span class='pill pill-kpi'>Trend -12.1%</span><span class='pill pill-hot'>Trending BTC/SOL/HYPE</span><span class='pill pill-up'>Gainer DCR +33.37%</span></div><div class='rowreason'>MA distance is -12.05%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260205'><div class='date'>2026-02-05</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 12</span><span class='pill pill-kpi'>RSI 33.4</span><span class='pill pill-kpi'>Trend -11.8%</span><span class='pill pill-hot'>Trending BTC/SOL/HYPE</span><span class='pill pill-up'>Gainer WHITEWHALE +10.85%</span></div><div class='rowreason'>MA distance is -11.77%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260204'><div class='date'>2026-02-04</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 46.9</span><span class='pill pill-kpi'>Trend -11.6%</span><span class='pill pill-hot'>Trending BTC/ZAMA/SOL</span><span class='pill pill-up'>Gainer RIVER +27.72%</span></div><div class='rowreason'>MA distance is -11.62%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260203'><div class='date'>2026-02-03</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 17</span><span class='pill pill-kpi'>RSI 47.8</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>Trending HYPE/TRIA/PENGU</span><span class='pill pill-up'>Gainer STX +19.02%</span></div><div class='rowreason'>MA distance is -11.51%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260202'><div class='date'>2026-02-02</div><div class='meta'><span class='pill pill-ai bear'>AI BEAR</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 50.2</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>Trending ZAMA/RIVER/BTC</span><span class='pill pill-up'>Gainer STABLE +30.84%</span></div><div class='rowreason'>MA distance is -11.52%, showing downside pressure.</div></a></div>
+<div class='row'><a class='rowlink' href='20260201'><div class='date'>2026-02-01</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 14</span><span class='pill pill-kpi'>RSI 14.2</span><span class='pill pill-kpi'>Trend -11.5%</span><span class='pill pill-hot'>Trending RIVER/ZK/BTC</span><span class='pill pill-up'>Gainer ZK +30.84%</span></div><div class='rowreason'>BTC RSI is 14.22, in oversold territory.</div></a></div>
+<div class='row'><a class='rowlink' href='20260131'><div class='date'>2026-01-31</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 2</span><span class='pill pill-kpi'>RSI 15.3</span><span class='pill pill-kpi'>Trend -11.3%</span><span class='pill pill-hot'>Trending USOR/MOLT/INX</span><span class='pill pill-up'>Gainer CC +9.09%</span></div><div class='rowreason'>BTC RSI is 15.28, in oversold territory.</div></a></div>
+<div class='row'><a class='rowlink' href='20260130'><div class='date'>2026-01-30</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 16</span><span class='pill pill-kpi'>RSI 14.8</span><span class='pill pill-kpi'>Trend -11.3%</span><span class='pill pill-hot'>Trending BTC/ULTIMA/HYPE</span><span class='pill pill-up'>Gainer SENT +5.29%</span></div><div class='rowreason'>BTC RSI is 14.76, in oversold territory.</div></a></div>
+<div class='row'><a class='rowlink' href='20260129'><div class='date'>2026-01-29</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 26</span><span class='pill pill-kpi'>RSI 18.1</span><span class='pill pill-kpi'>Trend -11.2%</span><span class='pill pill-hot'>Trending BIRB/IRYS/GWEI</span><span class='pill pill-up'>Gainer SENT +38.31%</span></div><div class='rowreason'>BTC RSI is 18.08, in oversold territory.</div></a></div>
+<div class='row'><a class='rowlink' href='20260128'><div class='date'>2026-01-28</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI 29</span><span class='pill pill-kpi'>RSI 16</span><span class='pill pill-kpi'>Trend —</span><span class='pill pill-hot'>Trending HYPE/PIPPIN/ASTER</span><span class='pill pill-up'>Gainer PIPPIN +66.49%</span></div><div class='rowreason'>BTC RSI is 15.96, in oversold territory.</div></a></div>
 <div class='row'><a class='rowlink' href='20260127'><div class='date'>2026-01-27</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI —</span><span class='pill pill-kpi'>RSI —</span><span class='pill pill-kpi'>Trend —</span><span class='pill pill-hot'>Trending ULTIMA/AXS/HYPE</span></div><div class='rowreason'>Trending: ULTIMA/AXS/HYPE。</div></a></div>
 <div class='row'><a class='rowlink' href='20260126'><div class='date'>2026-01-26</div><div class='meta'><span class='pill pill-ai wait'>AI WAIT</span><span class='pill pill-kpi'>FGI —</span><span class='pill pill-kpi'>RSI —</span><span class='pill pill-kpi'>Trend —</span><span class='pill pill-hot'>Trending RIVER/TAIKO/BTC</span></div><div class='rowreason'>Trending: RIVER/TAIKO/BTC。</div></a></div>
     </div>
 
-    <!-- ★empty も切替対応 -->
-    <div class="empty" id="empty" data-i18n data-ja="該当するレポートがありません。" data-en="No matching reports found.">
-      該当するレポートがありません。
-    </div>
+    
+    <div class="empty" id="empty" data-i18n data-en="No matching reports found.">No matching reports found.</div>
   </div>
 
-  <!-- Footer -->
+  
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -312,14 +308,14 @@
         <span class="footer-tagline">Objective crypto analytics dashboard</span>
       </div>
       <nav class="footer-nav">
-        <a href="/guide">活用ガイド</a>
-        <a href="/start">始め方</a>
+        <a href="/guide">Guide</a>
+        <a href="/start">Getting Started</a>
         <a href="/coins/">Coins</a>
-        <a href="/data-sources">データ</a>
-        <a href="/about">運営</a>
-        <a href="/contact">連絡</a>
-        <a href="/disclaimer">免責</a>
-        <a href="/privacy">法務</a>
+        <a href="/data-sources">Data</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/privacy">Legal</a>
       </nav>
     </div>
     <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
@@ -358,7 +354,7 @@
     window.addEventListener('DOMContentLoaded', apply);
   </script>
 
-  <!-- ★追加：言語切替（data-i18n + placeholder 対応） -->
+  
   <script>
   (function(){
     const btn = document.getElementById('langToggle');
@@ -401,6 +397,6 @@
   })();
   </script>
 
-<!-- build:20260213 -->
+
 </body>
 </html>

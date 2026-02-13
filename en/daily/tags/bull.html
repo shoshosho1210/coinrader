@@ -225,23 +225,23 @@
 
 <body>
   <div class="wrap">
-    <!-- Header -->
+    
     <header class="appHeader" role="banner">
       <div class="appHeader-inner">
         <div class="brand">
-          <a href="/" aria-label="CoinRader ホーム">
+          <a href="/" aria-label="CoinRader Home">
             <img class="brandLogo" src="/assets/icons/logo_horizontal_v4.png" alt="CoinRader">
           </a>
           <div class="crumb"><a href="/en/">CoinRader</a> / Daily</div>
         </div>
 
-        <nav class="nav" aria-label="主要リンク">
-          <a class="btn" href="/" data-i18n data-ja="ダッシュボード" data-en="Dashboard">ダッシュボード</a>
-          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-ja="最新" data-en="Latest">最新</a>
-          <a class="btn" href="/en/daily/" data-i18n data-ja="一覧" data-en="All">一覧</a>
-          <a class="btn" href="/guide" data-i18n data-ja="ガイド" data-en="Guide">ガイド</a>
+        <nav class="nav" aria-label="Primary links">
+          <a class="btn" href="/" data-i18n data-en="Dashboard">Dashboard</a>
+          <a class="btn btn-primary" href="/en/daily/latest" data-i18n data-en="Latest">Latest</a>
+          <a class="btn" href="/en/daily/" data-i18n data-en="All">All</a>
+          <a class="btn" href="/guide" data-i18n data-en="Guide">Guide</a>
 
-          <!-- ★追加：言語切替ボタン -->
+          
           <button class="btn" type="button" id="langToggle" aria-label="Switch language" aria-pressed="false">
             EN
           </button>
@@ -249,16 +249,14 @@
       </div>
     </header>
 
-    <!-- ★ここも data-i18n を付けるなら付けてOK（あなたがA/B/C済ならそのままでもOK） -->
+    
     <h1>AI BULL Days</h1>
     <div class="sub" data-i18n
-      data-ja="Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date."
-      data-en="Browse daily AI reports with key metrics (FGI / RSI / Trend).">
-      Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date.
-    </div>
+     
+      data-en="Browse daily AI reports with key metrics (FGI / RSI / Trend).">Browse daily AI reports with key metrics (FGI / RSI / Trend).</div>
 
     <div class="tabs">
-      <a class="tab" href="/en/daily/"><small>ALL</small>一覧</a>
+      <a class="tab" href="/en/daily/"><small>ALL</small>All</a>
       <a class="tab tab-bear" href="/en/daily/tags/bear"><small>AI</small>BEAR</a>
       <a class="tab tab-bull current" href="/en/daily/tags/bull"><small>AI</small>BULL</a>
       <a class="tab tab-wait" href="/en/daily/tags/wait"><small>AI</small>WAIT</a>
@@ -266,13 +264,13 @@
 
     <div class="controls">
       <div class="search">
-        <!-- ★placeholder を切替対応 -->
+        
         <input id="q" type="search"
-          placeholder="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
-          data-ph-ja="検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など"
+          placeholder="Search: date / hot coins / top gainers / summary ..."
+         
           data-ph-en="Search: date / hot coins / top gainers / summary ..." />
       </div>
-      <div class="count"><span id="shown">0</span> / <span id="total">0</span> 件</div>
+      <div class="count"><span id="shown">0</span> / <span id="total">0</span> results</div>
     </div>
     <p style="margin:10px 0 14px;color:rgba(229,231,235,.85);line-height:1.6">
       Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.
@@ -281,13 +279,11 @@
       
     </div>
 
-    <!-- ★empty も切替対応 -->
-    <div class="empty" id="empty" data-i18n data-ja="該当するレポートがありません。" data-en="No matching reports found.">
-      該当するレポートがありません。
-    </div>
+    
+    <div class="empty" id="empty" data-i18n data-en="No matching reports found.">No matching reports found.</div>
   </div>
 
-  <!-- Footer -->
+  
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -295,14 +291,14 @@
         <span class="footer-tagline">Objective crypto analytics dashboard</span>
       </div>
       <nav class="footer-nav">
-        <a href="/guide">活用ガイド</a>
-        <a href="/start">始め方</a>
+        <a href="/guide">Guide</a>
+        <a href="/start">Getting Started</a>
         <a href="/coins/">Coins</a>
-        <a href="/data-sources">データ</a>
-        <a href="/about">運営</a>
-        <a href="/contact">連絡</a>
-        <a href="/disclaimer">免責</a>
-        <a href="/privacy">法務</a>
+        <a href="/data-sources">Data</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/privacy">Legal</a>
       </nav>
     </div>
     <div class="footer-copyright">© 2026 CoinRader. All rights reserved.</div>
@@ -341,7 +337,7 @@
     window.addEventListener('DOMContentLoaded', apply);
   </script>
 
-  <!-- ★追加：言語切替（data-i18n + placeholder 対応） -->
+  
   <script>
   (function(){
     const btn = document.getElementById('langToggle');
@@ -384,6 +380,6 @@
   })();
   </script>
 
-<!-- build:20260213 -->
+
 </body>
 </html>
