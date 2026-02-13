@@ -76,27 +76,6 @@
         setTimeout(loadAnalytics, 1500);
       }, { once: true });
     }
-
-    function loadAdsScript() {
-      if (window.__adsScriptLoaded) return;
-      window.__adsScriptLoaded = true;
-      var s = document.createElement('script');
-      s.async = true;
-      s.crossOrigin = 'anonymous';
-      s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861';
-      s.onerror = function () {
-        console.warn('[ads] adsbygoogle script load failed');
-      };
-      document.head.appendChild(s);
-    }
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(loadAdsScript, { timeout: 4500 });
-    } else {
-      window.addEventListener('load', function () {
-        setTimeout(loadAdsScript, 2200);
-      }, { once: true });
-    }
   </script>
   <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebSite", "name": "CoinRader", "url": "https://coinrader.net/", "inLanguage": "ja", "description": "暗号資産市場の主要指標をまとめ、AIで相場状況の示唆を提供するダッシュボード。"}
@@ -8758,6 +8737,8 @@
     font-weight: 500;
   }
 </style>
+<script async="" crossorigin="anonymous"
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479112166602861"></script>
 
 <body>
   <canvas id="cryptoCanvas"></canvas>
@@ -8765,7 +8746,7 @@
     <div class="macro-ticker-scroll">
       <div class="ticker-item">
         <span class="t-label" title="BTC価格 (JPY)">BTC</span>
-        <span class="t-val" id="tickerBtcPrice">--</span>
+        <span class="t-val" id="tickerBtcPrice">Loading...</span>
       </div>
       <div class="ticker-item">
         <span class="t-label" title="ビットコイン・ドミナンス">BTC.D</span>
