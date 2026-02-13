@@ -998,40 +998,35 @@ def compute_judge(fgi_value: Any, btc_rsi: Any, ma_dist: Any) -> str:
         return "BEAR"
     return "WAIT"
 
-def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
+def build_reason_html(payload: Dict[str, Any], judge: str, lang: str = "ja") -> str:
+    is_en = (lang == "en")
     reasons: List[str] = []
-    for path in [
-        "ai.reasons","ai.reason_lines","ai.reason",
-        "reasons","reason_lines","reason",
-        "summary.reason_lines","summary.reason",
-    ]:
-        v = get_path(payload, path, default=None)
-        if isinstance(v, list) and v:
-            reasons = [str(x).strip() for x in v if str(x).strip()]
-            break
-        if isinstance(v, str) and v.strip():
-            reasons = [v.strip()]
-            break
 
     fgi_value = get_path(payload, "summary.fgi.value", default=get_path(payload, "fear_greed", default=""))
     fgi_label = get_path(payload, "summary.fgi.label", default="")
-    btc_rsi   = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
-    ma_dist   = get_path(payload, "summary.technical.btc_ma_distance",
-                          default=get_path(payload, "summary.technical.ma_distance",
-                              default=get_path(payload, "btc_ma_distance",
-                                  default=get_path(payload, "ma_distance", default=""))))
+    btc_rsi = get_path(payload, "summary.technical.btc_rsi", default=get_path(payload, "btc_rsi", default=""))
+    ma_dist = get_path(payload, "summary.technical.btc_ma_distance", default=get_path(payload, "summary.technical.ma_distance", default=get_path(payload, "btc_ma_distance", default=get_path(payload, "ma_distance", default=""))))
+
     if isinstance(ma_dist, (list, dict)):
         ma_dist = ""
-    trending  = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=get_path(payload, "trend", default=[])))
-    top_gainer_symbol = get_path(payload, "summary.top_gainer.symbol", default="")
-    top_gainer_change = get_path(payload, "summary.top_gainer.change", default="")
+    trending = get_path(payload, "summary.trending", default=get_path(payload, "trending", default=get_path(payload, "trend", default=[])))
 
-    if not reasons:
-        fgi = to_float(fgi_value)
-        if fgi is not None:
+    fgi = to_float(fgi_value)
+    if fgi is not None:
+        if is_en:
             if fgi < 25:
-                label = fgi_label or "Extreme Fear"
-                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で、市場心理は強い悲観に寄っています。")
+                reasons.append(f"Fear & Greed is {fmt_num(fgi,0)} ({fgi_label or 'Extreme Fear'}), showing heavy risk-off sentiment.")
+            elif fgi < 45:
+                reasons.append(f"Fear & Greed is {fmt_num(fgi,0)}, still tilted bearish.")
+            elif fgi < 55:
+                reasons.append(f"Fear & Greed is {fmt_num(fgi,0)}, near neutral.")
+            elif fgi < 75:
+                reasons.append(f"Fear & Greed is {fmt_num(fgi,0)}, leaning bullish.")
+            else:
+                reasons.append(f"Fear & Greed is {fmt_num(fgi,0)} ({fgi_label or 'Extreme Greed'}), suggesting overheated conditions.")
+        else:
+            if fgi < 25:
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{fgi_label or 'Extreme Fear'}）で、市場心理は強い悲観に寄っています。")
             elif fgi < 45:
                 reasons.append(f"Fear & Greed が {fmt_num(fgi,0)} で弱気寄りです。")
             elif fgi < 55:
@@ -1039,11 +1034,22 @@ def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
             elif fgi < 75:
                 reasons.append(f"Fear & Greed が {fmt_num(fgi,0)} で強気寄りです。")
             else:
-                label = fgi_label or "Extreme Greed"
-                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{label}）で過熱感があります。")
+                reasons.append(f"Fear & Greed が {fmt_num(fgi,0)}（{fgi_label or 'Extreme Greed'}）で過熱感があります。")
 
-        rsi = to_float(btc_rsi)
-        if rsi is not None:
+    rsi = to_float(btc_rsi)
+    if rsi is not None:
+        if is_en:
+            if rsi < 30:
+                reasons.append(f"BTC RSI is {fmt_num(rsi,1)}, in oversold territory.")
+            elif rsi < 45:
+                reasons.append(f"BTC RSI is {fmt_num(rsi,1)}, showing weak momentum.")
+            elif rsi < 55:
+                reasons.append(f"BTC RSI is {fmt_num(rsi,1)}, roughly neutral.")
+            elif rsi < 70:
+                reasons.append(f"BTC RSI is {fmt_num(rsi,1)}, indicating steady upside momentum.")
+            else:
+                reasons.append(f"BTC RSI is {fmt_num(rsi,1)}, in overbought territory.")
+        else:
             if rsi < 30:
                 reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で売られ過ぎ水準です。")
             elif rsi < 45:
@@ -1055,8 +1061,20 @@ def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
             else:
                 reasons.append(f"BTC RSI が {fmt_num(rsi,1)} で買われ過ぎ水準です。")
 
-        mad = to_float(ma_dist)
-        if mad is not None:
+    mad = to_float(ma_dist)
+    if mad is not None:
+        if is_en:
+            if mad <= -8:
+                reasons.append(f"MA distance is {fmt_num(mad,1)}%, showing strong downside pressure.")
+            elif mad <= -3:
+                reasons.append(f"MA distance is {fmt_num(mad,1)}%, still weak versus trend.")
+            elif mad < 3:
+                reasons.append(f"MA distance is {fmt_num(mad,1)}%, with limited directional conviction.")
+            elif mad < 8:
+                reasons.append(f"MA distance is {fmt_num(mad,1)}%, supporting moderate upside bias.")
+            else:
+                reasons.append(f"MA distance is {fmt_num(mad,1)}%, signaling extended upside acceleration.")
+        else:
             if mad <= -8:
                 reasons.append(f"MA距離が {fmt_num(mad,1)}% と大きくマイナスで、下方向の圧力が強い状態です。")
             elif mad <= -3:
@@ -1068,35 +1086,40 @@ def build_reason_html(payload: Dict[str, Any], judge: str) -> str:
             else:
                 reasons.append(f"MA距離が {fmt_num(mad,1)}% と大きくプラスで、上昇が加速しています。")
 
-        if isinstance(trending, list) and trending:
-            top3 = [str(x).strip().upper() for x in trending[:3] if str(x).strip()]
-            if top3:
-                reasons.append(f"注目トレンド: {' / '.join(top3)}")
+    if isinstance(trending, list) and trending:
+        top3 = [str(x).strip().upper() for x in trending[:3] if str(x).strip()]
+        if top3:
+            reasons.append(f"Trending: {' / '.join(top3)}" if is_en else f"注目トレンド: {' / '.join(top3)}")
 
-    # --- ここが追加：結論1行 ---
-    j = (judge or "").strip().upper()
     lead_map = {
+        "BEAR": "Conclusion: Bearish bias (rebounds may face selling pressure)",
+        "BULL": "Conclusion: Bullish bias (dips are more likely to be bought)",
+        "WAIT": "Conclusion: Wait / range bias (weak directional conviction)",
+    } if is_en else {
         "BEAR": "結論：弱気優勢（戻りは売られやすい局面）",
         "BULL": "結論：強気優勢（押し目が買われやすい局面）",
         "WAIT": "結論：様子見（方向感が弱い局面）",
     }
-    lead = lead_map.get(j, "")
+    lead = lead_map.get((judge or "").strip().upper(), "")
 
     li = "\n".join([f"<li>{escape_html(x)}</li>" for x in reasons[:6]])
     if not li and not lead:
         return ""
 
-    lead_html = f"<div class='judge-lead'>{escape_html(lead)}</div>" if lead else ""
-    ul_html = f"<ul class='why-list'>{li}</ul>" if li else ""
-    return lead_html + ul_html
+    return (f"<div class='judge-lead'>{escape_html(lead)}</div>" if lead else "") + (f"<ul class='why-list'>{li}</ul>" if li else "")
 
 
 def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: str, trend: str,
-                         trending: List[str], top_gainer: Dict[str, Any]) -> str:
+                         trending: List[str], top_gainer: Dict[str, Any], lang: str = "ja") -> str:
     """Key Takeaways: dailyページ冒頭に置く短い要点（AI引用されやすい箇条書き）。"""
+    is_en = (lang == "en")
     take: List[str] = []
     j = (judge or "").upper().strip()
     jm = {
+        "BEAR": "AI judgment: Bearish bias",
+        "BULL": "AI judgment: Bullish bias",
+        "WAIT": "AI judgment: Wait / range bias",
+    } if is_en else {
         "BEAR": "AI判定：弱気優勢",
         "BULL": "AI判定：強気優勢",
         "WAIT": "AI判定：様子見",
@@ -1106,22 +1129,19 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
 
     if sent and sent != "—":
         lab = get_path(payload, "summary.fgi.label", default="")
-        if lab:
-            take.append(f"Fear & Greed：{sent}（{lab}）")
-        else:
-            take.append(f"Fear & Greed：{sent}")
+        take.append(f"Fear & Greed: {sent}" + (f" ({lab})" if lab else "") if is_en else (f"Fear & Greed：{sent}（{lab}）" if lab else f"Fear & Greed：{sent}"))
 
     if rsi and rsi != "—":
-        take.append(f"BTC RSI：{rsi}")
-
+        take.append(f"BTC RSI: {rsi}" if is_en else f"BTC RSI：{rsi}")
+    
     if trend and trend != "—":
-        take.append(f"Trend：{trend}")
+        take.append(f"Trend: {trend}" if is_en else f"Trend：{trend}")
 
     # トレンド銘柄 TOP3
     if trending:
         top3 = [str(x).strip().upper() for x in (trending or [])[:3] if str(x).strip()]
         if top3:
-            take.append(f"注目トレンド：{' / '.join(top3)}")
+            take.append(f"Trending: {' / '.join(top3)}" if is_en else f"注目トレンド：{' / '.join(top3)}")
 
     # 上昇トップ
     if isinstance(top_gainer, dict):
@@ -1134,33 +1154,20 @@ def build_takeaways_html(payload: Dict[str, Any], judge: str, sent: str, rsi: st
         except Exception:
             ch_s = str(ch).strip() if ch is not None else ""
         if sym and ch_s:
-            take.append(f"急上昇：{sym} +{ch_s}%")
+            take.append(f"Top gainer: {sym} +{ch_s}%" if is_en else f"急上昇：{sym} +{ch_s}%")
         elif sym:
-            take.append(f"急上昇：{sym}")
+            take.append(f"Top gainer: {sym}" if is_en else f"急上昇：{sym}")
 
-    # reasons の1行目があるなら最後に添える（長すぎない範囲）
-    r1 = build_reason_1line(payload)
-    if r1:
-        take.append(r1)
-
-    # 3〜5行に絞る
+    if not is_en:
+        r1 = build_reason_1line(payload)
+        if r1:
+            take.append(r1)
+        
     take = [t for t in take if t][:5]
     if not take:
         return ""
-
     lis = "".join([f"<li>{escape_html(t)}</li>" for t in take])
     return f"<section class='takeaways' aria-label='Key Takeaways'><h2 class='takeaways-h'>Key Takeaways</h2><ul class='takeaways-ul'>{lis}</ul></section>"
-
-from pathlib import Path
-
-from urllib.parse import quote_plus
-
-import os
-import re
-
-from pathlib import Path
-
-# --- Coin hubs: /coins/ 内部リンク生成 -----------------------------------------
 
 def list_existing_coin_slugs(coins_dir="coins"):
     """
@@ -1435,11 +1442,9 @@ def update_daily_latest_redirect(latest_ymd: str) -> None:
 
 # ---------- A-1: シナリオ分岐 (BULL / BEAR / RANGE) ----------
 
-def build_scenarios_html(fgi_value, btc_rsi, ma_dist, judge: str) -> str:
-    """
-    市場データから3シナリオ(BULL/BEAR/RANGE)を自動生成。
-    各シナリオに trigger / invalidation / what_to_watch / confidence を付与。
-    """
+def build_scenarios_html(fgi_value, btc_rsi, ma_dist, judge: str, lang: str = "ja") -> str:
+    is_en = (lang == "en")
+
     fgi = to_float(fgi_value)
     rsi = to_float(btc_rsi)
     mad = to_float(ma_dist)
@@ -1453,71 +1458,31 @@ def build_scenarios_html(fgi_value, btc_rsi, ma_dist, judge: str) -> str:
     rsi_str = f"{fmt_num(rsi, 1)}" if rsi is not None else "—"
     mad_str = f"{fmt_num(mad, 1)}%" if mad is not None else "—"
 
-    # --- BULL シナリオ ---
-    if fgi is not None and fgi < 40:
-        bull_trigger = f"FGI が現在 {fgi_str} → 45以上に回復し、センチメント改善"
-    elif fgi is not None:
-        bull_trigger = f"FGI が {fgi_str} を維持しつつ、RSI 55超えで勢い継続"
+    if is_en:
+        bull_trigger = f"FGI recovers from {fgi_str} to 45+ with improving sentiment" if (fgi is not None and fgi < 40) else (f"FGI holds around {fgi_str} while RSI breaks above 55" if fgi is not None else "FGI 45+ and RSI above 55")
+        bull_watch = f"Look for RSI rebounding from {rsi_str} with rising volume" if (rsi is not None and rsi < 35) else (f"Watch whether RSI at {rsi_str} can break above 55" if rsi is not None else "Confirm RSI breakout above 55")
+        bull_invalid = "Invalidated if FGI drops below 25 or MA distance falls below -8%"
+        bear_trigger = f"FGI falls sharply from {fgi_str} after overheated conditions" if (fgi is not None and fgi > 60) else (f"FGI deteriorates from {fgi_str} to 25 or below" if fgi is not None else "FGI 25 or below with RSI 30 or below")
+        bear_watch = f"Watch whether MA distance at {mad_str} extends further (below -10% is high risk)" if (mad is not None and mad < -5) else (f"Watch whether MA distance at {mad_str} expands further negative" if mad is not None else "Watch for deeper negative MA distance and weaker BTC volume")
+        bear_invalid = "Invalidated if FGI recovers above 50 and RSI breaks above 55"
+        range_trigger = f"RSI at {rsi_str} keeps trading in the neutral 40-60 zone" if (rsi is not None and 40 < rsi < 60) else "RSI converges into 40-60 with MA distance inside ±3%"
+        range_watch = "Watch if volume remains below average and momentum stays muted"
+        range_invalid = "Invalidated if FGI spikes to 75+ or drops to 25 or below"
     else:
-        bull_trigger = "FGI 45以上 + RSI 55超え"
-
-    if rsi is not None and rsi < 35:
-        bull_watch = f"RSI が {rsi_str} から反発する兆候（出来高増加に注目）"
-    elif rsi is not None:
-        bull_watch = f"RSI が {rsi_str} → 55を上抜けるか"
-    else:
-        bull_watch = "RSI の55上抜け確認"
-
-    bull_invalid = "FGI 25以下に再悪化 or MA距離 -8%以下に急落"
-
-    # --- BEAR シナリオ ---
-    if fgi is not None and fgi > 60:
-        bear_trigger = f"FGI が {fgi_str} から急落（過熱後の調整入り）"
-    elif fgi is not None:
-        bear_trigger = f"FGI が {fgi_str} → 25以下にさらに悪化"
-    else:
-        bear_trigger = "FGI 25以下 + RSI 30以下で弱気加速"
-
-    if mad is not None and mad < -5:
-        bear_watch = f"MA距離 {mad_str} がさらに拡大するか（-10%超えは要警戒）"
-    elif mad is not None:
-        bear_watch = f"MA距離 {mad_str} がマイナス方向に拡大するか"
-    else:
-        bear_watch = "MA距離のマイナス拡大とBTC出来高の減少"
-
-    bear_invalid = "FGI 50以上に回復 + RSI 55超え（センチメント反転）"
-
-    # --- RANGE シナリオ ---
-    if rsi is not None and 40 < rsi < 60:
-        range_trigger = f"RSI {rsi_str} が 40-60 の中立圏を推移し続ける"
-    else:
-        range_trigger = "RSI 40-60圏内に収束 + MA距離 ±3%以内"
-
-    range_watch = "出来高が平均以下の低調な推移が続くか"
-    range_invalid = "FGI が 25以下 or 75以上に急変（方向感の発生）"
+        bull_trigger = f"FGI が現在 {fgi_str} → 45以上に回復し、センチメント改善" if (fgi is not None and fgi < 40) else (f"FGI が {fgi_str} を維持しつつ、RSI 55超えで勢い継続" if fgi is not None else "FGI 45以上 + RSI 55超え")
+        bull_watch = f"RSI が {rsi_str} から反発する兆候（出来高増加に注目）" if (rsi is not None and rsi < 35) else (f"RSI が {rsi_str} → 55を上抜けるか" if rsi is not None else "RSI の55上抜け確認")
+        bull_invalid = "FGI 25以下に再悪化 or MA距離 -8%以下に急落"
+        bear_trigger = f"FGI が {fgi_str} から急落（過熱後の調整入り）" if (fgi is not None and fgi > 60) else (f"FGI が {fgi_str} → 25以下にさらに悪化" if fgi is not None else "FGI 25以下 + RSI 30以下で弱気加速")
+        bear_watch = f"MA距離 {mad_str} がさらに拡大するか（-10%超えは要警戒）" if (mad is not None and mad < -5) else (f"MA距離 {mad_str} がマイナス方向に拡大するか" if mad is not None else "MA距離のマイナス拡大とBTC出来高の減少")
+        bear_invalid = "FGI 50以上に回復 + RSI 55超え（センチメント反転）"
+        range_trigger = f"RSI {rsi_str} が 40-60 の中立圏を推移し続ける" if (rsi is not None and 40 < rsi < 60) else "RSI 40-60圏内に収束 + MA距離 ±3%以内"
+        range_watch = "出来高が平均以下の低調な推移が続くか"
+        range_invalid = "FGI が 25以下 or 75以上に急変（方向感の発生）"
 
     scenarios = [
-        {
-            "key": "BULL", "label": "強気シナリオ",
-            "emoji": "📈", "color": "#22c55e",
-            "trigger": bull_trigger,
-            "invalidation": bull_invalid,
-            "what_to_watch": bull_watch,
-        },
-        {
-            "key": "BEAR", "label": "弱気シナリオ",
-            "emoji": "📉", "color": "#ef4444",
-            "trigger": bear_trigger,
-            "invalidation": bear_invalid,
-            "what_to_watch": bear_watch,
-        },
-        {
-            "key": "RANGE", "label": "レンジシナリオ",
-            "emoji": "↔️", "color": "#f59e0b",
-            "trigger": range_trigger,
-            "invalidation": range_invalid,
-            "what_to_watch": range_watch,
-        },
+        {"key":"BULL","label":"Bullish Scenario" if is_en else "強気シナリオ","emoji":"📈","color":"#22c55e","trigger":bull_trigger,"invalidation":bull_invalid,"what_to_watch":bull_watch},
+        {"key":"BEAR","label":"Bearish Scenario" if is_en else "弱気シナリオ","emoji":"📉","color":"#ef4444","trigger":bear_trigger,"invalidation":bear_invalid,"what_to_watch":bear_watch},
+        {"key":"RANGE","label":"Range Scenario" if is_en else "レンジシナリオ","emoji":"↔️","color":"#f59e0b","trigger":range_trigger,"invalidation":range_invalid,"what_to_watch":range_watch},
     ]
 
     j = (judge or "").strip().upper()
@@ -1525,48 +1490,10 @@ def build_scenarios_html(fgi_value, btc_rsi, ma_dist, judge: str) -> str:
     cards = []
     for sc in scenarios:
         is_active = (j == sc["key"]) or (j == "WAIT" and sc["key"] == "RANGE")
-        active_cls = " scenario-active" if is_active else ""
-        active_badge = " <span class='scenario-now'>現在の判定に近い</span>" if is_active else ""
-
-        cards.append(
-            f"<div class='scenario-card{active_cls}' style='border-color:{sc['color']}'>"
-            f"<div class='scenario-head'>"
-            f"<span class='scenario-emoji'>{sc['emoji']}</span>"
-            f"<span class='scenario-title'>{escape_html(sc['label'])}</span>"
-            f"{active_badge}"
-            f"</div>"
-            f"<div class='scenario-row'>"
-            f"<div class='scenario-label'>条件（Trigger）</div>"
-            f"<div class='scenario-val'>{escape_html(sc['trigger'])}</div>"
-            f"</div>"
-            f"<div class='scenario-row'>"
-            f"<div class='scenario-label'>無効化（Invalidation）</div>"
-            f"<div class='scenario-val'>{escape_html(sc['invalidation'])}</div>"
-            f"</div>"
-            f"<div class='scenario-row'>"
-            f"<div class='scenario-label'>注目ポイント</div>"
-            f"<div class='scenario-val'>{escape_html(sc['what_to_watch'])}</div>"
-            f"</div>"
-            f"</div>"
-        )
-
-    return (
-        "<section class='card scenarios' aria-label='Scenario Analysis' style='margin-top:14px'>"
-        "<div class='badge'>SCENARIO ANALYSIS</div>"
-        f"<div class='scenario-conf'>Confidence: {escape_html(conf_label)}</div>"
-        "<div class='scenario-grid'>"
-        + "".join(cards) +
-        "</div>"
-        "<div class='scenario-note' data-i18n "
-        "data-ja='※ シナリオは市場データから自動生成された仮説であり、投資助言ではありません。' "
-        "data-en='* Scenarios are auto-generated hypotheses from market data, not investment advice.'>"
-        "※ シナリオは市場データから自動生成された仮説であり、投資助言ではありません。"
-        "</div>"
-        "</section>"
-    )
-
-
-# ---------- B: CoinRader Score ----------
+        active_badge = " <span class='scenario-now'>Closest to current regime</span>" if (is_active and is_en) else (" <span class='scenario-now'>現在の判定に近い</span>" if is_active else "")
+        cards.append(f"<div class='scenario-card{' scenario-active' if is_active else ''}' style='border-color:{sc['color']}'><div class='scenario-head'><span class='scenario-emoji'>{sc['emoji']}</span><span class='scenario-title'>{escape_html(sc['label'])}</span>{active_badge}</div><div class='scenario-row'><div class='scenario-label'>{'Trigger' if is_en else '条件（Trigger）'}</div><div class='scenario-val'>{escape_html(sc['trigger'])}</div></div><div class='scenario-row'><div class='scenario-label'>{'Invalidation' if is_en else '無効化（Invalidation）'}</div><div class='scenario-val'>{escape_html(sc['invalidation'])}</div></div><div class='scenario-row'><div class='scenario-label'>{'What to watch' if is_en else '注目ポイント'}</div><div class='scenario-val'>{escape_html(sc['what_to_watch'])}</div></div></div>")
+    note = "* Scenarios are auto-generated hypotheses from market data, not investment advice." if is_en else "※ シナリオは市場データから自動生成された仮説であり、投資助言ではありません。"
+    return f"<section class='card scenarios' aria-label='Scenario Analysis' style='margin-top:14px'><div class='badge'>SCENARIO ANALYSIS</div><div class='scenario-conf'>Confidence: {escape_html(conf_label)}</div><div class='scenario-grid'>{''.join(cards)}</div><div class='scenario-note'>{escape_html(note)}</div></section>"
 
 def compute_coinrader_score(fgi_value, btc_rsi, ma_dist, chg_24h=None) -> Dict[str, Any]:
     """
@@ -1642,11 +1569,12 @@ def compute_coinrader_score(fgi_value, btc_rsi, ma_dist, chg_24h=None) -> Dict[s
     }
 
 
-def build_score_html(score_data: Dict[str, Any]) -> str:
+def build_score_html(score_data: Dict[str, Any], lang: str = "ja") -> str:
     """CoinRader Score ゲージカードの HTML を生成。"""
     if not score_data or score_data.get("score") is None:
         return ""
-
+    
+    is_en = (lang == "en")
     score = score_data["score"]
     confidence = score_data.get("confidence", "Low")
     drivers = score_data.get("drivers", [])
@@ -1654,141 +1582,59 @@ def build_score_html(score_data: Dict[str, Any]) -> str:
 
     # スコアに応じた色
     if score >= 65:
-        color = "#22c55e"
-        label = "強気寄り"
+        color = "#22c55e"; label = "Bullish" if is_en else "強気寄り"
     elif score >= 45:
-        color = "#f59e0b"
-        label = "中立"
+        color = "#f59e0b"; label = "Neutral" if is_en else "中立"
     else:
-        color = "#ef4444"
-        label = "弱気寄り"
+        color = "#ef4444"; label = "Bearish" if is_en else "弱気寄り"
 
-    # ゲージ角度 (0=左端, 180=右端)
-    angle = max(0, min(180, score * 1.8))
+    if is_en:
+        drivers = [d.replace('MA距離', 'MA distance').replace('BTC 24h変動', 'BTC 24h change') for d in drivers]
 
     drivers_html = "".join([f"<li>{escape_html(d)}</li>" for d in drivers])
-
-    comp_rows = "".join([
-        f"<div class='score-comp'>"
-        f"<span class='comp-name'>{escape_html(c['name'])}</span>"
-        f"<span class='comp-raw'>{escape_html(c['raw'])}</span>"
-        f"<span class='comp-weight'>×{c['weight']:.0%}</span>"
-        f"</div>"
-        for c in components
-    ])
-
-    return (
-        "<section class='card score-card' aria-label='CoinRader Score' style='margin-top:14px'>"
-        "<div class='badge'>COINRADER SCORE</div>"
-        f"<div class='score-gauge'>"
-        f"<div class='score-num' style='color:{color}'>{fmt_num(score, 0)}</div>"
-        f"<div class='score-label'>{escape_html(label)}</div>"
-        f"<div class='score-bar'><div class='score-fill' style='width:{score}%;background:{color}'></div></div>"
-        f"</div>"
-        f"<div class='score-conf'>Confidence: {escape_html(confidence)}</div>"
-        "<div class='score-drivers'>"
-        "<div class='score-drivers-h'>主要ドライバー</div>"
-        f"<ul>{drivers_html}</ul>"
-        "</div>"
-        "<details class='score-detail'>"
-        "<summary data-i18n data-ja='算出根拠を表示' data-en='Show calculation'>算出根拠を表示</summary>"
-        f"<div class='score-comps'>{comp_rows}</div>"
-        "<div class='score-method' data-i18n "
-        "data-ja='CoinRader Score = 各指標の正規化値(0-100) × 重みの加重平均。数値が高いほど強気シグナル。' "
-        "data-en='CoinRader Score = weighted average of normalized indicators (0-100). Higher = more bullish.'>"
-        "CoinRader Score = 各指標の正規化値(0-100) × 重みの加重平均。数値が高いほど強気シグナル。"
-        "</div>"
-        "</details>"
-        "</section>"
-    )
+    comp_rows = "".join([f"<div class='score-comp'><span class='comp-name'>{escape_html({'MA距離':'MA distance','BTC 24h変動':'BTC 24h change'}.get(c['name'], c['name']) if is_en else c['name'])}</span><span class='comp-raw'>{escape_html(c['raw'])}</span><span class='comp-weight'>×{c['weight']:.0%}</span></div>" for c in components])
+    method = "CoinRader Score = weighted average of normalized indicators (0-100). Higher = more bullish." if is_en else "CoinRader Score = 各指標の正規化値(0-100) × 重みの加重平均。数値が高いほど強気シグナル。"
+    return f"<section class='card score-card' aria-label='CoinRader Score' style='margin-top:14px'><div class='badge'>COINRADER SCORE</div><div class='score-gauge'><div class='score-num' style='color:{color}'>{fmt_num(score, 0)}</div><div class='score-label'>{escape_html(label)}</div><div class='score-bar'><div class='score-fill' style='width:{score}%;background:{color}'></div></div></div><div class='score-conf'>Confidence: {escape_html(confidence)}</div><div class='score-drivers'><div class='score-drivers-h'>{'Main drivers' if is_en else '主要ドライバー'}</div><ul>{drivers_html}</ul></div><details class='score-detail'><summary>{'Show calculation' if is_en else '算出根拠を表示'}</summary><div class='score-comps'>{comp_rows}</div><div class='score-method'>{escape_html(method)}</div></details></section>"
 
 
 # ---------- A-2: 動的FAQ + FAQPage JSON-LD ----------
 
 def build_dynamic_faq_html(judge: str, fgi_value, btc_rsi, ma_dist,
-                           scenarios_data: Dict = None) -> str:
-    """当日の市場データからFAQ文面を動的生成 + JSON-LD FAQPage を埋め込み。"""
+                           scenarios_data: Dict = None, lang: str = "ja") -> str:
+    is_en = (lang == "en")
     fgi = to_float(fgi_value)
     rsi = to_float(btc_rsi)
     mad = to_float(ma_dist)
     j = (judge or "").strip().upper()
 
-    faq_items = []
-
-    # Q1: 今日はなぜ？
-    direction = "下がった" if (j == "BEAR" or (mad is not None and mad < -3)) else "上がった" if (j == "BULL" or (mad is not None and mad > 3)) else "このような状況"
-    q1 = f"今日はなぜ{direction}のですか？"
+    direction_ja = "下がった" if (j == "BEAR" or (mad is not None and mad < -3)) else "上がった" if (j == "BULL" or (mad is not None and mad > 3)) else "このような状況"
+    direction_en = "fell" if (j == "BEAR" or (mad is not None and mad < -3)) else "rose" if (j == "BULL" or (mad is not None and mad > 3)) else "moved like this"
+    q1 = f"Why did the market {direction_en} today?" if is_en else f"今日はなぜ{direction_ja}のですか？"
     a1_parts = []
     if fgi is not None:
-        if fgi < 25:
-            a1_parts.append(f"Fear & Greed Index が {fmt_num(fgi, 0)}（Extreme Fear）と極度の悲観状態にあり、売り圧力が強まっています")
-        elif fgi < 45:
-            a1_parts.append(f"Fear & Greed Index が {fmt_num(fgi, 0)} と弱気寄りのセンチメントです")
-        elif fgi > 75:
-            a1_parts.append(f"Fear & Greed Index が {fmt_num(fgi, 0)}（Extreme Greed）と過熱感が見られます")
-        elif fgi > 55:
-            a1_parts.append(f"Fear & Greed Index が {fmt_num(fgi, 0)} と楽観寄りのセンチメントです")
-        else:
-            a1_parts.append(f"Fear & Greed Index が {fmt_num(fgi, 0)} で中立的なセンチメントです")
+        if fgi < 25: a1_parts.append(f"Fear & Greed Index is {fmt_num(fgi, 0)} (Extreme Fear), indicating strong risk-off pressure" if is_en else f"Fear & Greed Index が {fmt_num(fgi, 0)}（Extreme Fear）と極度の悲観状態にあり、売り圧力が強まっています")
+        elif fgi < 45: a1_parts.append(f"Fear & Greed Index is {fmt_num(fgi, 0)}, reflecting bearish sentiment" if is_en else f"Fear & Greed Index が {fmt_num(fgi, 0)} と弱気寄りのセンチメントです")
+        elif fgi > 75: a1_parts.append(f"Fear & Greed Index is {fmt_num(fgi, 0)} (Extreme Greed), suggesting overheated conditions" if is_en else f"Fear & Greed Index が {fmt_num(fgi, 0)}（Extreme Greed）と過熱感が見られます")
+        elif fgi > 55: a1_parts.append(f"Fear & Greed Index is {fmt_num(fgi, 0)}, reflecting optimistic sentiment" if is_en else f"Fear & Greed Index が {fmt_num(fgi, 0)} と楽観寄りのセンチメントです")
+        else: a1_parts.append(f"Fear & Greed Index is {fmt_num(fgi, 0)}, broadly neutral" if is_en else f"Fear & Greed Index が {fmt_num(fgi, 0)} で中立的なセンチメントです")
     if rsi is not None:
-        if rsi < 30:
-            a1_parts.append(f"BTC RSI が {fmt_num(rsi, 1)} と売られ過ぎ水準")
-        elif rsi > 70:
-            a1_parts.append(f"BTC RSI が {fmt_num(rsi, 1)} と買われ過ぎ水準")
-        else:
-            a1_parts.append(f"BTC RSI は {fmt_num(rsi, 1)}")
+        if rsi < 30: a1_parts.append(f"BTC RSI is {fmt_num(rsi, 1)}, in oversold territory" if is_en else f"BTC RSI が {fmt_num(rsi, 1)} と売られ過ぎ水準")
+        elif rsi > 70: a1_parts.append(f"BTC RSI is {fmt_num(rsi, 1)}, in overbought territory" if is_en else f"BTC RSI が {fmt_num(rsi, 1)} と買われ過ぎ水準")
+        else: a1_parts.append(f"BTC RSI is {fmt_num(rsi, 1)}" if is_en else f"BTC RSI は {fmt_num(rsi, 1)}")
     if mad is not None:
-        if mad < -5:
-            a1_parts.append(f"移動平均との距離が {fmt_num(mad, 1)}% と大きく下方乖離しています")
-        elif mad > 5:
-            a1_parts.append(f"移動平均との距離が {fmt_num(mad, 1)}% と上方乖離しています")
-    a1 = "、".join(a1_parts) + "。" if a1_parts else "複数の市場指標を総合した結果です。"
-    a1 += "ただし、これは現時点のデータ分析であり、今後の値動きを保証するものではありません。"
-    faq_items.append({"q": q1, "a": a1})
+        if mad < -5: a1_parts.append(f"Price is {fmt_num(mad, 1)}% below the moving average" if is_en else f"移動平均との距離が {fmt_num(mad, 1)}% と大きく下方乖離しています")
+        elif mad > 5: a1_parts.append(f"Price is {fmt_num(mad, 1)}% above the moving average" if is_en else f"移動平均との距離が {fmt_num(mad, 1)}% と上方乖離しています")
+    a1 = (", ".join(a1_parts) + ".") if (is_en and a1_parts) else ("、".join(a1_parts) + "。" if a1_parts else ("This is based on a composite reading of current market indicators." if is_en else "複数の市場指標を総合した結果です。"))
+    a1 += " This is a data snapshot, not a guarantee of future price action." if is_en else "ただし、これは現時点のデータ分析であり、今後の値動きを保証するものではありません。"
 
-    # Q2: 強気シナリオの条件
-    q2 = "強気に転換する条件は？"
-    if fgi is not None and fgi < 40:
-        a2 = f"現在 FGI が {fmt_num(fgi, 0)} と低水準ですが、45以上に回復し、RSI が 55 を上回ると強気転換の兆候と見なせます。ただし BTC 出来高の増加も併せて確認することが重要です。"
-    elif rsi is not None and rsi < 45:
-        a2 = f"RSI が現在 {fmt_num(rsi, 1)} ですが、55 を上抜けると短期的なモメンタム改善のシグナルです。MA距離がプラスに転じるかも併せて注目してください。"
-    else:
-        a2 = "FGI 55以上の維持 + RSI 55超え + MA距離のプラス拡大が揃うと、持続的な強気トレンドと見なしやすくなります。単一指標だけでの判断は避けてください。"
-    faq_items.append({"q": q2, "a": a2})
-
-    # Q3: 弱気リスク
-    q3 = "弱気になった場合、何を見るべき？"
-    if fgi is not None and fgi < 25:
-        a3 = f"FGI が既に {fmt_num(fgi, 0)} と極端な恐怖状態にあるため、さらなる下落には出来高の急増（パニック売り）やMA距離 -10%超えの拡大を注視してください。逆に、こうした極端な水準は歴史的に反発の起点になることもあります。"
-    else:
-        a3 = "FGI 25以下への悪化、RSI 30割れ、MA距離の -8%超え拡大が弱気加速のシグナルです。特に出来高の急増を伴う場合は警戒が必要です。"
-    faq_items.append({"q": q3, "a": a3})
-
-    # Q4: 固定FAQ（免責）
-    faq_items.append({
-        "q": "このAI判断は投資助言ですか？",
-        "a": "いいえ。CoinRader は公開市場データをルールベースで分析した情報提供ダッシュボードです。売買判断はご自身の責任で行ってください。"
-    })
-
-    # HTML
-    details = []
-    for item in faq_items:
-        details.append(
-            f"<details>"
-            f"<summary>{escape_html(item['q'])}</summary>"
-            f"<div class='a'>{escape_html(item['a'])}</div>"
-            f"</details>"
-        )
-
-    html = (
-        "<section class='card faq' style='margin-top:12px' aria-label='FAQ'>"
-        "<h2 data-i18n data-ja='よくある質問' data-en='FAQ'>よくある質問</h2>"
-        + "".join(details) +
-        "</section>"
-    )
-
-    return html
-
+    faq_items = [
+        {"q": q1, "a": a1},
+        {"q": "What would signal a bullish reversal?" if is_en else "強気に転換する条件は？", "a": (f"FGI is currently low at {fmt_num(fgi, 0)}. A recovery above 45 plus RSI above 55 would suggest bullish reversal. Rising BTC volume would strengthen the signal." if (is_en and fgi is not None and fgi < 40) else (f"RSI is currently {fmt_num(rsi, 1)}. A breakout above 55 can indicate improving short-term momentum. Also watch whether MA distance turns positive." if (is_en and rsi is not None and rsi < 45) else ("A sustained bullish setup is more likely when FGI holds above 55, RSI remains above 55, and MA distance keeps expanding positive. Avoid relying on a single indicator." if is_en else (f"現在 FGI が {fmt_num(fgi, 0)} と低水準ですが、45以上に回復し、RSI が 55 を上回ると強気転換の兆候と見なせます。ただし BTC 出来高の増加も併せて確認することが重要です。" if (fgi is not None and fgi < 40) else (f"RSI が現在 {fmt_num(rsi, 1)} ですが、55 を上抜けると短期的なモメンタム改善のシグナルです。MA距離がプラスに転じるかも併せて注目してください。" if (rsi is not None and rsi < 45) else "FGI 55以上の維持 + RSI 55超え + MA距離のプラス拡大が揃うと、持続的な強気トレンドと見なしやすくなります。単一指標だけでの判断は避けてください。")))) )},
+        {"q": "What should I watch in a bearish phase?" if is_en else "弱気になった場合、何を見るべき？", "a": (f"FGI is already at an extreme fear level ({fmt_num(fgi, 0)}). For further downside risk, watch for panic-volume spikes and MA distance expanding beyond -10%. Extreme readings can also become rebound zones historically." if (is_en and fgi is not None and fgi < 25) else ("Bearish acceleration is more likely if FGI drops below 25, RSI breaks below 30, and MA distance expands past -8%. Treat sharp volume spikes as added risk." if is_en else (f"FGI が既に {fmt_num(fgi, 0)} と極端な恐怖状態にあるため、さらなる下落には出来高の急増（パニック売り）やMA距離 -10%超えの拡大を注視してください。逆に、こうした極端な水準は歴史的に反発の起点になることもあります。" if (fgi is not None and fgi < 25) else "FGI 25以下への悪化、RSI 30割れ、MA距離の -8%超え拡大が弱気加速のシグナルです。特に出来高の急増を伴う場合は警戒が必要です。")) )},
+        {"q": "Is this AI judgment investment advice?" if is_en else "このAI判断は投資助言ですか？", "a": "No. CoinRader is an informational dashboard based on public market data. Make trading decisions at your own discretion." if is_en else "いいえ。CoinRader は公開市場データをルールベースで分析した情報提供ダッシュボードです。売買判断はご自身の責任で行ってください。"},
+    ]
+    details = "".join([f"<details><summary>{escape_html(item['q'])}</summary><div class='a'>{escape_html(item['a'])}</div></details>" for item in faq_items])
+    return f"<section class='card faq' style='margin-top:12px' aria-label='FAQ'><h2>{'FAQ' if is_en else 'よくある質問'}</h2>{details}</section>"
 
 def build_faq_jsonld(faq_items: list) -> str:
     """FAQPage JSON-LD を生成（SERPs拡張用）。"""
@@ -1874,6 +1720,9 @@ TERM_TO_DICT_SLUG = {
     "時価総額": "market-cap",
     "ドミナンス": "dominance",
     "BTC Dominance": "dominance",
+    "Market Cap": "market-cap",
+    "Volatility": "volatility",
+    "Volume": "volume",
     "ボラティリティ": "volatility",
     "出来高": "volume",
     "ATH": "ath",
@@ -1884,14 +1733,14 @@ TERM_TO_DICT_SLUG = {
 }
 
 
-def build_dictionary_links_html(dict_dir: str = "dictionary") -> str:
+def build_dictionary_links_html(dict_dir: str = "dictionary", lang: str = "ja") -> str:
     """日次レポートに関連する用語の辞書リンクを生成（存在するslugのみ）。"""
+    is_en = (lang == "en")
     existing = _list_existing_dict_slugs(dict_dir)
     if not existing:
         return ""
 
-    # レポートで常に使う基本用語を優先表示
-    priority_terms = ["RSI", "Fear & Greed", "移動平均", "時価総額", "ドミナンス", "出来高", "ボラティリティ"]
+    priority_terms = ["RSI", "Fear & Greed", "MA", "Market Cap", "BTC Dominance", "Volume", "Volatility"] if is_en else ["RSI", "Fear & Greed", "移動平均", "時価総額", "ドミナンス", "出来高", "ボラティリティ"]
     shown = set()
     chips = []
 
@@ -1899,7 +1748,7 @@ def build_dictionary_links_html(dict_dir: str = "dictionary") -> str:
         slug = TERM_TO_DICT_SLUG.get(term, "")
         if slug and slug in existing and slug not in shown:
             shown.add(slug)
-            chips.append(f"<a class='chip chip-dict' href='/dictionary/{slug}/'>{escape_html(term)}</a>")
+            chips.append(f"<a class='chip chip-dict' href='/{'en/' if is_en else ''}dictionary/{slug}/'>{escape_html(term)}</a>")
         if len(chips) >= 5:
             break
 
@@ -1907,7 +1756,7 @@ def build_dictionary_links_html(dict_dir: str = "dictionary") -> str:
     for term, slug in TERM_TO_DICT_SLUG.items():
         if slug in existing and slug not in shown:
             shown.add(slug)
-            chips.append(f"<a class='chip chip-dict' href='/dictionary/{slug}/'>{escape_html(term)}</a>")
+            chips.append(f"<a class='chip chip-dict' href='/{'en/' if is_en else ''}dictionary/{slug}/'>{escape_html(term)}</a>")
         if len(chips) >= 5:
             break
 
@@ -1916,16 +1765,10 @@ def build_dictionary_links_html(dict_dir: str = "dictionary") -> str:
 
     return (
         "<section class='card dict-links' style='margin-top:12px' aria-label='Related terms'>"
-        "<div class='badge' data-i18n data-ja='今日学ぶべき用語' data-en='Key Terms'>今日学ぶべき用語</div>"
+        f"<div class='badge'>{'Key Terms' if is_en else '今日学ぶべき用語'}</div>"
         "<div style='height:8px'></div>"
-        "<div class='dict-chips'>"
-        + "".join(chips) +
-        "</div>"
-        "<div class='dict-note' data-i18n "
-        "data-ja='レポートで使用している指標の詳細解説はこちら' "
-        "data-en='Learn more about the indicators used in this report'>"
-        "レポートで使用している指標の詳細解説はこちら"
-        "</div>"
+        "<div class='dict-chips'>" + "".join(chips) + "</div>"
+        f"<div class='dict-note'>{'Learn more about the indicators used in this report' if is_en else 'レポートで使用している指標の詳細解説はこちら'}</div>"
         "</section>"
     )
 
@@ -2070,8 +1913,8 @@ def main() -> None:
 
         recent_days_html = build_recent_days_html(dated, ymd, n=7)
         similar_days_html = build_similar_days_html(it, items, limit=5)
-        why_html = build_reason_html(payload, judge)
-        takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer)
+        why_html = build_reason_html(payload, judge, lang='ja')
+        takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer, lang='ja')
         coin_hubs_html = build_coin_hub_links_html(SITE_ORIGIN, trending, top_gainer)
 
         # ★ Phase 2: 新機能HTML生成
@@ -2087,11 +1930,17 @@ def main() -> None:
             if btc_entry:
                 btc_24h_chg = btc_entry.get("price_change_percentage_24h")
 
-        scenarios_html = build_scenarios_html(fgi_raw, rsi_raw, mad_raw, judge)
+        scenarios_html = build_scenarios_html(fgi_raw, rsi_raw, mad_raw, judge, lang='ja')
         score_data = compute_coinrader_score(fgi_raw, rsi_raw, mad_raw, btc_24h_chg)
-        score_html = build_score_html(score_data)
-        dynamic_faq_html = build_dynamic_faq_html(judge, fgi_raw, rsi_raw, mad_raw)
-        dict_links_html = build_dictionary_links_html()
+        score_html = build_score_html(score_data, lang='ja')
+        dynamic_faq_html = build_dynamic_faq_html(judge, fgi_raw, rsi_raw, mad_raw, lang='ja')
+        dict_links_html = build_dictionary_links_html(lang='ja')
+        en_why_html = build_reason_html(payload, judge, lang='en')
+        en_takeaways_html = build_takeaways_html(payload, judge, sent, rsi, trend, trending, top_gainer, lang='en')
+        en_scenarios_html = build_scenarios_html(fgi_raw, rsi_raw, mad_raw, judge, lang='en')
+        en_score_html = build_score_html(score_data, lang='en')
+        en_dynamic_faq_html = build_dynamic_faq_html(judge, fgi_raw, rsi_raw, mad_raw, lang='en')
+        en_dict_links_html = build_dictionary_links_html(lang='en')
 
         # FAQ JSON-LD
         faq_items = _build_faq_items_for_jsonld(judge, fgi_raw, rsi_raw, mad_raw)
@@ -2227,6 +2076,18 @@ def main() -> None:
             en_jsonld=en_jsonld,
             en_faq_jsonld=en_faq_jsonld,
         )
+        en_html = re.sub(
+            r'<div class="why">.*?</div>\s*</section>',
+            f'<div class="why">{en_why_html}</div>\n      </section>',
+            en_html,
+            count=1,
+            flags=re.DOTALL,
+        )
+        en_html = re.sub(r"<section class='takeaways'.*?</section>", en_takeaways_html, en_html, count=1, flags=re.DOTALL)
+        en_html = re.sub(r"<section class='card scenarios'.*?</section>", en_scenarios_html, en_html, count=1, flags=re.DOTALL)
+        en_html = re.sub(r"<section class='card score-card'.*?</section>", en_score_html, en_html, count=1, flags=re.DOTALL)
+        en_html = re.sub(r"<section class='card faq'.*?</section>", en_dynamic_faq_html, en_html, count=1, flags=re.DOTALL)
+        en_html = re.sub(r"<section class='card dict-links'.*?</section>", en_dict_links_html, en_html, count=1, flags=re.DOTALL)
         write_text(OUT_DIR_EN / f"{ymd}.html", en_html)
 
 
