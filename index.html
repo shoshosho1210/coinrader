@@ -91,10 +91,10 @@
     }
 
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(loadAdsScript, { timeout: 4500 });
+      requestIdleCallback(loadAdsScript, { timeout: 15000 });
     } else {
       window.addEventListener('load', function () {
-        setTimeout(loadAdsScript, 2200);
+        setTimeout(loadAdsScript, 12000);
       }, { once: true });
     }
   </script>
@@ -10059,10 +10059,10 @@
 
       if (shouldProxyFirst) {
         try {
-          return await fetch(proxyUrl(url), baseOpts);
-        } catch (e) {
-          throw e;
-        }
+          const proxied = await fetch(proxyUrl(url), baseOpts);
+          if (proxied && proxied.ok) return proxied;
+        } catch (_e) { }
+        return await fetch(url, baseOpts);
       }
 
       try {
@@ -10328,7 +10328,22 @@
 
     // BTC MA cross (SMA50/SMA200) 用データ
     window.__btcMaCross = null;
+    let __btcMaCrossScheduled = false;
 
+    function scheduleBtcMaCross() {
+      if (__btcMaCrossScheduled || window.__btcMaCross) return;
+      __btcMaCrossScheduled = true;
+      const run = () => {
+        loadBtcMaCross()
+          .catch(() => { window.__btcMaCross = null; })
+          .finally(() => { __btcMaCrossScheduled = false; });
+      };
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(run, { timeout: 20000 });
+      } else {
+        setTimeout(run, 12000);
+      }
+    }
     async function loadBtcMaCross() {
       // CoinGeckoのmarket_chartは近年、Publicユーザーだと期間制限/ CORSで失敗しやすい。
       // そこで「追加APIなし」の範囲で、ブラウザから取得できるBinanceのOHLC(日足)で 50/200MA を推定する。
@@ -13530,8 +13545,8 @@
         if (firstLoad) setStatus('最新データと同期中…');
         await loadMarketsTop250(fromManualRefresh);
 
-        // 追加KPI: BTC MAクロス距離
-        try { await loadBtcMaCross(); } catch (e) { window.__btcMaCross = null; }
+        // 追加KPI: BTC MAクロス距離（初期表示はノンブロッキングで後追い取得）
+        try { scheduleBtcMaCross(); } catch (_e) { }
 
         if (!marketsTop.length) {
           setStatus('接続待機中');
@@ -14516,20 +14531,25 @@
       const ctx = canvas.getContext('2d');
       let width, height;
       let particles = [];
+      let rafId = 0;
 
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const saveData = !!(navigator.connection && navigator.connection.saveData);
+      const lowCpu = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+      const lowPowerMode = prefersReducedMotion || saveData || lowCpu || window.innerWidth < 640;
       // 設定
       const config = {
-        count: 70,                 // 粒子の数
-        dist: 140,                 // 線がつながる距離
-        speed: 0.2,                // ゆったりした動き
-        baseColor: '56, 189, 248'  // #38bdf8 (CoinRader Cyan)
+        count: lowPowerMode ? 22 : 70,
+        dist: lowPowerMode ? 90 : 140,
+        speed: lowPowerMode ? 0.08 : 0.2,
+        baseColor: '56, 189, 248
       };
 
       function resize() {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
       }
-      window.addEventListener('resize', resize);
+      window.addEventListener('resize', resize, { passive: true });
       resize();
 
       class Particle {
@@ -14565,11 +14585,10 @@
       function init() {
         particles = [];
         const count = window.innerWidth < 600 ? 35 : config.count;
-        for (let i = 0; i < count; i++) particles.push(new Particle());
+        for (let i = 0; i < config.count; i++) particles.push(new Particle());
       }
 
-      function animate() {
-        // わずかに青みを含んだ黒で背景をクリア
+      function drawFrame() {
         ctx.fillStyle = '#050b14';
         ctx.fillRect(0, 0, width, height);
 
@@ -14593,10 +14612,30 @@
             }
           }
         });
-        requestAnimationFrame(animate);
       }
+      function animate() {
+        drawFrame();
+        rafId = requestAnimationFrame(animate);
+      }
+
       init();
-      animate();
+
+      if (lowPowerMode) {
+        drawFrame();
+      } else if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => { animate(); }, { timeout: 2000 });
+      } else {
+        setTimeout(animate, 200);
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = 0;
+        } else if (!lowPowerMode && !rafId) {
+          rafId = requestAnimationFrame(animate);
+        }
+      });
     })();
 
     // ===== AI JUDGE tuning constants =====
