@@ -906,7 +906,36 @@
 
   </div>
 
-  
+  <script>
+    (function () {
+      const btn = document.getElementById('langToggle');
+      if (!btn) return;
+
+      const KEY = 'cr_lang';
+      const saved = localStorage.getItem(KEY) || 'en';
+
+      function apply(lang) {
+        document.documentElement.lang = lang;
+        btn.textContent = (lang === 'en') ? 'JP' : 'EN';
+        btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const ja = el.getAttribute('data-ja');
+          const en = el.getAttribute('data-en');
+          if (!ja || !en) return;
+          el.innerHTML = (lang === 'en') ? en : ja;
+        });
+      }
+
+      btn.addEventListener('click', () => {
+        const next = (document.documentElement.lang === 'en') ? 'ja' : 'en';
+        localStorage.setItem(KEY, next);
+        apply(next);
+      });
+
+      apply(saved);
+    })();
+  </script>
 
 </body>
 
