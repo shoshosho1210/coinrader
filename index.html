@@ -60,7 +60,14 @@
       s.src = 'https://www.googletagmanager.com/gtag/js?id=G-TDEBXC7DH6';
       document.head.appendChild(s);
       gtag('js', new Date());
-      gtag('config', 'G-TDEBXC7DH6');
+      gtag('config', 'G-TDEBXC7DH6', {
+        transport_type: 'beacon',
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false
+      });
+      s.onerror = function () {
+        console.warn('[analytics] gtag.js load failed');
+      };
     }
     if ('requestIdleCallback' in window) {
       requestIdleCallback(loadAnalytics, { timeout: 3000 });
