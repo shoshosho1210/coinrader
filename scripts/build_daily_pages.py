@@ -232,7 +232,8 @@ def localize_daily_html_en(
         return f"{m.group(1)}{m.group('en')}{m.group(5)}"
 
     html = i18n_block_pat.sub(_i18n_to_en, html)
-
+    # Remove JA fallback attributes on /en pages to avoid shipping JP fragments in HTML source.
+    html = re.sub(r'\sdata-ja="[^"]*"', '', html)
     return html
 
 
