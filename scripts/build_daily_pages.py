@@ -206,9 +206,6 @@ def localize_daily_html_en(
         count=1,
     )
 
-    script_pat_toggle = re.compile(r'<script>\s*\(function \(\) \{.*?apply\(saved\);\s*\}\)\(\);\s*</script>', re.DOTALL)
-    html = script_pat_toggle.sub('', html, count=1)
-  
     # Prefer English static copy on /en pages (SEO / no-JS friendly)
     en_replacements = {
         "AI判定": "AI judgment",
@@ -246,7 +243,7 @@ def localize_daily_html_en(
 
     html = i18n_block_pat.sub(_i18n_to_en, html)
     # Remove JA fallback attributes on /en pages to avoid shipping JP fragments in HTML source.
-    html = re.sub(r'\sdata-ja="[^"]*"', '', html)
+    html = re.sub(r"\sdata-ja=(?:\"[^\"]*\"|'[^']*')", '', html)
     return html
 
 
