@@ -247,6 +247,26 @@ def localize_daily_html_en(
     html = re.sub(r"\sdata-ja=(?:\"[^\"]*\"|'[^']*')", '', html)
     return html
 
+def normalize_i18n_for_en_html(html: str) -> str:
+    """Render EN copy into data-i18n/data-ph blocks and remove JA attributes/comments."""
+    i18n_block_pat = re.compile(
+        r'(<(?P<tag>[a-zA-Z0-9]+)\b[^>]*\bdata-i18n\b[^>]*\bdata-en="(?P<en>[^"]*)"[^>]*>)(?P<body>.*?)(</(?P=tag)>)',
+        re.DOTALL,
+    )
+    html = i18n_block_pat.sub(lambda m: f"{m.group(1)}{m.group('en')}{m.group(5)}", html)
+
+    html = re.sub(
+        r'(<input\b(?=[^>]*\bdata-ph-en="(?P<en>[^"]*)")(?=[^>]*\bplaceholder=")(?P<attrs>[^>]*?)\bplaceholder=")(?P<ph>[^"]*)("(?P<tail>[^>]*>))',
+        lambda m: f"<input{m.group('attrs')}placeholder=\"{m.group('en')}\"{m.group('tail')}",
+        html,
+        flags=re.DOTALL,
+    )
+
+    html = re.sub(r"\sdata-ja=(?:\"[^\"]*\"|'[^']*')", '', html)
+    html = re.sub(r"\sdata-ph-ja=(?:\"[^\"]*\"|'[^']*')", '', html)
+    html = re.sub(r"<!--.*?-->", "", html, flags=re.DOTALL)
+    return html
+
 
 def build_seo_meta_en(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi, trend, trending: List[str], top_gainer=None) -> Dict[str, str]:
     fgi_s = str(sentiment_value) if sentiment_value is not None else "-"
@@ -2209,6 +2229,7 @@ def main() -> None:
     en_index_html = index_html
     en_index_html = re.sub(r'<html\s+lang="ja">', '<html lang="en">', en_index_html, count=1)
     en_index_html = en_index_html.replace('href="/daily/', 'href="/en/daily/')
+    en_index_html = en_index_html.replace("href='/daily/", "href='/en/daily/")
     en_index_html = en_index_html.replace('<a href="/">CoinRader</a> / Daily', '<a href="/en/">CoinRader</a> / Daily')
     en_index_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>', f'<link rel="canonical" href="{SITE_ORIGIN}/en/daily/" />', en_index_html, count=1)
     en_index_html = en_index_html.replace('CoinRaderの日次AIレポート一覧。最新日から過去へ遡って閲覧できます。', 'Browse CoinRader daily AI reports from the latest date backward.')
@@ -2218,9 +2239,30 @@ def main() -> None:
     en_index_html = en_index_html.replace('注目 ', 'Trending ')
     en_index_html = en_index_html.replace('上昇 ', 'Gainer ')
     en_index_html = en_index_html.replace('注目トレンドは ', 'Trending: ')
+    en_index_html = en_index_html.replace('BTC RSI が ', 'BTC RSI is ')
+    en_index_html = en_index_html.replace(' で売られ過ぎ水準。', ', in oversold territory.')
+    en_index_html = en_index_html.replace('上昇トップは ', 'Top gainer is ')
+    en_index_html = en_index_html.replace(' で強い動き。', ', showing strong momentum.')
     en_index_html = en_index_html.replace('最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。', 'Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date.')
     en_index_html = en_index_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
     en_index_html = en_index_html.replace('客観的な暗号資産分析ダッシュボード', 'Objective crypto analytics dashboard')
+    en_index_html = en_index_html.replace('CoinRader ホーム', 'CoinRader Home')
+    en_index_html = en_index_html.replace('主要リンク', 'Primary links')
+    en_index_html = en_index_html.replace('活用ガイド', 'Guide')
+    en_index_html = en_index_html.replace('始め方', 'Getting Started')
+    en_index_html = en_index_html.replace('データ', 'Data')
+    en_index_html = en_index_html.replace('運営', 'About')
+    en_index_html = en_index_html.replace('連絡', 'Contact')
+    en_index_html = en_index_html.replace('免責', 'Disclaimer')
+    en_index_html = en_index_html.replace('法務', 'Legal')
+    en_index_html = en_index_html.replace(' 件', ' results')
+    en_index_html = en_index_html.replace('一覧', 'All')
+    en_index_html = en_index_html.replace('検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など', 'Search: date / hot coins / top gainers / summary ...')
+    en_index_html = en_index_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
+    en_index_html = en_index_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます.気になる日の<strong>要約</strong>を見て、詳細ページへ.', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
+    en_index_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み。', r'MA distance is \1, showing downside pressure.', en_index_html)
+    en_index_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み\.', r'MA distance is \1, showing downside pressure.', en_index_html)
+    en_index_html = normalize_i18n_for_en_html(en_index_html)
     write_text(OUT_DIR_EN / "index.html", en_index_html)
 
 
@@ -2329,6 +2371,7 @@ def main() -> None:
         en_tag_html = tag_html
         en_tag_html = re.sub(r'<html\s+lang="ja">', '<html lang="en">', en_tag_html, count=1)
         en_tag_html = en_tag_html.replace('href="/daily/', 'href="/en/daily/')
+        en_tag_html = en_tag_html.replace("href='/daily/", "href='/en/daily/")
         en_tag_html = en_tag_html.replace('<a href="/">CoinRader</a> / Daily', '<a href="/en/">CoinRader</a> / Daily')
         en_tag_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>', f'<link rel="canonical" href="{SITE_ORIGIN}/en/daily/tags/{tag_lower}" />', en_tag_html, count=1)
         en_tag_desc_map = {
@@ -2343,7 +2386,31 @@ def main() -> None:
         en_tag_html = en_tag_html.replace('客観的な暗号資産分析ダッシュボード', 'Objective crypto analytics dashboard')
         en_tag_html = en_tag_html.replace('最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。', 'Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date.')
         en_tag_html = en_tag_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
-
+        en_tag_html = en_tag_html.replace('注目 ', 'Trending ')
+        en_tag_html = en_tag_html.replace('上昇 ', 'Gainer ')
+        en_tag_html = en_tag_html.replace('注目トレンドは ', 'Trending: ')
+        en_tag_html = en_tag_html.replace('BTC RSI が ', 'BTC RSI is ')
+        en_tag_html = en_tag_html.replace(' で売られ過ぎ水準。', ', in oversold territory.')
+        en_tag_html = en_tag_html.replace('上昇トップは ', 'Top gainer is ')
+        en_tag_html = en_tag_html.replace(' で強い動き。', ', showing strong momentum.')
+        en_tag_html = en_tag_html.replace('CoinRader ホーム', 'CoinRader Home')
+        en_tag_html = en_tag_html.replace('主要リンク', 'Primary links')
+        en_tag_html = en_tag_html.replace('活用ガイド', 'Guide')
+        en_tag_html = en_tag_html.replace('始め方', 'Getting Started')
+        en_tag_html = en_tag_html.replace('データ', 'Data')
+        en_tag_html = en_tag_html.replace('運営', 'About')
+        en_tag_html = en_tag_html.replace('連絡', 'Contact')
+        en_tag_html = en_tag_html.replace('免責', 'Disclaimer')
+        en_tag_html = en_tag_html.replace('法務', 'Legal')
+        en_tag_html = en_tag_html.replace(' 件', ' results')
+        en_tag_html = en_tag_html.replace('一覧', 'All')
+        en_tag_html = en_tag_html.replace('検索：日付 / 注目銘柄 / 上昇銘柄 / 要約 など', 'Search: date / hot coins / top gainers / summary ...')
+        en_tag_html = en_tag_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
+        en_tag_html = en_tag_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます.気になる日の<strong>要約</strong>を見て、詳細ページへ.', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
+        en_tag_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み。', r'MA distance is \1, showing downside pressure.', en_tag_html)
+        en_tag_html = re.sub(r'MA距離が\s*([^\s<]+)\s*で弱含み\.', r'MA distance is \1, showing downside pressure.', en_tag_html)
+        en_tag_html = normalize_i18n_for_en_html(en_tag_html)
+      
         tag_jsonld_en = {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
