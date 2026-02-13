@@ -2292,6 +2292,8 @@ def main() -> None:
     en_index_html = re.sub(r'href="(\d{8})"', r'href="/en/daily/\1"', en_index_html)
     en_index_html = en_index_html.replace('<a href="/">CoinRader</a> / Daily', '<a href="/en/">CoinRader</a> / Daily')
     en_index_html = re.sub(r'<link\s+rel="canonical"\s+href="[^"]*"\s*/?>', f'<link rel="canonical" href="{SITE_ORIGIN}/en/daily/" />', en_index_html, count=1)
+    en_index_html = en_index_html.replace('https://coinrader.net/daily/feed.xml', f'{SITE_ORIGIN}/en/daily/feed.xml')
+    en_index_html = en_index_html.replace('CoinRader Daily AIレポート RSS', 'CoinRader Daily AI Reports RSS')
     en_index_html = en_index_html.replace('CoinRaderの日次AIレポート一覧。最新日から過去へ遡って閲覧できます。', 'Browse CoinRader daily AI reports from the latest date backward.')
     en_index_html = en_index_html.replace('<title>Daily AIレポート一覧 | CoinRader</title>', '<title>Daily AI Reports | CoinRader</title>')
     en_index_html = en_index_html.replace('<h1>Daily AIレポート一覧</h1>', '<h1>Daily AI Reports</h1>')
