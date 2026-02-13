@@ -88,9 +88,13 @@ def build() -> tuple[int, int, int, str | None]:
     daily_entries: list[tuple[str, str | None]] = []
     if latest:
         lm_latest = ymd2iso(latest)
-        for u in ("/daily/", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait"):
+        for u in (
+            "/daily/", "/daily/feed.xml", "/daily/tags/bear", "/daily/tags/bull", "/daily/tags/wait",
+        ):
             daily_entries.append((f"{ORIGIN}{u}", lm_latest))
-        for u in ("/en/daily/", "/en/daily/tags/bear", "/en/daily/tags/bull", "/en/daily/tags/wait"):
+        for u in (
+            "/en/daily/", "/en/daily/feed.xml", "/en/daily/tags/bear", "/en/daily/tags/bull", "/en/daily/tags/wait",
+        ):
             daily_entries.append((f"{ORIGIN}{u}", lm_latest))
     for ymd in daily_ids:
         daily_entries.append((f"{ORIGIN}/daily/{ymd}", ymd2iso(ymd)))
