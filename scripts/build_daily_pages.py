@@ -228,6 +228,7 @@ def localize_daily_html_en(
         "一覧": "List",
         "最新": "Latest",
         "前日": "Previous day",
+        "翌日": "Next day",
     }
     for ja, en in en_replacements.items():
         html = html.replace(ja, en)
