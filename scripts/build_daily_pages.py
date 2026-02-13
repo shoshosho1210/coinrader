@@ -194,6 +194,26 @@ def localize_daily_html_en(
         html = html.replace('</head>', f'  {hreflang}\n</head>', 1)
 
     html = html.replace("const saved = localStorage.getItem(KEY) || 'ja';", "const saved = localStorage.getItem(KEY) || 'en';")
+
+    # Prefer English static copy on /en pages (SEO / no-JS friendly)
+    en_replacements = {
+        "AI判定": "AI judgment",
+        "結論：": "Conclusion: ",
+        "注目トレンド": "Trending",
+        "市場心理": "Market sentiment",
+        "短期の温度感": "Short-term heat",
+        "方向感": "Direction",
+        "よくある質問": "FAQ",
+        "このAI判断は投資助言ですか？": "Is this AI judgment investment advice?",
+        "今日はなぜ下がったのですか？": "Why did the market weaken today?",
+        "強気に転換する条件は？": "What would signal a bullish reversal?",
+        "弱気になった場合、何を見るべき？": "What should I watch in a bearish phase?",
+        "いいえ。CoinRader は公開市場データをルールベースで分析した情報提供ダッシュボードです。売買判断はご自身の責任で行ってください。": "No. CoinRader is an informational dashboard based on public market data. Make trading decisions at your own discretion.",
+        "客観的な暗号資産分析ダッシュボード": "Objective crypto analytics dashboard",
+    }
+    for ja, en in en_replacements.items():
+        html = html.replace(ja, en)
+
     return html
 
 
@@ -252,7 +272,8 @@ def build_jsonld_en(canonical: str, title: str, description: str, date_iso: str,
         ],
     }
     return json.dumps(data, ensure_ascii=False)
-  
+
+
 def escape_html(s: str) -> str:
     return (s.replace("&", "&amp;")
               .replace("<", "&lt;")
@@ -2190,7 +2211,6 @@ def main() -> None:
         )
         write_text(OUT_DIR_EN / f"{ymd}.html", en_html)
 
-
         trend_top3 = "/".join(trending[:3]) if trending else ""
 
         top_gainer_label = ""
@@ -2306,6 +2326,9 @@ def main() -> None:
     en_index_html = en_index_html.replace('注目 ', 'Trending ')
     en_index_html = en_index_html.replace('上昇 ', 'Gainer ')
     en_index_html = en_index_html.replace('注目トレンドは ', 'Trending: ')
+    en_index_html = en_index_html.replace('最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。', 'Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date.')
+    en_index_html = en_index_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
+    en_index_html = en_index_html.replace('客観的な暗号資産分析ダッシュボード', 'Objective crypto analytics dashboard')
     write_text(OUT_DIR_EN / "index.html", en_index_html)
 
     tags_dir = OUT_DIR / "tags"
@@ -2425,7 +2448,21 @@ def main() -> None:
         en_tag_html = en_tag_html.replace(f'AI {judge_key} の日一覧', f'AI {judge_key} Days')
         en_tag_html = en_tag_html.replace('最新: <a href="/en/daily/latest">latest</a>', 'Latest: <a href="/en/daily/latest">latest</a>')
         en_tag_html = en_tag_html.replace('客観的な暗号資産分析ダッシュボード', 'Objective crypto analytics dashboard')
+        en_tag_html = en_tag_html.replace('最新日から過去へ。日付別にAI判定と指標（FGI / RSI / Trend）を確認できます。', 'Browse from latest to oldest. Check AI judgment and indicators (FGI / RSI / Trend) by date.')
+        en_tag_html = en_tag_html.replace('毎日のAI判定と主要指標（FGI/RSI/Trend）を一覧で比較できます。気になる日の<strong>要約</strong>を見て、詳細ページへ。', 'Compare daily AI judgments and key indicators (FGI/RSI/Trend) at a glance. Review summaries and open detail pages.')
+
+        tag_jsonld_en = {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": f"AI {judge_key} Days (CoinRader)",
+            "description": en_tag_desc_map.get(tag_lower, "Daily AI report list by judgment."),
+            "url": f"{SITE_ORIGIN}/en/daily/tags/{tag_lower}",
+            "mainEntity": {"@type": "ItemList", "itemListOrder": "https://schema.org/ItemListOrderDescending", "numberOfItems": len(filtered), "itemListElement": []},
+            "publisher": {"@type": "Organization", "name": "CoinRader"},
+        }
+        en_tag_html = re.sub(r'<script type="application/ld\+json">\s*\{.*?\}\s*</script>', f'<script type="application/ld+json">{json.dumps(tag_jsonld_en, ensure_ascii=False)}</script>', en_tag_html, flags=re.DOTALL, count=1)
         write_text(OUT_DIR_EN / "tags" / f"{tag_lower}.html", en_tag_html)
+
 
     update_daily_latest_redirect(latest_ymd)
     latest_target = f"{latest_ymd}.html"
