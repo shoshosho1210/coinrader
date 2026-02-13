@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://coinrader.net/sitemap.xml
+Feed: https://coinrader.net/daily/feed.xml
+Feed: https://coinrader.net/en/daily/feed.xml
