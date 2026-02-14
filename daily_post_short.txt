@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (02/14)
+🤖 CoinRader 市場速報 (02/15)
 分析: 弱気 (BEAR)
 
 🔹 Bitcoin 📈
-価格: ¥1050万
-前日比: +5.1%
-RSI(14): 71.9
+価格: ¥1069万
+前日比: +1.8%
+RSI(14): 60.5
 心理指数: 9 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: AZTEC, BTC, SOL
-急上昇銘柄: COMP (48%↑)
+トレンド入り: PENGU, PEPE, PIPPIN
+急上昇銘柄: PEPE (24%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260214.html
+https://coinrader.net/share/20260215.html
 
 #CoinRader #ビットコイン #暗号資産
