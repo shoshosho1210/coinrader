@@ -8811,6 +8811,21 @@
   display:none !important;
 }
 
+.ai-brief{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+}
+.ai-brief-row{ margin-bottom: 8px; }
+.ai-brief-row .t{
+  font-size: 11px; letter-spacing:.08em; font-weight:800;
+  color:#38bdf8; opacity:.95;
+}
+.ai-brief-row .d{ margin-top:4px; font-size:13px; font-weight:700; color:#e5e7eb; }
+.ai-brief-list{ margin:6px 0 0 18px; padding:0; }
+.ai-brief-list li{ font-size:12px; opacity:.9; margin:2px 0; }
 
 
 </style>
@@ -9015,7 +9030,14 @@
             <div class="k">TREND</div>
             <div class="v" id="hudTrendVal">--</div>
           </div>
-
+          <div class="hud-radar-kv">
+            <div class="k">BREADTH</div>
+            <div class="v" id="hudBreadthVal">--</div>
+          </div>
+          <div class="hud-radar-kv">
+            <div class="k">FLOW</div>
+            <div class="v" id="hudFlowVal">--</div>
+          </div>
           <div class="hud-radar-note" data-i18n
             data-ja="※TRENDは-10%〜+10%を0〜100に正規化"
             data-en="*TREND normalized from -10%..+10% into 0..100">
@@ -11080,6 +11102,12 @@
         // ★ AI JUDGE(レーダー)用に退避：BREADTH（上昇率%）
         window.__AI_KPI = window.__AI_KPI || {};
         window.__AI_KPI.breadthUpPct = Number(upPct); // 0..100
+        if (typeof kpi.breadthUpPct === 'number') {
+          updateWithFlash('hudBreadthVal', kpi.breadthUpPct.toFixed(1) + '%');
+        }
+        if (typeof kpi.flow7dPct === 'number') {
+          updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
+        }
 
         let sign = '';
         if (upPct >= 70) sign = '<i class="fa-solid fa-rocket"></i>全面高の気配';
