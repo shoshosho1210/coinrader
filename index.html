@@ -12988,27 +12988,28 @@
       if (sentNum2 !== null) updateWithFlash('hudFgVal', Math.round(sentNum2));
       if (maVal2 !== null)   updateWithFlash('hudTrendVal', (maVal2 >= 0 ? '+' : '') + maVal2.toFixed(1) + '%');
 
-      // 正規化 helpers
+      // helpers
       const clamp01 = (x) => Math.max(0, Math.min(100, x));
-      const normPm20 = (x) => { // -10..+10 => 0..100
+      const normPm20 = (x) => { // -20..+20 => 0..100
         if (typeof x !== 'number' || !isFinite(x)) return null;
         const c = Math.max(-20, Math.min(20, x));
         return ((c + 20) / 40) * 100;
       };
 
-      // 3軸（すでにある値）
+      // 3軸
       const vRsi   = (rsiNum2 === null) ? 0 : clamp01(rsiNum2);
       const vSent  = (sentNum2 === null) ? 0 : clamp01(sentNum2);
       const vTrend = (maVal2   === null) ? 0 : (normPm20(maVal2) ?? 0);
 
-      // --- 追加：BREADTH / FLOW の数値カード更新 ---
+      // 追加2軸（renderOverview で退避した値を読む）
       const kpi = window.__AI_KPI || {};
-      if (typeof kpi.breadthUpPct === 'number') {
-        updateWithFlash('hudBreadthVal', kpi.breadthUpPct.toFixed(1) + '%');
-      }
-      if (typeof kpi.flow7dPct === 'number') {
-        updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
-      }
+      const vBreadth = (typeof kpi.breadthUpPct === 'number') ? clamp01(kpi.breadthUpPct) : 0;
+      const vFlow    = (typeof kpi.flow7dPct === 'number') ? (normPm20(kpi.flow7dPct) ?? 0) : 0;
+
+      // BREADTH / FLOW の数値カード更新（カードが無ければ無視）
+      if (typeof kpi.breadthUpPct === 'number') updateWithFlash('hudBreadthVal', kpi.breadthUpPct.toFixed(1) + '%');
+      if (typeof kpi.flow7dPct === 'number')    updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
+
       // 5軸レーダー描画（これ1回だけ）
       makeRadarChart(
         'aiRadar',
@@ -13016,29 +13017,24 @@
         [vRsi, vSent, vTrend, vBreadth, vFlow]
       );
 
-
-      // --- 追加：文章（推奨/反転/根拠TOP3） ---
-      function setBrief(action, flip, reasons){
+      // --- 文章（推奨/反転/根拠TOP3） ---
+      (function(){
         const a = document.getElementById('aiActionLine');
         const f = document.getElementById('aiFlipLine');
         const r = document.getElementById('aiReasonsTop3');
-        if (a) a.textContent = action;
-        if (f) f.textContent = flip;
-        if (r) r.innerHTML = reasons.map(x => `<li>${x}</li>`).join('');
-      }
+        if (!a || !f || !r) return; // ★HTMLをまだ入れてないなら何もしない
 
-      const reasons = [];
-      if (typeof maVal2 === 'number') reasons.push(`トレンド: MA距離 ${maVal2.toFixed(1)}%`);
-      if (typeof sentNum2 === 'number') reasons.push(`心理: Sentiment ${Math.round(sentNum2)}`);
-      if (typeof rsiNum2 === 'number') reasons.push(`モメンタム: RSI ${Math.round(rsiNum2)}`);
-      if (typeof kpi.breadthUpPct === 'number') reasons.push(`騰落: 上昇率 ${kpi.breadthUpPct.toFixed(1)}%`);
-      if (typeof kpi.flow7dPct === 'number') reasons.push(`資金: 7d ${kpi.flow7dPct.toFixed(2)}%`);
+        const reasons = [];
+        if (typeof maVal2 === 'number')  reasons.push(`トレンド: MA距離 ${maVal2.toFixed(1)}%`);
+        if (typeof sentNum2 === 'number') reasons.push(`心理: Sentiment ${Math.round(sentNum2)}`);
+        if (typeof rsiNum2 === 'number')  reasons.push(`モメンタム: RSI ${Math.round(rsiNum2)}`);
+        if (typeof kpi.breadthUpPct === 'number') reasons.push(`騰落: 上昇率 ${kpi.breadthUpPct.toFixed(1)}%`);
+        if (typeof kpi.flow7dPct === 'number')    reasons.push(`資金: 7d ${kpi.flow7dPct.toFixed(2)}%`);
 
-      setBrief(
-        '新規は控えめ。反発狙いは小さく・逆指値前提。',
-        'TRENDが改善（例:-3%より上）＋騰落上昇率55%超で「保留/強気寄り」へ。',
-        reasons.slice(0, 3)
-      );
+        a.textContent = '新規は控えめ。反発狙いは小さく・逆指値前提。';
+        f.textContent = 'TRENDが改善（例:-3%より上）＋騰落上昇率55%超で「保留/強気寄り」へ。';
+        r.innerHTML = reasons.slice(0,3).map(x => `<li>${x}</li>`).join('');
+      })();
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
       if (badgeEl) {
