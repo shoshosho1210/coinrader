@@ -11228,6 +11228,7 @@
       // ★ AI JUDGE(レーダー)用に退避：FLOW（時価総額7d変化%）
       window.__AI_KPI = window.__AI_KPI || {};
       window.__AI_KPI.flow7dPct = (typeof o.mcap7dPct === 'number') ? o.mcap7dPct : null;
+      console.log('[FLOW debug]', { mcap7dPct: o.mcap7dPct, type: typeof o.mcap7dPct });
 
       const elAltRatio = document.getElementById('kpiAltVolRatio');
       if (elAltRatio) {
