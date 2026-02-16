@@ -303,15 +303,6 @@ def build_jsonld_en(canonical: str, title: str, description: str, date_iso: str,
                 "publisher": {"@type": "Organization", "name": "CoinRader"},
             },
             {
-                "@type": "FAQPage",
-                "@id": canonical + "#faq",
-                "mainEntity": [
-                    {"@type": "Question", "name": "Is this investment advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. CoinRader provides informational analytics only."}},
-                    {"@type": "Question", "name": "How often is this page updated?", "acceptedAnswer": {"@type": "Answer", "text": "This page is updated daily (JST)."}},
-                    {"@type": "Question", "name": "Does low Fear & Greed or RSI always mean buy?", "acceptedAnswer": {"@type": "Answer", "text": "No. Use them with trend and market context."}},
-                ],
-            },
-            {
                 "@type": "BreadcrumbList",
                 "@id": canonical + "#breadcrumb",
                 "itemListElement": [
@@ -373,8 +364,8 @@ def build_seo_meta(date_iso: str, ymd: str, judge: str, sentiment_value, btc_rsi
 
 
 def build_jsonld(canonical: str, title: str, description: str, date_iso: str, updated_at_jst: str) -> str:
-    # 日次ページは Article + FAQPage + BreadcrumbList を出力
-    # updated_at_jst: 'YYYY-MM-DD HH:MM' のような文字列を想定
+    # 日次ページは Article + BreadcrumbList を出力
+    # FAQPage は動的FAQ用の別JSON-LD（{{FAQ_JSONLD}}）のみを使う
     def to_iso(dt_s: str) -> str:
         try:
             dt = datetime.datetime.strptime(dt_s, "%Y-%m-%d %H:%M")
@@ -383,7 +374,6 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
             return date_iso + "T09:00:00+09:00"
           
     article_id = canonical + "#article"
-    faq_id = canonical + "#faq"
     breadcrumb_id = canonical + "#breadcrumb"
     data = {
         "@context": "https://schema.org",
@@ -397,36 +387,6 @@ def build_jsonld(canonical: str, title: str, description: str, date_iso: str, up
                 "dateModified": to_iso(updated_at_jst),
                 "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
                 "publisher": {"@type": "Organization", "name": "CoinRader"},
-            },
-            {
-                "@type": "FAQPage",
-                "@id": faq_id,
-                "mainEntity": [
-                    {
-                        "@type": "Question",
-                        "name": "このAI判断は投資助言ですか？",
-                        "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "いいえ。CoinRaderは情報提供を目的としたダッシュボードです。売買判断はご自身で行ってください。",
-                        },
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "更新頻度は？",
-                        "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "このページは日次（JST基準）で更新されます。トップページの一部指標は数分間隔で更新される場合があります。",
-                        },
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "Fear & GreedやRSIが低いと必ず買いですか？",
-                        "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "必ずではありません。過熱感の目安であり、相場環境（トレンドや出来高）と併せて解釈が必要です。",
-                        },
-                    },
-                ],
             },
             {
                 "@type": "BreadcrumbList",
