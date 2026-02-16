@@ -13001,17 +13001,6 @@
       const vSent  = (sentNum2 === null) ? 0 : clamp01(sentNum2);
       const vTrend = (maVal2   === null) ? 0 : (normPm20(maVal2) ?? 0);
 
-      // 追加2軸：renderOverview() で退避した値を読む（ここがキモ）
-      const kpi = window.__AI_KPI || {};
-      const vBreadth = (typeof kpi.breadthUpPct === 'number') ? clamp01(kpi.breadthUpPct) : 0;  // 0..100
-      const vFlow    = (typeof kpi.flow7dPct === 'number') ? (normPm20(kpi.flow7dPct) ?? 0) : 0; // -10..+10を想定
-
-      // 5軸レーダー描画（これ1回だけ）
-      makeRadarChart(
-        'aiRadar',
-        ['MOM', 'SENT', 'TREND', 'BRD', 'FLOW'],
-        [vRsi, vSent, vTrend, vBreadth, vFlow]
-      );
       // --- 追加：BREADTH / FLOW の数値カード更新 ---
       const kpi = window.__AI_KPI || {};
       if (typeof kpi.breadthUpPct === 'number') {
@@ -13020,6 +13009,13 @@
       if (typeof kpi.flow7dPct === 'number') {
         updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
       }
+      // 5軸レーダー描画（これ1回だけ）
+      makeRadarChart(
+        'aiRadar',
+        ['MOM', 'SENT', 'TREND', 'BRD', 'FLOW'],
+        [vRsi, vSent, vTrend, vBreadth, vFlow]
+      );
+
 
       // --- 追加：文章（推奨/反転/根拠TOP3） ---
       function setBrief(action, flip, reasons){
