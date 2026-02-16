@@ -11152,6 +11152,8 @@
     }
 
     function renderOverview() {
+      const o = buildOverview();
+      const kpi = (window.__AI_KPI = window.__AI_KPI || {});
       const msg = document.getElementById('overviewMsg');
       msg.style.display = 'none';
 
