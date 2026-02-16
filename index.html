@@ -12948,6 +12948,29 @@
       }
 
       // 4. 上の3つの計器（HUD）へ数値を強制反映（数値は残す / バーは廃止してレーダーへ）
+      // 追加2軸（暫定）：Breadth / Flow
+      function clamp01to100(x){ return Math.max(0, Math.min(100, x)); }
+      function parseNum(text){
+        const m = String(text||'').replace(/,/g,'').match(/-?\d+(\.\d+)?/);
+        return m ? Number(m[0]) : null;
+      }
+
+      // 例：どこかの要素に 0..100 の値が出てる前提（IDは要調整）
+      const breadthEl = document.getElementById('kpiBreadth7d'); // ←あなたの実IDに
+      const flowEl    = document.getElementById('kpiFlow7d');    // ←あなたの実IDに
+
+      const breadthRaw = breadthEl ? parseNum(breadthEl.textContent) : null;
+      const flowRaw    = flowEl ? parseNum(flowEl.textContent) : null;
+
+      const breadthNorm = (breadthRaw == null) ? 0 : clamp01to100(breadthRaw);
+      const flowNorm    = (flowRaw == null) ? 0 : clamp01to100(flowRaw);
+
+      makeRadarChart(
+        'aiRadar',
+        ['MOMENTUM', 'SENTIMENT', 'TREND', 'BREADTH', 'FLOW'],
+        [vRsi, vSent, vTrend, breadthNorm, flowNorm]
+      );
+
       let rsiNum2 = (rsi !== null) ? Number(rsi) : null;
       let sentNum2 = (sent !== null) ? Number(sent) : null;
       let maVal2  = (maDist !== null) ? Number(parseFloat(maDist)) : null;
