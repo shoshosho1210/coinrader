@@ -1,4 +1,35 @@
 # --- Guide / Dictionary / Coins (extensionless canonical) ---
+# root canonical
+/index.html                  /                         301
+
+# static pages (extensionless canonical)
+/about.html                  /about                    301
+/about/                      /about                    301
+/about                       /about.html               200
+
+/data-sources.html           /data-sources             301
+/data-sources/               /data-sources             301
+/data-sources                /data-sources.html        200
+
+/disclaimer.html             /disclaimer               301
+/disclaimer/                 /disclaimer               301
+/disclaimer                  /disclaimer.html          200
+
+/privacy.html                /privacy                  301
+/privacy/                    /privacy                  301
+/privacy                     /privacy.html             200
+
+/contact.html                /contact                  301
+/contact/                    /contact                  301
+/contact                     /contact.html             200
+
+/start.html                  /start                    301
+/start/                      /start                    301
+/start                       /start.html               200
+
+/ads-pr.html                 /ads-pr                   301
+/ads-pr/                     /ads-pr                   301
+/ads-pr                      /ads-pr.html              200
 
 # guide hub
 /guide.html                 /guide/                   301
