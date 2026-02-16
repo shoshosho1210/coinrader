@@ -8757,151 +8757,6 @@
     color: #e2e8f0;
     font-weight: 500;
   }
-
-/* レーダー + 右側縦カラムを固定 */
-.hud-radar-row{
-  display:grid;
-  grid-template-columns: 300px 1fr;  /* 左=レーダー、右=数値列 */
-  gap: 16px;
-  align-items: start;
-}
-
-/* レーダー枠 */
-.hud-radar-canvas{
-  width: 240px;
-  height: 240px;
-}
-#aiRadar{
-  width: 240px !important;
-  height: 240px !important;
-}
-
-/* 右側：縦に並べる（1列固定） */
-.hud-radar-values{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.hud-right{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0; /* 折返しの安定化 */
-}
-/* カード内を横並びにして“縦の密度”を上げる */
-.hud-radar-kv{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 12px;
-}
-
-/* スマホは縦積み（レーダー→数値列） */
-@media (max-width: 720px){
-  .hud-radar-row{
-    grid-template-columns: 1fr;
-  }
-  .hud-radar-canvas{
-    width: 100%;
-    height: 280px;
-  }
-  #aiRadar{
-    width: 100% !important;
-    height: 280px !important;
-  }
-}
-
-
-
-/* 旧バー要素は残っていても見せない（互換維持用） */
-#hudRsiBar, #hudFgBar, #hudTrendBar{
-  display:none !important;
-}
-
-.ai-brief{
-  margin-top: 10px;
-  padding: 10px 12px;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  background: rgba(255,255,255,0.03);
-}
-.ai-brief-row{ margin-bottom: 8px; }
-.ai-brief-row .t{
-  font-size: 11px; letter-spacing:.08em; font-weight:800;
-  color:#38bdf8; opacity:.95;
-}
-.ai-brief-row .d{ margin-top:4px; font-size:13px; font-weight:700; color:#e5e7eb; }
-.ai-brief-list{ margin:6px 0 0 18px; padding:0; }
-.ai-brief-list li{ font-size:12px; opacity:.9; margin:2px 0; }
-
-.hud-pills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top: 6px;
-}
-.hud-pills .pill{
-  display:inline-flex;
-  align-items:baseline;
-  gap:8px;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
-}
-.hud-pills .k{
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:.08em;
-  color:#38bdf8;
-  opacity:.9;
-}
-.hud-pills .v{
-  font-family:"Roboto Mono", ui-monospace, monospace !important;
-  font-variant-numeric: tabular-nums;
-  font-size:12px;
-  font-weight:900;
-  color:#e5e7eb;
-}
-/* 3枚カード */
-.ai-cards{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap:10px;
-}
-
-.ai-card{
-  border:1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-  border-radius: 14px;
-  padding: 10px 12px;
-  min-height: 70px;
-}
-
-.ai-card .t{
-  font-size:10px;
-  letter-spacing:.08em;
-  font-weight:900;
-  color:#38bdf8;
-  opacity:.95;
-}
-
-.ai-card .d{
-  margin-top:6px;
-  font-size:12.5px;
-  font-weight:800;
-  line-height:1.35;
-  color:#e5e7eb;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp: 3;        /* 長文をスマートに制限 */
-  -webkit-box-orient: vertical;
-}
-@media (max-width: 720px){
-  .ai-cards{ grid-template-columns: 1fr; }
-}
-
 </style>
 
 <body>
@@ -9085,44 +8940,44 @@
           style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
           data-i18n data-ja="過去のAIレポート" data-en="Past AI Reports" aria-label="過去のAIレポート">過去のAIレポート</a>
       </div>
-      <div class="hud-radar-row">
-        <div class="hud-radar-canvas">
-          <canvas id="aiRadar"></canvas>
-        </div>
-
-        <div class="hud-right">
-          <div class="ai-cards">
-            <div class="ai-card">
-              <div class="t">推奨</div>
-              <div class="d" id="aiActionLine">--</div>
-            </div>
-            <div class="ai-card">
-              <div class="t">反転条件</div>
-              <div class="d" id="aiFlipLine">--</div>
-            </div>
-            <div class="ai-card">
-              <div class="t">根拠TOP3</div>
-              <div class="d" id="aiReasonsOneLine">--</div>
-            </div>
-          </div>
-
-          <div class="hud-pills" id="aiHudPills">
-            <span class="pill"><span class="k">RSI</span><span class="v" id="hudRsiVal">--</span></span>
-            <span class="pill"><span class="k">SENT</span><span class="v" id="hudFgVal">--</span></span>
-            <span class="pill"><span class="k">TREND</span><span class="v" id="hudTrendVal">--</span></span>
-            <span class="pill"><span class="k">BRD</span><span class="v" id="hudBreadthVal">--</span></span>
-            <span class="pill"><span class="k">FLOW</span><span class="v" id="hudFlowVal">--</span></span>
-
-            <span class="pill pill-note" data-i18n
-              data-ja="TRENDは±20%を0〜100に正規化"
-              data-en="TREND normalized from ±20% into 0..100">
-              TRENDは±20%を0〜100に正規化
+      <div class="hud-metrics-row compact">
+        <div class="hud-pill">
+          <div class="pill-top">
+            <span class="pill-labelwrap">
+              <span class="pill-label">RSI</span>
+              <span class="pill-sub" data-i18n data-ja="過熱感" data-en="Heat">過熱感</span>
             </span>
+            <span class="pill-value text-glow" id="hudRsiVal">--</span>
+          </div>
+          <div class="pill-bar-bg">
+            <div class="pill-bar-fill" id="hudRsiBar"></div>
+          </div>
+        </div>
+        <div class="hud-pill">
+          <div class="pill-top">
+            <span class="pill-labelwrap">
+              <span class="pill-label">SENTIMENT</span>
+              <span class="pill-sub" data-i18n data-ja="市場心理" data-en="Sentiment">市場心理</span>
+            </span>
+            <span class="pill-value text-glow" id="hudFgVal">--</span>
+          </div>
+          <div class="pill-bar-bg">
+            <div class="pill-bar-fill" id="hudFgBar"></div>
+          </div>
+        </div>
+        <div class="hud-pill">
+          <div class="pill-top">
+            <span class="pill-labelwrap">
+              <span class="pill-label">TREND</span>
+              <span class="pill-sub" data-i18n data-ja="強度" data-en="Strength">強度</span>
+            </span>
+            <span class="pill-value text-glow" id="hudTrendVal">--</span>
+          </div>
+          <div class="pill-bar-bg trend">
+            <div class="pill-bar-fill trend" id="hudTrendBar"></div>
           </div>
         </div>
       </div>
-
-
       <details class="hud-details">
         <summary class="hud-summary-btn">
           <span class="btn-text" data-i18n data-ja="AIの判断理由を見る（30秒）" data-en="See AI reasoning (30 sec)">
@@ -11152,8 +11007,6 @@
     }
 
     function renderOverview() {
-      const o = buildOverview();
-      const kpi = (window.__AI_KPI = window.__AI_KPI || {});
       const msg = document.getElementById('overviewMsg');
       msg.style.display = 'none';
 
@@ -11178,16 +11031,6 @@
       if (kpiB) {
         const total = o.up + o.down + (o.flat || 0);
         const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
-        // ★ AI JUDGE(レーダー)用に退避：BREADTH（上昇率%）
-        window.__AI_KPI = window.__AI_KPI || {};
-        window.__AI_KPI.breadthUpPct = Number(upPct); // 0..100
-        if (typeof kpi.breadthUpPct === 'number') {
-          updateWithFlash('hudBreadthVal', kpi.breadthUpPct.toFixed(1) + '%');
-        }
-        if (typeof kpi.flow7dPct === 'number') {
-          updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
-        }
-
         let sign = '';
         if (upPct >= 70) sign = '<i class="fa-solid fa-rocket"></i>全面高の気配';
         else if (upPct >= 55) sign = '<i class="fa-solid fa-arrow-trend-up"></i>上昇が優勢';
@@ -11227,10 +11070,6 @@
           mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pct.toFixed(2)}%</span>`;
         }
       }
-      // ★ AI JUDGE(レーダー)用に退避：FLOW（時価総額7d変化%）
-      window.__AI_KPI = window.__AI_KPI || {};
-      window.__AI_KPI.flow7dPct = (typeof o.mcap7dPct === 'number') ? o.mcap7dPct : null;
-      console.log('[FLOW debug]', { mcap7dPct: o.mcap7dPct, type: typeof o.mcap7dPct });
 
       const elAltRatio = document.getElementById('kpiAltVolRatio');
       if (elAltRatio) {
@@ -11906,52 +11745,6 @@
       }
       return rsi;
     }
-
-    function makeRadarChart(canvasId, labels, values01to100) {
-      if (!ensureChartjs()) return;
-      const canvas = document.getElementById(canvasId);
-      if (!canvas) return;
-
-      const ch = charts[canvasId];
-      if (ch) {
-        ch.data.labels = labels;
-        ch.data.datasets[0].data = values01to100;
-        ch.update('none'); // アニメ無し
-        return;
-      }
-
-      charts[canvasId] = new Chart(canvas.getContext('2d'), {
-        type: 'radar',
-        data: {
-          labels,
-          datasets: [{
-            data: values01to100,
-            borderWidth: 2,
-            borderColor: 'rgba(56,189,248,0.95)',
-            backgroundColor: 'rgba(56,189,248,0.12)',
-            pointRadius: 0
-          }]
-        },
-        options: {
-          responsive: false,
-          animation: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            r: {
-              min: 0, max: 100,
-              ticks: { display: false },
-              grid: { color: 'rgba(255,255,255,0.10)' },
-              angleLines: { color: 'rgba(255,255,255,0.10)' },
-              pointLabels: {
-                color: 'rgba(226,232,240,0.88)',
-                font: { size: 12, weight: '800' }
-              }
-            }
-          }
-        }
-      });
-    }
-
 
     function makeLineChart(canvasId, labels, series, opts) {
       if (!ensureChartjs()) return;
@@ -13040,63 +12833,36 @@
         maDist = pastToday.ma;
       }
 
-      // 4. 上の3つの計器（HUD）へ数値を強制反映（数値は残す / 5軸レーダーへ）
-      let rsiNum2  = (rsi !== null) ? Number(rsi) : null;
-      let sentNum2 = (sent !== null) ? Number(sent) : null;
-      let maVal2   = (maDist !== null) ? Number(parseFloat(maDist)) : null;
-
-      // 数値（テキスト）は更新
-      if (rsiNum2 !== null)  updateWithFlash('hudRsiVal', Math.round(rsiNum2));
-      if (sentNum2 !== null) updateWithFlash('hudFgVal', Math.round(sentNum2));
-      if (maVal2 !== null)   updateWithFlash('hudTrendVal', (maVal2 >= 0 ? '+' : '') + maVal2.toFixed(1) + '%');
-
-      // helpers
-      const clamp01 = (x) => Math.max(0, Math.min(100, x));
-      const normPm20 = (x) => { // -20..+20 => 0..100
-        if (typeof x !== 'number' || !isFinite(x)) return null;
-        const c = Math.max(-20, Math.min(20, x));
-        return ((c + 20) / 40) * 100;
-      };
-
-      // 3軸
-      const vRsi   = (rsiNum2 === null) ? 0 : clamp01(rsiNum2);
-      const vSent  = (sentNum2 === null) ? 0 : clamp01(sentNum2);
-      const vTrend = (maVal2   === null) ? 0 : (normPm20(maVal2) ?? 0);
-
-      // 追加2軸（renderOverview で退避した値を読む）
-      const kpi = window.__AI_KPI || {};
-      const vBreadth = (typeof kpi.breadthUpPct === 'number') ? clamp01(kpi.breadthUpPct) : 0;
-      const vFlow    = (typeof kpi.flow7dPct === 'number') ? (normPm20(kpi.flow7dPct) ?? 0) : 0;
-
-      // BREADTH / FLOW の数値カード更新（カードが無ければ無視）
-      if (typeof kpi.breadthUpPct === 'number') updateWithFlash('hudBreadthVal', kpi.breadthUpPct.toFixed(1) + '%');
-      if (typeof kpi.flow7dPct === 'number')    updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
-
-      // 5軸レーダー描画（これ1回だけ）
-      makeRadarChart(
-        'aiRadar',
-        ['MOM', 'SENT', 'TREND', 'BRD', 'FLOW'],
-        [vRsi, vSent, vTrend, vBreadth, vFlow]
-      );
-
-      // --- 文章（推奨/反転/根拠TOP3） ---
-      (function(){
-        const a = document.getElementById('aiActionLine');
-        const f = document.getElementById('aiFlipLine');
-        const r = document.getElementById('aiReasonsOneLine'); // ★ここ！
-        if (!a || !f || !r) return; // ★HTMLをまだ入れてないなら何もしない
-
-        const reasons = [];
-        if (typeof maVal2 === 'number')  reasons.push(`トレンド: MA距離 ${maVal2.toFixed(1)}%`);
-        if (typeof sentNum2 === 'number') reasons.push(`心理: Sentiment ${Math.round(sentNum2)}`);
-        if (typeof rsiNum2 === 'number')  reasons.push(`モメンタム: RSI ${Math.round(rsiNum2)}`);
-        if (typeof kpi.breadthUpPct === 'number') reasons.push(`騰落: 上昇率 ${kpi.breadthUpPct.toFixed(1)}%`);
-        if (typeof kpi.flow7dPct === 'number')    reasons.push(`資金: 7d ${kpi.flow7dPct.toFixed(2)}%`);
-
-        a.textContent = '新規は控えめ。反発狙いは小さく・逆指値前提。';
-        f.textContent = 'TRENDが改善（例:-3%より上）＋騰落上昇率55%超で「保留/強気寄り」へ。';
-        r.textContent = (Array.isArray(reasons) ? reasons.slice(0,3) : ['--']).join(' / ');
-      })();
+      // 4. 【修正】上の3つの計器（HUD）へ数値を強制反映
+      if (rsi !== null) {
+        updateWithFlash('hudRsiVal', Math.round(rsi));
+        document.getElementById('hudRsiBar').style.width = Math.min(100, Math.max(0, rsi)) + '%';
+      }
+      if (sent !== null) {
+        updateWithFlash('hudFgVal', Math.round(sent));
+        document.getElementById('hudFgBar').style.width = Math.min(100, Math.max(0, sent)) + '%';
+      }
+      if (maDist !== null) {
+        const maVal = parseFloat(maDist);
+        updateWithFlash('hudTrendVal', (maVal >= 0 ? '+' : '') + maVal.toFixed(1) + '%');
+        const bar = document.getElementById('hudTrendBar');
+        if (bar) {
+          const clamped = Math.max(-10, Math.min(10, maVal)); // -10%..+10% を代表レンジ
+          const abs = Math.abs(clamped);
+          const w = (abs / 10) * 50; // 0..50% (片側)
+          bar.style.width = w.toFixed(1) + '%';
+          bar.classList.remove('positive', 'negative');
+          if (clamped >= 0) {
+            bar.classList.add('positive');
+            bar.style.left = '50%';
+            bar.style.right = 'auto';
+          } else {
+            bar.classList.add('negative');
+            bar.style.right = '50%';
+            bar.style.left = 'auto';
+          }
+        }
+      }
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
       if (badgeEl) {
