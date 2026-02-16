@@ -11804,13 +11804,14 @@
       const canvas = document.getElementById(canvasId);
       if (!canvas) return;
 
-      try { if (charts[canvasId]) charts[canvasId].destroy(); } catch (_) {}
-      try {
-        if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
-          const existing = Chart.getChart(canvas);
-          if (existing) existing.destroy();
-        }
-      } catch (_) {}
+      const existing = charts[canvasId];
+
+      if (existing) {
+        existing.data.labels = labels;
+        existing.data.datasets[0].data = values01to100;
+        existing.update('none'); // ★アニメなしで即更新（ちらつき防止）
+        return;
+      }
 
       const data = {
         labels,
@@ -11847,7 +11848,6 @@
         }
       });
     }
-
 
     function makeLineChart(canvasId, labels, series, opts) {
       if (!ensureChartjs()) return;
@@ -12948,21 +12948,21 @@
 
       // 正規化 helpers
       const clamp01 = (x) => Math.max(0, Math.min(100, x));
-      const normPm10 = (x) => { // -10..+10 => 0..100
+      const normPm20 = (x) => { // -10..+10 => 0..100
         if (typeof x !== 'number' || !isFinite(x)) return null;
-        const c = Math.max(-10, Math.min(10, x));
-        return ((c + 10) / 20) * 100;
+        const c = Math.max(-20, Math.min(20, x));
+        return ((c + 20) / 40) * 100;
       };
 
       // 3軸（すでにある値）
       const vRsi   = (rsiNum2 === null) ? 0 : clamp01(rsiNum2);
       const vSent  = (sentNum2 === null) ? 0 : clamp01(sentNum2);
-      const vTrend = (maVal2   === null) ? 0 : (normPm10(maVal2) ?? 0);
+      const vTrend = (maVal2   === null) ? 0 : (normPm20(maVal2) ?? 0);
 
       // 追加2軸：renderOverview() で退避した値を読む（ここがキモ）
       const kpi = window.__AI_KPI || {};
       const vBreadth = (typeof kpi.breadthUpPct === 'number') ? clamp01(kpi.breadthUpPct) : 0;  // 0..100
-      const vFlow    = (typeof kpi.flow7dPct === 'number') ? (normPm10(kpi.flow7dPct) ?? 0) : 0; // -10..+10を想定
+      const vFlow    = (typeof kpi.flow7dPct === 'number') ? (normPm20(kpi.flow7dPct) ?? 0) : 0; // -10..+10を想定
 
       // 5軸レーダー描画（これ1回だけ）
       makeRadarChart(
