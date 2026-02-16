@@ -9045,6 +9045,20 @@
           </div>
         </div>
       </div>
+      <div class="ai-brief">
+        <div class="ai-brief-row">
+          <div class="t">推奨アクション</div>
+          <div class="d" id="aiActionLine">--</div>
+        </div>
+        <div class="ai-brief-row">
+          <div class="t">反転条件</div>
+          <div class="d" id="aiFlipLine">--</div>
+        </div>
+        <div class="ai-brief-row">
+          <div class="t">根拠 TOP3</div>
+          <ul class="ai-brief-list" id="aiReasonsTop3"><li>--</li></ul>
+        </div>
+      </div>
 
       <details class="hud-details">
         <summary class="hud-summary-btn">
@@ -12997,6 +13011,37 @@
         'aiRadar',
         ['MOM', 'SENT', 'TREND', 'BRD', 'FLOW'],
         [vRsi, vSent, vTrend, vBreadth, vFlow]
+      );
+      // --- 追加：BREADTH / FLOW の数値カード更新 ---
+      const kpi = window.__AI_KPI || {};
+      if (typeof kpi.breadthUpPct === 'number') {
+        updateWithFlash('hudBreadthVal', kpi.breadthUpPct.toFixed(1) + '%');
+      }
+      if (typeof kpi.flow7dPct === 'number') {
+        updateWithFlash('hudFlowVal', (kpi.flow7dPct >= 0 ? '+' : '') + kpi.flow7dPct.toFixed(2) + '%');
+      }
+
+      // --- 追加：文章（推奨/反転/根拠TOP3） ---
+      function setBrief(action, flip, reasons){
+        const a = document.getElementById('aiActionLine');
+        const f = document.getElementById('aiFlipLine');
+        const r = document.getElementById('aiReasonsTop3');
+        if (a) a.textContent = action;
+        if (f) f.textContent = flip;
+        if (r) r.innerHTML = reasons.map(x => `<li>${x}</li>`).join('');
+      }
+
+      const reasons = [];
+      if (typeof maVal2 === 'number') reasons.push(`トレンド: MA距離 ${maVal2.toFixed(1)}%`);
+      if (typeof sentNum2 === 'number') reasons.push(`心理: Sentiment ${Math.round(sentNum2)}`);
+      if (typeof rsiNum2 === 'number') reasons.push(`モメンタム: RSI ${Math.round(rsiNum2)}`);
+      if (typeof kpi.breadthUpPct === 'number') reasons.push(`騰落: 上昇率 ${kpi.breadthUpPct.toFixed(1)}%`);
+      if (typeof kpi.flow7dPct === 'number') reasons.push(`資金: 7d ${kpi.flow7dPct.toFixed(2)}%`);
+
+      setBrief(
+        '新規は控えめ。反発狙いは小さく・逆指値前提。',
+        'TRENDが改善（例:-3%より上）＋騰落上昇率55%超で「保留/強気寄り」へ。',
+        reasons.slice(0, 3)
       );
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
