@@ -8758,52 +8758,55 @@
     font-weight: 500;
   }
 
-/* --- AI JUDGE Radar (bigger) --- */
+/* レーダー + 右側縦カラムを固定 */
 .hud-radar-row{
   display:grid;
-  grid-template-columns: 240px 1fr; /* ← 左を大きく */
-  gap: 14px;
-  align-items:start;
-  padding: 10px 2px 2px;
+  grid-template-columns: 320px 260px;  /* 左=レーダー、右=数値列 */
+  gap: 16px;
+  align-items: start;
 }
 
+/* レーダー枠 */
 .hud-radar-canvas{
-  width: 240px;
-  height: 240px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width: 320px;
+  height: 260px;
 }
-
 #aiRadar{
-  width: 240px !important;
-  height: 240px !important;
+  width: 320px !important;
+  height: 260px !important;
 }
 
-/* 右側の数値カードはそのまま */
+/* 右側：縦に並べる（1列固定） */
 .hud-radar-values{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display:flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-/* スマホは縦積みで大きく見せる */
+/* カード内を横並びにして“縦の密度”を上げる */
+.hud-radar-kv{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+/* スマホは縦積み（レーダー→数値列） */
 @media (max-width: 720px){
   .hud-radar-row{
     grid-template-columns: 1fr;
   }
   .hud-radar-canvas{
     width: 100%;
-    height: 240px;
+    height: 280px;
   }
   #aiRadar{
     width: 100% !important;
-    height: 240px !important;
-  }
-  .hud-radar-values{
-    grid-template-columns: 1fr;
+    height: 280px !important;
   }
 }
+
 
 
 /* 旧バー要素は残っていても見せない（互換維持用） */
