@@ -8761,19 +8761,19 @@
 /* レーダー + 右側縦カラムを固定 */
 .hud-radar-row{
   display:grid;
-  grid-template-columns: 320px 260px;  /* 左=レーダー、右=数値列 */
+  grid-template-columns: 300px 1fr;  /* 左=レーダー、右=数値列 */
   gap: 16px;
   align-items: start;
 }
 
 /* レーダー枠 */
 .hud-radar-canvas{
-  width: 320px;
-  height: 260px;
+  width: 300px;
+  height: 220px;
 }
 #aiRadar{
-  width: 320px !important;
-  height: 260px !important;
+  width: 300px !important;
+  height: 220px !important;
 }
 
 /* 右側：縦に並べる（1列固定） */
@@ -8782,7 +8782,11 @@
   flex-direction: column;
   gap: 10px;
 }
-
+.hud-right{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
 /* カード内を横並びにして“縦の密度”を上げる */
 .hud-radar-kv{
   display:flex;
@@ -8829,6 +8833,36 @@
 .ai-brief-row .d{ margin-top:4px; font-size:13px; font-weight:700; color:#e5e7eb; }
 .ai-brief-list{ margin:6px 0 0 18px; padding:0; }
 .ai-brief-list li{ font-size:12px; opacity:.9; margin:2px 0; }
+
+.hud-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top: 6px;
+}
+.hud-pills .pill{
+  display:inline-flex;
+  align-items:baseline;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.03);
+}
+.hud-pills .k{
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#38bdf8;
+  opacity:.9;
+}
+.hud-pills .v{
+  font-family:"Roboto Mono", ui-monospace, monospace !important;
+  font-variant-numeric: tabular-nums;
+  font-size:12px;
+  font-weight:900;
+  color:#e5e7eb;
+}
 
 
 </style>
@@ -9019,49 +9053,38 @@
           <canvas id="aiRadar"></canvas>
         </div>
 
-        <!-- 数値は残す（インパクトはレーダー、読みは数値） -->
-        <div class="hud-radar-values">
-          <div class="hud-radar-kv">
-            <div class="k">RSI</div>
-            <div class="v" id="hudRsiVal">--</div>
+        <div class="hud-right">
+          <div class="ai-cards">
+            <div class="ai-card">
+              <div class="t">推奨</div>
+              <div class="d" id="aiActionLine">--</div>
+            </div>
+            <div class="ai-card">
+              <div class="t">反転条件</div>
+              <div class="d" id="aiFlipLine">--</div>
+            </div>
+            <div class="ai-card">
+              <div class="t">根拠TOP3</div>
+              <div class="d" id="aiReasonsOneLine">--</div>
+            </div>
           </div>
-          <div class="hud-radar-kv">
-            <div class="k">SENTIMENT</div>
-            <div class="v" id="hudFgVal">--</div>
-          </div>
-          <div class="hud-radar-kv">
-            <div class="k">TREND</div>
-            <div class="v" id="hudTrendVal">--</div>
-          </div>
-          <div class="hud-radar-kv">
-            <div class="k">BREADTH</div>
-            <div class="v" id="hudBreadthVal">--</div>
-          </div>
-          <div class="hud-radar-kv">
-            <div class="k">FLOW</div>
-            <div class="v" id="hudFlowVal">--</div>
-          </div>
-          <div class="hud-radar-note" data-i18n
-            data-ja="※TRENDは-10%〜+10%を0〜100に正規化"
-            data-en="*TREND normalized from -10%..+10% into 0..100">
-            ※TRENDは-10%〜+10%を0〜100に正規化
+
+          <div class="hud-pills" id="aiHudPills">
+            <span class="pill"><span class="k">RSI</span><span class="v" id="hudRsiVal">--</span></span>
+            <span class="pill"><span class="k">SENT</span><span class="v" id="hudFgVal">--</span></span>
+            <span class="pill"><span class="k">TREND</span><span class="v" id="hudTrendVal">--</span></span>
+            <span class="pill"><span class="k">BRD</span><span class="v" id="hudBreadthVal">--</span></span>
+            <span class="pill"><span class="k">FLOW</span><span class="v" id="hudFlowVal">--</span></span>
+
+            <span class="pill pill-note" data-i18n
+              data-ja="TRENDは±20%を0〜100に正規化"
+              data-en="TREND normalized from ±20% into 0..100">
+              TRENDは±20%を0〜100に正規化
+            </span>
           </div>
         </div>
       </div>
-      <div class="ai-brief">
-        <div class="ai-brief-row">
-          <div class="t">推奨アクション</div>
-          <div class="d" id="aiActionLine">--</div>
-        </div>
-        <div class="ai-brief-row">
-          <div class="t">反転条件</div>
-          <div class="d" id="aiFlipLine">--</div>
-        </div>
-        <div class="ai-brief-row">
-          <div class="t">根拠 TOP3</div>
-          <ul class="ai-brief-list" id="aiReasonsTop3"><li>--</li></ul>
-        </div>
-      </div>
+
 
       <details class="hud-details">
         <summary class="hud-summary-btn">
@@ -13020,7 +13043,7 @@
       (function(){
         const a = document.getElementById('aiActionLine');
         const f = document.getElementById('aiFlipLine');
-        const r = document.getElementById('aiReasonsTop3');
+        const r = document.getElementById('aiReasonsOneLine'); // ★ここ！
         if (!a || !f || !r) return; // ★HTMLをまだ入れてないなら何もしない
 
         const reasons = [];
@@ -13032,7 +13055,7 @@
 
         a.textContent = '新規は控えめ。反発狙いは小さく・逆指値前提。';
         f.textContent = 'TRENDが改善（例:-3%より上）＋騰落上昇率55%超で「保留/強気寄り」へ。';
-        r.innerHTML = reasons.slice(0,3).map(x => `<li>${x}</li>`).join('');
+        r.textContent = (Array.isArray(reasons) ? reasons.slice(0,3) : ['--']).join(' / ');
       })();
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
