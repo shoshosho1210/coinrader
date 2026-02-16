@@ -8757,6 +8757,80 @@
     color: #e2e8f0;
     font-weight: 500;
   }
+
+/* --- AI JUDGE Radar --- */
+.hud-radar-row{
+  display:grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  align-items:center;
+  padding: 8px 2px 2px;
+}
+
+.hud-radar-canvas{
+  height: 150px;
+  width: 160px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#aiRadar{
+  width: 160px !important;
+  height: 150px !important;
+}
+
+.hud-radar-values{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items:start;
+}
+
+.hud-radar-kv{
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.hud-radar-kv .k{
+  font-size: 10px;
+  letter-spacing: .08em;
+  font-weight: 800;
+  color: #38bdf8;
+  opacity: .95;
+}
+
+.hud-radar-kv .v{
+  margin-top: 4px;
+  font-family: "Roboto Mono", Inter, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.hud-radar-note{
+  grid-column: 1 / -1;
+  font-size: 11px;
+  opacity: 0.7;
+  padding: 0 2px;
+}
+
+/* 旧バー要素は残っていても見せない（互換維持用） */
+#hudRsiBar, #hudFgBar, #hudTrendBar{
+  display:none !important;
+}
+
+@media (max-width: 520px){
+  .hud-radar-row{
+    grid-template-columns: 140px 1fr;
+  }
+  .hud-radar-canvas{ width:140px; height:132px; }
+  #aiRadar{ width:140px !important; height:132px !important; }
+  .hud-radar-values{ grid-template-columns: 1fr; }
+}
+
 </style>
 
 <body>
@@ -8940,44 +9014,34 @@
           style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
           data-i18n data-ja="過去のAIレポート" data-en="Past AI Reports" aria-label="過去のAIレポート">過去のAIレポート</a>
       </div>
-      <div class="hud-metrics-row compact">
-        <div class="hud-pill">
-          <div class="pill-top">
-            <span class="pill-labelwrap">
-              <span class="pill-label">RSI</span>
-              <span class="pill-sub" data-i18n data-ja="過熱感" data-en="Heat">過熱感</span>
-            </span>
-            <span class="pill-value text-glow" id="hudRsiVal">--</span>
-          </div>
-          <div class="pill-bar-bg">
-            <div class="pill-bar-fill" id="hudRsiBar"></div>
-          </div>
+      <div class="hud-radar-row">
+        <div class="hud-radar-canvas">
+          <canvas id="aiRadar"></canvas>
         </div>
-        <div class="hud-pill">
-          <div class="pill-top">
-            <span class="pill-labelwrap">
-              <span class="pill-label">SENTIMENT</span>
-              <span class="pill-sub" data-i18n data-ja="市場心理" data-en="Sentiment">市場心理</span>
-            </span>
-            <span class="pill-value text-glow" id="hudFgVal">--</span>
+
+        <!-- 数値は残す（インパクトはレーダー、読みは数値） -->
+        <div class="hud-radar-values">
+          <div class="hud-radar-kv">
+            <div class="k">RSI</div>
+            <div class="v" id="hudRsiVal">--</div>
           </div>
-          <div class="pill-bar-bg">
-            <div class="pill-bar-fill" id="hudFgBar"></div>
+          <div class="hud-radar-kv">
+            <div class="k">SENTIMENT</div>
+            <div class="v" id="hudFgVal">--</div>
           </div>
-        </div>
-        <div class="hud-pill">
-          <div class="pill-top">
-            <span class="pill-labelwrap">
-              <span class="pill-label">TREND</span>
-              <span class="pill-sub" data-i18n data-ja="強度" data-en="Strength">強度</span>
-            </span>
-            <span class="pill-value text-glow" id="hudTrendVal">--</span>
+          <div class="hud-radar-kv">
+            <div class="k">TREND</div>
+            <div class="v" id="hudTrendVal">--</div>
           </div>
-          <div class="pill-bar-bg trend">
-            <div class="pill-bar-fill trend" id="hudTrendBar"></div>
+
+          <div class="hud-radar-note" data-i18n
+            data-ja="※TRENDは-10%〜+10%を0〜100に正規化"
+            data-en="*TREND normalized from -10%..+10% into 0..100">
+            ※TRENDは-10%〜+10%を0〜100に正規化
           </div>
         </div>
       </div>
+
       <details class="hud-details">
         <summary class="hud-summary-btn">
           <span class="btn-text" data-i18n data-ja="AIの判断理由を見る（30秒）" data-en="See AI reasoning (30 sec)">
@@ -11746,6 +11810,56 @@
       return rsi;
     }
 
+    function makeRadarChart(canvasId, labels, values01to100, opts = {}) {
+      if (!ensureChartjs()) return;
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+
+      try { if (charts[canvasId]) charts[canvasId].destroy(); } catch (_) {}
+      try {
+        if (typeof Chart !== 'undefined' && typeof Chart.getChart === 'function') {
+          const existing = Chart.getChart(canvas);
+          if (existing) existing.destroy();
+        }
+      } catch (_) {}
+
+      const data = {
+        labels,
+        datasets: [{
+          label: opts.label || 'AI Radar',
+          data: values01to100,
+          borderWidth: 2,
+          borderColor: 'rgba(56,189,248,0.95)',
+          backgroundColor: 'rgba(56,189,248,0.12)',
+          pointRadius: 0
+        }]
+      };
+
+      charts[canvasId] = new Chart(canvas.getContext('2d'), {
+        type: 'radar',
+        data,
+        options: {
+          responsive: false,
+          animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            r: {
+              min: 0,
+              max: 100,
+              ticks: { display: false },
+              grid: { color: 'rgba(255,255,255,0.10)' },
+              angleLines: { color: 'rgba(255,255,255,0.10)' },
+              pointLabels: {
+                color: 'rgba(226,232,240,0.85)',
+                font: { size: 10, weight: '700' }
+              }
+            }
+          }
+        }
+      });
+    }
+
+
     function makeLineChart(canvasId, labels, series, opts) {
       if (!ensureChartjs()) return;
       const canvas = document.getElementById(canvasId);
@@ -12833,36 +12947,25 @@
         maDist = pastToday.ma;
       }
 
-      // 4. 【修正】上の3つの計器（HUD）へ数値を強制反映
-      if (rsi !== null) {
-        updateWithFlash('hudRsiVal', Math.round(rsi));
-        document.getElementById('hudRsiBar').style.width = Math.min(100, Math.max(0, rsi)) + '%';
-      }
-      if (sent !== null) {
-        updateWithFlash('hudFgVal', Math.round(sent));
-        document.getElementById('hudFgBar').style.width = Math.min(100, Math.max(0, sent)) + '%';
-      }
-      if (maDist !== null) {
-        const maVal = parseFloat(maDist);
-        updateWithFlash('hudTrendVal', (maVal >= 0 ? '+' : '') + maVal.toFixed(1) + '%');
-        const bar = document.getElementById('hudTrendBar');
-        if (bar) {
-          const clamped = Math.max(-10, Math.min(10, maVal)); // -10%..+10% を代表レンジ
-          const abs = Math.abs(clamped);
-          const w = (abs / 10) * 50; // 0..50% (片側)
-          bar.style.width = w.toFixed(1) + '%';
-          bar.classList.remove('positive', 'negative');
-          if (clamped >= 0) {
-            bar.classList.add('positive');
-            bar.style.left = '50%';
-            bar.style.right = 'auto';
-          } else {
-            bar.classList.add('negative');
-            bar.style.right = '50%';
-            bar.style.left = 'auto';
-          }
-        }
-      }
+      // 4. 上の3つの計器（HUD）へ数値を強制反映（数値は残す / バーは廃止してレーダーへ）
+      let rsiNum2 = (rsi !== null) ? Number(rsi) : null;
+      let sentNum2 = (sent !== null) ? Number(sent) : null;
+      let maVal2  = (maDist !== null) ? Number(parseFloat(maDist)) : null;
+
+      if (rsiNum2 !== null) updateWithFlash('hudRsiVal', Math.round(rsiNum2));
+      if (sentNum2 !== null) updateWithFlash('hudFgVal', Math.round(sentNum2));
+      if (maVal2 !== null)  updateWithFlash('hudTrendVal', (maVal2 >= 0 ? '+' : '') + maVal2.toFixed(1) + '%');
+
+      // レーダー用：TREND を -10..+10 => 0..100 に正規化（代表レンジでクランプ）
+      const trendNorm = (maVal2 === null) ? null : ((Math.max(-10, Math.min(10, maVal2)) + 10) * 5);
+
+      // レーダー描画（欠損時は0扱いでOK）
+      const vRsi   = (rsiNum2 === null) ? 0 : Math.max(0, Math.min(100, rsiNum2));
+      const vSent  = (sentNum2 === null) ? 0 : Math.max(0, Math.min(100, sentNum2));
+      const vTrend = (trendNorm === null) ? 0 : Math.max(0, Math.min(100, trendNorm));
+
+      makeRadarChart('aiRadar', ['RSI', 'SENTIMENT', 'TREND'], [vRsi, vSent, vTrend]);
+
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
       if (badgeEl) {
