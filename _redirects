@@ -25,6 +25,17 @@
 /ads-pr.html                 /ads-pr                   301
 /ads-pr/                     /ads-pr                   301
 
+# english landing
+/en/index.html               /en/                      301
+/en                          /en/                      301
+
+# english daily (extensionless canonical)
+/en/daily/index.html         /en/daily/                301
+/en/daily/latest.html        /en/daily/latest          301
+/en/daily/latest/            /en/daily/latest          301
+/en/daily/:date.html         /en/daily/:date           301
+/en/daily/tags/:tag.html     /en/daily/tags/:tag       301
+
 # guide hub
 /guide.html                 /guide/                   301
 /guide                      /guide/                   301
