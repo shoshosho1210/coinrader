@@ -11844,43 +11844,38 @@
       return rsi;
     }
 
-    function makeRadarChart(canvasId, labels, values01to100, opts = {}) {
+    function makeRadarChart(canvasId, labels, values01to100) {
       if (!ensureChartjs()) return;
       const canvas = document.getElementById(canvasId);
       if (!canvas) return;
 
-      const existing = charts[canvasId];
-
-      if (existing) {
-        existing.data.labels = labels;
-        existing.data.datasets[0].data = values01to100;
-        existing.update('none'); // ★アニメなしで即更新（ちらつき防止）
+      const ch = charts[canvasId];
+      if (ch) {
+        ch.data.labels = labels;
+        ch.data.datasets[0].data = values01to100;
+        ch.update('none'); // アニメ無し
         return;
       }
 
-      const data = {
-        labels,
-        datasets: [{
-          label: opts.label || 'AI Radar',
-          data: values01to100,
-          borderWidth: 2,
-          borderColor: 'rgba(56,189,248,0.95)',
-          backgroundColor: 'rgba(56,189,248,0.12)',
-          pointRadius: 0
-        }]
-      };
-
       charts[canvasId] = new Chart(canvas.getContext('2d'), {
         type: 'radar',
-        data,
+        data: {
+          labels,
+          datasets: [{
+            data: values01to100,
+            borderWidth: 2,
+            borderColor: 'rgba(56,189,248,0.95)',
+            backgroundColor: 'rgba(56,189,248,0.12)',
+            pointRadius: 0
+          }]
+        },
         options: {
           responsive: false,
           animation: false,
           plugins: { legend: { display: false } },
           scales: {
             r: {
-              min: 0,
-              max: 100,
+              min: 0, max: 100,
               ticks: { display: false },
               grid: { color: 'rgba(255,255,255,0.10)' },
               angleLines: { color: 'rgba(255,255,255,0.10)' },
@@ -11893,6 +11888,7 @@
         }
       });
     }
+
 
     function makeLineChart(canvasId, labels, series, opts) {
       if (!ensureChartjs()) return;
