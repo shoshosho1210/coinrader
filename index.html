@@ -8758,78 +8758,60 @@
     font-weight: 500;
   }
 
-/* --- AI JUDGE Radar --- */
+/* --- AI JUDGE Radar (bigger) --- */
 .hud-radar-row{
   display:grid;
-  grid-template-columns: 160px 1fr;
-  gap: 12px;
+  grid-template-columns: 240px 1fr; /* ← 左を大きく */
+  gap: 14px;
   align-items:center;
-  padding: 8px 2px 2px;
+  padding: 10px 2px 2px;
 }
 
 .hud-radar-canvas{
-  height: 150px;
-  width: 160px;
+  width: 240px;
+  height: 210px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
 #aiRadar{
-  width: 160px !important;
-  height: 150px !important;
+  width: 240px !important;
+  height: 210px !important;
 }
 
+/* 右側の数値カードはそのまま */
 .hud-radar-values{
   display:grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  align-items:start;
 }
 
-.hud-radar-kv{
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 8px 10px;
+/* スマホは縦積みで大きく見せる */
+@media (max-width: 720px){
+  .hud-radar-row{
+    grid-template-columns: 1fr;
+  }
+  .hud-radar-canvas{
+    width: 100%;
+    height: 240px;
+  }
+  #aiRadar{
+    width: 100% !important;
+    height: 240px !important;
+  }
+  .hud-radar-values{
+    grid-template-columns: 1fr;
+  }
 }
 
-.hud-radar-kv .k{
-  font-size: 10px;
-  letter-spacing: .08em;
-  font-weight: 800;
-  color: #38bdf8;
-  opacity: .95;
-}
-
-.hud-radar-kv .v{
-  margin-top: 4px;
-  font-family: "Roboto Mono", Inter, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
-  font-variant-numeric: tabular-nums;
-  font-weight: 900;
-  font-size: 16px;
-}
-
-.hud-radar-note{
-  grid-column: 1 / -1;
-  font-size: 11px;
-  opacity: 0.7;
-  padding: 0 2px;
-}
 
 /* 旧バー要素は残っていても見せない（互換維持用） */
 #hudRsiBar, #hudFgBar, #hudTrendBar{
   display:none !important;
 }
 
-@media (max-width: 520px){
-  .hud-radar-row{
-    grid-template-columns: 140px 1fr;
-  }
-  .hud-radar-canvas{ width:140px; height:132px; }
-  #aiRadar{ width:140px !important; height:132px !important; }
-  .hud-radar-values{ grid-template-columns: 1fr; }
-}
+
 
 </style>
 
