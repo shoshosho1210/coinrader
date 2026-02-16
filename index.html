@@ -20,9 +20,6 @@
     name="description" />
   <meta content="index, follow" name="robots" />
   <link href="https://coinrader.net/" rel="canonical">
-  <link rel="alternate" hreflang="ja" href="https://coinrader.net/" />
-  <link rel="alternate" hreflang="en" href="https://coinrader.net/en/" />
-  <link rel="alternate" hreflang="x-default" href="https://coinrader.net/" />
   <meta content="ja_JP" property="og:locale" />
   <meta content="website" property="og:type" />
   <meta content="CoinRader" property="og:site_name" />
@@ -8760,98 +8757,6 @@
     color: #e2e8f0;
     font-weight: 500;
   }
-  .hud-impact-row {
-    display: grid;
-    grid-template-columns: 1.2fr .8fr;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .hud-impact-card,
-  .hud-radar-card {
-    border: 1px solid rgba(148, 163, 184, .24);
-    background: rgba(255, 255, 255, .03);
-    border-radius: 12px;
-    padding: 10px;
-  }
-
-  .impact-head {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .impact-kicker {
-    font-size: 11px;
-    color: #94a3b8;
-    letter-spacing: .05em;
-    font-weight: 700;
-  }
-
-  .impact-main {
-    font-size: 30px;
-    font-weight: 900;
-    line-height: 1;
-    color: #f8fafc;
-    text-shadow: 0 0 16px rgba(56, 189, 248, .22);
-  }
-
-  .impact-label {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, .30);
-    color: #cbd5e1;
-    background: rgba(148, 163, 184, .12);
-    font-weight: 700;
-  }
-
-  .impact-sub {
-    margin-top: 6px;
-    font-size: 12px;
-    color: #cbd5e1;
-  }
-
-  .impact-links {
-    margin-top: 8px;
-    display: grid;
-    gap: 6px;
-  }
-
-  .impact-links a {
-    font-size: 12px;
-    color: #bae6fd;
-    text-decoration: none;
-    border: 1px solid rgba(56, 189, 248, .24);
-    border-radius: 10px;
-    padding: 6px 8px;
-    background: rgba(56, 189, 248, .06);
-  }
-
-  .impact-links a:hover {
-    border-color: rgba(56, 189, 248, .45);
-    background: rgba(56, 189, 248, .12);
-  }
-
-  .hud-radar-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 180px;
-  }
-
-  #aiJudgeRadar {
-    width: 100%;
-    max-width: 220px;
-    height: auto;
-  }
-
-  @media (max-width: 860px) {
-    .hud-impact-row {
-      grid-template-columns: 1fr;
-    }
-  }
 </style>
 
 <body>
@@ -9071,25 +8976,6 @@
           <div class="pill-bar-bg trend">
             <div class="pill-bar-fill trend" id="hudTrendBar"></div>
           </div>
-        </div>
-      </div>
-
-      <div class="hud-impact-row" id="hudImpactRow">
-        <div class="hud-impact-card">
-          <div class="impact-head">
-            <div class="impact-kicker" data-i18n data-ja="本日のAI JUDGE指数" data-en="Today's AI Judge Index">本日のAI JUDGE指数</div>
-            <div class="impact-main" id="aiJudgeIndexVal">--</div>
-            <div class="impact-label" id="aiJudgeIndexLabel">ANALYZING</div>
-          </div>
-          <div class="impact-sub" id="aiConvictionVal" data-i18n data-ja="確信度: 計算中" data-en="Conviction: calculating">確信度: 計算中</div>
-          <div class="impact-links" id="aiActionLinks">
-            <a href="/daily/latest" data-ga="ai_judge_next_daily" data-placement="ai_judge_impact" data-i18n data-ja="今日のAIレポートで根拠を確認" data-en="Open today's AI report">今日のAIレポートで根拠を確認</a>
-            <a href="/coins/bitcoin/" data-ga="ai_judge_next_btc" data-placement="ai_judge_impact" data-i18n data-ja="BTC詳細ページで価格と流れを見る" data-en="Open BTC detail page">BTC詳細ページで価格と流れを見る</a>
-            <a href="/guide/indicators/" data-ga="ai_judge_next_indicators" data-placement="ai_judge_impact" data-i18n data-ja="指標ガイドで判断基準を確認" data-en="Review indicator guide">指標ガイドで判断基準を確認</a>
-          </div>
-        </div>
-        <div class="hud-radar-card" aria-label="AI signal radar">
-          <canvas id="aiJudgeRadar" width="220" height="180"></canvas>
         </div>
       </div>
       <details class="hud-details">
