@@ -12806,9 +12806,12 @@
       // 2. ヘルパー関数: 画面の値を安全に取得
       const getVal = (id) => {
         const el = document.getElementById(id);
-        if (!el || !el.textContent || el.textContent.includes('—') || el.textContent.includes('-')) return null;
+        if (!el || !el.textContent) return null;
+        const txt = el.textContent.trim();
+        // NOTE: 「-」単体はプレースホルダーだが、負数（例: -2.3%）は有効値として扱う
+        if (!txt || txt === '-' || txt === '—' || txt === '--') return null;
         // %などの単位を除去して数値化
-        const val = parseFloat(el.textContent.replace(/[^\d.-]/g, ''));
+        const val = parseFloat(txt.replace(/[^\d.-]/g, ''));
         return isNaN(val) ? null : val;
       };
 
