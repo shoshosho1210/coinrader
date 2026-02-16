@@ -11095,6 +11095,10 @@
       if (kpiB) {
         const total = o.up + o.down + (o.flat || 0);
         const upPct = total ? (o.up / total * 100).toFixed(1) : 0;
+        // ★ AI JUDGE(レーダー)用に退避：BREADTH（上昇率%）
+        window.__AI_KPI = window.__AI_KPI || {};
+        window.__AI_KPI.breadthUpPct = Number(upPct); // 0..100
+
         let sign = '';
         if (upPct >= 70) sign = '<i class="fa-solid fa-rocket"></i>全面高の気配';
         else if (upPct >= 55) sign = '<i class="fa-solid fa-arrow-trend-up"></i>上昇が優勢';
@@ -11134,6 +11138,9 @@
           mcap24hEl.innerHTML = `<span style="color:${pct >= 0 ? '#4ade80' : '#f87171'}">${sign} ${pct.toFixed(2)}%</span>`;
         }
       }
+      // ★ AI JUDGE(レーダー)用に退避：FLOW（時価総額7d変化%）
+      window.__AI_KPI = window.__AI_KPI || {};
+      window.__AI_KPI.flow7dPct = (typeof o.mcap7dPct === 'number') ? o.mcap7dPct : null;
 
       const elAltRatio = document.getElementById('kpiAltVolRatio');
       if (elAltRatio) {
@@ -12947,48 +12954,40 @@
         maDist = pastToday.ma;
       }
 
-      // 4. 上の3つの計器（HUD）へ数値を強制反映（数値は残す / バーは廃止してレーダーへ）
-      // 追加2軸（暫定）：Breadth / Flow
-      function clamp01to100(x){ return Math.max(0, Math.min(100, x)); }
-      function parseNum(text){
-        const m = String(text||'').replace(/,/g,'').match(/-?\d+(\.\d+)?/);
-        return m ? Number(m[0]) : null;
-      }
+      // 4. 上の3つの計器（HUD）へ数値を強制反映（数値は残す / 5軸レーダーへ）
+      let rsiNum2  = (rsi !== null) ? Number(rsi) : null;
+      let sentNum2 = (sent !== null) ? Number(sent) : null;
+      let maVal2   = (maDist !== null) ? Number(parseFloat(maDist)) : null;
 
-      // 例：どこかの要素に 0..100 の値が出てる前提（IDは要調整）
-      const breadthEl = document.getElementById('kpiBreadth7d'); // ←あなたの実IDに
-      const flowEl    = document.getElementById('kpiFlow7d');    // ←あなたの実IDに
+      // 数値（テキスト）は更新
+      if (rsiNum2 !== null)  updateWithFlash('hudRsiVal', Math.round(rsiNum2));
+      if (sentNum2 !== null) updateWithFlash('hudFgVal', Math.round(sentNum2));
+      if (maVal2 !== null)   updateWithFlash('hudTrendVal', (maVal2 >= 0 ? '+' : '') + maVal2.toFixed(1) + '%');
 
-      const breadthRaw = breadthEl ? parseNum(breadthEl.textContent) : null;
-      const flowRaw    = flowEl ? parseNum(flowEl.textContent) : null;
+      // 正規化 helpers
+      const clamp01 = (x) => Math.max(0, Math.min(100, x));
+      const normPm10 = (x) => { // -10..+10 => 0..100
+        if (typeof x !== 'number' || !isFinite(x)) return null;
+        const c = Math.max(-10, Math.min(10, x));
+        return ((c + 10) / 20) * 100;
+      };
 
-      const breadthNorm = (breadthRaw == null) ? 0 : clamp01to100(breadthRaw);
-      const flowNorm    = (flowRaw == null) ? 0 : clamp01to100(flowRaw);
+      // 3軸（すでにある値）
+      const vRsi   = (rsiNum2 === null) ? 0 : clamp01(rsiNum2);
+      const vSent  = (sentNum2 === null) ? 0 : clamp01(sentNum2);
+      const vTrend = (maVal2   === null) ? 0 : (normPm10(maVal2) ?? 0);
 
+      // 追加2軸：renderOverview() で退避した値を読む（ここがキモ）
+      const kpi = window.__AI_KPI || {};
+      const vBreadth = (typeof kpi.breadthUpPct === 'number') ? clamp01(kpi.breadthUpPct) : 0;  // 0..100
+      const vFlow    = (typeof kpi.flow7dPct === 'number') ? (normPm10(kpi.flow7dPct) ?? 0) : 0; // -10..+10を想定
+
+      // 5軸レーダー描画（これ1回だけ）
       makeRadarChart(
         'aiRadar',
         ['MOMENTUM', 'SENTIMENT', 'TREND', 'BREADTH', 'FLOW'],
-        [vRsi, vSent, vTrend, breadthNorm, flowNorm]
+        [vRsi, vSent, vTrend, vBreadth, vFlow]
       );
-
-      let rsiNum2 = (rsi !== null) ? Number(rsi) : null;
-      let sentNum2 = (sent !== null) ? Number(sent) : null;
-      let maVal2  = (maDist !== null) ? Number(parseFloat(maDist)) : null;
-
-      if (rsiNum2 !== null) updateWithFlash('hudRsiVal', Math.round(rsiNum2));
-      if (sentNum2 !== null) updateWithFlash('hudFgVal', Math.round(sentNum2));
-      if (maVal2 !== null)  updateWithFlash('hudTrendVal', (maVal2 >= 0 ? '+' : '') + maVal2.toFixed(1) + '%');
-
-      // レーダー用：TREND を -10..+10 => 0..100 に正規化（代表レンジでクランプ）
-      const trendNorm = (maVal2 === null) ? null : ((Math.max(-10, Math.min(10, maVal2)) + 10) * 5);
-
-      // レーダー描画（欠損時は0扱いでOK）
-      const vRsi   = (rsiNum2 === null) ? 0 : Math.max(0, Math.min(100, rsiNum2));
-      const vSent  = (sentNum2 === null) ? 0 : Math.max(0, Math.min(100, sentNum2));
-      const vTrend = (trendNorm === null) ? 0 : Math.max(0, Math.min(100, trendNorm));
-
-      makeRadarChart('aiRadar', ['RSI', 'SENTIMENT', 'TREND'], [vRsi, vSent, vTrend]);
-
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
       if (badgeEl) {
