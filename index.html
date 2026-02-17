@@ -9012,6 +9012,45 @@
   #aiInsightBox .hero-cta-row{ justify-content: flex-start; }
   #aiInsightBox #aiVerdictBadge .status-text{ font-size: 30px; }
 }
+
+/* =========================
+   v207: Cleaner first view
+   - key reasons as chips only (no band)
+   - clearer CTA hierarchy
+   - slimmer details row
+   ========================= */
+#aiInsightBox .ai-keyreasons{
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+#aiInsightBox .ai-keyreasons .kr{ gap:10px; }
+#aiInsightBox .ai-keyreasons .kr-item{
+  background: rgba(2,6,23,0.28);
+  border-color: rgba(148,163,184,0.16);
+  padding: 7px 11px;
+  font-weight: 850;
+}
+#aiInsightBox .hero-btn-primary{
+  background: rgba(56,189,248,0.20) !important;
+  border-color: rgba(56,189,248,0.45) !important;
+  color: #eaf6ff !important;
+  box-shadow: 0 0 0 1px rgba(56,189,248,0.18) inset, 0 8px 22px rgba(56,189,248,0.10) !important;
+}
+#aiInsightBox .hero-btn-ghost{
+  background: rgba(255,255,255,0.02) !important;
+  border-color: rgba(229,231,235,0.18) !important;
+  color: rgba(229,231,235,0.92) !important;
+}
+#aiInsightBox .hud-details-merged .hud-summary-btn{
+  padding: 8px 10px !important;
+  font-size: 0.82rem !important;
+}
+#aiInsightBox .hud-details-merged .btn-text{ opacity: .86; }
+#aiInsightBox .hud-details-merged .toggle-arrow{ transform: translateY(1px); opacity: .7; }
+#aiInsightBox .hud-meta-badges .meta-pill span:first-child{ display:none; } /* hide '対象:' / '確度:' labels */
+#aiInsightBox .hud-meta-badges .meta-pill{ font-size: 11px; padding: 4px 8px; opacity: .9; }
+
 </style>
 
 <body>
@@ -9208,7 +9247,7 @@
 </div>
       <details class="hud-details hud-details-merged" id="aiDetails">
         <summary class="hud-summary-btn">
-          <span class="btn-text" data-i18n data-ja="詳細を見る（指標＋解説）" data-en="Details (Indicators + Notes)">詳細を見る（指標＋解説）</span>
+          <span class="btn-text" data-i18n data-ja="詳細（指標・条件）" data-en="Details">詳細（指標・条件）</span>
           <span class="toggle-arrow">▼</span>
         </summary>
 
