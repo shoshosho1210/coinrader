@@ -8857,9 +8857,9 @@
   margin-top: 10px;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px dashed rgba(56,189,248,0.35);
-  background: rgba(2,6,23,0.35);
-}
+  border: 1px solid rgba(148,163,184,0.14);
+  background: rgba(15,23,42,0.18);
+  }
 .ai-keyreasons .kr{ display:flex; gap:8px; flex-wrap:wrap; }
 .ai-keyreasons .kr-item{
   display:inline-flex;
@@ -8877,6 +8877,50 @@
   #aiInsightBox #aiVerdictBadge .status-text{ font-size: 22px !important; }
 }
 
+
+/* v204: merged AI details (cleaner first view) */
+.hud-details-merged{
+  border: 1px solid rgba(148,163,184,0.12);
+  background: rgba(2,6,23,0.35);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.hud-details-merged > summary{
+  list-style: none;
+}
+.hud-details-merged > summary::-webkit-details-marker{ display:none; }
+.hud-details-merged .hud-summary-btn{
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(15,23,42,0.18);
+  border: 0;
+  color: rgba(226,232,240,0.92);
+  font-size: 0.86rem;
+}
+.hud-details-merged .btn-text{
+  font-weight: 800;
+  letter-spacing: .02em;
+  opacity: .9;
+}
+.hud-details-merged .toggle-arrow{ opacity:.8; }
+.hud-details-merged[open] .hud-summary-btn{
+  border-bottom: 1px solid rgba(148,163,184,0.10);
+}
+.hud-details-inner{ padding: 10px 10px 12px; }
+.hud-details-sep{
+  height:1px;
+  background: rgba(148,163,184,0.10);
+  margin: 10px 0;
+}
+
+/* Make the details area feel lighter */
+.hud-details-merged .hud-content-text{
+  padding: 0;
+  margin: 0;
+}
 </style>
 
 <body>
@@ -9071,17 +9115,14 @@
         <a id="aiDailyListLink" class="hero-btn hero-btn-ghost" href="/daily/"
           data-i18n data-ja="過去ログ" data-en="Past logs" aria-label="過去ログ">過去ログ</a>
       </div>
-      <details class="hud-details hud-metrics-details" id="aiMetricsDetails">
-
+      <details class="hud-details hud-details-merged" id="aiDetails">
         <summary class="hud-summary-btn">
-
-          <span class="btn-text" data-i18n data-ja="詳細指標（RSI/SENTIMENT/TREND）" data-en="Detail indicators (RSI/SENTIMENT/TREND)">詳細指標（RSI/SENTIMENT/TREND）</span>
-
+          <span class="btn-text" data-i18n data-ja="詳細を見る（指標＋解説）" data-en="Details (Indicators + Notes)">詳細を見る（指標＋解説）</span>
           <span class="toggle-arrow">▼</span>
-
         </summary>
 
-        <div class="hud-metrics-row compact">
+        <div class="hud-details-inner">
+          <div class="hud-metrics-row compact">
         <div class="hud-pill">
           <div class="pill-top">
             <span class="pill-labelwrap">
@@ -9118,20 +9159,12 @@
             <div class="pill-bar-fill trend" id="hudTrendBar"></div>
           </div>
         </div>
-      </div>
+      
+          </div>
 
-      </details>
+          <div class="hud-details-sep"></div>
 
-
-      <details class="hud-details" id="aiReasoning">
-        <summary class="hud-summary-btn">
-          <span class="btn-text" data-i18n data-ja="根拠を3行で見る" data-en="See key reasons">
-            根拠を3行で見る
-          </span>
-
-          <span class="toggle-arrow">▼</span>
-        </summary>
-        <div class="hud-content-text" id="aiInsightText">
+          <div class="hud-content-text" id="aiInsightText">
           <div class="ai-loading-placeholder">
             <span class="cyber-blink" data-i18n data-ja="AIを起動中..." data-en="INITIALIZING NEURAL NET...">INITIALIZING
               NEURAL NET...</span>
@@ -9142,6 +9175,7 @@
           <span class="ai-disclaimer" data-i18n data-ja="※投資助言ではありません"
             data-en="Not financial advice.">※投資助言ではありません</span>
 
+        </div>
         </div>
       </details>
     </div>
@@ -9159,7 +9193,7 @@
       <div class="hero-mini-card hero-mini-links" aria-label="ショートカット">
         <a class="hero-link" href="#sec-overview" data-i18n data-ja="市場サマリーへ" data-en="Market overview">市場サマリーへ</a>
         <a class="hero-link" href="#sec-trend" data-i18n data-ja="注目銘柄へ" data-en="Trending coins">注目銘柄へ</a>
-        <a class="hero-link" href="#aiReasoning" data-i18n data-ja="判定の仕組みへ" data-en="How it works">判定の仕組みへ</a>
+        <a class="hero-link" href="#aiDetails" data-i18n data-ja="判定の仕組みへ" data-en="How it works">判定の仕組みへ</a>
       </div>
     </div>
     <div class="summary-lists">
