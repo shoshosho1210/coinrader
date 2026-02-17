@@ -4699,6 +4699,85 @@
     /* アイコンだけ黄色で注意喚起 */
   }
 
+  /* =========================
+     HERO (First View) tweaks
+     ========================= */
+  .hero-header{ margin-bottom: 10px; }
+  .hero-title{ font-size: 18px; letter-spacing: .02em; }
+  .hero-sub{
+    margin-top: 4px;
+    font-size: 12px;
+    color: rgba(148,163,184,.95);
+    line-height: 1.45;
+  }
+
+  .hero-cta-row{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 8px 0 12px;
+  }
+  .hero-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(229,231,235,0.22);
+    background: rgba(255,255,255,0.03);
+    color: #e5e7eb;
+  }
+  .hero-btn-primary{
+    border-color: rgba(56,189,248,0.35);
+    background: rgba(56,189,248,0.10);
+    color: #38bdf8;
+    box-shadow: 0 0 0 1px rgba(56,189,248,0.12) inset;
+  }
+  .hero-btn:hover{ filter: brightness(1.06); }
+
+  .hero-mini{
+    display: grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .hero-mini-card{
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,.03);
+  }
+  .hero-mini-title{ font-size: 12px; font-weight: 900; letter-spacing: .06em; color: #cbd5e1; margin-bottom: 8px; }
+  .hero-mini-bullets{ margin: 0; padding-left: 18px; color: rgba(229,231,235,.88); font-size: 12px; line-height: 1.6; }
+  .hero-mini-bullets b{ color: #f8fafc; }
+  .hero-mini-links{ display: grid; gap: 8px; }
+  .hero-link{
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(148,163,184,.18);
+    background: rgba(2,6,23,.35);
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .hero-link::after{ content: '→'; opacity: .8; }
+  .hero-link:hover{ border-color: rgba(56,189,248,0.35); color: #38bdf8; }
+
+  @media (max-width: 840px){
+    .hero-title{ font-size: 16px; }
+    .hero-mini{ grid-template-columns: 1fr; }
+    .hero-link{ padding: 9px 10px; }
+  }
+
   /* --- 詳細レポートエリアのCyber化 --- */
 
   /* 1. コンテナ背景: 少し暗くして没入感を出す */
@@ -8890,11 +8969,15 @@
     <div class="fomo-scroll" id="fomoScroll"></div>
   </div>
 
-  <section aria-label="今日の注目" class="summary-block" id="sec-summary">
-    <div class="section-header">
+  <section aria-label="今日のトレード判定" class="summary-block" id="sec-summary">
+    <div class="section-header hero-header">
       <div>
-        <div class="section-title" data-i18n data-ja="リアルタイム市場分析" data-en="Real-time Market Analysis">リアルタイム市場分析</div>
-
+        <div class="section-title hero-title" data-i18n data-ja="今日のトレード判定（日本時間）" data-en="Today's Trade Signal (JST)">今日のトレード判定（日本時間）</div>
+        <div class="section-sub hero-sub" data-i18n
+          data-ja="複数指標をルール化し、買い／売り／静観を機械的に表示します（投資助言ではありません）"
+          data-en="Rule-based signals from multiple indicators (Not financial advice)">
+          複数指標をルール化し、買い／売り／静観を機械的に表示します（投資助言ではありません）
+        </div>
       </div>
     </div>
     <div class="ai-insight-box hud-panel" id="aiInsightBox">
@@ -8931,14 +9014,13 @@
 
       </div>
       <div class="hud-shortline" id="aiInsightShort">—</div>
-      <div class="ai-daily-links" style="display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 10px;">
-        <a id="aiDailyLatestLink" href="/daily/latest"
-          style="font-size:12px; color:#38bdf8; text-decoration:none; border:1px solid rgba(56,189,248,0.35); padding:4px 8px; border-radius:999px;"
-          data-i18n data-ja="今日のAIレポート" data-en="Today's AI Report" aria-label="今日のAIレポート">今日のAIレポート</a>
 
-        <a id="aiDailyListLink" href="/daily/"
-          style="font-size:12px; color:#e5e7eb; text-decoration:none; border:1px solid rgba(229,231,235,0.2); padding:4px 8px; border-radius:999px;"
-          data-i18n data-ja="過去のAIレポート" data-en="Past AI Reports" aria-label="過去のAIレポート">過去のAIレポート</a>
+      <!-- CTA: keep to 2 main actions to avoid choice overload -->
+      <div class="hero-cta-row" aria-label="判定の次の行動">
+        <a id="aiDailyLatestLink" class="hero-btn hero-btn-primary" href="/daily/latest"
+          data-i18n data-ja="今日の根拠を見る" data-en="See today's reasoning" aria-label="今日の根拠を見る">今日の根拠を見る</a>
+        <a id="aiDailyListLink" class="hero-btn hero-btn-ghost" href="/daily/"
+          data-i18n data-ja="過去ログ" data-en="Past logs" aria-label="過去ログ">過去ログ</a>
       </div>
       <div class="hud-metrics-row compact">
         <div class="hud-pill">
@@ -8978,7 +9060,7 @@
           </div>
         </div>
       </div>
-      <details class="hud-details">
+      <details class="hud-details" id="aiReasoning">
         <summary class="hud-summary-btn">
           <span class="btn-text" data-i18n data-ja="AIの判断理由を見る（30秒）" data-en="See AI reasoning (30 sec)">
             AIの判断理由を見る（30秒）
@@ -8999,6 +9081,23 @@
 
         </div>
       </details>
+    </div>
+
+    <!-- First-time clarity (below the main box) -->
+    <div class="hero-mini" aria-label="このサイトでできること">
+      <div class="hero-mini-card">
+        <div class="hero-mini-title" data-i18n data-ja="このサイトは何をする？" data-en="What is this?">このサイトは何をする？</div>
+        <ul class="hero-mini-bullets">
+          <li><b>買い／売り／静観</b> を毎日更新</li>
+          <li>根拠は <b>指標×ルール</b> を短く開示</li>
+          <li><b>何もしない日</b> もログに残す（レンジ回避）</li>
+        </ul>
+      </div>
+      <div class="hero-mini-card hero-mini-links" aria-label="ショートカット">
+        <a class="hero-link" href="#sec-overview" data-i18n data-ja="市場サマリーへ" data-en="Market overview">市場サマリーへ</a>
+        <a class="hero-link" href="#sec-trend" data-i18n data-ja="注目銘柄へ" data-en="Trending coins">注目銘柄へ</a>
+        <a class="hero-link" href="#aiReasoning" data-i18n data-ja="判定の仕組みへ" data-en="How it works">判定の仕組みへ</a>
+      </div>
     </div>
     <div class="summary-lists">
       <div class="summary-card summary-trend">
@@ -12873,12 +12972,13 @@
         // v115: colorize the AI JUDGE frame to match verdict
         if (box) box.setAttribute('data-signal', isNeutral ? 'neutral' : (isBear ? 'bear' : 'bull'));
 
-        badgeEl.className = 'hud-status-badge ' + (isBear ? 'status-bearish' : 'status-bullish');
+        badgeEl.className = 'hud-status-badge ' + (isNeutral ? 'status-neutral' : (isBear ? 'status-bearish' : 'status-bullish'));
         const lang = document.documentElement.lang || 'ja';
         const isEn = (lang === 'en');
 
-        const verdictJa = isBear ? '弱気 (BEAR)' : '強気 (BULL)';
-        const verdictEn = isBear ? 'BEARISH' : 'BULLISH';
+        // Make the first-view wording action-oriented, while keeping (BEAR/BULL/WAIT) for continuity.
+        const verdictJa = isNeutral ? '静観 (WAIT)' : (isBear ? '売り優勢 (BEAR)' : '買い優勢 (BULL)');
+        const verdictEn = isNeutral ? 'WAIT' : (isBear ? 'BEAR' : 'BULL');
 
         badgeEl.querySelector('.status-text').textContent = isEn ? verdictEn : verdictJa;
 
@@ -12892,7 +12992,7 @@
         }
 
         const icon = badgeEl.querySelector('.status-icon i');
-        if (icon) icon.className = (isBear ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-rocket');
+        if (icon) icon.className = isNeutral ? 'fa-solid fa-pause' : (isBear ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-rocket');
       }
 
       // データ待ちガード
