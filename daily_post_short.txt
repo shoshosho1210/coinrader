@@ -1,17 +1,17 @@
-🤖 CoinRader 市場速報 (02/17)
+🤖 CoinRader 市場速報 (02/18)
 分析: 弱気 (BEAR)
 
-🔹 Bitcoin 📈
-価格: ¥1049万
-前日比: +0.2%
-RSI(14): 50.4
+🔹 Bitcoin 📉
+価格: ¥1038万
+前日比: -1.1%
+RSI(14): 38.3
 心理指数: 10 (Extreme Fear)
 
 📈 注目銘柄
-トレンド入り: BTC, RPL, PENGU
-急上昇銘柄: SIREN (38%↑)
+トレンド入り: AAVE, ZORA, RIVER
+急上昇銘柄: JTO (22%↑)
 
 📊 詳細分析
-https://coinrader.net/share/20260217.html
+https://coinrader.net/share/20260218.html
 
 #CoinRader #ビットコイン #暗号資産
