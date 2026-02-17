@@ -4815,14 +4815,14 @@
   .ai-mini {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .ai-mini-block {
     border: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(15, 23, 42, 0.55);
     border-radius: 12px;
-    padding: 10px 12px;
+    padding: 8px 10px;
   }
 
   .ai-mini-title {
@@ -13812,15 +13812,52 @@ const icon = badgeEl.querySelector('.status-icon i');
         const trendClamp = (maNum === null) ? 0 : Math.max(-10, Math.min(10, maNum));
         const trendPos = (maNum === null) ? 0.5 : (trendClamp + 10) / 20; // 0..1 with 0 at -10, 0.5 at 0, 1 at +10
 
-        const titleMarketMode = isEn ? 'Market mode (auto)' : '市場モード（自動判定）';
-        const titleFlipCond = isEn ? 'When the verdict flips (auto)' : '判定が変わる条件（自動）';
+        const titleMarketMode = isEn ? 'Market mode' : '市場モード';
+        const titleFlipCond = isEn ? 'When the verdict flips' : '判定が変わる条件';
         const titleTop3 = isEn ? 'Top 3 drivers' : '根拠TOP3';
 
-        ifThenLines[0] = ifThenLines[0] || '';
-        ifThenLines[1] = ifThenLines[1] || '';
-        top3Lines[0] = top3Lines[0] || '';
-        top3Lines[1] = top3Lines[1] || '';
-        top3Lines[2] = top3Lines[2] || '';
+        // 1-line helper (avoid long blocks)
+        const oneLine = (s) => {
+          if (!s) return '';
+          const t = String(s).trim();
+          if (isEn) {
+            const i = t.indexOf('.');
+            return (i >= 0) ? (t.slice(0, i + 1)) : t;
+          } else {
+            const i = t.indexOf('。');
+            return (i >= 0) ? (t.slice(0, i + 1)) : t;
+          }
+        };
+
+        const regimeSub1 = oneLine(regimeSub);
+
+        // concise flip conditions (match the top chips)
+        const condLine1 = isEn
+          ? 'Range: RSI 45–55 and TREND within ±2%'
+          : 'レンジ判定：RSI 45〜55 かつ TREND ±2%以内';
+        const condLine2 = isEn
+          ? 'Bias emerges: TREND stays beyond ±2% or FGI leaves 45–55'
+          : '色が出る：TREND が ±2%超で定着 / FGI が 45〜55 を外れる';
+
+        // unified labels for Top3 (order: Trend → RSI → FGI)
+        const trendDir = (_trend === null || _trend === undefined) ? (isEn ? '—' : '—')
+          : (_trend >= 2 ? (isEn ? 'Up' : '上向き') : (_trend <= -2 ? (isEn ? 'Down' : '下向き') : (isEn ? 'Flat' : '横')));
+
+        const rsiZone = (_rsi === null || _rsi === undefined) ? (isEn ? '—' : '—')
+          : (_rsi >= 70 ? (isEn ? 'Overbought' : '過熱') : (_rsi <= 30 ? (isEn ? 'Oversold' : '売られすぎ') : (isEn ? 'Neutral' : '中立')));
+
+        const fgiZone = (_fgi === null || _fgi === undefined) ? (isEn ? '—' : '—')
+          : (_fgi <= 25 ? (isEn ? 'Fear' : '恐怖') : (_fgi >= 75 ? (isEn ? 'Greed' : '強欲') : (isEn ? 'Neutral' : '中立')));
+
+        const topTrend = isEn
+          ? `Trend: ${fmtPct(_trend)} (${trendDir}) → direction bias`
+          : `トレンド：${fmtPct(_trend)}（${trendDir}）→ 方向の偏り`;
+        const topRsi = isEn
+          ? `Heat (RSI): ${(_rsi===null||_rsi===undefined)?'—':Math.round(_rsi)} (${rsiZone}) → range-prone`
+          : `過熱感（RSI）：${(_rsi===null||_rsi===undefined)?'—':Math.round(_rsi)}（${rsiZone}）→ レンジ寄り`;
+        const topFgi = isEn
+          ? `Sentiment (FGI): ${(_fgi===null||_fgi===undefined)?'—':Math.round(_fgi)} (${fgiZone}) → risk tone`
+          : `心理（FGI）：${(_fgi===null||_fgi===undefined)?'—':Math.round(_fgi)}（${fgiZone}）→ リスクの空気感`;
 
         const htmlContent = `
   <div class="ai-mini">
@@ -13828,26 +13865,25 @@ const icon = badgeEl.querySelector('.status-icon i');
       <div class="ai-regime-left">
         <div class="ai-regime-kicker">${titleMarketMode}</div>
         <div class="ai-regime-main">${regime}</div>
-        <div class="ai-regime-sub">${regimeSub}</div>
+        <div class="ai-regime-sub">${regimeSub1}</div>
       </div>
       <div class="ai-regime-meta">BTC 24h：${fmtPct(btcChgNum)} / BTC.D：${(dom === null || dom === undefined) ? '—' : Number(dom).toFixed(1) + '%'}</div>
     </div>
 
-    
     <div class="ai-mini-block">
       <div class="ai-mini-title">${titleFlipCond}</div>
       <ul class="ai-mini-ul">
-        <li>${hlMemo(ifThenLines[0])}</li>
-        <li>${hlMemo(ifThenLines[1])}</li>
+        <li>${hlMemo(condLine1)}</li>
+        <li>${hlMemo(condLine2)}</li>
       </ul>
     </div>
 
     <div class="ai-mini-block">
       <div class="ai-mini-title">${titleTop3}</div>
       <ol class="ai-mini-ol">
-        <li>${top3Lines[0]}</li>
-        <li>${top3Lines[1]}</li>
-        <li>${top3Lines[2]}</li>
+        <li>${topTrend}</li>
+        <li>${topRsi}</li>
+        <li>${topFgi}</li>
       </ol>
       ${reasonDetailsHtml}
       <div class="ai-mini-foot"></div>
