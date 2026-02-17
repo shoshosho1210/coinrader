@@ -8836,6 +8836,47 @@
     color: #e2e8f0;
     font-weight: 500;
   }
+
+/* ===== v203 First-view emphasis ===== */
+#aiInsightBox .hud-header{ align-items: stretch; }
+#aiInsightBox .hud-header-left{ flex-wrap: wrap; align-items: center; }
+#aiInsightBox #aiVerdictBadge{
+  flex: 1 1 340px;
+  margin-left: 0 !important;
+  padding: 12px 14px !important;
+  border-radius: 14px !important;
+}
+#aiInsightBox #aiVerdictBadge .status-text{
+  font-size: 26px !important;
+  font-weight: 900 !important;
+  letter-spacing: .02em;
+}
+#aiInsightBox #aiVerdictBadge .status-icon{ font-size: 18px !important; }
+#aiInsightBox .hud-meta-badges{ margin-left:auto; }
+.ai-keyreasons{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(56,189,248,0.35);
+  background: rgba(2,6,23,0.35);
+}
+.ai-keyreasons .kr{ display:flex; gap:8px; flex-wrap:wrap; }
+.ai-keyreasons .kr-item{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.18);
+  background: rgba(15,23,42,0.25);
+  font-size: 12px;
+  font-weight: 800;
+  opacity: 0.92;
+}
+#aiInsightBox .hud-metrics-details{ margin-top: 10px; }
+@media (max-width: 860px){
+  #aiInsightBox #aiVerdictBadge .status-text{ font-size: 22px !important; }
+}
+
 </style>
 
 <body>
@@ -9015,14 +9056,32 @@
       </div>
       <div class="hud-shortline" id="aiInsightShort">—</div>
 
-      <!-- CTA: keep to 2 main actions to avoid choice overload -->
+      
+      <div class="ai-keyreasons" id="aiKeyReasons" aria-label="根拠3行">
+        <div class="kr">
+          <span class="kr-item">トレンド: --</span>
+          <span class="kr-item">過熱感: RSI --</span>
+          <span class="kr-item">心理: FGI --</span>
+        </div>
+      </div>
+<!-- CTA: keep to 2 main actions to avoid choice overload -->
       <div class="hero-cta-row" aria-label="判定の次の行動">
         <a id="aiDailyLatestLink" class="hero-btn hero-btn-primary" href="/daily/latest"
           data-i18n data-ja="今日の根拠を見る" data-en="See today's reasoning" aria-label="今日の根拠を見る">今日の根拠を見る</a>
         <a id="aiDailyListLink" class="hero-btn hero-btn-ghost" href="/daily/"
           data-i18n data-ja="過去ログ" data-en="Past logs" aria-label="過去ログ">過去ログ</a>
       </div>
-      <div class="hud-metrics-row compact">
+      <details class="hud-details hud-metrics-details" id="aiMetricsDetails">
+
+        <summary class="hud-summary-btn">
+
+          <span class="btn-text" data-i18n data-ja="詳細指標（RSI/SENTIMENT/TREND）" data-en="Detail indicators (RSI/SENTIMENT/TREND)">詳細指標（RSI/SENTIMENT/TREND）</span>
+
+          <span class="toggle-arrow">▼</span>
+
+        </summary>
+
+        <div class="hud-metrics-row compact">
         <div class="hud-pill">
           <div class="pill-top">
             <span class="pill-labelwrap">
@@ -9060,10 +9119,14 @@
           </div>
         </div>
       </div>
+
+      </details>
+
+
       <details class="hud-details" id="aiReasoning">
         <summary class="hud-summary-btn">
-          <span class="btn-text" data-i18n data-ja="AIの判断理由を見る（30秒）" data-en="See AI reasoning (30 sec)">
-            AIの判断理由を見る（30秒）
+          <span class="btn-text" data-i18n data-ja="根拠を3行で見る" data-en="See key reasons">
+            根拠を3行で見る
           </span>
 
           <span class="toggle-arrow">▼</span>
@@ -12991,7 +13054,42 @@
             : `結論：${verdictTxt}｜RSI ${rsiTxt}｜Fear&Greed ${fgTxt}`;
         }
 
-        const icon = badgeEl.querySelector('.status-icon i');
+        
+        // v203: 3-line key reasons (always visible)
+        const keyEl = document.getElementById('aiKeyReasons');
+        if (keyEl) {
+          const trend = (maDist === null) ? null : parseFloat(maDist);
+          let trendTxtJa = 'トレンド: --';
+          let trendTxtEn = 'Trend: --';
+          if (trend !== null && !isNaN(trend)) {
+            const dir = (trend >= 1) ? '上昇' : (trend <= -1 ? '下落' : 'レンジ');
+            const dirEn = (trend >= 1) ? 'Up' : (trend <= -1 ? 'Down' : 'Range');
+            trendTxtJa = `トレンド: ${dir} (${trend >= 0 ? '+' : ''}${trend.toFixed(1)}%)`;
+            trendTxtEn = `Trend: ${dirEn} (${trend >= 0 ? '+' : ''}${trend.toFixed(1)}%)`;
+          }
+          let rsiTxtJa = '過熱感: RSI --';
+          let rsiTxtEn = 'Heat: RSI --';
+          if (rsi !== null && !isNaN(rsi)) {
+            const st = (rsi >= 70) ? '買われすぎ寄り' : (rsi <= 30 ? '売られすぎ寄り' : '中立寄り');
+            const stEn = (rsi >= 70) ? 'Overbought-ish' : (rsi <= 30 ? 'Oversold-ish' : 'Neutral-ish');
+            rsiTxtJa = `過熱感: RSI ${Math.round(rsi)}（${st}）`;
+            rsiTxtEn = `Heat: RSI ${Math.round(rsi)} (${stEn})`;
+          }
+          let sentTxtJa = '心理: FGI --';
+          let sentTxtEn = 'Sentiment: FGI --';
+          if (sent !== null && !isNaN(sent)) {
+            const lab = (sent >= 80) ? '強欲寄り' : (sent >= 60 ? '楽観寄り' : (sent >= 40 ? '中立' : (sent >= 20 ? '恐怖寄り' : '極度の恐怖')));
+            const labEn = (sent >= 80) ? 'Greed' : (sent >= 60 ? 'Optimistic' : (sent >= 40 ? 'Neutral' : (sent >= 20 ? 'Fear' : 'Extreme Fear')));
+            sentTxtJa = `心理: FGI ${Math.round(sent)}（${lab}）`;
+            sentTxtEn = `Sentiment: FGI ${Math.round(sent)} (${labEn})`;
+          }
+          keyEl.innerHTML = `<div class="kr">
+            <span class="kr-item">${isEn ? trendTxtEn : trendTxtJa}</span>
+            <span class="kr-item">${isEn ? rsiTxtEn : rsiTxtJa}</span>
+            <span class="kr-item">${isEn ? sentTxtEn : sentTxtJa}</span>
+          </div>`;
+        }
+const icon = badgeEl.querySelector('.status-icon i');
         if (icon) icon.className = isNeutral ? 'fa-solid fa-pause' : (isBear ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-rocket');
       }
 
