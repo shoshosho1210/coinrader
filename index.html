@@ -14,9 +14,9 @@
   <noscript>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   </noscript>
-  <title>CoinRader - 暗号資産ダッシュボード | AI市場分析 &amp; ビットコイン相場</title>
+  <title>CoinRader - 暗号資産ダッシュボード | 今日のトレード判定</title>
   <meta
-    content="CoinRader（コインレーダー）は、AIが市場トレンドを即時分析し、ビットコインの相場状況を示唆する投資家向けダッシュボードです。RSI、恐怖指数、出来高分析をリアルタイムで可視化し、トレード判断をサポートします。"
+    content="CoinRader（コインレーダー）は、指標×ルールで買い／売り／静観を機械的に表示する暗号資産ダッシュボードです。RSIや恐怖指数などを可視化し、日々の判断をサポートします（投資助言ではありません）。"
     name="description" />
   <meta content="index, follow" name="robots" />
   <link href="https://coinrader.net/" rel="canonical">
@@ -8921,6 +8921,91 @@
   padding: 0;
   margin: 0;
 }
+
+/* =========================
+   v205: Signal-first hero (no "AI JUDGE")
+   ========================= */
+.ai-label{ display:none !important; }
+.signal-label{
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .75;
+  margin-left: 8px;
+}
+#aiInsightBox .hud-header{ position: relative; align-items: flex-start; }
+#aiInsightBox .hud-header-left{ align-items: center; gap: 10px; flex-wrap: wrap; }
+#aiInsightBox #aiVerdictBadge{
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-left: 6px;
+  box-shadow: none !important;
+}
+#aiInsightBox #aiVerdictBadge .status-icon{ display:none; }
+#aiInsightBox #aiVerdictBadge .status-text{
+  font-size: 38px;
+  font-weight: 950;
+  letter-spacing: .02em;
+  line-height: 1.05;
+  text-shadow: 0 0 18px rgba(248,113,113,0.25);
+}
+#aiInsightBox .hud-meta-badges{
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  justify-content: flex-end;
+}
+#aiInsightBox #aiInsightShort{
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+/* key reasons + CTA in one row */
+#aiInsightBox .signal-row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+#aiInsightBox .ai-keyreasons{
+  flex: 1 1 auto;
+  margin: 0 !important;
+  border: 1px solid rgba(148,163,184,0.14);
+  background: rgba(2,6,23,0.35);
+}
+#aiInsightBox .hero-cta-row{
+  flex: 0 0 auto;
+  margin: 0 !important;
+}
+#aiInsightBox .hero-btn-primary{
+  height: 38px;
+  padding: 0 14px;
+  font-weight: 900;
+}
+#aiInsightBox .hero-btn-ghost{
+  height: 38px;
+  padding: 0 12px;
+}
+
+/* merge details summary spacing (clean) */
+#aiInsightBox .hud-details-merged{ margin-top: 10px; }
+#aiInsightBox .hud-summary-btn{
+  border-style: solid;
+  border-color: rgba(148,163,184,0.18);
+  background: rgba(2,6,23,0.22);
+}
+
+/* mobile: keep pills below */
+@media (max-width: 860px){
+  #aiInsightBox .hud-meta-badges{ position: static; margin-top: 6px; }
+  #aiInsightBox .signal-row{ flex-direction: column; align-items: stretch; }
+  #aiInsightBox .hero-cta-row{ justify-content: flex-start; }
+  #aiInsightBox #aiVerdictBadge .status-text{ font-size: 30px; }
+}
 </style>
 
 <body>
@@ -9071,7 +9156,7 @@
           <span class="ai-icon-pulse">
             <i class="fa-solid fa-robot" style="color:#38bdf8; filter:drop-shadow(0 0 5px rgba(56,189,248,0.6));"></i>
           </span>
-          <span class="ai-label">AI JUDGE</span>
+          <span class="signal-label" data-i18n data-ja="判定" data-en="SIGNAL">判定</span>
           <div class="hud-status-badge status-loading" id="aiVerdictBadge">
             <span class="status-icon">
               <i class="fa-solid fa-circle-notch fa-spin"></i>
@@ -9101,20 +9186,23 @@
       <div class="hud-shortline" id="aiInsightShort">—</div>
 
       
-      <div class="ai-keyreasons" id="aiKeyReasons" aria-label="根拠3行">
+      <div class="signal-row" aria-label="根拠と行動">
+<div class="ai-keyreasons" id="aiKeyReasons" aria-label="根拠3行">
         <div class="kr">
           <span class="kr-item">トレンド: --</span>
           <span class="kr-item">過熱感: RSI --</span>
           <span class="kr-item">心理: FGI --</span>
         </div>
       </div>
-<!-- CTA: keep to 2 main actions to avoid choice overload -->
-      <div class="hero-cta-row" aria-label="判定の次の行動">
+
+      
+<div class="hero-cta-row" aria-label="判定の次の行動">
         <a id="aiDailyLatestLink" class="hero-btn hero-btn-primary" href="/daily/latest"
           data-i18n data-ja="今日の根拠を見る" data-en="See today's reasoning" aria-label="今日の根拠を見る">今日の根拠を見る</a>
         <a id="aiDailyListLink" class="hero-btn hero-btn-ghost" href="/daily/"
           data-i18n data-ja="過去ログ" data-en="Past logs" aria-label="過去ログ">過去ログ</a>
       </div>
+</div>
       <details class="hud-details hud-details-merged" id="aiDetails">
         <summary class="hud-summary-btn">
           <span class="btn-text" data-i18n data-ja="詳細を見る（指標＋解説）" data-en="Details (Indicators + Notes)">詳細を見る（指標＋解説）</span>
