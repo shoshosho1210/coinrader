@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+  schedule:
+    # GitHub cron is UTC. 09:05 JST = 00:05 UTC
+    - cron: "5 0 * * *"
 
 # 並走で「fetch first」になりやすいので、同時実行を潰す
 concurrency:
@@ -12,8 +15,9 @@ concurrency:
 
 jobs:
   build-daily:
-    # bot が生成物を push したコミットでは再起動しない（ループ＆競合防止）
-    if: github.actor != 'github-actions[bot]'
+    # ✅ push だけ bot を除外（生成物pushでのループ防止）
+    #    schedule / workflow_dispatch は bot 扱いでも動かす
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     # git push するので write が必要
@@ -23,7 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # rebase / pull --rebase に必要
           fetch-depth: 0
 
       - name: Set up Python
@@ -45,7 +48,7 @@ jobs:
           set -eux
           grep -n "COINS_ALIAS_SLUGS" scripts/build_daily_pages.py || true
 
-      # ★ ここで先に同期（クリーンな状態で rebase するのが重要）
+      # ★ 先に同期（クリーンな状態で rebase）
       - name: Sync with origin/main (before build)
         run: |
           set -eux
@@ -69,10 +72,9 @@ jobs:
       - name: Sanity check dictionary canonical aliases
         run: |
           set -eux
-          # Defensive cleanup: legacy alias should never ship as a real page
           rm -rf dictionary/fear-and-greed || true
           test -z "$(find dictionary -maxdepth 2 -path 'dictionary/fear-and-greed/index.html' -print)"
-          
+
       - name: Check daily html links (no .html)
         run: |
           set -eux
@@ -132,7 +134,7 @@ jobs:
         run: |
           mkdir -p data/coins
           python scripts/fetch_coin_snapshots.py
-          
+
       - name: Generate coin pages
         env:
           CR_SITE_ORIGIN: https://coinrader.net
@@ -157,7 +159,6 @@ jobs:
         run: |
           python scripts/validate_sitemap.py
 
-      # debug は canonical 側（bitcoin）を見る
       - name: Debug coin page headers (after build)
         run: |
           echo "---- list coins ----"
@@ -166,7 +167,6 @@ jobs:
           grep -n "x-cg-demo-api-key" coins/bitcoin/index.html || true
           echo "---- grep CG_KEY ----"
           grep -n "const CG_KEY" coins/bitcoin/index.html || true
-
 
       - name: Ensure IndexNow key file (optional)
         env:
@@ -185,18 +185,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # ★ ここが重要：push直前に「autostash付きrebase」で最新を取り込む
-          # （生成物がある＝未コミット変更がある状態でも安全に rebase できる）
+          # push直前に最新取り込み
           git pull --rebase --autostash origin main
 
-          # alias 残骸の掃除（必要なものだけ追加。例：coins/sol を消したい場合）
+          # alias 残骸の掃除
           rm -rf coins/sol || true
-              git add -A daily en/daily sitemap.xml sitemap-static.xml sitemap-dictionary.xml sitemap-daily.xml _redirects
+
+          # ✅ インデント崩れ修正
+          git add -A daily en/daily sitemap.xml sitemap-static.xml sitemap-dictionary.xml sitemap-daily.xml _redirects
           git add -f daily/tags/*.html
-          git add -A coins
-          git add -A compare
-          git add -A data/coins
-          git add -A dictionary
+          git add -A coins compare data/coins dictionary
           git add -f data/top_cache.json
           git add -A indexnow_key.txt || true
 
@@ -218,7 +216,6 @@ jobs:
           grep -n "coins/eth" sitemap.xml || echo "OK: no eth"
           grep -n "coins/sol" sitemap.xml || echo "OK: no sol"
 
-
       - name: Notify IndexNow (optional)
         env:
           CR_SITE_ORIGIN: https://coinrader.net
@@ -229,7 +226,7 @@ jobs:
             echo "INDEXNOW_KEY not set; skip."
             exit 0
           fi
-          # 8桁日付のjsonだけを拾う（latest.json等を除外）
+
           latest=$(
             ls -1 data/daily/*.json \
             | sed 's#.*/##' \
