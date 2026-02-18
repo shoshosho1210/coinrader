@@ -13545,7 +13545,7 @@ const icon = badgeEl.querySelector('.status-icon i');
           regimeCls = 'regime-neutral';
           // 転換点: TRENDが±3%を超える or 心理が中立帯(45-55)から外れる
           const pivot = (_trend !== null && Math.abs(_trend) >= 3) || (_fgi !== null && (_fgi < 45 || _fgi > 55));
-          regime = pivot ? '転換点（どちらにも動きやすい）' : '様子見（方向感待ち）';
+          regime = pivot ? '転換点（方向待ち：売り優勢）' : '様子見（方向感待ち）';
         }
 
         // v111: 市場局面の一言翻訳（初見向け）
