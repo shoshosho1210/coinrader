@@ -13749,7 +13749,7 @@ const icon = badgeEl.querySelector('.status-icon i');
         } else {
           ifThenLines = [
             'レンジが続く条件：RSIが45〜55 ＆ TRENDが±2%以内なら、方向が出にくい。',
-            '色が出る条件：TRENDが±2%を超えて定着 or Fear&Greedが45〜55を外れると、相場の色が出やすい。'
+            '方向感が出る条件：TRENDが±2%を超えて定着、またはFear&Greedが45〜55を外れると、方向感が出やすい。'
           ];
           top3Lines = [
             `トレンド：${trNow} → 0付近は綱引き（±2%超で色が出やすい）`,
@@ -13837,7 +13837,7 @@ const icon = badgeEl.querySelector('.status-icon i');
           : 'レンジ判定：RSI 45〜55 かつ TREND ±2%以内';
         const condLine2 = isEn
           ? 'Bias emerges: TREND stays beyond ±2% or FGI leaves 45–55'
-          : '色が出る：TREND が ±2%超で定着 / FGI が 45〜55 を外れる';
+          : '方向感：TREND が ±2%超で定着 / FGI が 45〜55 を外れる';
 
         // unified labels for Top3 (order: Trend → RSI → FGI)
         const trendDir = (_trend === null || _trend === undefined) ? (isEn ? '—' : '—')
