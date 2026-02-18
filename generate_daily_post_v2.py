@@ -12,7 +12,7 @@ STABLE_SYMBOLS = {"usdt", "usdc", "dai", "tusd", "usde", "fdusd", "pyusd", "gusd
 SKIP_KEYWORDS = ["wrapped", "staked", "bridged", "token", "wbtc", "weth", "steth"]
 
 # ==========================================
-# 2. データ取得・分析関数
+# 2. データ取得・分析関数　
 # ==========================================
 def is_stable_coin(coin):
     c_id = (coin.get('id') or '').lower()
