@@ -4390,7 +4390,16 @@
     line-height: 1;
     white-space: nowrap;
   }
-  .status-score.pos{ border-color: rgba(34,197,94,0.45); background: rgba(34,197,94,0.10); }
+  
+.status-score.score-badge{ display:inline-flex; align-items:center; gap:8px; }
+.status-score.score-badge::before{
+  content: attr(data-label);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  opacity: .75;
+}
+.status-score.pos{ border-color: rgba(34,197,94,0.45); background: rgba(34,197,94,0.10); }
   .status-score.neg{ border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.10); }
   .status-score.zero{ border-color: rgba(148,163,184,0.35); background: rgba(148,163,184,0.08); }
 
@@ -9290,7 +9299,7 @@
               <i class="fa-solid fa-circle-notch fa-spin"></i>
             </span>
             <span class="status-text">ANALYZING...</span>
-            <span class="status-score" id="aiScoreBadge" title="Score">--</span>
+            <span class="status-score score-badge" id="aiScoreBadge" data-label="SCORE" title="SCORE（総合判定） / Overall score">--</span>
           </div>
           <div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報">
             <span class="meta-pill" id="aiHorizonPill">
