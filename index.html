@@ -13134,7 +13134,21 @@
       el.classList.add('live-flash-bg');
     }
 
-    async function updateAiInsight() {
+    
+    // ===== Intraday stable (preferred verdict source) =====
+    async function loadIntradayStable() {
+      try {
+        const cacheBuster = Math.floor(Date.now() / 60000);
+        const res = await fetch(`data/intraday/stable.json?t=${cacheBuster}`, { cache: 'no-store' });
+        if (!res.ok) return null;
+        const json = await res.json();
+        return (json && typeof json === 'object') ? json : null;
+      } catch (_e) {
+        return null;
+      }
+    }
+
+async function updateAiInsight() {
       const box = document.getElementById('aiInsightBox');
       const textEl = document.getElementById('aiInsightText');
       const timeEl = document.getElementById('aiUpdateTime');
@@ -13152,6 +13166,7 @@
       const pastYest = await getHistoricalData(1);
       const past7d = await getHistoricalData(7);
       const past30d = await getHistoricalData(30);
+      const intradayStable = await loadIntradayStable();
 
       // --- 【追加】データ鮮度ガード ---
       let lastFetch = getLastFetchAt();
@@ -13245,9 +13260,14 @@
 
       // 5. 【修正】ANALYZING表示を解除し、判定を表示
       if (badgeEl) {
-        const isBear = (sent <= 30 || btcChg <= -3);
+        const _stableSig = (intradayStable && intradayStable.signal_stable) ? String(intradayStable.signal_stable).toUpperCase() : null;
+        let isBear = (sent <= 30 || btcChg <= -3);
+        if (_stableSig) { isBear = (_stableSig === 'SELL'); }
         // Mild zone: show neutral frame (badge text stays Bear/Bull for continuity)
-        const isNeutral = (!isBear && (sent !== null && sent < 55) && (btcChg > -1.2 && btcChg < 1.2));
+        let isNeutral = (!isBear && (sent !== null && sent < 55) &&
+         (btcChg > -1.2 && btcChg < 1.2));
+        if (_stableSig) { isNeutral = (_stableSig === 'WAIT'); }
+
 
         // v115: colorize the AI JUDGE frame to match verdict
         if (box) box.setAttribute('data-signal', isNeutral ? 'neutral' : (isBear ? 'bear' : 'bull'));
@@ -13261,6 +13281,19 @@
         const verdictEn = isNeutral ? 'WAIT' : (isBear ? 'BEAR' : 'BULL');
 
         badgeEl.querySelector('.status-text').textContent = isEn ? verdictEn : verdictJa;
+        // Prefer intraday stable metadata for the short line
+        try {
+          if (shortEl && intradayStable) {
+            const ph = intradayStable.phase_label ? String(intradayStable.phase_label) : '';
+            const dh = (intradayStable.duration_hours !== undefined && intradayStable.duration_hours !== null) ? Number(intradayStable.duration_hours) : null;
+            const sc = (intradayStable.score_overall !== undefined && intradayStable.score_overall !== null) ? Number(intradayStable.score_overall) : null;
+            const parts = [];
+            if (ph) parts.push(ph);
+            if (dh !== null && !Number.isNaN(dh)) parts.push((isEn ? `Duration ${dh.toFixed(1)}h` : `継続 ${dh.toFixed(1)}h`));
+            if (sc !== null && !Number.isNaN(sc)) parts.push((isEn ? `Score ${sc}` : `Score ${sc}`));
+            if (parts.length) shortEl.textContent = parts.join(' · ');
+          }
+        } catch (_e) {}
 
         if (shortEl) {
           const verdictTxt = badgeEl.querySelector('.status-text')?.textContent || '';
