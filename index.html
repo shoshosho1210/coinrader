@@ -9379,6 +9379,7 @@
             <span class="status-text">ANALYZING...</span>
             <span class="score-wrap">
               <span class="status-score score-badge" id="aiScoreBadge" data-label="SCORE" title="SCORE（総合判定） / Overall score">--</span>
+          <span class="status-score score-badge" id="aiDurBadge" data-label="DUR" title="継続時間 / Duration of current stable phase">--</span>
               <button class="score-help" type="button" aria-label="SCORE help" data-i18n-title data-title-ja="SCOREの範囲：-4〜+4。数値が大きいほど方向性が強い（±2以上で優勢）。0付近は静観になりやすい。" data-title-en="SCORE range: -4 to +4. Larger magnitude means stronger edge (±2+ = bias). Around 0 tends to be WAIT." title="SCORE range: -4 to +4.">?</button>
             </span>
           </div>
@@ -13408,6 +13409,28 @@ async function updateAiInsight() {
             }
           }
         } catch (_e) {}
+        // Duration badge next to score (intraday stable)
+        try {
+          const durEl = document.getElementById('aiDurBadge');
+          if (durEl) {
+            const dh = (intradayStable && intradayStable.duration_hours !== undefined && intradayStable.duration_hours !== null)
+              ? Number(intradayStable.duration_hours)
+              : null;
+            if (dh === null || Number.isNaN(dh)) {
+              durEl.textContent = '--';
+              durEl.style.display = 'none';
+            } else {
+              let txt = '--';
+              if (dh < 1) {
+                txt = '<1h';
+              } else {
+                txt = `${Math.round(dh)}h`;
+              }
+              durEl.textContent = txt;
+              durEl.style.display = '';
+            }
+          }
+        } catch (_e) {}
         // Prefer intraday stable metadata for the short line
         try {
           if (shortEl && intradayStable) {
@@ -13416,7 +13439,7 @@ async function updateAiInsight() {
             const sc = (intradayStable.score_overall !== undefined && intradayStable.score_overall !== null) ? Number(intradayStable.score_overall) : null;
             const parts = [];
             if (ph) parts.push(ph);
-            if (dh !== null && !Number.isNaN(dh)) parts.push((isEn ? `Duration ${dh.toFixed(1)}h` : `継続 ${dh.toFixed(1)}h`));
+            if (dh !== null && !Number.isNaN(dh)) parts.push((() => { const h = Math.round(dh); const v = (h <= 0) ? '<1h' : `${h}h`; return isEn ? `Duration ${v}` : `継続 ${v}`; })());
             if (sc !== null && !Number.isNaN(sc)) parts.push((isEn ? `Score ${sc}` : `Score ${sc}`));
             if (parts.length) shortEl.textContent = parts.join(' · ');
           }
