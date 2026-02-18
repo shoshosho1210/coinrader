@@ -13297,11 +13297,28 @@ async function updateAiInsight() {
 
         if (shortEl) {
           const verdictTxt = badgeEl.querySelector('.status-text')?.textContent || '';
-          const rsiTxt = document.getElementById('hudRsiVal')?.textContent || '';
-          const fgTxt = document.getElementById('hudFgVal')?.textContent || '';
-          shortEl.textContent = isEn
-            ? `Verdict: ${verdictTxt} | RSI ${rsiTxt} | Fear & Greed ${fgTxt}`
-            : `結論：${verdictTxt}｜RSI ${rsiTxt}｜Fear&Greed ${fgTxt}`;
+          const rsiTxt = document.getElementById('hudRsiVal')?.textContent || '--';
+          const fgTxt = document.getElementById('hudFgVal')?.textContent || '--';
+
+          const parts = [];
+          parts.push(isEn ? `Verdict: ${verdictTxt}` : `結論：${verdictTxt}`);
+
+          // Keep stable meta visible (do not overwrite)
+          try {
+            if (intradayStable) {
+              const ph = intradayStable.phase_label ? String(intradayStable.phase_label) : '';
+              const dh = (intradayStable.duration_hours !== undefined && intradayStable.duration_hours !== null) ? Number(intradayStable.duration_hours) : null;
+              const sc = (intradayStable.score_overall !== undefined && intradayStable.score_overall !== null) ? Number(intradayStable.score_overall) : null;
+              if (ph) parts.push(ph);
+              if (dh !== null && !Number.isNaN(dh)) parts.push(isEn ? `Dur ${dh.toFixed(1)}h` : `継続 ${dh.toFixed(1)}h`);
+              if (sc !== null && !Number.isNaN(sc)) parts.push(isEn ? `Score ${sc}` : `Score ${sc}`);
+            }
+          } catch (_e) {}
+
+          parts.push(isEn ? `RSI ${rsiTxt}` : `RSI ${rsiTxt}`);
+          parts.push(isEn ? `Fear&Greed ${fgTxt}` : `Fear&Greed ${fgTxt}`);
+
+          shortEl.textContent = parts.join(' · ');
         }
 
         
