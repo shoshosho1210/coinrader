@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "symbol": "BTC",
+  "stable_signal": "WAIT",
+  "changed_at": "2026-02-18T20:25:39.436706+09:00",
+  "pending_signal": "SELL",
+  "pending_count": 1,
+  "last_raw_signal": "SELL",
+  "last_raw_ts": "2026-02-18T20:25:39.436706+09:00"
+}
