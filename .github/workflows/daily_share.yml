@@ -32,6 +32,7 @@ jobs:
           CG_DEMO_KEY: ${{ secrets.CG_DEMO_KEY }} # APIキーが必要な場合はここに追加
         run: |
           mkdir -p data/daily
+          mkdir -p data/intraday/raw
           mkdir -p share
           python generate_daily_post_v2.py
 
@@ -42,46 +43,46 @@ jobs:
           echo "Updated latest.json with $LATEST_FILE"
           
       # --- 60日経過したファイルの自動削除 ---
-      - name: Prune old files (keep last 60 days)
+      - name: Prune old files (daily/share keep 90 days, intraday keep 14 days)
         env:
           KEEP_DAYS: "90"
+          INTRADAY_KEEP_DAYS: "14"
         run: |
           python - <<'PY'
           from pathlib import Path
           import datetime as dt, os, re
 
-          keep = int(os.getenv("KEEP_DAYS", "60"))
-          # 実行時の日付から60日前を計算
-          cutoff = (dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=keep))
+          keep_daily = int(os.getenv("KEEP_DAYS", "90"))
+          keep_intraday = int(os.getenv("INTRADAY_KEEP_DAYS", "14"))
 
-          # 削除対象の設定 (フォルダ, 拡張子)
-          targets = [
-              (Path("share"), "*.html"),
-              (Path("data/daily"), "*.json")
-          ]
+          now_utc = dt.datetime.now(dt.timezone.utc).date()
+          cutoff_daily = now_utc - dt.timedelta(days=keep_daily)
+          cutoff_intraday = now_utc - dt.timedelta(days=keep_intraday)
 
-          removed = 0
-          for folder, pattern in targets:
+          def prune_folder(folder: Path, pattern: str, cutoff: dt.date) -> int:
+              removed = 0
               if not folder.exists():
-                  continue
-
+                  return 0
               for p in folder.glob(pattern):
-                  # ファイル名から日付（数字8桁）を探す
-                  m = re.search(r"(\d{8})", p.name)
+                  m = re.search(r"(\d{8})", p.name)  # YYYYMMDD
                   if not m:
-                      continue
-                  
+                      continue  # stable.json/state.json 等は対象外
                   try:
                       file_date = dt.datetime.strptime(m.group(1), "%Y%m%d").date()
-                      # 設定日数より古ければ削除
                       if file_date < cutoff:
                           p.unlink()
                           removed += 1
                           print(f"Deleted old file: {p}")
                   except Exception as e:
                       print(f"Error parsing date in {p.name}: {e}")
+              return removed
 
-          print(f"✅ Pruned {removed} file(s) older than {keep} days.")
+          removed = 0
+          removed += prune_folder(Path("share"), "*.html", cutoff_daily)
+          removed += prune_folder(Path("data/daily"), "*.json", cutoff_daily)
+          removed += prune_folder(Path("data/intraday/raw"), "*.json", cutoff_intraday)
+
+          print(f"✅ Pruned {removed} file(s). (daily/share<{keep_daily}d, intraday<{keep_intraday}d)")
           PY
       # --- ここまで追加 ---
 
@@ -93,9 +94,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add data/daily/
+          git add data/daily/ data/intraday/
 
-          if [ -n "$(git status --porcelain data/daily/)" ]; then
+          if [ -n "$(git status --porcelain data/daily/ data/intraday/)" ]; then
             git commit -m "Update hourly market JSON [skip ci]"
 
             # ★重要：リモート更新を取り込んでからpush（競合回避）
