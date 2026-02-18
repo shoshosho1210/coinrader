@@ -9128,53 +9128,122 @@
 
     <nav aria-label="ページ内メニュー" class="sideMenuNav"></nav>
 
-    <div class="sideMenuFooter">
-      <a class="sideNavLink" href="/coins/">
-        <i class="fa-solid fa-coins" aria-hidden="true"></i>
-        <span data-i18n data-ja="銘柄別ページ（Coins）" data-en="Coins pages">銘柄別ページ（Coins）</span>
-      </a>
+        <div class="sideMenuFooter">
+    <!-- Quick actions (Today) -->
+    <div style="margin:6px 10px 8px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.65;" data-i18n data-ja="今日" data-en="Today">今日</div>
 
-      <a class="sideNavLink" href="/guide/" data-page-modal="1" data-url="/guide/" data-title="CoinRader 活用ガイド"
-        style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); font-weight: bold; color: #38bdf8;">
-        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-        <span data-i18n data-ja="サイトの見かたガイド" data-en="How to use">サイトの見かたガイド</span>
-      </a>
+    <a class="sideNavLink" href="#aiInsightBox">
+    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+    <span data-i18n data-ja="今日の判定（根拠）" data-en="Today's signal (reasons)">今日の判定（根拠）</span>
+    </a>
 
-      <a class="sideNavLink" href="/start/" data-page-modal="1" data-url="/start/" data-title="暗号資産の始め方">
-        <i class="fa-solid fa-circle-play" aria-hidden="true"></i>
-        <span data-i18n data-ja="暗号資産の始め方" data-en="Getting started">暗号資産の始め方</span>
-      </a>
+    <a class="sideNavLink" href="/daily/latest">
+    <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+    <span data-i18n data-ja="今日のレポート" data-en="Today's report">今日のレポート</span>
+    </a>
 
-      <a class="sideNavLink" href="/about/" data-page-modal="1" data-url="/about/" data-title="運営者情報">
-        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-        <span data-i18n data-ja="運営者情報" data-en="About">運営者情報</span>
-      </a>
+    <a class="sideNavLink" href="/daily/">
+    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+    <span data-i18n data-ja="過去ログ" data-en="History">過去ログ</span>
+    </a>
 
-      <a class="sideNavLink" href="/disclaimer/" data-page-modal="1" data-url="/disclaimer/" data-title="免責事項">
-        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-        <span data-i18n data-ja="免責事項" data-en="Disclaimer">免責事項</span>
-      </a>
+    <div style="height:1px; margin:10px 10px; background: rgba(255,255,255,0.08);"></div>
 
-      <a class="sideNavLink" href="/data-sources/" data-page-modal="1" data-url="/data-sources/" data-title="データソース">
-        <i class="fa-solid fa-database" aria-hidden="true"></i>
-        <span data-i18n data-ja="データソース" data-en="Data sources">データソース</span>
-      </a>
+    <!-- Coins -->
+    <div style="margin:6px 10px 8px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.65;" data-i18n data-ja="銘柄" data-en="Coins">銘柄</div>
 
-      <a class="sideNavLink" href="/ads-pr/" data-page-modal="1" data-url="/ads-pr/" data-title="広告・PR表記">
-        <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
-        <span data-i18n data-ja="広告・PR表記" data-en="Ads / PR">広告・PR表記</span>
-      </a>
+    <a class="sideNavLink" href="/coins/bitcoin/">
+    <i class="fa-brands fa-bitcoin" aria-hidden="true"></i>
+    <span>BTC</span>
+    </a>
+    <a class="sideNavLink" href="/coins/ethereum/">
+    <i class="fa-brands fa-ethereum" aria-hidden="true"></i>
+    <span>ETH</span>
+    </a>
+    <a class="sideNavLink" href="/coins/solana/">
+    <i class="fa-solid fa-circle-nodes" aria-hidden="true"></i>
+    <span>SOL</span>
+    </a>
+    <a class="sideNavLink" href="/coins/xrp/">
+    <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+    <span>XRP</span>
+    </a>
+    <a class="sideNavLink" href="/coins/">
+    <i class="fa-solid fa-coins" aria-hidden="true"></i>
+    <span data-i18n data-ja="銘柄一覧" data-en="All coins">銘柄一覧</span>
+    </a>
 
-      <a class="sideNavLink" href="/privacy/" data-page-modal="1" data-url="/privacy/" data-title="プライバシーポリシー">
-        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-        <span data-i18n data-ja="プライバシーポリシー" data-en="Privacy policy">プライバシーポリシー</span>
-      </a>
+    <div style="height:1px; margin:10px 10px; background: rgba(255,255,255,0.08);"></div>
 
-      <a class="sideNavLink" href="/contact/" data-page-modal="1" data-url="/contact/" data-title="お問い合わせ">
-        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-        <span data-i18n data-ja="お問い合わせ" data-en="Contact">お問い合わせ</span>
-      </a>
+    <!-- Indicators -->
+    <div style="margin:6px 10px 8px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.65;" data-i18n data-ja="指標" data-en="Indicators">指標</div>
+
+    <a class="sideNavLink" href="/guide/indicators/">
+    <i class="fa-solid fa-wave-square" aria-hidden="true"></i>
+    <span data-i18n data-ja="RSI の見方" data-en="How to read RSI">RSI の見方</span>
+    </a>
+    <a class="sideNavLink" href="/guide/fear-greed-strategy/">
+    <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+    <span data-i18n data-ja="Fear & Greed の見方" data-en="Fear & Greed">Fear & Greed の見方</span>
+    </a>
+    <a class="sideNavLink" href="/guide/market-insight/">
+    <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+    <span data-i18n data-ja="TREND の定義" data-en="TREND definition">TREND の定義</span>
+    </a>
+
+    <div style="height:1px; margin:10px 10px; background: rgba(255,255,255,0.08);"></div>
+
+    <!-- Others (collapse) -->
+    <details style="margin:0 8px 6px; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);">
+    <summary style="list-style:none; cursor:pointer; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+    <span style="font-weight:700; opacity:.9;" data-i18n data-ja="その他" data-en="More">その他</span>
+    <span style="opacity:.6;">▼</span>
+    </summary>
+
+    <div style="padding:6px 4px 8px;">
+    <a class="sideNavLink" href="/guide/" data-page-modal="1" data-url="/guide/" data-title="CoinRader 活用ガイド">
+    <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+    <span data-i18n data-ja="サイトの見かたガイド" data-en="How to use">サイトの見かたガイド</span>
+    </a>
+
+    <a class="sideNavLink" href="/start/" data-page-modal="1" data-url="/start/" data-title="暗号資産の始め方">
+    <i class="fa-solid fa-circle-play" aria-hidden="true"></i>
+    <span data-i18n data-ja="暗号資産の始め方" data-en="Getting started">暗号資産の始め方</span>
+    </a>
+
+    <a class="sideNavLink" href="/data-sources/" data-page-modal="1" data-url="/data-sources/" data-title="データソース">
+    <i class="fa-solid fa-database" aria-hidden="true"></i>
+    <span data-i18n data-ja="データソース" data-en="Data sources">データソース</span>
+    </a>
+
+    <a class="sideNavLink" href="/disclaimer/" data-page-modal="1" data-url="/disclaimer/" data-title="免責事項">
+    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+    <span data-i18n data-ja="免責事項" data-en="Disclaimer">免責事項</span>
+    </a>
+
+    <a class="sideNavLink" href="/privacy/" data-page-modal="1" data-url="/privacy/" data-title="プライバシーポリシー">
+    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+    <span data-i18n data-ja="プライバシーポリシー" data-en="Privacy policy">プライバシーポリシー</span>
+    </a>
+
+    <a class="sideNavLink" href="/about/" data-page-modal="1" data-url="/about/" data-title="運営者情報">
+    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+    <span data-i18n data-ja="運営者情報" data-en="About">運営者情報</span>
+    </a>
+
+    <a class="sideNavLink" href="/contact/" data-page-modal="1" data-url="/contact/" data-title="お問い合わせ">
+    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+    <span data-i18n data-ja="お問い合わせ" data-en="Contact">お問い合わせ</span>
+    </a>
+
+    <a class="sideNavLink" href="/ads-pr/" data-page-modal="1" data-url="/ads-pr/" data-title="広告・PR表記">
+    <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
+    <span data-i18n data-ja="広告・PR表記" data-en="Ads / PR">広告・PR表記</span>
+    </a>
     </div>
+    </details>
+    </div>
+</div>
   </aside>
 
   <!-- FOMO Bar: 急騰・注目銘柄ティッカー -->
