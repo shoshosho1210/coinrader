@@ -4377,6 +4377,23 @@
     letter-spacing: 0.05em;
   }
 
+  .status-score{
+    margin-left: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .status-score.pos{ border-color: rgba(34,197,94,0.45); background: rgba(34,197,94,0.10); }
+  .status-score.neg{ border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.10); }
+  .status-score.zero{ border-color: rgba(148,163,184,0.35); background: rgba(148,163,184,0.08); }
+
   /* 強気モード */
   .status-bullish {
     background: rgba(74, 222, 128, 0.15);
@@ -9273,6 +9290,7 @@
               <i class="fa-solid fa-circle-notch fa-spin"></i>
             </span>
             <span class="status-text">ANALYZING...</span>
+            <span class="status-score" id="aiScoreBadge" title="Score">--</span>
           </div>
           <div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報">
             <span class="meta-pill" id="aiHorizonPill">
@@ -13281,6 +13299,25 @@ async function updateAiInsight() {
         const verdictEn = isNeutral ? 'WAIT' : (isBear ? 'BEAR' : 'BULL');
 
         badgeEl.querySelector('.status-text').textContent = isEn ? verdictEn : verdictJa;
+
+        // Score next to verdict (prefer intraday stable score)
+        try {
+          const scoreEl = document.getElementById('aiScoreBadge');
+          if (scoreEl) {
+            const raw = (intradayStable && intradayStable.score_overall !== undefined && intradayStable.score_overall !== null)
+              ? Number(intradayStable.score_overall)
+              : ((data && data.summary && data.summary.score_overall !== undefined && data.summary.score_overall !== null) ? Number(data.summary.score_overall) : null);
+            if (raw === null || Number.isNaN(raw)) {
+              scoreEl.textContent = '--';
+              scoreEl.classList.remove('pos','neg','zero');
+            } else {
+              const s = (raw > 0) ? ('+' + raw) : String(raw);
+              scoreEl.textContent = s;
+              scoreEl.classList.remove('pos','neg','zero');
+              scoreEl.classList.add(raw > 0 ? 'pos' : (raw < 0 ? 'neg' : 'zero'));
+            }
+          }
+        } catch (_e) {}
         // Prefer intraday stable metadata for the short line
         try {
           if (shortEl && intradayStable) {
