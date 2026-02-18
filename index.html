@@ -4399,6 +4399,84 @@
   letter-spacing: .14em;
   opacity: .75;
 }
+  /* SCORE tooltip */
+  .score-wrap{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .score-help{
+    width:18px;
+    height:18px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color:#dbeafe;
+    font-weight:900;
+    font-size:12px;
+    line-height:16px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    cursor:help;
+    position:relative;
+    padding:0;
+  }
+  .score-help:hover,
+  .score-help:focus{
+    outline:none;
+    border-color: rgba(56,189,248,0.55);
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+  }
+  .score-help::after{
+    content: attr(title);
+    position:absolute;
+    left:50%;
+    top: calc(100% + 10px);
+    transform: translateX(-50%) translateY(-4px);
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .15s ease, transform .15s ease;
+    background: rgba(2,6,23,0.92);
+    border: 1px solid rgba(148,163,184,0.22);
+    color: rgba(226,232,240,0.95);
+    padding: 10px 12px;
+    border-radius: 12px;
+    width: min(360px, 70vw);
+    white-space: normal;
+    text-align:left;
+    font-size: 12px;
+    line-height: 1.4;
+    z-index: 50;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  }
+  .score-help::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top: calc(100% + 3px);
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: rgba(2,6,23,0.92);
+    border-left: 1px solid rgba(148,163,184,0.22);
+    border-top: 1px solid rgba(148,163,184,0.22);
+    transform: translateX(-50%) rotate(45deg);
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .15s ease;
+    z-index: 49;
+  }
+  .score-help:hover::after,
+  .score-help:focus::after{
+    opacity:1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .score-help:hover::before,
+  .score-help:focus::before{
+    opacity:1;
+  }
+
 .status-score.pos{ border-color: rgba(34,197,94,0.45); background: rgba(34,197,94,0.10); }
   .status-score.neg{ border-color: rgba(239,68,68,0.45); background: rgba(239,68,68,0.10); }
   .status-score.zero{ border-color: rgba(148,163,184,0.35); background: rgba(148,163,184,0.08); }
@@ -9299,7 +9377,10 @@
               <i class="fa-solid fa-circle-notch fa-spin"></i>
             </span>
             <span class="status-text">ANALYZING...</span>
-            <span class="status-score score-badge" id="aiScoreBadge" data-label="SCORE" title="SCORE（総合判定） / Overall score">--</span>
+            <span class="score-wrap">
+              <span class="status-score score-badge" id="aiScoreBadge" data-label="SCORE" title="SCORE（総合判定） / Overall score">--</span>
+              <button class="score-help" type="button" aria-label="SCORE help" data-i18n-title data-title-ja="SCOREの範囲：-4〜+4。数値が大きいほど方向性が強い（±2以上で優勢）。0付近は静観になりやすい。" data-title-en="SCORE range: -4 to +4. Larger magnitude means stronger edge (±2+ = bias). Around 0 tends to be WAIT." title="SCORE range: -4 to +4.">?</button>
+            </span>
           </div>
           <div class="hud-meta-badges" id="aiMetaBadges" aria-label="AI判定メタ情報">
             <span class="meta-pill" id="aiHorizonPill">
