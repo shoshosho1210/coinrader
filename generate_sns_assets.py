@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-generate_sns_assets_v6_1.py
+"""generate_sns_assets_v6_2.py
 
-Purpose:
-- Generate 3 SNS text assets from CoinRader daily JSON (and optionally intraday stable JSON):
-  1) daily_post_short.txt       : X main post (NO URL / NO hashtags)
-  2) daily_post_self_reply.txt  : Self-reply (URL only here)
-  3) daily_post_en.txt          : English material for replying to global influencers
+A-plan fix for coinrader workflows:
+- Do NOT create/use ./out by default.
+- Write assets to repo root filenames that are already tracked by workflows.
+  - ./daily_post_short.txt          (X main post: NO URL / NO hashtags)
+  - ./daily_share_url.txt           (self-reply text: URL only here)
+  - ./share/daily_post_en.txt       (English material; under share/ so it's already in git add)
+
+Back-compat:
+- Reads JSON from (priority):
+  1) data/intraday/stable.json (optional)
+  2) data/daily/latest.json
+  3) data/latest.json (legacy)
+  4) data/daily/YYYYMMDD.json (today JST)
 
 Design goals:
-- Backward compatible: try multiple JSON paths, gracefully fallback with "--".
-- Minimal assumptions about JSON schema: extract values with heuristics.
+- Minimal assumptions about JSON schema; graceful fallback with "--".
 - Keep the main post readable within X limits (soft 280 chars target).
 """
 
@@ -20,7 +26,6 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple
@@ -35,6 +40,7 @@ def _read_json(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
+
 def load_json_first(paths: Iterable[Path]) -> Tuple[Optional[Dict[str, Any]], Optional[Path]]:
     for p in paths:
         try:
@@ -44,6 +50,7 @@ def load_json_first(paths: Iterable[Path]) -> Tuple[Optional[Dict[str, Any]], Op
             continue
     return None, None
 
+
 def _get(d: Dict[str, Any], *keys: str, default=None):
     cur: Any = d
     for k in keys:
@@ -51,6 +58,7 @@ def _get(d: Dict[str, Any], *keys: str, default=None):
             return default
         cur = cur[k]
     return cur
+
 
 def _first_present(*vals):
     for v in vals:
@@ -61,19 +69,19 @@ def _first_present(*vals):
         return v
     return None
 
+
 def _as_float(x) -> Optional[float]:
     try:
         if x is None:
             return None
         if isinstance(x, (int, float)):
             return float(x)
-        s = str(x).strip()
-        s = s.replace(",", "")
-        # percent like "-1.2%"
+        s = str(x).strip().replace(",", "")
         s = s.replace("%", "")
         return float(s)
     except Exception:
         return None
+
 
 def _as_int(x) -> Optional[int]:
     f = _as_float(x)
@@ -81,84 +89,74 @@ def _as_int(x) -> Optional[int]:
         return None
     return int(round(f))
 
+
 def _fmt_pct(x: Optional[float]) -> str:
     if x is None:
         return "--"
-    # keep 1 decimal
     return f"{x:+.1f}%"
+
 
 def _fmt_price_jpy(x: Optional[float]) -> str:
     if x is None:
         return "--"
-    # Japanese style: 万円 if large
     if x >= 1_000_000:
         man = x / 10_000
         return f"¥{man:.1f}万"
     return f"¥{int(round(x)):,}"
+
 
 def _compact(s: str) -> str:
     s = re.sub(r"[ \t]+", " ", s)
     s = re.sub(r"\n{3,}", "\n\n", s).strip()
     return s
 
+
 def _truncate_x(s: str, max_chars: int = 275) -> str:
-    """
-    Soft truncate for X. Leave a little margin for manual edits.
-    """
     if len(s) <= max_chars:
         return s
     return s[: max_chars - 1].rstrip() + "…"
 
+
 def _today_jst() -> _dt.date:
     return _dt.datetime.now(tz=JST).date()
+
 
 def _format_date_label(date_obj: _dt.date) -> str:
     return date_obj.strftime("%m/%d")
 
 # ---------------------------
-# Extraction (schema-agnostic)
+# Extraction
 # ---------------------------
 
 def extract_metrics(daily: Dict[str, Any], stable: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """
-    Try to extract:
-    - date (JST)
-    - btc_change_pct_24h
-    - fgi
-    - rsi
-    - market_mode_label (optional)
-    - signal_stable / signal_overall
-    - score_overall (optional)
-    """
     out: Dict[str, Any] = {}
 
-    # date
     date_str = _first_present(
         _get(daily, "summary", "date"),
         _get(daily, "date"),
         _get(daily, "ts"),
         _get(daily, "generated_at"),
     )
+
     date_obj = None
     if isinstance(date_str, str):
         try:
-            # accept YYYYMMDD
             if re.fullmatch(r"\d{8}", date_str):
                 date_obj = _dt.datetime.strptime(date_str, "%Y%m%d").date()
             else:
-                # ISO
                 date_obj = _dt.datetime.fromisoformat(date_str.replace("Z", "+00:00")).astimezone(JST).date()
         except Exception:
             date_obj = None
+
     out["date"] = date_obj or _today_jst()
 
-    # signal + score
     out["signal"] = _first_present(
         _get(stable or {}, "signal_stable"),
         _get(daily, "summary", "signal_overall"),
         _get(daily, "signal_overall"),
         _get(daily, "summary", "signal"),
     )
+
     out["score"] = _first_present(
         _get(stable or {}, "score_overall"),
         _get(daily, "summary", "score_overall"),
@@ -172,7 +170,6 @@ def extract_metrics(daily: Dict[str, Any], stable: Optional[Dict[str, Any]] = No
         _get(stable or {}, "phase_label"),
     )
 
-    # BTC change / RSI / FGI – many possible schemas
     btc = None
     for key in ("btc", "BTC", "bitcoin", "Bitcoin"):
         if isinstance(daily.get(key), dict):
@@ -214,14 +211,12 @@ def extract_metrics(daily: Dict[str, Any], stable: Optional[Dict[str, Any]] = No
         _get(daily, "indicators", "fgi"),
     )
 
-    # Change conditions (optional)
     out["change_condition"] = _first_present(
         _get(daily, "summary", "change_condition"),
         _get(daily, "summary", "switch_condition"),
         _get(daily, "change_condition"),
     )
 
-    # Normalization
     out["btc_change_pct_24h"] = _as_float(out["btc_change_pct_24h"])
     out["btc_price_jpy"] = _as_float(out["btc_price_jpy"])
     out["rsi"] = _as_float(out["rsi"])
@@ -244,9 +239,8 @@ def build_main_post(m: Dict[str, Any]) -> str:
     fgi_line = f"恐怖指数(FGI) {fgi}" if fgi is not None else "恐怖指数(FGI) --"
     rsi_line = f"RSI {rsi:.0f}" if isinstance(rsi, (int, float)) else "RSI --"
     chg_line = f"24h {_fmt_pct(chg)}" if chg is not None else "24h --"
-    price_line = f"BTC { _fmt_price_jpy(price) }" if price is not None else "BTC --"
+    price_line = f"BTC {_fmt_price_jpy(price)}" if price is not None else "BTC --"
 
-    # Interpretation (lightweight, not overconfident)
     interp = []
     if fgi is not None:
         if fgi <= 10:
@@ -274,7 +268,6 @@ def build_main_post(m: Dict[str, Any]) -> str:
         elif chg >= 2.0:
             interp.append("上振れが強い。過熱と反落に注意。")
 
-    # Default change condition if not present
     cond = m.get("change_condition")
     if not cond:
         cond = "判断が変わる目安：FGIが25を超え、かつRSIが50を回復したら警戒度を一段下げる。"
@@ -284,16 +277,16 @@ def build_main_post(m: Dict[str, Any]) -> str:
         f"{fgi_line} / {rsi_line} / {chg_line}",
         f"{price_line}",
     ]
-    # keep only 2 interpretation lines max
-    interp = interp[:2]
-    lines.extend(interp)
+
+    lines.extend(interp[:2])
     lines.append(cond)
 
     return _truncate_x(_compact("\n".join(lines)))
 
+
 def build_self_reply(base_url: str) -> str:
-    # URL is allowed only here
     return _compact(f"毎日の指標まとめ：{base_url}")
+
 
 def build_english_reply(m: Dict[str, Any]) -> str:
     date_label = _format_date_label(m["date"])
@@ -302,47 +295,33 @@ def build_english_reply(m: Dict[str, Any]) -> str:
     chg = m.get("btc_change_pct_24h")
 
     parts = [f"BTC snapshot ({date_label}, JST):"]
-    if fgi is not None:
-        parts.append(f"- Fear & Greed: {fgi} (very low = risk-off sentiment)")
-    else:
-        parts.append("- Fear & Greed: --")
+    parts.append(f"- Fear & Greed: {fgi} (very low = risk-off sentiment)" if fgi is not None else "- Fear & Greed: --")
     if isinstance(rsi, (int, float)):
         parts.append(f"- RSI(14): {rsi:.0f} (momentum {'weak' if rsi<45 else 'neutral' if rsi<=55 else 'strong'})")
     else:
         parts.append("- RSI(14): --")
-    if chg is not None:
-        parts.append(f"- 24h change: {_fmt_pct(chg)}")
-    else:
-        parts.append("- 24h change: --")
+    parts.append(f"- 24h change: {_fmt_pct(chg)}" if chg is not None else "- 24h change: --")
 
-    # A single, cautious takeaway
-    takeaway = "Takeaway: sentiment is heavy; wait for RSI>50 and FGI>25 to confirm risk easing."
-    parts.append(takeaway)
-
+    parts.append("Takeaway: sentiment is heavy; wait for RSI>50 and FGI>25 to confirm risk easing.")
     return _truncate_x(_compact("\n".join(parts)))
 
 # ---------------------------
 # Main
 # ---------------------------
 
-def main():
+def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out-dir", default="out", help="Output directory")
+    ap.add_argument(
+        "--out-dir",
+        default=".",
+        help="Output directory (A-plan default is repo root: '.')",
+    )
     ap.add_argument("--base-url", default="https://coinrader.net", help="Site URL (used only in self-reply)")
-    ap.add_argument(
-        "--daily-json",
-        default="data/daily/latest.json",
-        help="Primary daily JSON path (fallbacks are tried automatically)",
-    )
-    ap.add_argument(
-        "--stable-json",
-        default="data/intraday/stable.json",
-        help="Optional stable JSON path (if missing, it's ignored)",
-    )
+    ap.add_argument("--daily-json", default="data/daily/latest.json", help="Primary daily JSON path")
+    ap.add_argument("--stable-json", default="data/intraday/stable.json", help="Optional stable JSON path")
     args = ap.parse_args()
 
     out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
 
     # Prefer new location; keep backward compat with old `data/latest.json`.
     daily_paths = [
@@ -353,20 +332,22 @@ def main():
     ]
     daily, daily_path = load_json_first(daily_paths)
     if daily is None:
-        daily = {}
-        daily_path = None
+        daily, daily_path = {}, None
 
     stable, stable_path = load_json_first([Path(args.stable_json), Path("data/intraday/stable.json")])
 
     m = extract_metrics(daily, stable)
-
     main_post = build_main_post(m)
     self_reply = build_self_reply(args.base_url)
     en_post = build_english_reply(m)
 
+    # Write tracked files (workflow already git-adds them)
     (out_dir / "daily_post_short.txt").write_text(main_post + "\n", encoding="utf-8")
-    (out_dir / "daily_post_self_reply.txt").write_text(self_reply + "\n", encoding="utf-8")
-    (out_dir / "daily_post_en.txt").write_text(en_post + "\n", encoding="utf-8")
+    (out_dir / "daily_share_url.txt").write_text(self_reply + "\n", encoding="utf-8")
+
+    share_dir = out_dir / "share"
+    share_dir.mkdir(parents=True, exist_ok=True)
+    (share_dir / "daily_post_en.txt").write_text(en_post + "\n", encoding="utf-8")
 
     src_info = []
     if daily_path:
@@ -377,8 +358,8 @@ def main():
 
     print("✅ SNS assets generated:", src)
     print(" -", (out_dir / "daily_post_short.txt").as_posix())
-    print(" -", (out_dir / "daily_post_self_reply.txt").as_posix())
-    print(" -", (out_dir / "daily_post_en.txt").as_posix())
+    print(" -", (out_dir / "daily_share_url.txt").as_posix())
+    print(" -", (share_dir / "daily_post_en.txt").as_posix())
 
 
 if __name__ == "__main__":
