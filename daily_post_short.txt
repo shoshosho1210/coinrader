@@ -1,17 +1,4 @@
-🤖 CoinRader 市場速報 (02/19)
-分析: 弱気 (BEAR)
-
-🔹 Bitcoin 📉
-価格: ¥1027万
-前日比: -0.9%
-RSI(14): 42.6
-心理指数: 8 (Extreme Fear)
-
-📈 注目銘柄
-トレンド入り: BTC, ESP, OP
-急上昇銘柄: AWE (15%↑)
-
-📊 詳細分析
-https://coinrader.net/share/20260219.html
-
-#CoinRader #ビットコイン #暗号資産
+【今日のBTC / 02/19】
+恐怖指数(FGI) -- / RSI -- / 24h --
+BTC --
+判断が変わる目安：FGIが25を超え、かつRSIが50を回復したら警戒度を一段下げる。
