@@ -1,4 +1,7 @@
 【今日のBTC / 02/20】
-恐怖指数(FGI) -- / RSI -- / 24h --
-BTC --
-判断が変わる目安：FGIが25を超え、かつRSIが50を回復したら警戒度を一段下げる。
+判定：SELL（SCORE -4）｜FGI 9（Extreme Fear）｜RSI 41.2
+市場心理は“極度の恐怖”。投げが出やすい水準。
+RSIは弱め。勢いの回復は未確認。
+注目：RAVE +26.6%
+Trending: BTC / CC / OP
+判断が変わる目安：FGI>25 かつ RSI>50
