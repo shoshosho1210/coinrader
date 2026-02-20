@@ -2,11 +2,9 @@
 判定：SELL（SCORE -4）｜FGI 9（Extreme Fear）｜RSI 41.2
 
 ▼ 局面：恐怖の底探り局面
-市場心理は崩壊水準だが、価格はまだ決定的に壊れていない。
-
-反転確認までは戻り売り優位。
-
-注目：RAVE +26.6%
-Trending: BTC / CC / OP
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
+
+注目：RAVE +28.4%
+Trending: PUNCH / OP / PENGU
