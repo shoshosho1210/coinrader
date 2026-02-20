@@ -60,8 +60,7 @@ def detect_transition(prev, current):
         messages.append("モメンタム改善を確認。")
 
     if messages:
-        return "▼ 転換兆候
-" + " ".join(messages)
+        return "▼ 転換兆候\n" + " ".join(messages)
 
     return ""
 
@@ -153,3 +152,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
