@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Tue, 24 Feb 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 25 Feb 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-02-24｜Fear&amp;Greed 5 / RSI 37.1 / Trend -16.2%（CoinRader）</title>
+      <title>BTC AI分析 2026-02-25｜Fear&amp;Greed 5 / RSI 51.8 / Trend -16.6%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20260225</link>
+      <guid>https://coinrader.net/daily/20260225</guid>
+      <pubDate>Wed, 25 Feb 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が -16.63% で弱含み。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-02-24｜Fear&amp;Greed 8 / RSI 31.1 / Trend -16.6%（CoinRader）</title>
       <link>https://coinrader.net/daily/20260224</link>
       <guid>https://coinrader.net/daily/20260224</guid>
       <pubDate>Tue, 24 Feb 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が -16.21% で弱含み。</description>
+      <description>MA距離が -16.65% で弱含み。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-02-23｜Fear&amp;Greed 5 / RSI 45.7 / Trend -16.2%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260127</guid>
       <pubDate>Tue, 27 Jan 2026 09:00:00 +0900</pubDate>
       <description>注目トレンドは ULTIMA/AXS/HYPE。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-01-26｜Fear&amp;Greed — / RSI — / Trend —（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260126</link>
-      <guid>https://coinrader.net/daily/20260126</guid>
-      <pubDate>Mon, 26 Jan 2026 09:00:00 +0900</pubDate>
-      <description>注目トレンドは RIVER/TAIKO/BTC。</description>
     </item>
   </channel>
 </rss>
