@@ -1,10 +1,10 @@
-【今日のBTC / 02/25】
-判定：SELL（SCORE -2）｜FGI 50（Neutral）｜RSI 51.8
+【今日のBTC / 02/26】
+判定：SELL（SCORE -2）｜FGI 11（Extreme Fear）｜RSI 81.7
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：売り圧力鈍化フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SKR +35.1%
-Trending: BTC / PENGU / PIPPIN
+注目：POWER +52.2%
+Trending: BTC / DOT / PENGU
