@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 27 Feb 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 28 Feb 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-02-27 | Fear &amp; Greed 11 / RSI 38.2 / Trend -17.3% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-02-28 | Fear &amp; Greed 13 / RSI 33.6 / Trend -17.6% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260228</link>
+      <guid>https://coinrader.net/en/daily/20260228</guid>
+      <pubDate>Sat, 28 Feb 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-02-28. Sentiment(Fear &amp; Greed)=13, RSI=33.6, Trend=-17.6%. Overall: BEAR. Trending: PENGU/ROBO/BTC. Top gainer: B(+19.07%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-02-27 | Fear &amp; Greed 13 / RSI 32.5 / Trend -17.6% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260227</link>
       <guid>https://coinrader.net/en/daily/20260227</guid>
       <pubDate>Fri, 27 Feb 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-02-27. Sentiment(Fear &amp; Greed)=11, RSI=38.2, Trend=-17.3%. Overall: BEAR. Trending: BTC/PENGU/POWER. Top gainer: POWER(+95.17%)</description>
+      <description>Daily BTC AI analysis for 2026-02-27. Sentiment(Fear &amp; Greed)=13, RSI=32.5, Trend=-17.6%. Overall: BEAR. Trending: ROBO/SAHARA/BTC. Top gainer: B(+22.25%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-02-26 | Fear &amp; Greed 11 / RSI 54.8 / Trend -17.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260130</guid>
       <pubDate>Fri, 30 Jan 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-01-30. Sentiment(Fear &amp; Greed)=16, RSI=14.8, Trend=-11.3%. Overall: WAIT. Trending: BTC/ULTIMA/HYPE. Top gainer: SENT(+5.29%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-01-29 | Fear &amp; Greed 26 / RSI 18.1 / Trend -11.2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260129</link>
-      <guid>https://coinrader.net/en/daily/20260129</guid>
-      <pubDate>Thu, 29 Jan 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-01-29. Sentiment(Fear &amp; Greed)=26, RSI=18.1, Trend=-11.2%. Overall: WAIT. Trending: BIRB/IRYS/GWEI. Top gainer: SENT(+38.31%)</description>
     </item>
   </channel>
 </rss>
