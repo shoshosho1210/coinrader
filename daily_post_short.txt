@@ -1,10 +1,10 @@
-【今日のBTC / 03/04】
-判定：SELL（SCORE -3）｜FGI 14（Extreme Fear）｜RSI 55.7
+【今日のBTC / 03/05】
+判定：SELL（SCORE -2）｜FGI 10（Extreme Fear）｜RSI 80.0
 
 ▼ 局面：売り圧力鈍化フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：RIVER +32.6%
-Trending: POWER / AAVE / SOL
+注目：DOGE +14.9%
+Trending: PENGU / MANTRA / BTC
