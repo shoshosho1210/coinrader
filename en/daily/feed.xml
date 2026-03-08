@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 08 Mar 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 09 Mar 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-03-08 | Fear &amp; Greed 12 / RSI 35 / Trend -20.5% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-03-09 | Fear &amp; Greed 12 / RSI 37.5 / Trend -20.9% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260309</link>
+      <guid>https://coinrader.net/en/daily/20260309</guid>
+      <pubDate>Mon, 09 Mar 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-03-09. Sentiment(Fear &amp; Greed)=12, RSI=37.5, Trend=-20.9%. Overall: BEAR. Trending: BTC/TAO/SOL. Top gainer: DEXE(+10.22%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-03-08 | Fear &amp; Greed 12 / RSI 48.2 / Trend -20.9% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260308</link>
       <guid>https://coinrader.net/en/daily/20260308</guid>
       <pubDate>Sun, 08 Mar 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-03-08. Sentiment(Fear &amp; Greed)=12, RSI=35, Trend=-20.5%. Overall: BEAR. Trending: BTC/AKT/TAO. Top gainer: PI(+14.26%)</description>
+      <description>Daily BTC AI analysis for 2026-03-08. Sentiment(Fear &amp; Greed)=12, RSI=48.2, Trend=-20.9%. Overall: BEAR. Trending: BTC/SOL/PI. Top gainer: KITE(+17.13%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-03-07 | Fear &amp; Greed 12 / RSI 37.6 / Trend -20.5% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260208</guid>
       <pubDate>Sun, 08 Feb 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-02-08. Sentiment(Fear &amp; Greed)=7, RSI=59.4, Trend=-12.4%. Overall: BEAR. Trending: BTC/ASTER/HYPE. Top gainer: PIPPIN(+26.43%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-02-07 | Fear &amp; Greed 6 / RSI 44.2 / Trend -12.2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260207</link>
-      <guid>https://coinrader.net/en/daily/20260207</guid>
-      <pubDate>Sat, 07 Feb 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-02-07. Sentiment(Fear &amp; Greed)=6, RSI=44.2, Trend=-12.2%. Overall: BEAR. Trending: BTC/SOL/ETH. Top gainer: AMP(+12.05%)</description>
     </item>
   </channel>
 </rss>
