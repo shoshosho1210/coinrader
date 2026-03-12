@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 12 Mar 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 13 Mar 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-03-12 | Fear &amp; Greed 15 / RSI 59.1 / Trend -21.9% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-03-13 | Fear &amp; Greed 18 / RSI 55.5 / Trend -22.1% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260313</link>
+      <guid>https://coinrader.net/en/daily/20260313</guid>
+      <pubDate>Fri, 13 Mar 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-03-13. Sentiment(Fear &amp; Greed)=18, RSI=55.5, Trend=-22.1%. Overall: BEAR. Trending: PLLD/AAVE/TAO. Top gainer: RIVER(+29.68%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-03-12 | Fear &amp; Greed 18 / RSI 58.2 / Trend -22.2% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260312</link>
       <guid>https://coinrader.net/en/daily/20260312</guid>
       <pubDate>Thu, 12 Mar 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-03-12. Sentiment(Fear &amp; Greed)=15, RSI=59.1, Trend=-21.9%. Overall: BEAR. Trending: ACX/HYPE/PENGU. Top gainer: QUBIC(+10.65%)</description>
+      <description>Daily BTC AI analysis for 2026-03-12. Sentiment(Fear &amp; Greed)=18, RSI=58.2, Trend=-22.2%. Overall: BEAR. Trending: DRV/HYPE/BTC. Top gainer: RIVER(+23.12%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-03-11 | Fear &amp; Greed 15 / RSI 42.6 / Trend -21.9% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260212</guid>
       <pubDate>Thu, 12 Feb 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-02-12. Sentiment(Fear &amp; Greed)=5, RSI=58.2, Trend=-13.3%. Overall: BEAR. Trending: ESP/BERA/AZTEC. Top gainer: TIBBIR(+57.17%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-02-11 | Fear &amp; Greed 11 / RSI 28.8 / Trend -13% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260211</link>
-      <guid>https://coinrader.net/en/daily/20260211</guid>
-      <pubDate>Wed, 11 Feb 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-02-11. Sentiment(Fear &amp; Greed)=11, RSI=28.8, Trend=-13%. Overall: WAIT. Trending: ZRO/BTC/ZAMA. Top gainer: ZRO(+42.13%)</description>
     </item>
   </channel>
 </rss>
