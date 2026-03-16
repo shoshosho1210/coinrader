@@ -1,10 +1,10 @@
-【今日のBTC / 03/16】
-判定：SELL（SCORE -3）｜FGI 15（Extreme Fear）｜RSI 52.4
+【今日のBTC / 03/17】
+判定：SELL（SCORE -2）｜FGI 23（Extreme Fear）｜RSI 61.9
 
 ▼ 局面：売り圧力鈍化フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：XCN +21.9%
-Trending: TAO / PENGU / REZ
+注目：ZEC +22.4%
+Trending: TAO / ZEC / PENGU
