@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 19 Mar 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 20 Mar 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-03-19 | Fear &amp; Greed 26 / RSI 30.5 / Trend -23.2% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-03-20 | Fear &amp; Greed 23 / RSI 38.6 / Trend -23.5% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260320</link>
+      <guid>https://coinrader.net/en/daily/20260320</guid>
+      <pubDate>Fri, 20 Mar 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-03-20. Sentiment(Fear &amp; Greed)=23, RSI=38.6, Trend=-23.5%. Overall: BEAR. Trending: BTC/TAO/HYPE. Top gainer: UAI(+38.05%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-03-19 | Fear &amp; Greed 23 / RSI 29.8 / Trend -23.5% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260319</link>
       <guid>https://coinrader.net/en/daily/20260319</guid>
       <pubDate>Thu, 19 Mar 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-03-19. Sentiment(Fear &amp; Greed)=26, RSI=30.5, Trend=-23.2%. Overall: BEAR. Trending: NEIRO/KAT/HYPE. Top gainer: SIREN(+23.64%)</description>
+      <description>Daily BTC AI analysis for 2026-03-19. Sentiment(Fear &amp; Greed)=23, RSI=29.8, Trend=-23.5%. Overall: WAIT. Trending: KAT/BTC/TAO. Top gainer: DEXE(+13.08%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-03-18 | Fear &amp; Greed 26 / RSI 46.8 / Trend -23.2% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260219</guid>
       <pubDate>Thu, 19 Feb 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-02-19. Sentiment(Fear &amp; Greed)=9, RSI=39.8, Trend=-15%. Overall: BEAR. Trending: OP/BTC/TAO. Top gainer: 9BIT(+19.61%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-02-18 | Fear &amp; Greed 8 / RSI 43 / Trend -14.7% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260218</link>
-      <guid>https://coinrader.net/en/daily/20260218</guid>
-      <pubDate>Wed, 18 Feb 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-02-18. Sentiment(Fear &amp; Greed)=8, RSI=43, Trend=-14.7%. Overall: BEAR. Trending: ESP/HYPE/WLFI. Top gainer: WLFI(+27.24%)</description>
     </item>
   </channel>
 </rss>
