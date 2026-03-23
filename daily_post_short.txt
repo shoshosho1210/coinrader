@@ -1,10 +1,10 @@
-【今日のBTC / 03/23】
-判定：SELL（SCORE -4）｜FGI 10（Extreme Fear）｜RSI 38.5
+【今日のBTC / 03/24】
+判定：SELL（SCORE -2）｜FGI 8（Extreme Fear）｜RSI 60.3
 
-▼ 局面：恐怖の底探り局面
-恐怖は最大だが、崩壊とは限らない。
+▼ 局面：売り圧力鈍化フェーズ
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SIREN +143.5%
-Trending: SIREN / TAO / USR
+注目：JTO +21.3%
+Trending: GPUAI / BTC / RAIN
