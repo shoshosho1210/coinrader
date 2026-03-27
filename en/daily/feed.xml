@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 27 Mar 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 28 Mar 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-03-27 | Fear &amp; Greed 1 / RSI 22.6 / Trend -23.6% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-03-28 | Fear &amp; Greed 13 / RSI 15.6 / Trend -23.3% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260328</link>
+      <guid>https://coinrader.net/en/daily/20260328</guid>
+      <pubDate>Sat, 28 Mar 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-03-28. Sentiment(Fear &amp; Greed)=13, RSI=15.6, Trend=-23.3%. Overall: WAIT. Trending: XFLOKI/RAIN/PENGU. Top gainer: LDO(+5.12%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-03-27 | Fear &amp; Greed 13 / RSI 20.4 / Trend -23.3% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260327</link>
       <guid>https://coinrader.net/en/daily/20260327</guid>
       <pubDate>Fri, 27 Mar 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-03-27. Sentiment(Fear &amp; Greed)=1, RSI=22.6, Trend=-23.6%. Overall: WAIT. Trending: RAIN/TAO/BTC. Top gainer: XCN(+5.01%)</description>
+      <description>Daily BTC AI analysis for 2026-03-27. Sentiment(Fear &amp; Greed)=13, RSI=20.4, Trend=-23.3%. Overall: WAIT. Trending: TAO/STG/BTC. Top gainer: M(+8.14%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-03-26 | Fear &amp; Greed 1 / RSI 28.9 / Trend -23.6% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260227</guid>
       <pubDate>Fri, 27 Feb 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-02-27. Sentiment(Fear &amp; Greed)=13, RSI=32.5, Trend=-17.6%. Overall: BEAR. Trending: ROBO/SAHARA/BTC. Top gainer: B(+22.25%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-02-26 | Fear &amp; Greed 11 / RSI 54.8 / Trend -17.3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260226</link>
-      <guid>https://coinrader.net/en/daily/20260226</guid>
-      <pubDate>Thu, 26 Feb 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-02-26. Sentiment(Fear &amp; Greed)=11, RSI=54.8, Trend=-17.3%. Overall: BEAR. Trending: POWER/GWEI/BTC. Top gainer: POWER(+131.44%)</description>
     </item>
   </channel>
 </rss>
