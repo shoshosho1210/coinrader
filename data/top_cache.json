@@ -8,5 +8,8 @@
     "value": "9",
     "label": "Extreme Fear"
   },
-  "usd_jpy": 160.018711
+  "usd_jpy": 160.018711,
+  "stale": true,
+  "stale_reason": "HTTP Error 429: Too Many Requests",
+  "stale_at": "2026-03-29T18:02:28.280861+00:00"
 }
