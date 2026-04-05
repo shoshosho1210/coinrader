@@ -1,8 +1,0 @@
-{
-  "ts": "2026-03-21T06:44:21.585584+09:00",
-  "symbol": "BTC",
-  "score_overall": -4,
-  "signal_raw": "SELL",
-  "reason_hint": "MA:bear,RSI:low,FGI:fear",
-  "reason_top3": []
-}
