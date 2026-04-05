@@ -1,10 +1,10 @@
-【今日のBTC / 04/05】
-判定：SELL（SCORE -2）｜FGI 11（Extreme Fear）｜RSI 69.1
+【今日のBTC / 04/06】
+判定：SELL（SCORE -2）｜FGI 12（Extreme Fear）｜RSI 59.7
 
 ▼ 局面：売り圧力鈍化フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SIREN +281.6%
-Trending: SIREN / STO / PIPPIN
+注目：2Z +10.2%
+Trending: L3 / SIREN / PENDLE
