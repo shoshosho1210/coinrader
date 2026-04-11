@@ -1,10 +1,10 @@
-【今日のBTC / 04/11】
-判定：SELL（SCORE -2）｜FGI 16（Extreme Fear）｜RSI 64.8
+【今日のBTC / 04/12】
+判定：SELL（SCORE -2）｜FGI 15（Extreme Fear）｜RSI 62.9
 
 ▼ 局面：売り圧力鈍化フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：RAVE +143.7%
-Trending: TAO / FF / MON
+注目：RAVE +35.8%
+Trending: OVPP / PENGU / HYPE
