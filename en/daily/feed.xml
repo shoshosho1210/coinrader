@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Mon, 13 Apr 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 14 Apr 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-04-13 | Fear &amp; Greed 16 / RSI 37.3 / Trend -19.6% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-04-14 | Fear &amp; Greed 12 / RSI 63.1 / Trend -19.3% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260414</link>
+      <guid>https://coinrader.net/en/daily/20260414</guid>
+      <pubDate>Tue, 14 Apr 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-04-14. Sentiment(Fear &amp; Greed)=12, RSI=63.1, Trend=-19.3%. Overall: BEAR. Trending: RAVE/BLESS/DOT. Top gainer: RAVE(+95.65%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-04-13 | Fear &amp; Greed 12 / RSI 45 / Trend -19.3% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260413</link>
       <guid>https://coinrader.net/en/daily/20260413</guid>
       <pubDate>Mon, 13 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-13. Sentiment(Fear &amp; Greed)=16, RSI=37.3, Trend=-19.6%. Overall: BEAR. Trending: RAVE/PENGU/WLFI. Top gainer: RAVE(+144.84%)</description>
+      <description>Daily BTC AI analysis for 2026-04-13. Sentiment(Fear &amp; Greed)=12, RSI=45, Trend=-19.3%. Overall: BEAR. Trending: RAVE/DOT/INX. Top gainer: RAVE(+257.50%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-04-12 | Fear &amp; Greed 16 / RSI 35 / Trend -19.6% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260316</guid>
       <pubDate>Mon, 16 Mar 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-03-16. Sentiment(Fear &amp; Greed)=23, RSI=62.2, Trend=-22.9%. Overall: BEAR. Trending: CFG/PENGU/TAO. Top gainer: CFG(+86.88%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-03-15 | Fear &amp; Greed 15 / RSI 67.9 / Trend -22.8% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260315</link>
-      <guid>https://coinrader.net/en/daily/20260315</guid>
-      <pubDate>Sun, 15 Mar 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-03-15. Sentiment(Fear &amp; Greed)=15, RSI=67.9, Trend=-22.8%. Overall: BEAR. Trending: TAO/THE/PENGU. Top gainer: XCN(+24.93%)</description>
     </item>
   </channel>
 </rss>
