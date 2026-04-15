@@ -1,15 +1,12 @@
 {
-  "fetched_at": "2026-04-15T03:41:25.321983+00:00",
+  "fetched_at": "2026-04-15T07:50:05.885203+00:00",
   "ttl_seconds": 300,
-  "btc_jpy": 11804663,
-  "eth_jpy": 369574,
-  "btc_dom": 57.32087947824521,
+  "btc_jpy": 11699819,
+  "eth_jpy": 367782,
+  "btc_dom": 57.23414394583263,
   "fear_greed": {
     "value": "23",
     "label": "Extreme Fear"
   },
-  "usd_jpy": 158.885952,
-  "stale": true,
-  "stale_reason": "HTTP Error 502: Bad Gateway",
-  "stale_at": "2026-04-15T05:51:25.028551+00:00"
+  "usd_jpy": 158.885952
 }
