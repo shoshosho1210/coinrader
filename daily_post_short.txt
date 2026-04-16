@@ -1,10 +1,10 @@
-【今日のBTC / 04/16】
-判定：SELL（SCORE -3）｜FGI 23（Extreme Fear）｜RSI 50.1
+【今日のBTC / 04/17】
+判定：SELL（SCORE -3）｜FGI 23（Extreme Fear）｜RSI 47.3
 
 ▼ 局面：売り圧力鈍化フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：ENJ +60.4%
-Trending: RAVE / ENJ / PENGU
+注目：ORDI +161.5%
+Trending: ORDI / RAVE / BASED
