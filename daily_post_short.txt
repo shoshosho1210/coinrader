@@ -1,10 +1,10 @@
-【今日のBTC / 04/18】
-判定：SELL（SCORE -2）｜FGI 21（Extreme Fear）｜RSI 69.0
+【今日のBTC / 04/19】
+判定：SELL（SCORE -4）｜FGI 26（Fear）｜RSI 37.6
 
-▼ 局面：売り圧力鈍化フェーズ
-市場は次の方向を探している。
+▼ 局面：方向感模索フェーズ
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：RAVE +30.0%
-Trending: ASTEROID / RAVE / AERO
+注目：ASTEROID +627.2%
+Trending: RAVE / ASTEROID / AAVE
