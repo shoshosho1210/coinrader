@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Mon, 20 Apr 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 21 Apr 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-04-20｜Fear&amp;Greed 27 / RSI 33.1 / Trend -16.9%（CoinRader）</title>
+      <title>BTC AI分析 2026-04-21｜Fear&amp;Greed 29 / RSI 61.7 / Trend -16.5%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20260421</link>
+      <guid>https://coinrader.net/daily/20260421</guid>
+      <pubDate>Tue, 21 Apr 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が -16.5% で弱含み。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-04-20｜Fear&amp;Greed 29 / RSI 54.1 / Trend -16.5%（CoinRader）</title>
       <link>https://coinrader.net/daily/20260420</link>
       <guid>https://coinrader.net/daily/20260420</guid>
       <pubDate>Mon, 20 Apr 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が -16.93% で弱含み。</description>
+      <description>MA距離が -16.52% で弱含み。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-04-19｜Fear&amp;Greed 27 / RSI 46.4 / Trend -16.9%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260323</guid>
       <pubDate>Mon, 23 Mar 2026 09:00:00 +0900</pubDate>
       <description>MA距離が -23.72% で弱含み。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-03-22｜Fear&amp;Greed 1 / RSI 30.5 / Trend -23.8%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260322</link>
-      <guid>https://coinrader.net/daily/20260322</guid>
-      <pubDate>Sun, 22 Mar 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が -23.75% で弱含み。</description>
     </item>
   </channel>
 </rss>
