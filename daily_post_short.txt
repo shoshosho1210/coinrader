@@ -1,10 +1,10 @@
-【今日のBTC / 04/22】
-判定：SELL（SCORE -3）｜FGI 33（Fear）｜RSI 44.4
+【今日のBTC / 04/23】
+判定：SELL（SCORE -2）｜FGI 32（Fear）｜RSI 69.6
 
 ▼ 局面：方向感模索フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：RAVE +104.2%
-Trending: CHIP / RAVE / MAGA
+注目：CHIP +75.7%
+Trending: CHIP / PENGU / RAVE
