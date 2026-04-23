@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 23 Apr 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 24 Apr 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-04-23 | Fear &amp; Greed 32 / RSI 69.6 / Trend -15.7% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-04-24 | Fear &amp; Greed 46 / RSI 47.3 / Trend -15.3% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260424</link>
+      <guid>https://coinrader.net/en/daily/20260424</guid>
+      <pubDate>Fri, 24 Apr 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-04-24. Sentiment(Fear &amp; Greed)=46, RSI=47.3, Trend=-15.3%. Overall: BEAR. Trending: AAVE/SPK/ASTEROID. Top gainer: SKYAI(+47.00%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-04-23 | Fear &amp; Greed 46 / RSI 46.3 / Trend -15.4% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260423</link>
       <guid>https://coinrader.net/en/daily/20260423</guid>
       <pubDate>Thu, 23 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-23. Sentiment(Fear &amp; Greed)=32, RSI=69.6, Trend=-15.7%. Overall: BEAR. Trending: CHIP/PENGU/RAVE. Top gainer: CHIP(+75.71%)</description>
+      <description>Daily BTC AI analysis for 2026-04-23. Sentiment(Fear &amp; Greed)=46, RSI=46.3, Trend=-15.4%. Overall: BEAR. Trending: CHIP/SPK/PENGU. Top gainer: SPK(+83.05%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-04-22 | Fear &amp; Greed 32 / RSI 73.2 / Trend -15.7% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260326</guid>
       <pubDate>Thu, 26 Mar 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-03-26. Sentiment(Fear &amp; Greed)=1, RSI=28.9, Trend=-23.6%. Overall: WAIT. Trending: RAIN/TAO/KAT. Top gainer: DEXE(+6.43%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-03-25 | Fear &amp; Greed 14 / RSI 66.2 / Trend -23.7% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260325</link>
-      <guid>https://coinrader.net/en/daily/20260325</guid>
-      <pubDate>Wed, 25 Mar 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-03-25. Sentiment(Fear &amp; Greed)=14, RSI=66.2, Trend=-23.7%. Overall: BEAR. Trending: RAIN/PENGU/TAO. Top gainer: SIREN(+136.70%)</description>
     </item>
   </channel>
 </rss>
