@@ -1,10 +1,10 @@
-【今日のBTC / 04/23】
-判定：SELL（SCORE -2）｜FGI 32（Fear）｜RSI 69.6
+【今日のBTC / 04/24】
+判定：SELL（SCORE -2）｜FGI 46（Fear）｜RSI 47.3
 
 ▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：CHIP +75.7%
-Trending: CHIP / PENGU / RAVE
+注目：SKYAI +47.0%
+Trending: AAVE / SPK / ASTEROID
