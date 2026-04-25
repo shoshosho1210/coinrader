@@ -1,10 +1,10 @@
-【今日のBTC / 04/25】
-判定：SELL（SCORE -2）｜FGI 39（Fear）｜RSI 44.6
+【今日のBTC / 04/26】
+判定：SELL（SCORE -4）｜FGI 31（Fear）｜RSI 37.8
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：APE +84.9%
-Trending: APE / PENGU / KAT
+注目：BSB +65.9%
+Trending: HYPER / ULTIMA / RAVE
