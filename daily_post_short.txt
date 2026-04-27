@@ -1,10 +1,10 @@
-【今日のBTC / 04/27】
-判定：SELL（SCORE -3）｜FGI 33（Fear）｜RSI 57.2
+【今日のBTC / 04/28】
+判定：SELL（SCORE -3）｜FGI 47（Neutral）｜RSI 29.5
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：TRAC +28.6%
-Trending: PENGU / ZBT / BTC
+注目：XCN +28.7%
+Trending: PENGU / LUNC / FIRO
