@@ -1,10 +1,10 @@
-【今日のBTC / 04/30】
-判定：SELL（SCORE -4）｜FGI 26（Fear）｜RSI 38.0
+【今日のBTC / 05/01】
+判定：SELL（SCORE -3）｜FGI 29（Fear）｜RSI 51.3
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SKYAI +30.2%
-Trending: ULTIMA / AI / BLEND
+注目：BSB +38.9%
+Trending: MEGA / PENGU / ACN
