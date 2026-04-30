@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 30 Apr 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 01 May 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-04-30 | Fear &amp; Greed 26 / RSI 38 / Trend -12.8% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-05-01 | Fear &amp; Greed 29 / RSI 51.3 / Trend -12.6% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260501</link>
+      <guid>https://coinrader.net/en/daily/20260501</guid>
+      <pubDate>Fri, 01 May 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-05-01. Sentiment(Fear &amp; Greed)=29, RSI=51.3, Trend=-12.6%. Overall: BEAR. Trending: MEGA/PENGU/ACN. Top gainer: BSB(+38.88%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-04-30 | Fear &amp; Greed 29 / RSI 48.2 / Trend -12.6% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260430</link>
       <guid>https://coinrader.net/en/daily/20260430</guid>
       <pubDate>Thu, 30 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-30. Sentiment(Fear &amp; Greed)=26, RSI=38, Trend=-12.8%. Overall: BEAR. Trending: ULTIMA/AI/BLEND. Top gainer: SKYAI(+30.21%)</description>
+      <description>Daily BTC AI analysis for 2026-04-30. Sentiment(Fear &amp; Greed)=29, RSI=48.2, Trend=-12.6%. Overall: BEAR. Trending: MEGA/AI/ACN. Top gainer: SKYAI(+35.97%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-04-29 | Fear &amp; Greed 26 / RSI 65.8 / Trend -12.8% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260402</guid>
       <pubDate>Thu, 02 Apr 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-04-02. Sentiment(Fear &amp; Greed)=12, RSI=34.4, Trend=-22.4%. Overall: BEAR. Trending: STO/LIT/DRIFT. Top gainer: STO(+106.13%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-04-01 | Fear &amp; Greed 8 / RSI 60.5 / Trend -22.6% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260401</link>
-      <guid>https://coinrader.net/en/daily/20260401</guid>
-      <pubDate>Wed, 01 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-01. Sentiment(Fear &amp; Greed)=8, RSI=60.5, Trend=-22.6%. Overall: BEAR. Trending: STO/SIREN/NOM. Top gainer: ALGO(+22.82%)</description>
     </item>
   </channel>
 </rss>
