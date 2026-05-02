@@ -1,10 +1,10 @@
-【今日のBTC / 05/02】
-判定：SELL（SCORE -2）｜FGI 26（Fear）｜RSI 71.0
+【今日のBTC / 05/03】
+判定：WAIT（SCORE -1）｜FGI 39（Fear）｜RSI 58.4
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：B +139.0%
-Trending: ACN / MEGA / UB
+注目：LAB +259.5%
+Trending: LAB / LUNC / PENGU
