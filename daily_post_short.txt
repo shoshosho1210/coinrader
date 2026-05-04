@@ -1,10 +1,10 @@
-【今日のBTC / 05/04】
-判定：WAIT（SCORE -1）｜FGI 47（Neutral）｜RSI 60.4
+【今日のBTC / 05/05】
+判定：WAIT（SCORE -1）｜FGI 40（Fear）｜RSI 63.5
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：B +24.9%
-Trending: TROLL / MEGA / LAB
+注目：SKYAI +65.7%
+Trending: LUNC / FIRO / RAVE
