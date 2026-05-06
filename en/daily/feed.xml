@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Wed, 06 May 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 07 May 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-05-06 | Fear &amp; Greed 5 / RSI 62.5 / Trend -11.1% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-05-07 | Fear &amp; Greed 46 / RSI 49.2 / Trend -10.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260507</link>
+      <guid>https://coinrader.net/en/daily/20260507</guid>
+      <pubDate>Thu, 07 May 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-05-07. Sentiment(Fear &amp; Greed)=46, RSI=49.2, Trend=-10.8%. Overall: BEAR. Trending: USDUC/FIRO/WOJAK. Top gainer: LAB(+54.99%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-05-06 | Fear &amp; Greed 46 / RSI 71 / Trend -10.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260506</link>
       <guid>https://coinrader.net/en/daily/20260506</guid>
       <pubDate>Wed, 06 May 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-05-06. Sentiment(Fear &amp; Greed)=5, RSI=62.5, Trend=-11.1%. Overall: BEAR. Trending: FIRO/PENGU/WOJAK. Top gainer: LAB(+87.25%)</description>
+      <description>Daily BTC AI analysis for 2026-05-06. Sentiment(Fear &amp; Greed)=46, RSI=71, Trend=-10.8%. Overall: WAIT. Trending: FIRO/ZEC/TON. Top gainer: BILL(+61.37%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-05-05 | Fear &amp; Greed 5 / RSI 63 / Trend -11.1% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260408</guid>
       <pubDate>Wed, 08 Apr 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-04-08. Sentiment(Fear &amp; Greed)=17, RSI=66.8, Trend=-20.9%. Overall: BEAR. Trending: MON/BTC/TAO. Top gainer: ZEC(+27.29%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-04-07 | Fear &amp; Greed 11 / RSI 42.2 / Trend -21.2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260407</link>
-      <guid>https://coinrader.net/en/daily/20260407</guid>
-      <pubDate>Tue, 07 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-07. Sentiment(Fear &amp; Greed)=11, RSI=42.2, Trend=-21.2%. Overall: BEAR. Trending: BRISE/SOL/BTC. Top gainer: EDGE(+13.43%)</description>
     </item>
   </channel>
 </rss>
