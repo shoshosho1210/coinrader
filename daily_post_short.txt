@@ -1,10 +1,10 @@
-【今日のBTC / 05/06】
-判定：WAIT（SCORE -1）｜FGI 50（Neutral）｜RSI 62.5
+【今日のBTC / 05/07】
+判定：SELL（SCORE -2）｜FGI 46（Fear）｜RSI 49.2
 
-▼ 局面：エネルギー圧縮局面
+▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：LAB +87.2%
-Trending: FIRO / PENGU / WOJAK
+注目：LAB +55.0%
+Trending: USDUC / FIRO / WOJAK
