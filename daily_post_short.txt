@@ -1,10 +1,10 @@
-【今日のBTC / 05/09】
-判定：SELL（SCORE -2）｜FGI 38（Fear）｜RSI 49.5
+【今日のBTC / 05/10】
+判定：WAIT（SCORE -1）｜FGI 38（Fear）｜RSI 66.2
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BSB +33.4%
-Trending: ONDO / WOJAK / CHIP
+注目：BILL +39.5%
+Trending: PENGU / AURA / WOJAK
