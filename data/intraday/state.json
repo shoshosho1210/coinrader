@@ -5,6 +5,6 @@
   "changed_at": "2026-02-18T20:33:00.427430+09:00",
   "pending_signal": null,
   "pending_count": 0,
-  "last_raw_signal": "SELL",
-  "last_raw_ts": "2026-05-10T20:13:14.105194+09:00"
+  "last_raw_signal": "WAIT",
+  "last_raw_ts": "2026-05-10T21:04:31.027665+09:00"
 }
