@@ -1,10 +1,10 @@
-【今日のBTC / 05/11】
-判定：WAIT（SCORE -1）｜FGI 47（Neutral）｜RSI 75.9
+【今日のBTC / 05/12】
+判定：WAIT（SCORE -1）｜FGI 48（Neutral）｜RSI 65.3
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SUI +25.2%
-Trending: ZANO / SUI / SWEAT
+注目：B +49.2%
+Trending: ZANO / PENGU / WOJAK
