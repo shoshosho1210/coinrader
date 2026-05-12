@@ -1,10 +1,10 @@
-【今日のBTC / 05/12】
-判定：WAIT（SCORE -1）｜FGI 48（Neutral）｜RSI 65.3
+【今日のBTC / 05/13】
+判定：SELL（SCORE -3）｜FGI 49（Neutral）｜RSI 42.0
 
-▼ 局面：エネルギー圧縮局面
-市場は次の方向を探している。
+▼ 局面：方向感模索フェーズ
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：B +49.2%
-Trending: ZANO / PENGU / WOJAK
+注目：BILL +41.3%
+Trending: FIRO / ZANO / SAGA
