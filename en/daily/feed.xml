@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 14 May 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 15 May 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-05-14 | Fear &amp; Greed 42 / RSI 36.6 / Trend -8.2% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-05-15 | Fear &amp; Greed 34 / RSI 72.2 / Trend -7.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260515</link>
+      <guid>https://coinrader.net/en/daily/20260515</guid>
+      <pubDate>Fri, 15 May 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-05-15. Sentiment(Fear &amp; Greed)=34, RSI=72.2, Trend=-7.8%. Overall: WAIT. Trending: FIRO/ZANO/HYPE. Top gainer: TEL(+15.90%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-05-14 | Fear &amp; Greed 34 / RSI 40.3 / Trend -7.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260514</link>
       <guid>https://coinrader.net/en/daily/20260514</guid>
       <pubDate>Thu, 14 May 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-05-14. Sentiment(Fear &amp; Greed)=42, RSI=36.6, Trend=-8.2%. Overall: BEAR. Trending: FIRO/ZANO/LAB. Top gainer: UB(+24.60%)</description>
+      <description>Daily BTC AI analysis for 2026-05-14. Sentiment(Fear &amp; Greed)=34, RSI=40.3, Trend=-7.8%. Overall: BEAR. Trending: AI/FIRO/HYPE. Top gainer: RIVER(+14.36%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-05-13 | Fear &amp; Greed 42 / RSI 41 / Trend -8.2% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260416</guid>
       <pubDate>Thu, 16 Apr 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-04-16. Sentiment(Fear &amp; Greed)=23, RSI=49.5, Trend=-18.1%. Overall: BEAR. Trending: BASED/ORDI/RAVE. Top gainer: ORDI(+149.73%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-04-15 | Fear &amp; Greed 23 / RSI 51.3 / Trend -18.5% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260415</link>
-      <guid>https://coinrader.net/en/daily/20260415</guid>
-      <pubDate>Wed, 15 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-15. Sentiment(Fear &amp; Greed)=23, RSI=51.3, Trend=-18.5%. Overall: BEAR. Trending: RAVE/ENJ/PENGU. Top gainer: ENJ(+65.79%)</description>
     </item>
   </channel>
 </rss>
