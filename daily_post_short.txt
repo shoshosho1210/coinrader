@@ -1,10 +1,10 @@
-【今日のBTC / 05/15】
-判定：SELL（SCORE -2）｜FGI 34（Fear）｜RSI 72.2
+【今日のBTC / 05/16】
+判定：SELL（SCORE -3）｜FGI 43（Fear）｜RSI 39.8
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：TEL +15.9%
-Trending: FIRO / ZANO / HYPE
+注目：IRYS +19.5%
+Trending: ASTEROID / STORJ / XRP
