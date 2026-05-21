@@ -1,10 +1,10 @@
-【今日のBTC / 05/21】
-判定：SELL（SCORE -3）｜FGI 27（Fear）｜RSI 57.7
+【今日のBTC / 05/22】
+判定：SELL（SCORE -2）｜FGI 29（Fear）｜RSI 58.8
 
 ▼ 局面：方向感模索フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：NEX +31.5%
-Trending: MANIFEST / PENGU / NEX
+注目：GRASS +27.9%
+Trending: HYPE / PENGU / GRASS
