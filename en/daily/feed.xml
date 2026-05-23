@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sat, 23 May 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-05-23 | Fear &amp; Greed 28 / RSI 36.4 / Trend -4.4% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-05-24 | Fear &amp; Greed 28 / RSI 46.6 / Trend -4.1% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260524</link>
+      <guid>https://coinrader.net/en/daily/20260524</guid>
+      <pubDate>Sun, 24 May 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-05-24. Sentiment(Fear &amp; Greed)=28, RSI=46.6, Trend=-4.1%. Overall: BEAR. Trending: CVX/ERG/NEAR. Top gainer: GRASS(+34.99%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-05-23 | Fear &amp; Greed 28 / RSI 26.1 / Trend -4.1% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260523</link>
       <guid>https://coinrader.net/en/daily/20260523</guid>
       <pubDate>Sat, 23 May 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-05-23. Sentiment(Fear &amp; Greed)=28, RSI=36.4, Trend=-4.4%. Overall: BEAR. Trending: NEAR/HYPE/PENGU. Top gainer: RAIL(+57.00%)</description>
+      <description>Daily BTC AI analysis for 2026-05-23. Sentiment(Fear &amp; Greed)=28, RSI=26.1, Trend=-4.1%. Overall: WAIT. Trending: ERG/UDS/HYPE. Top gainer: BSB(+64.54%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-05-22 | Fear &amp; Greed 28 / RSI 47.6 / Trend -4.4% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260425</guid>
       <pubDate>Sat, 25 Apr 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-04-25. Sentiment(Fear &amp; Greed)=31, RSI=49.1, Trend=-14.5%. Overall: BEAR. Trending: HYPER/AXS/PENGU. Top gainer: AXS(+38.96%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-04-24 | Fear &amp; Greed 39 / RSI 55.3 / Trend -14.9% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260424</link>
-      <guid>https://coinrader.net/en/daily/20260424</guid>
-      <pubDate>Fri, 24 Apr 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-04-24. Sentiment(Fear &amp; Greed)=39, RSI=55.3, Trend=-14.9%. Overall: BEAR. Trending: KAT/CHIP/GRASS. Top gainer: SKR(+33.29%)</description>
     </item>
   </channel>
 </rss>
