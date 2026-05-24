@@ -1,10 +1,10 @@
-【今日のBTC / 05/24】
-判定：SELL（SCORE -3）｜FGI 28（Fear）｜RSI 46.6
+【今日のBTC / 05/25】
+判定：SELL（SCORE -3）｜FGI 25（Extreme Fear）｜RSI 52.6
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：売り圧力鈍化フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：GRASS +35.0%
-Trending: CVX / ERG / NEAR
+注目：RAIL +25.5%
+Trending: HYPE / ZEC / RAIL
