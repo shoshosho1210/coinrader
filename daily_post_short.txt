@@ -1,10 +1,10 @@
-【今日のBTC / 05/26】
-判定：SELL（SCORE -2）｜FGI 30（Fear）｜RSI 58.9
+【今日のBTC / 05/27】
+判定：SELL（SCORE -4）｜FGI 34（Fear）｜RSI 33.6
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：GRASS +18.9%
-Trending: NEAR / SLX / HYPE
+注目：RAIN +45.5%
+Trending: BONK / ERG / BTC
