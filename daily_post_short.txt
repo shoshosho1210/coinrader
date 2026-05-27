@@ -1,10 +1,10 @@
-【今日のBTC / 05/27】
-判定：SELL（SCORE -4）｜FGI 34（Fear）｜RSI 33.6
+【今日のBTC / 05/28】
+判定：SELL（SCORE -4）｜FGI 25（Extreme Fear）｜RSI 29.3
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：RAIN +45.5%
-Trending: BONK / ERG / BTC
+注目：RAIN +26.4%
+Trending: BONK / XLM / NEAR
