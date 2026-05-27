@@ -1,8 +1,0 @@
-{
-  "ts": "2026-05-12T03:03:30.275849+09:00",
-  "symbol": "BTC",
-  "score_overall": -1,
-  "signal_raw": "WAIT",
-  "reason_hint": "MA:bear,RSI:high,FGI:neutral",
-  "reason_top3": []
-}
