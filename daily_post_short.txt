@@ -1,10 +1,10 @@
-【今日のBTC / 05/30】
-判定：SELL（SCORE -3）｜FGI 23（Extreme Fear）｜RSI 56.8
+【今日のBTC / 05/31】
+判定：SELL（SCORE -2）｜FGI 23（Extreme Fear）｜RSI 61.2
 
 ▼ 局面：売り圧力鈍化フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：LAB +40.6%
-Trending: BONK / XLM / HYPE
+注目：H +49.1%
+Trending: BONK / HYPE / LAB
