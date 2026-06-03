@@ -1,10 +1,10 @@
-【今日のBTC / 06/03】
-判定：SELL（SCORE -4）｜FGI 23（Extreme Fear）｜RSI 17.7
+【今日のBTC / 06/04】
+判定：SELL（SCORE -4）｜FGI 11（Extreme Fear）｜RSI 31.9
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：EDGE +62.4%
-Trending: BONK / LAB / BTC
+注目：WLD +33.6%
+Trending: BONK / PENGU / HYPE
