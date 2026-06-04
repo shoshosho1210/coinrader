@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Thu, 04 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jun 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-06-04｜Fear&amp;Greed 11 / RSI 31.9 / Trend -1.9%（CoinRader）</title>
+      <title>BTC AI分析 2026-06-05｜Fear&amp;Greed 12 / RSI 42.2 / Trend -2.1%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20260605</link>
+      <guid>https://coinrader.net/daily/20260605</guid>
+      <pubDate>Fri, 05 Jun 2026 09:00:00 +0900</pubDate>
+      <description>上昇トップは SIREN +23.44% で強い動き。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-06-04｜Fear&amp;Greed 12 / RSI 31.4 / Trend -2.1%（CoinRader）</title>
       <link>https://coinrader.net/daily/20260604</link>
       <guid>https://coinrader.net/daily/20260604</guid>
       <pubDate>Thu, 04 Jun 2026 09:00:00 +0900</pubDate>
-      <description>上昇トップは WLD +33.58% で強い動き。</description>
+      <description>上昇トップは SIREN +25.86% で強い動き。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-06-03｜Fear&amp;Greed 11 / RSI 42.6 / Trend -1.9%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260507</guid>
       <pubDate>Thu, 07 May 2026 09:00:00 +0900</pubDate>
       <description>MA距離が -10.52% で弱含み。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-05-06｜Fear&amp;Greed 46 / RSI 71 / Trend -10.8%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260506</link>
-      <guid>https://coinrader.net/daily/20260506</guid>
-      <pubDate>Wed, 06 May 2026 09:00:00 +0900</pubDate>
-      <description>BTC RSI が 71.02 で買われ過ぎ水準。</description>
     </item>
   </channel>
 </rss>
