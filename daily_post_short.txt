@@ -1,10 +1,10 @@
-【今日のBTC / 06/14】
-判定：SELL（SCORE -3）｜FGI 13（Extreme Fear）｜RSI 55.3
+【今日のBTC / 06/15】
+判定：SELL（SCORE -4）｜FGI 18（Extreme Fear）｜RSI 35.0
 
-▼ 局面：売り圧力鈍化フェーズ
+▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：COAI +72.1%
-Trending: SIREN / COAI / SPCXX
+注目：BP +43.8%
+Trending: BP / SIREN / PENGU
