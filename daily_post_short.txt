@@ -1,10 +1,10 @@
-【今日のBTC / 06/16】
-判定：SELL（SCORE -2）｜FGI 20（Extreme Fear）｜RSI 68.6
+【今日のBTC / 06/17】
+判定：SELL（SCORE -3）｜FGI 23（Extreme Fear）｜RSI 46.7
 
 ▼ 局面：売り圧力鈍化フェーズ
-市場は次の方向を探している。
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：JTO +35.6%
-Trending: ZANO / PENGU / SPCXX
+注目：BSB +47.4%
+Trending: ZANO / WLD / UNI
