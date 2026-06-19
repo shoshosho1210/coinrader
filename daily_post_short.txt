@@ -1,10 +1,10 @@
-【今日のBTC / 06/19】
-判定：SELL（SCORE -4）｜FGI 15（Extreme Fear）｜RSI 30.0
+【今日のBTC / 06/20】
+判定：SELL（SCORE -3）｜FGI 14（Extreme Fear）｜RSI 52.1
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：売り圧力鈍化フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：LAB +36.4%
-Trending: ANT / ASTEROID / SIREN
+注目：BTW +70.0%
+Trending: SIREN / AVAX / CARDS
