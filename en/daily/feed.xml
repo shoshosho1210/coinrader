@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sat, 20 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 21 Jun 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-06-20 | Fear &amp; Greed 14 / RSI 52.1 / Trend -4.8% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-06-21 | Fear &amp; Greed 23 / RSI 56.2 / Trend -5% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260621</link>
+      <guid>https://coinrader.net/en/daily/20260621</guid>
+      <pubDate>Sun, 21 Jun 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-06-21. Sentiment(Fear &amp; Greed)=23, RSI=56.2, Trend=-5%. Overall: BEAR. Trending: BICO/RE/BP. Top gainer: BTW(+73.75%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-06-20 | Fear &amp; Greed 23 / RSI 56.8 / Trend -5% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260620</link>
       <guid>https://coinrader.net/en/daily/20260620</guid>
       <pubDate>Sat, 20 Jun 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-06-20. Sentiment(Fear &amp; Greed)=14, RSI=52.1, Trend=-4.8%. Overall: BEAR. Trending: SIREN/AVAX/CARDS. Top gainer: BTW(+69.97%)</description>
+      <description>Daily BTC AI analysis for 2026-06-20. Sentiment(Fear &amp; Greed)=23, RSI=56.8, Trend=-5%. Overall: BEAR. Trending: RE/BP/HYPE. Top gainer: BTW(+112.48%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-06-19 | Fear &amp; Greed 14 / RSI 40.6 / Trend -4.8% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260523</guid>
       <pubDate>Sat, 23 May 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-05-23. Sentiment(Fear &amp; Greed)=28, RSI=26.1, Trend=-4.1%. Overall: WAIT. Trending: ERG/UDS/HYPE. Top gainer: BSB(+64.54%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-05-22 | Fear &amp; Greed 28 / RSI 47.6 / Trend -4.4% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260522</link>
-      <guid>https://coinrader.net/en/daily/20260522</guid>
-      <pubDate>Fri, 22 May 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-05-22. Sentiment(Fear &amp; Greed)=28, RSI=47.6, Trend=-4.4%. Overall: BEAR. Trending: NEAR/PENGU/HYPE. Top gainer: BEAT(+50.40%)</description>
     </item>
   </channel>
 </rss>
