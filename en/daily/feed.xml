@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Wed, 24 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-06-24 | Fear &amp; Greed 23 / RSI 32.2 / Trend -5.6% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-06-25 | Fear &amp; Greed 17 / RSI 17.3 / Trend -5.9% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260625</link>
+      <guid>https://coinrader.net/en/daily/20260625</guid>
+      <pubDate>Thu, 25 Jun 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-06-25. Sentiment(Fear &amp; Greed)=17, RSI=17.3, Trend=-5.9%. Overall: WAIT. Trending: ZANO/RAIN/BTC. Top gainer: O(+21.88%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-06-24 | Fear &amp; Greed 17 / RSI 51.3 / Trend -5.9% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260624</link>
       <guid>https://coinrader.net/en/daily/20260624</guid>
       <pubDate>Wed, 24 Jun 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-06-24. Sentiment(Fear &amp; Greed)=23, RSI=32.2, Trend=-5.6%. Overall: BEAR. Trending: RAIN/SOL/BTC. Top gainer: BEAT(+52.65%)</description>
+      <description>Daily BTC AI analysis for 2026-06-24. Sentiment(Fear &amp; Greed)=17, RSI=51.3, Trend=-5.9%. Overall: BEAR. Trending: RAIN/AAVE/SLX. Top gainer: O(+29.16%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-06-23 | Fear &amp; Greed 23 / RSI 28.5 / Trend -5.6% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260527</guid>
       <pubDate>Wed, 27 May 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-05-27. Sentiment(Fear &amp; Greed)=25, RSI=39.4, Trend=-2.8%. Overall: WAIT. Trending: BONK/PENGU/NEAR. Top gainer: RAIN(+63.64%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-05-26 | Fear &amp; Greed 34 / RSI 53.2 / Trend -3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260526</link>
-      <guid>https://coinrader.net/en/daily/20260526</guid>
-      <pubDate>Tue, 26 May 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-05-26. Sentiment(Fear &amp; Greed)=34, RSI=53.2, Trend=-3%. Overall: BEAR. Trending: BONK/CTR/NEAR. Top gainer: WLD(+31.77%)</description>
     </item>
   </channel>
 </rss>
