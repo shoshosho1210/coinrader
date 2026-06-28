@@ -1,10 +1,10 @@
-【今日のBTC / 06/28】
-判定：SELL（SCORE -2）｜FGI 15（Extreme Fear）｜RSI 61.8
+【今日のBTC / 06/29】
+判定：SELL（SCORE -4）｜FGI 18（Extreme Fear）｜RSI 36.0
 
-▼ 局面：売り圧力鈍化フェーズ
-市場は次の方向を探している。
+▼ 局面：方向感模索フェーズ
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：VELVET +100.1%
-Trending: DEUS / PENGU / CARDS
+注目：VELVET +30.2%
+Trending: ANSEM / DEUS / BTC
