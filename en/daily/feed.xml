@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Mon, 29 Jun 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 30 Jun 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-06-29 | Fear &amp; Greed 18 / RSI 36 / Trend -7.2% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-06-30 | Fear &amp; Greed 12 / RSI 50.8 / Trend -7.5% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260630</link>
+      <guid>https://coinrader.net/en/daily/20260630</guid>
+      <pubDate>Tue, 30 Jun 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-06-30. Sentiment(Fear &amp; Greed)=12, RSI=50.8, Trend=-7.5%. Overall: BEAR. Trending: USWR/SYN/PENGU. Top gainer: TAC(+168.06%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-06-29 | Fear &amp; Greed 12 / RSI 50.6 / Trend -7.5% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260629</link>
       <guid>https://coinrader.net/en/daily/20260629</guid>
       <pubDate>Mon, 29 Jun 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-06-29. Sentiment(Fear &amp; Greed)=18, RSI=36, Trend=-7.2%. Overall: BEAR. Trending: ANSEM/DEUS/BTC. Top gainer: VELVET(+30.17%)</description>
+      <description>Daily BTC AI analysis for 2026-06-29. Sentiment(Fear &amp; Greed)=12, RSI=50.6, Trend=-7.5%. Overall: BEAR. Trending: TAC/ANSEM/SOL. Top gainer: TAC(+140.58%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-06-28 | Fear &amp; Greed 18 / RSI 52.9 / Trend -7.2% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260601</guid>
       <pubDate>Mon, 01 Jun 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-06-01. Sentiment(Fear &amp; Greed)=29, RSI=41.6, Trend=-1.8%. Overall: WAIT. Trending: LAB/HYPE/H. Top gainer: LAB(+96.13%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-05-31 | Fear &amp; Greed 28 / RSI 52.6 / Trend -2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260531</link>
-      <guid>https://coinrader.net/en/daily/20260531</guid>
-      <pubDate>Sun, 31 May 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-05-31. Sentiment(Fear &amp; Greed)=28, RSI=52.6, Trend=-2%. Overall: WAIT. Trending: OP/BONK/KITE. Top gainer: 币安人生(+24.94%)</description>
     </item>
   </channel>
 </rss>
