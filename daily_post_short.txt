@@ -1,10 +1,10 @@
-【今日のBTC / 07/01】
-判定：SELL（SCORE -4）｜FGI 15（Extreme Fear）｜RSI 30.9
+【今日のBTC / 07/02】
+判定：SELL（SCORE -2）｜FGI 11（Extreme Fear）｜RSI 63.3
 
-▼ 局面：方向感模索フェーズ
-恐怖は最大だが、崩壊とは限らない。
+▼ 局面：売り圧力鈍化フェーズ
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：H +25.1%
-Trending: ANSEM / SYN / SOL
+注目：M +73.4%
+Trending: MORPHO / LIT / PENGU
