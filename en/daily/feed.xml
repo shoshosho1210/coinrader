@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 02 Jul 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 03 Jul 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-07-02 | Fear &amp; Greed 11 / RSI 63.3 / Trend -8.2% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-07-03 | Fear &amp; Greed 19 / RSI 65.4 / Trend -8.5% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260703</link>
+      <guid>https://coinrader.net/en/daily/20260703</guid>
+      <pubDate>Fri, 03 Jul 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-07-03. Sentiment(Fear &amp; Greed)=19, RSI=65.4, Trend=-8.5%. Overall: BEAR. Trending: PENGU/ANSEM/BTC. Top gainer: SLX(+30.85%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-07-02 | Fear &amp; Greed 19 / RSI 64.2 / Trend -8.5% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260702</link>
       <guid>https://coinrader.net/en/daily/20260702</guid>
       <pubDate>Thu, 02 Jul 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-07-02. Sentiment(Fear &amp; Greed)=11, RSI=63.3, Trend=-8.2%. Overall: BEAR. Trending: MORPHO/LIT/PENGU. Top gainer: M(+73.39%)</description>
+      <description>Daily BTC AI analysis for 2026-07-02. Sentiment(Fear &amp; Greed)=19, RSI=64.2, Trend=-8.5%. Overall: BEAR. Trending: ANSEM/SOL/LIT. Top gainer: M(+57.40%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-07-01 | Fear &amp; Greed 11 / RSI 42.6 / Trend -8.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260604</guid>
       <pubDate>Thu, 04 Jun 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-06-04. Sentiment(Fear &amp; Greed)=12, RSI=31.4, Trend=-2.1%. Overall: WAIT. Trending: BONK/BTC/SOL. Top gainer: SIREN(+25.86%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-06-03 | Fear &amp; Greed 11 / RSI 42.6 / Trend -1.9% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260603</link>
-      <guid>https://coinrader.net/en/daily/20260603</guid>
-      <pubDate>Wed, 03 Jun 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-06-03. Sentiment(Fear &amp; Greed)=11, RSI=42.6, Trend=-1.9%. Overall: WAIT. Trending: BONK/ZEC/LAB. Top gainer: LIT(+24.84%)</description>
     </item>
   </channel>
 </rss>
