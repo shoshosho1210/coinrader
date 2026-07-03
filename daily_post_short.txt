@@ -1,10 +1,10 @@
-【今日のBTC / 07/03】
-判定：SELL（SCORE -2）｜FGI 19（Extreme Fear）｜RSI 65.4
+【今日のBTC / 07/04】
+判定：SELL（SCORE -2）｜FGI 21（Extreme Fear）｜RSI 62.6
 
 ▼ 局面：売り圧力鈍化フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SLX +30.9%
-Trending: PENGU / ANSEM / BTC
+注目：ANSEM +85.5%
+Trending: PENGU / ANSEM / HYPE
