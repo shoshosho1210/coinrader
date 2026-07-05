@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Sun, 05 Jul 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 06 Jul 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-07-05｜Fear&amp;Greed 22 / RSI 67.3 / Trend -9.1%（CoinRader）</title>
+      <title>BTC AI分析 2026-07-06｜Fear&amp;Greed 23 / RSI 45.4 / Trend -9.4%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20260706</link>
+      <guid>https://coinrader.net/daily/20260706</guid>
+      <pubDate>Mon, 06 Jul 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が -9.39% で弱含み。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-07-05｜Fear&amp;Greed 23 / RSI 48.5 / Trend -9.4%（CoinRader）</title>
       <link>https://coinrader.net/daily/20260705</link>
       <guid>https://coinrader.net/daily/20260705</guid>
       <pubDate>Sun, 05 Jul 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が -9.12% で弱含み。</description>
+      <description>MA距離が -9.39% で弱含み。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-07-04｜Fear&amp;Greed 22 / RSI 58.6 / Trend -9.1%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260607</guid>
       <pubDate>Sun, 07 Jun 2026 09:00:00 +0900</pubDate>
       <description>上昇トップは SIREN +50.43% で強い動き。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-06-06｜Fear&amp;Greed 12 / RSI 45.5 / Trend -2.5%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260606</link>
-      <guid>https://coinrader.net/daily/20260606</guid>
-      <pubDate>Sat, 06 Jun 2026 09:00:00 +0900</pubDate>
-      <description>上昇トップは SKYAI +25.07% で強い動き。</description>
     </item>
   </channel>
 </rss>
