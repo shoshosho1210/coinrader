@@ -1,9 +1,9 @@
 {
-  "fetched_at": "2026-07-08T09:06:46.708512+00:00",
+  "fetched_at": "2026-07-08T11:17:39.295927+00:00",
   "ttl_seconds": 300,
-  "btc_jpy": 10078210,
-  "eth_jpy": 281929,
-  "btc_dom": 55.93599356752228,
+  "btc_jpy": 10080959,
+  "eth_jpy": 282075,
+  "btc_dom": 55.96839463610485,
   "fear_greed": {
     "value": "20",
     "label": "Extreme Fear"
