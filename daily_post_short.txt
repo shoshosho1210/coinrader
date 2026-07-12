@@ -1,10 +1,10 @@
-【今日のBTC / 07/12】
-判定：SELL（SCORE -3）｜FGI 26（Fear）｜RSI 53.4
+【今日のBTC / 07/13】
+判定：SELL（SCORE -3）｜FGI 26（Fear）｜RSI 54.5
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：CASHCAT +38.7%
-Trending: HOODIE / CASHCAT / LAB
+注目：BILL +24.2%
+Trending: $1 / CASHCAT / PENGU
