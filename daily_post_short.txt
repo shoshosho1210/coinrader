@@ -1,10 +1,10 @@
-【今日のBTC / 07/15】
-判定：SELL（SCORE -2）｜FGI 22（Extreme Fear）｜RSI 75.4
+【今日のBTC / 07/16】
+判定：SELL（SCORE -2）｜FGI 25（Extreme Fear）｜RSI 59.6
 
 ▼ 局面：売り圧力鈍化フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：DRV +35.7%
-Trending: CASHCAT / ADI / BTC
+注目：XEC +18.6%
+Trending: PENGU / AKE / ONDO
