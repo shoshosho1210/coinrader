@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://coinrader.net/daily/</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/daily/feed.xml</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/daily/tags/bear</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/daily/tags/bull</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/daily/tags/wait</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/en/daily/</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/en/daily/feed.xml</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/en/daily/tags/bear</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/en/daily/tags/bull</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/en/daily/tags/wait</loc><lastmod>2026-07-21</lastmod></url>
-<url><loc>https://coinrader.net/daily/20260421</loc><lastmod>2026-04-21</lastmod></url>
-<url><loc>https://coinrader.net/en/daily/20260421</loc><lastmod>2026-04-21</lastmod></url>
+<url><loc>https://coinrader.net/daily/</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/daily/feed.xml</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/daily/tags/bear</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/daily/tags/bull</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/daily/tags/wait</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/en/daily/</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/en/daily/feed.xml</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/en/daily/tags/bear</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/en/daily/tags/bull</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/en/daily/tags/wait</loc><lastmod>2026-07-22</lastmod></url>
 <url><loc>https://coinrader.net/daily/20260422</loc><lastmod>2026-04-22</lastmod></url>
 <url><loc>https://coinrader.net/en/daily/20260422</loc><lastmod>2026-04-22</lastmod></url>
 <url><loc>https://coinrader.net/daily/20260423</loc><lastmod>2026-04-23</lastmod></url>
@@ -194,4 +192,6 @@
 <url><loc>https://coinrader.net/en/daily/20260720</loc><lastmod>2026-07-20</lastmod></url>
 <url><loc>https://coinrader.net/daily/20260721</loc><lastmod>2026-07-21</lastmod></url>
 <url><loc>https://coinrader.net/en/daily/20260721</loc><lastmod>2026-07-21</lastmod></url>
+<url><loc>https://coinrader.net/daily/20260722</loc><lastmod>2026-07-22</lastmod></url>
+<url><loc>https://coinrader.net/en/daily/20260722</loc><lastmod>2026-07-22</lastmod></url>
 </urlset>
