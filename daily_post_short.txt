@@ -1,10 +1,10 @@
-【今日のBTC / 07/30】
-判定：SELL（SCORE -3）｜FGI 29（Fear）｜RSI 42.3
+【今日のBTC / 07/31】
+判定：SELL（SCORE -2）｜FGI 28（Fear）｜RSI 58.0
 
 ▼ 局面：方向感模索フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：META +23.7%
-Trending: ADI / COTI / ETH
+注目：UB +17.0%
+Trending: MOONDOGECOIN / PENGU / ENA
