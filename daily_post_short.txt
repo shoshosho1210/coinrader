@@ -1,10 +1,10 @@
-【今日のBTC / 08/04】
-判定：SELL（SCORE -2）｜FGI 28（Fear）｜RSI 65.3
+【今日のBTC / 08/05】
+判定：SELL（SCORE -2）｜FGI 25（Extreme Fear）｜RSI 63.2
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：売り圧力鈍化フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BTW +20.4%
-Trending: PENGU / CASHCAT / PUMP
+注目：BTW +36.4%
+Trending: ERG / PUMP / PENGU
