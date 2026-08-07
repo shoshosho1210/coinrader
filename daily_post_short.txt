@@ -1,10 +1,10 @@
-【今日のBTC / 08/06】
-判定：SELL（SCORE -2）｜FGI 27（Fear）｜RSI 68.9
+【今日のBTC / 08/07】
+判定：SELL（SCORE -3）｜FGI 29（Fear）｜RSI 43.0
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：CYS +56.7%
-Trending: CASHCAT / UNI / ZIG
+注目：KAU +110.4%
+Trending: CASHCAT / PLUME / PENGU
