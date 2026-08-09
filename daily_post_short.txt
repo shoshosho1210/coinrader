@@ -1,10 +1,10 @@
-【今日のBTC / 08/09】
-判定：SELL（SCORE -3）｜FGI 30（Fear）｜RSI 55.8
+【今日のBTC / 08/10】
+判定：SELL（SCORE -2）｜FGI 31（Fear）｜RSI 65.8
 
 ▼ 局面：方向感模索フェーズ
-恐怖は最大だが、崩壊とは限らない。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BEAT +39.5%
-Trending: PENGU / CASHCAT / TUT
+注目：TUT +131.1%
+Trending: PENGU / PUMP / CASHCAT
