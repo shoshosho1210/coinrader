@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Tue, 11 Aug 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-08-11 | Fear &amp; Greed 3 / RSI 29.2 / Trend -8% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-08-12 | Fear &amp; Greed 29 / RSI 34.6 / Trend -7.9% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260812</link>
+      <guid>https://coinrader.net/en/daily/20260812</guid>
+      <pubDate>Wed, 12 Aug 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-08-12. Sentiment(Fear &amp; Greed)=29, RSI=34.6, Trend=-7.9%. Overall: BEAR. Trending: DOGO/HOLO/CASHCAT. Top gainer: VELVET(+50.80%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-08-11 | Fear &amp; Greed 29 / RSI 52.1 / Trend -7.9% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260811</link>
       <guid>https://coinrader.net/en/daily/20260811</guid>
       <pubDate>Tue, 11 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-11. Sentiment(Fear &amp; Greed)=3, RSI=29.2, Trend=-8%. Overall: WAIT. Trending: MOW/DOS/PUMP. Top gainer: KAU(+112.80%)</description>
+      <description>Daily BTC AI analysis for 2026-08-11. Sentiment(Fear &amp; Greed)=29, RSI=52.1, Trend=-7.9%. Overall: BEAR. Trending: VELVET/DOS/BTC. Top gainer: VELVET(+58.70%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-08-10 | Fear &amp; Greed 3 / RSI 41.8 / Trend -8% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260714</guid>
       <pubDate>Tue, 14 Jul 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-07-14. Sentiment(Fear &amp; Greed)=22, RSI=53.4, Trend=-11.2%. Overall: BEAR. Trending: CCD/CASHCAT/PENGU. Top gainer: DRV(+35.52%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-07-13 | Fear &amp; Greed 28 / RSI 34.3 / Trend -11% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260713</link>
-      <guid>https://coinrader.net/en/daily/20260713</guid>
-      <pubDate>Mon, 13 Jul 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-07-13. Sentiment(Fear &amp; Greed)=28, RSI=34.3, Trend=-11%. Overall: BEAR. Trending: LAB/ANSEM/CASHCAT. Top gainer: XEC(+29.23%)</description>
     </item>
   </channel>
 </rss>
