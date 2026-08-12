@@ -1,10 +1,10 @@
-【今日のBTC / 08/12】
-判定：SELL（SCORE -4）｜FGI 29（Fear）｜RSI 34.6
+【今日のBTC / 08/13】
+判定：SELL（SCORE -4）｜FGI 27（Fear）｜RSI 38.5
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：VELVET +50.8%
-Trending: DOGO / HOLO / CASHCAT
+注目：APR +109.8%
+Trending: DEUS / HMM / VIRTUAL
