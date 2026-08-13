@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 13 Aug 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 14 Aug 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-08-13 | Fear &amp; Greed 27 / RSI 38.5 / Trend -7.8% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-08-14 | Fear &amp; Greed 29 / RSI 45.3 / Trend -7.6% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260814</link>
+      <guid>https://coinrader.net/en/daily/20260814</guid>
+      <pubDate>Fri, 14 Aug 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-08-14. Sentiment(Fear &amp; Greed)=29, RSI=45.3, Trend=-7.6%. Overall: BEAR. Trending: AKE/ETHFI/CASHCAT. Top gainer: AKE(+75.30%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-08-13 | Fear &amp; Greed 29 / RSI 41.7 / Trend -7.6% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260813</link>
       <guid>https://coinrader.net/en/daily/20260813</guid>
       <pubDate>Thu, 13 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-13. Sentiment(Fear &amp; Greed)=27, RSI=38.5, Trend=-7.8%. Overall: BEAR. Trending: DEUS/HMM/VIRTUAL. Top gainer: APR(+109.80%)</description>
+      <description>Daily BTC AI analysis for 2026-08-13. Sentiment(Fear &amp; Greed)=29, RSI=41.7, Trend=-7.6%. Overall: BEAR. Trending: DEUS/NUSD/HYPE. Top gainer: AKE(+32.60%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-08-12 | Fear &amp; Greed 27 / RSI 56.5 / Trend -7.8% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260716</guid>
       <pubDate>Thu, 16 Jul 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-07-16. Sentiment(Fear &amp; Greed)=25, RSI=41, Trend=-11.4%. Overall: BEAR. Trending: ONDO/ANSEM/ETH. Top gainer: ONDO(+15.94%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-07-15 | Fear &amp; Greed 25 / RSI 58.2 / Trend -11.3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260715</link>
-      <guid>https://coinrader.net/en/daily/20260715</guid>
-      <pubDate>Wed, 15 Jul 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-07-15. Sentiment(Fear &amp; Greed)=25, RSI=58.2, Trend=-11.3%. Overall: BEAR. Trending: PENGU/PI/CASHCAT. Top gainer: XEC(+15.37%)</description>
     </item>
   </channel>
 </rss>
