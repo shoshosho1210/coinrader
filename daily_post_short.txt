@@ -1,10 +1,10 @@
-【今日のBTC / 08/15】
-判定：SELL（SCORE -3）｜FGI 29（Fear）｜RSI 43.1
+【今日のBTC / 08/16】
+判定：SELL（SCORE -3）｜FGI 34（Fear）｜RSI 49.5
 
 ▼ 局面：方向感模索フェーズ
 恐怖は最大だが、崩壊とは限らない。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：AKE +51.8%
-Trending: ACE / BTC / KII
+注目：H +25.5%
+Trending: NIL / COW / BTC
