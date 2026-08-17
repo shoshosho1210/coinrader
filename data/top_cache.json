@@ -1,15 +1,12 @@
 {
-  "fetched_at": "2026-08-17T05:08:54.352156+00:00",
+  "fetched_at": "2026-08-17T06:57:04.848291+00:00",
   "ttl_seconds": 300,
-  "btc_jpy": 10092450,
-  "eth_jpy": 302373,
-  "btc_dom": 56.225373570446926,
+  "btc_jpy": 10107331,
+  "eth_jpy": 302891,
+  "btc_dom": 56.23030515811078,
   "fear_greed": {
     "value": "31",
     "label": "Fear"
   },
-  "usd_jpy": 159.20446,
-  "stale": true,
-  "stale_reason": "HTTP Error 400: Bad Request",
-  "stale_at": "2026-08-17T05:50:44.487044+00:00"
+  "usd_jpy": 159.20446
 }
