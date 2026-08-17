@@ -1,15 +1,12 @@
 {
-  "fetched_at": "2026-08-17T15:40:33.951455+00:00",
+  "fetched_at": "2026-08-17T16:37:40.272933+00:00",
   "ttl_seconds": 300,
-  "btc_jpy": 10202199,
-  "eth_jpy": 303906,
-  "btc_dom": 56.37408516266634,
+  "btc_jpy": 10207673,
+  "eth_jpy": 303934,
+  "btc_dom": 56.40830603925059,
   "fear_greed": {
     "value": "31",
     "label": "Fear"
   },
-  "usd_jpy": 159.20446,
-  "stale": true,
-  "stale_reason": "HTTP Error 429: Too Many Requests",
-  "stale_at": "2026-08-17T15:59:51.406711+00:00"
+  "usd_jpy": 159.20446
 }
