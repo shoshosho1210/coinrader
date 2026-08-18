@@ -1,10 +1,10 @@
-【今日のBTC / 08/18】
-判定：SELL（SCORE -2）｜FGI 31（Fear）｜RSI 69.8
+【今日のBTC / 08/19】
+判定：WAIT（SCORE -1）｜FGI 41（Fear）｜RSI 64.9
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：ANSEM +24.1%
-Trending: ANSEM / PENGU / TUT
+注目：BTW +17.7%
+Trending: WKC / ETHFI / SOL
