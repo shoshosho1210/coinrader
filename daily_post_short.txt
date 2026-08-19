@@ -1,10 +1,10 @@
-【今日のBTC / 08/19】
-判定：WAIT（SCORE -1）｜FGI 41（Fear）｜RSI 64.9
+【今日のBTC / 08/20】
+判定：WAIT（SCORE -1）｜FGI 46（Fear）｜RSI 85.5
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BTW +17.7%
-Trending: WKC / ETHFI / SOL
+注目：HYPE +19.2%
+Trending: HYPE / LIT / PIPEDOG
