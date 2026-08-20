@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 20 Aug 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 21 Aug 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-08-20 | Fear &amp; Greed 46 / RSI 85.5 / Trend -6.2% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-08-21 | Fear &amp; Greed 62 / RSI 76.1 / Trend -5.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260821</link>
+      <guid>https://coinrader.net/en/daily/20260821</guid>
+      <pubDate>Fri, 21 Aug 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-08-21. Sentiment(Fear &amp; Greed)=62, RSI=76.1, Trend=-5.8%. Overall: WAIT. Trending: ALIGN/BULLBALLS/ERG. Top gainer: ENA(+22.20%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-08-20 | Fear &amp; Greed 62 / RSI 83.9 / Trend -5.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260820</link>
       <guid>https://coinrader.net/en/daily/20260820</guid>
       <pubDate>Thu, 20 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-20. Sentiment(Fear &amp; Greed)=46, RSI=85.5, Trend=-6.2%. Overall: WAIT. Trending: HYPE/LIT/PIPEDOG. Top gainer: HYPE(+19.20%)</description>
+      <description>Daily BTC AI analysis for 2026-08-20. Sentiment(Fear &amp; Greed)=62, RSI=83.9, Trend=-5.8%. Overall: WAIT. Trending: BULLBALLS/HYPE/ERG. Top gainer: CASHCAT(+34.40%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-08-19 | Fear &amp; Greed 46 / RSI 66.8 / Trend -6.2% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260723</guid>
       <pubDate>Thu, 23 Jul 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-07-23. Sentiment(Fear &amp; Greed)=31, RSI=42.2, Trend=-11.3%. Overall: BEAR. Trending: BANK/KAITO/CASHCAT. Top gainer: ZAMA(+21.40%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-07-22 | Fear &amp; Greed 33 / RSI 48.3 / Trend -11.6% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260722</link>
-      <guid>https://coinrader.net/en/daily/20260722</guid>
-      <pubDate>Wed, 22 Jul 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-07-22. Sentiment(Fear &amp; Greed)=33, RSI=48.3, Trend=-11.6%. Overall: BEAR. Trending: DEXE/HYPE/ETH. Top gainer: UB(+12.32%)</description>
     </item>
   </channel>
 </rss>
