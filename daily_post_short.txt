@@ -1,10 +1,10 @@
-【今日のBTC / 08/23】
-判定：WAIT（SCORE -1）｜FGI 71（Greed）｜RSI 52.8
+【今日のBTC / 08/24】
+判定：WAIT（SCORE -1）｜FGI 66（Greed）｜RSI 55.5
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：TRUMP +39.9%
-Trending: ZEC / PUMP / PIPEDOG
+注目：MORPHO +21.8%
+Trending: CATALORIAN / CYBERLEEK / HYPE
