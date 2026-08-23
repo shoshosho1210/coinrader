@@ -1,0 +1,8 @@
+{
+  "ts": "2026-08-24T03:46:44.760573+09:00",
+  "symbol": "BTC",
+  "score_overall": 0,
+  "signal_raw": "WAIT",
+  "reason_hint": "MA:bear,RSI:high,FGI:greed",
+  "reason_top3": []
+}
