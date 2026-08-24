@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Mon, 24 Aug 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 25 Aug 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-08-24 | Fear &amp; Greed 66 / RSI 55.5 / Trend -4.6% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-08-25 | Fear &amp; Greed 73 / RSI 61.3 / Trend -4.3% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260825</link>
+      <guid>https://coinrader.net/en/daily/20260825</guid>
+      <pubDate>Tue, 25 Aug 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-08-25. Sentiment(Fear &amp; Greed)=73, RSI=61.3, Trend=-4.3%. Overall: BEAR. Trending: ZANO/CASHCAT/BTC. Top gainer: CASHCAT(+49.19%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-08-24 | Fear &amp; Greed 73 / RSI 71 / Trend -4.3% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260824</link>
       <guid>https://coinrader.net/en/daily/20260824</guid>
       <pubDate>Mon, 24 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-24. Sentiment(Fear &amp; Greed)=66, RSI=55.5, Trend=-4.6%. Overall: BEAR. Trending: CATALORIAN/CYBERLEEK/HYPE. Top gainer: MORPHO(+21.80%)</description>
+      <description>Daily BTC AI analysis for 2026-08-24. Sentiment(Fear &amp; Greed)=73, RSI=71, Trend=-4.3%. Overall: WAIT. Trending: ZANO/KNTQ/BTC. Top gainer: DOG(+46.06%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-08-23 | Fear &amp; Greed 66 / RSI 55.8 / Trend -4.6% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260727</guid>
       <pubDate>Mon, 27 Jul 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-07-27. Sentiment(Fear &amp; Greed)=3, RSI=53.2, Trend=-10.5%. Overall: BEAR. Trending: CSPR/PONS/AEON. Top gainer: BTW(+61.10%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-07-26 | Fear &amp; Greed 26 / RSI 53.8 / Trend -10.6% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260726</link>
-      <guid>https://coinrader.net/en/daily/20260726</guid>
-      <pubDate>Sun, 26 Jul 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-07-26. Sentiment(Fear &amp; Greed)=26, RSI=53.8, Trend=-10.6%. Overall: BEAR. Trending: PENGU/BMX/PONS. Top gainer: KAITO(+26.50%)</description>
     </item>
   </channel>
 </rss>
