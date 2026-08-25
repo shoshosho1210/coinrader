@@ -1,10 +1,10 @@
-【今日のBTC / 08/25】
-判定：WAIT（SCORE 0）｜FGI 73（Greed）｜RSI 61.3
+【今日のBTC / 08/26】
+判定：WAIT（SCORE -1）｜FGI 74（Greed）｜RSI 49.4
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：CASHCAT +49.2%
-Trending: ZANO / CASHCAT / BTC
+注目：META +29.7%
+Trending: HYPE / PONS / LIT
