@@ -1,10 +1,10 @@
 {
-  "ts": "2026-08-26T08:58:30.812373+09:00",
+  "ts": "2026-08-26T10:56:50.507129+09:00",
   "symbol": "BTC",
   "signal_stable": "SELL",
   "phase_label": "Downtrend",
   "changed_at": "2026-08-26T07:44:53.675502+09:00",
-  "duration_hours": 1.23,
+  "duration_hours": 3.2,
   "signal_raw": "WAIT",
   "score_overall": -1
 }
