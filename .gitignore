@@ -1,3 +1,10 @@
 __pycache__/
 scripts/__pycache__/
 data/top_cache.json
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
