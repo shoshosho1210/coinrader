@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 28 Aug 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 29 Aug 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-08-28 | Fear &amp; Greed 73 / RSI 63 / Trend -2.9% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-08-29 | Fear &amp; Greed 73 / RSI 25.4 / Trend -2.9% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260829</link>
+      <guid>https://coinrader.net/en/daily/20260829</guid>
+      <pubDate>Sat, 29 Aug 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-08-29. Sentiment(Fear &amp; Greed)=73, RSI=25.4, Trend=-2.9%. Overall: WAIT. Trending: PONS/BTC/ETH. Top gainer: AKE(+56.41%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-08-28 | Fear &amp; Greed 73 / RSI 47.1 / Trend -2.9% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260828</link>
       <guid>https://coinrader.net/en/daily/20260828</guid>
       <pubDate>Fri, 28 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-28. Sentiment(Fear &amp; Greed)=73, RSI=63, Trend=-2.9%. Overall: WAIT. Trending: SOL/ENA/PUMP. Top gainer: ANSEM(+17.13%)</description>
+      <description>Daily BTC AI analysis for 2026-08-28. Sentiment(Fear &amp; Greed)=73, RSI=47.1, Trend=-2.9%. Overall: WAIT. Trending: PONS/ENA/PENGU. Top gainer: TRUMP(+15.61%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-08-27 | Fear &amp; Greed 71 / RSI 55.2 / Trend -3.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260731</guid>
       <pubDate>Fri, 31 Jul 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-07-31. Sentiment(Fear &amp; Greed)=25, RSI=39.6, Trend=-9.6%. Overall: BEAR. Trending: MOONDOGECOIN/PENGU/ENA. Top gainer: XEC(+24.40%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-07-30 | Fear &amp; Greed 28 / RSI 63.6 / Trend -9.6% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260730</link>
-      <guid>https://coinrader.net/en/daily/20260730</guid>
-      <pubDate>Thu, 30 Jul 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-07-30. Sentiment(Fear &amp; Greed)=28, RSI=63.6, Trend=-9.6%. Overall: BEAR. Trending: UNI/BTC/LIT. Top gainer: CARDS(+23.20%)</description>
     </item>
   </channel>
 </rss>
