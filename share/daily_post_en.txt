@@ -1,4 +1,4 @@
-BTC Phase Report (08/28 JST)
-SCORE 0 (WAIT) | FGI 73 | RSI 63.0
-Phase: エネルギー圧縮局面
+BTC Phase Report (08/29 JST)
+SCORE -2 (SELL) | FGI 73 | RSI 25.4
+Phase: 方向感模索フェーズ
 市場は次の方向を探している。
