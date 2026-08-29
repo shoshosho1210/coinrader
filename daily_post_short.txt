@@ -1,10 +1,10 @@
-【今日のBTC / 08/29】
-判定：SELL（SCORE -2）｜FGI 73（Greed）｜RSI 25.4
+【今日のBTC / 08/30】
+判定：WAIT（SCORE -1）｜FGI 68（Greed）｜RSI 54.5
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：AKE +56.4%
-Trending: PONS / BTC / ETH
+注目：PONS +57.5%
+Trending: PONS / CHUMP / HNT
