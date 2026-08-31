@@ -8,5 +8,8 @@
     "value": "62",
     "label": "Greed"
   },
-  "usd_jpy": 160.045067
+  "usd_jpy": 160.045067,
+  "stale": true,
+  "stale_reason": "HTTP Error 429: Too Many Requests",
+  "stale_at": "2026-08-31T06:45:09.146277+00:00"
 }
