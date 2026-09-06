@@ -1,10 +1,10 @@
 {
-  "ts": "2026-09-06T19:53:24.824123+09:00",
+  "ts": "2026-09-06T23:09:02.038237+09:00",
   "symbol": "BTC",
   "signal_stable": "WAIT",
   "phase_label": "Range",
   "changed_at": "2026-09-04T03:04:22.030949+09:00",
-  "duration_hours": 64.82,
+  "duration_hours": 68.08,
   "signal_raw": "WAIT",
   "score_overall": -1
 }
