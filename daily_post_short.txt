@@ -1,10 +1,10 @@
-【今日のBTC / 09/06】
-判定：WAIT（SCORE -1）｜FGI 73（Greed）｜RSI 49.0
+【今日のBTC / 09/07】
+判定：WAIT（SCORE -1）｜FGI 73（Greed）｜RSI 49.9
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：AKE +44.1%
-Trending: CP / FIRO / SHRUB
+注目：RAY +41.9%
+Trending: FIRO / SHRUB / CP
