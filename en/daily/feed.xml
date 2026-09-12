@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sat, 12 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-09-12 | Fear &amp; Greed 56 / RSI 44.4 / Trend 0.5% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-09-13 | Fear &amp; Greed 63 / RSI 42.5 / Trend 0.6% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260913</link>
+      <guid>https://coinrader.net/en/daily/20260913</guid>
+      <pubDate>Sun, 13 Sep 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-09-13. Sentiment(Fear &amp; Greed)=63, RSI=42.5, Trend=0.6%. Overall: WAIT. Trending: LAPTOP/ILV/PENGU. Top gainer: 龙虾(+147.07%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-09-12 | Fear &amp; Greed 63 / RSI 49.1 / Trend 0.6% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260912</link>
       <guid>https://coinrader.net/en/daily/20260912</guid>
       <pubDate>Sat, 12 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-12. Sentiment(Fear &amp; Greed)=56, RSI=44.4, Trend=0.5%. Overall: WAIT. Trending: STONK/LAPTOP/EMBER. Top gainer: STONK(+47.49%)</description>
+      <description>Daily BTC AI analysis for 2026-09-12. Sentiment(Fear &amp; Greed)=63, RSI=49.1, Trend=0.6%. Overall: WAIT. Trending: AI/EMBER/LAPTOP. Top gainer: 龙虾(+187.30%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-09-11 | Fear &amp; Greed 56 / RSI 61.6 / Trend 0.5% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260815</guid>
       <pubDate>Sat, 15 Aug 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-08-15. Sentiment(Fear &amp; Greed)=34, RSI=49.3, Trend=-7.2%. Overall: BEAR. Trending: WAL/COW/LINK. Top gainer: CYS(+36.90%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-08-14 | Fear &amp; Greed 29 / RSI 30.7 / Trend -7.4% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260814</link>
-      <guid>https://coinrader.net/en/daily/20260814</guid>
-      <pubDate>Fri, 14 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-14. Sentiment(Fear &amp; Greed)=29, RSI=30.7, Trend=-7.4%. Overall: BEAR. Trending: ACE/KII/AKE. Top gainer: AKE(+107.00%)</description>
     </item>
   </channel>
 </rss>
