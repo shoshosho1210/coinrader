@@ -1,10 +1,10 @@
-【今日のBTC / 09/13】
-判定：BUY（SCORE 2）｜FGI 63（Greed）｜RSI 42.5
+【今日のBTC / 09/14】
+判定：BUY（SCORE 2）｜FGI 61（Greed）｜RSI 54.9
 
 ▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：龙虾 +147.1%
-Trending: LAPTOP / ILV / PENGU
+注目：LSK +335.0%
+Trending: LSK / FIL / STONK
