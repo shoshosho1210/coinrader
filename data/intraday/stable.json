@@ -1,10 +1,10 @@
 {
-  "ts": "2026-09-15T07:44:48.358680+09:00",
+  "ts": "2026-09-15T10:26:22.772122+09:00",
   "symbol": "BTC",
   "signal_stable": "BUY",
   "phase_label": "Uptrend",
   "changed_at": "2026-09-08T18:05:54.524100+09:00",
-  "duration_hours": 157.65,
+  "duration_hours": 160.34,
   "signal_raw": "BUY",
   "score_overall": 3
 }
