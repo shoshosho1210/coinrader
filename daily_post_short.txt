@@ -1,10 +1,10 @@
-【今日のBTC / 09/16】
-判定：BUY（SCORE 2）｜FGI 69（Greed）｜RSI 30.9
+【今日のBTC / 09/17】
+判定：BUY（SCORE 2）｜FGI 51（Neutral）｜RSI 48.3
 
 ▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：AKE +71.5%
-Trending: FIRO / TRUMP / PONS
+注目：BR +151.9%
+Trending: TRUMP / DRV / ZEC
