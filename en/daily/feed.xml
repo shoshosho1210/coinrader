@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Thu, 17 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 18 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-09-17 | Fear &amp; Greed 51 / RSI 48.3 / Trend 1.3% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-09-18 | Fear &amp; Greed 5 / RSI 48.7 / Trend 1.5% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260918</link>
+      <guid>https://coinrader.net/en/daily/20260918</guid>
+      <pubDate>Fri, 18 Sep 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-09-18. Sentiment(Fear &amp; Greed)=5, RSI=48.7, Trend=1.5%. Overall: WAIT. Trending: TRUMP/FIRO/PENGU. Top gainer: MARSCOIN(+34.79%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-09-17 | Fear &amp; Greed 5 / RSI 53.3 / Trend 1.5% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260917</link>
       <guid>https://coinrader.net/en/daily/20260917</guid>
       <pubDate>Thu, 17 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-17. Sentiment(Fear &amp; Greed)=51, RSI=48.3, Trend=1.3%. Overall: WAIT. Trending: TRUMP/DRV/ZEC. Top gainer: BR(+151.95%)</description>
+      <description>Daily BTC AI analysis for 2026-09-17. Sentiment(Fear &amp; Greed)=5, RSI=53.3, Trend=1.5%. Overall: WAIT. Trending: TRUMP/ZEC/NEAR. Top gainer: JPYC(+127.05%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-09-16 | Fear &amp; Greed 51 / RSI 44.1 / Trend 1.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260820</guid>
       <pubDate>Thu, 20 Aug 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-08-20. Sentiment(Fear &amp; Greed)=62, RSI=83.9, Trend=-5.8%. Overall: WAIT. Trending: BULLBALLS/HYPE/ERG. Top gainer: CASHCAT(+34.40%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-08-19 | Fear &amp; Greed 46 / RSI 66.8 / Trend -6.2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260819</link>
-      <guid>https://coinrader.net/en/daily/20260819</guid>
-      <pubDate>Wed, 19 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-19. Sentiment(Fear &amp; Greed)=46, RSI=66.8, Trend=-6.2%. Overall: BEAR. Trending: BTW/BTC/PUMP. Top gainer: BTW(+78.70%)</description>
     </item>
   </channel>
 </rss>
