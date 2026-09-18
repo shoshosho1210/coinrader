@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 18 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 19 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-09-18 | Fear &amp; Greed 5 / RSI 48.7 / Trend 1.5% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-09-19 | Fear &amp; Greed 56 / RSI 86.3 / Trend 1.9% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260919</link>
+      <guid>https://coinrader.net/en/daily/20260919</guid>
+      <pubDate>Sat, 19 Sep 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-09-19. Sentiment(Fear &amp; Greed)=56, RSI=86.3, Trend=1.9%. Overall: WAIT. Trending: FIRO/STRK/PRL. Top gainer: HOOD(+181.10%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-09-18 | Fear &amp; Greed 56 / RSI 79.5 / Trend 1.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260918</link>
       <guid>https://coinrader.net/en/daily/20260918</guid>
       <pubDate>Fri, 18 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-18. Sentiment(Fear &amp; Greed)=5, RSI=48.7, Trend=1.5%. Overall: WAIT. Trending: TRUMP/FIRO/PENGU. Top gainer: MARSCOIN(+34.79%)</description>
+      <description>Daily BTC AI analysis for 2026-09-18. Sentiment(Fear &amp; Greed)=56, RSI=79.5, Trend=1.8%. Overall: WAIT. Trending: ZANO/ZEC/FIRO. Top gainer: PRL(+38.03%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-09-17 | Fear &amp; Greed 5 / RSI 53.3 / Trend 1.5% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260821</guid>
       <pubDate>Fri, 21 Aug 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-08-21. Sentiment(Fear &amp; Greed)=72, RSI=72.3, Trend=-5.4%. Overall: WAIT. Trending: BTC/ENA/ALIGN. Top gainer: ENA(+45.00%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-08-20 | Fear &amp; Greed 62 / RSI 83.9 / Trend -5.8% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260820</link>
-      <guid>https://coinrader.net/en/daily/20260820</guid>
-      <pubDate>Thu, 20 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-20. Sentiment(Fear &amp; Greed)=62, RSI=83.9, Trend=-5.8%. Overall: WAIT. Trending: BULLBALLS/HYPE/ERG. Top gainer: CASHCAT(+34.40%)</description>
     </item>
   </channel>
 </rss>
