@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 20 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 21 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-09-20 | Fear &amp; Greed 71 / RSI 55 / Trend 2.3% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-09-21 | Fear &amp; Greed 71 / RSI 56.8 / Trend 2.7% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260921</link>
+      <guid>https://coinrader.net/en/daily/20260921</guid>
+      <pubDate>Mon, 21 Sep 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-09-21. Sentiment(Fear &amp; Greed)=71, RSI=56.8, Trend=2.7%. Overall: WAIT. Trending: TRUMP/ZANO/AVAX. Top gainer: FF(+40.94%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-09-20 | Fear &amp; Greed 71 / RSI 44.9 / Trend 2.7% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260920</link>
       <guid>https://coinrader.net/en/daily/20260920</guid>
       <pubDate>Sun, 20 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-20. Sentiment(Fear &amp; Greed)=71, RSI=55, Trend=2.3%. Overall: WAIT. Trending: FIRO/TRUMP/ENA. Top gainer: BLORB(+126.36%)</description>
+      <description>Daily BTC AI analysis for 2026-09-20. Sentiment(Fear &amp; Greed)=71, RSI=44.9, Trend=2.7%. Overall: WAIT. Trending: AKE/ZEC/ZAMA. Top gainer: BLORB(+74.14%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-09-19 | Fear &amp; Greed 71 / RSI 69.8 / Trend 2.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260823</guid>
       <pubDate>Sun, 23 Aug 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-08-23. Sentiment(Fear &amp; Greed)=66, RSI=55.8, Trend=-4.6%. Overall: BEAR. Trending: PUMP/HYPE/BTC. Top gainer: ZRO(+25.00%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-08-22 | Fear &amp; Greed 71 / RSI 53.7 / Trend -5% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260822</link>
-      <guid>https://coinrader.net/en/daily/20260822</guid>
-      <pubDate>Sat, 22 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-22. Sentiment(Fear &amp; Greed)=71, RSI=53.7, Trend=-5%. Overall: BEAR. Trending: TRUMP/PIPEDOG/BTC. Top gainer: TRUMP(+31.70%)</description>
     </item>
   </channel>
 </rss>
