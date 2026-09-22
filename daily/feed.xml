@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Mon, 21 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 22 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-09-21｜Fear&amp;Greed 71 / RSI 56.8 / Trend 2.7%（CoinRader）</title>
+      <title>BTC AI分析 2026-09-22｜Fear&amp;Greed 7 / RSI 86 / Trend 3.3%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20260922</link>
+      <guid>https://coinrader.net/daily/20260922</guid>
+      <pubDate>Tue, 22 Sep 2026 09:00:00 +0900</pubDate>
+      <description>BTC RSI が 86.03 で買われ過ぎ水準。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-09-21｜Fear&amp;Greed 7 / RSI 83.8 / Trend 3.2%（CoinRader）</title>
       <link>https://coinrader.net/daily/20260921</link>
       <guid>https://coinrader.net/daily/20260921</guid>
       <pubDate>Mon, 21 Sep 2026 09:00:00 +0900</pubDate>
-      <description>上昇トップは FF +40.94% で強い動き。</description>
+      <description>BTC RSI が 83.79 で買われ過ぎ水準。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-09-20｜Fear&amp;Greed 71 / RSI 44.9 / Trend 2.7%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260824</guid>
       <pubDate>Mon, 24 Aug 2026 09:00:00 +0900</pubDate>
       <description>BTC RSI が 71.04 で買われ過ぎ水準。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-08-23｜Fear&amp;Greed 66 / RSI 55.8 / Trend -4.6%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260823</link>
-      <guid>https://coinrader.net/daily/20260823</guid>
-      <pubDate>Sun, 23 Aug 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が -4.63% で弱含み。</description>
     </item>
   </channel>
 </rss>
