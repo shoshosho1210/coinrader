@@ -1,10 +1,10 @@
-【今日のBTC / 09/22】
-判定：BUY（SCORE 4）｜FGI 70（Greed）｜RSI 86.0
+【今日のBTC / 09/23】
+判定：BUY（SCORE 4）｜FGI 78（Extreme Greed）｜RSI 59.6
 
 ▼ 局面：方向感模索フェーズ
 熱狂は頂点で生まれる。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：FORM +43.3%
-Trending: ASTRO / FIRO / TRUMP
+注目：PRL +42.4%
+Trending: EDEL / PENGU / ASTRO
