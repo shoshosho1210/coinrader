@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 25 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 26 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-09-25 | Fear &amp; Greed 71 / RSI 50.5 / Trend 4.6% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-09-26 | Fear &amp; Greed 71 / RSI 46.5 / Trend 5.1% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260926</link>
+      <guid>https://coinrader.net/en/daily/20260926</guid>
+      <pubDate>Sat, 26 Sep 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-09-26. Sentiment(Fear &amp; Greed)=71, RSI=46.5, Trend=5.1%. Overall: BULL. Trending: TRUMP/EDEL/AERO. Top gainer: BTW(+31.83%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-09-25 | Fear &amp; Greed 71 / RSI 55.1 / Trend 5.1% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260925</link>
       <guid>https://coinrader.net/en/daily/20260925</guid>
       <pubDate>Fri, 25 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-25. Sentiment(Fear &amp; Greed)=71, RSI=50.5, Trend=4.6%. Overall: BULL. Trending: EDEL/ONDO/PENGU. Top gainer: DBR(+29.78%)</description>
+      <description>Daily BTC AI analysis for 2026-09-25. Sentiment(Fear &amp; Greed)=71, RSI=55.1, Trend=5.1%. Overall: BULL. Trending: NEAR/EDEL/BP. Top gainer: BP(+31.38%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-09-24 | Fear &amp; Greed 71 / RSI 33 / Trend 4.6% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260828</guid>
       <pubDate>Fri, 28 Aug 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-08-28. Sentiment(Fear &amp; Greed)=73, RSI=47.1, Trend=-2.9%. Overall: WAIT. Trending: PONS/ENA/PENGU. Top gainer: TRUMP(+15.61%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-08-27 | Fear &amp; Greed 71 / RSI 55.2 / Trend -3.3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260827</link>
-      <guid>https://coinrader.net/en/daily/20260827</guid>
-      <pubDate>Thu, 27 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-27. Sentiment(Fear &amp; Greed)=71, RSI=55.2, Trend=-3.3%. Overall: BEAR. Trending: SOL/VET/ENA. Top gainer: NPC(+33.13%)</description>
     </item>
   </channel>
 </rss>
