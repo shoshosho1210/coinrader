@@ -1,15 +1,12 @@
 {
-  "fetched_at": "2026-09-29T01:09:42.577026+00:00",
+  "fetched_at": "2026-09-30T01:59:28.164160+00:00",
   "ttl_seconds": 300,
-  "btc_jpy": 13063974,
-  "eth_jpy": 420389,
-  "btc_dom": 58.23614074202986,
+  "btc_jpy": 13077508,
+  "eth_jpy": 418807,
+  "btc_dom": 58.293520839773635,
   "fear_greed": {
-    "value": "73",
+    "value": "71",
     "label": "Greed"
   },
-  "usd_jpy": 157.315109,
-  "stale": true,
-  "stale_reason": "HTTP Error 403: Forbidden",
-  "stale_at": "2026-09-30T00:21:18.580086+00:00"
+  "usd_jpy": 157.389062
 }
