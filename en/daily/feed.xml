@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Tue, 29 Sep 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 30 Sep 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-09-29 | Fear &amp; Greed 74 / RSI 46.1 / Trend 6.4% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-09-30 | Fear &amp; Greed 73 / RSI 47.8 / Trend 6.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20260930</link>
+      <guid>https://coinrader.net/en/daily/20260930</guid>
+      <pubDate>Wed, 30 Sep 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-09-30. Sentiment(Fear &amp; Greed)=73, RSI=47.8, Trend=6.8%. Overall: BULL. Trending: PENGU/TRUMP/QNT. Top gainer: GRASS(+31.58%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-09-29 | Fear &amp; Greed 73 / RSI 60.4 / Trend 6.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20260929</link>
       <guid>https://coinrader.net/en/daily/20260929</guid>
       <pubDate>Tue, 29 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-29. Sentiment(Fear &amp; Greed)=74, RSI=46.1, Trend=6.4%. Overall: BULL. Trending: FIRO/QNT/TRUMP. Top gainer: HBAR(+29.02%)</description>
+      <description>Daily BTC AI analysis for 2026-09-29. Sentiment(Fear &amp; Greed)=73, RSI=60.4, Trend=6.8%. Overall: BULL. Trending: QNT/AVAX/NEAR. Top gainer: ZBCN(+25.14%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-09-28 | Fear &amp; Greed 74 / RSI 35.4 / Trend 6.4% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260901</guid>
       <pubDate>Tue, 01 Sep 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-09-01. Sentiment(Fear &amp; Greed)=69, RSI=39.7, Trend=-1.7%. Overall: WAIT. Trending: PONS/RAM/UP. Top gainer: ARB(+29.06%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-08-31 | Fear &amp; Greed 62 / RSI 46.7 / Trend -2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260831</link>
-      <guid>https://coinrader.net/en/daily/20260831</guid>
-      <pubDate>Mon, 31 Aug 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-08-31. Sentiment(Fear &amp; Greed)=62, RSI=46.7, Trend=-2%. Overall: WAIT. Trending: PONS/SKR/PUMP. Top gainer: AIX(+184.93%)</description>
     </item>
   </channel>
 </rss>
