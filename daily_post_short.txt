@@ -1,10 +1,10 @@
-【今日のBTC / 10/03】
-判定：BUY（SCORE 2）｜FGI 67（Greed）｜RSI 41.5
+【今日のBTC / 10/04】
+判定：BUY（SCORE 3）｜FGI 67（Greed）｜RSI 50.0
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+熱狂は頂点で生まれる。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：SAND +54.5%
-Trending: TRUMP / SC / EDEL
+注目：STRK +22.7%
+Trending: SI / STRK / PONS
