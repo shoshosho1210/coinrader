@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 02 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 03 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-10-02 | Fear &amp; Greed 74 / RSI 59.2 / Trend 7.8% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-10-03 | Fear &amp; Greed 67 / RSI 41.5 / Trend 8.3% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261003</link>
+      <guid>https://coinrader.net/en/daily/20261003</guid>
+      <pubDate>Sat, 03 Oct 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-10-03. Sentiment(Fear &amp; Greed)=67, RSI=41.5, Trend=8.3%. Overall: BULL. Trending: TRUMP/SC/EDEL. Top gainer: SAND(+54.53%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-10-02 | Fear &amp; Greed 72 / RSI 68.5 / Trend 8.3% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261002</link>
       <guid>https://coinrader.net/en/daily/20261002</guid>
       <pubDate>Fri, 02 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-02. Sentiment(Fear &amp; Greed)=74, RSI=59.2, Trend=7.8%. Overall: BULL. Trending: REVENUE/VRAX/TRUMP. Top gainer: JASMY(+12.63%)</description>
+      <description>Daily BTC AI analysis for 2026-10-02. Sentiment(Fear &amp; Greed)=72, RSI=68.5, Trend=8.3%. Overall: BULL. Trending: VRAX/QNT/SAND. Top gainer: GRX(+61.34%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-10-01 | Fear &amp; Greed 74 / RSI 52.3 / Trend 7.7% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260904</guid>
       <pubDate>Fri, 04 Sep 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-09-04. Sentiment(Fear &amp; Greed)=74, RSI=62.4, Trend=-0.9%. Overall: WAIT. Trending: MARSCOIN/CP/PONS. Top gainer: MARSCOIN(+72.25%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-09-03 | Fear &amp; Greed 65 / RSI 69 / Trend -1.2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260903</link>
-      <guid>https://coinrader.net/en/daily/20260903</guid>
-      <pubDate>Thu, 03 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-03. Sentiment(Fear &amp; Greed)=65, RSI=69, Trend=-1.2%. Overall: WAIT. Trending: PONS/SHRUB/ARB. Top gainer: AKE(+53.47%)</description>
     </item>
   </channel>
 </rss>

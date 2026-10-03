@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Fri, 02 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 03 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-10-02｜Fear&amp;Greed 74 / RSI 59.2 / Trend 7.8%（CoinRader）</title>
+      <title>BTC AI分析 2026-10-03｜Fear&amp;Greed 67 / RSI 41.5 / Trend 8.3%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20261003</link>
+      <guid>https://coinrader.net/daily/20261003</guid>
+      <pubDate>Sat, 03 Oct 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が 8.27% で上向き。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-10-02｜Fear&amp;Greed 72 / RSI 68.5 / Trend 8.3%（CoinRader）</title>
       <link>https://coinrader.net/daily/20261002</link>
       <guid>https://coinrader.net/daily/20261002</guid>
       <pubDate>Fri, 02 Oct 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が 7.76% で上向き。</description>
+      <description>MA距離が 8.3% で上向き。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-10-01｜Fear&amp;Greed 74 / RSI 52.3 / Trend 7.7%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260904</guid>
       <pubDate>Fri, 04 Sep 2026 09:00:00 +0900</pubDate>
       <description>上昇トップは MARSCOIN +72.25% で強い動き。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-09-03｜Fear&amp;Greed 65 / RSI 69 / Trend -1.2%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260903</link>
-      <guid>https://coinrader.net/daily/20260903</guid>
-      <pubDate>Thu, 03 Sep 2026 09:00:00 +0900</pubDate>
-      <description>上昇トップは AKE +53.47% で強い動き。</description>
     </item>
   </channel>
 </rss>
