@@ -1,10 +1,10 @@
-【今日のBTC / 10/04】
-判定：BUY（SCORE 3）｜FGI 67（Greed）｜RSI 50.0
+【今日のBTC / 10/05】
+判定：BUY（SCORE 4）｜FGI 65（Greed）｜RSI 77.9
 
 ▼ 局面：方向感模索フェーズ
 熱狂は頂点で生まれる。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：STRK +22.7%
-Trending: SI / STRK / PONS
+注目：BTW +20.4%
+Trending: NEAR / PUMP / AERO
