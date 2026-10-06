@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Mon, 05 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 06 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-10-05 | Fear &amp; Greed 65 / RSI 77.9 / Trend 9.3% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-10-06 | Fear &amp; Greed 73 / RSI 53.1 / Trend 10.3% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261006</link>
+      <guid>https://coinrader.net/en/daily/20261006</guid>
+      <pubDate>Tue, 06 Oct 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-10-06. Sentiment(Fear &amp; Greed)=73, RSI=53.1, Trend=10.3%. Overall: BULL. Trending: SIF/EDEL/PENGU. Top gainer: FLUID(+16.12%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-10-05 | Fear &amp; Greed 7 / RSI 60.8 / Trend 9.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261005</link>
       <guid>https://coinrader.net/en/daily/20261005</guid>
       <pubDate>Mon, 05 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-05. Sentiment(Fear &amp; Greed)=65, RSI=77.9, Trend=9.3%. Overall: WAIT. Trending: NEAR/PUMP/AERO. Top gainer: BTW(+20.35%)</description>
+      <description>Daily BTC AI analysis for 2026-10-05. Sentiment(Fear &amp; Greed)=7, RSI=60.8, Trend=9.8%. Overall: BULL. Trending: HI/AGENTCAT/FET. Top gainer: FET(+14.81%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-10-04 | Fear &amp; Greed 65 / RSI 68.7 / Trend 9.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260907</guid>
       <pubDate>Mon, 07 Sep 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-09-07. Sentiment(Fear &amp; Greed)=71, RSI=38.5, Trend=-0.1%. Overall: WAIT. Trending: FIRO/CNPY/ZEC. Top gainer: BP(+23.22%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-09-06 | Fear &amp; Greed 73 / RSI 52.4 / Trend -0.3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260906</link>
-      <guid>https://coinrader.net/en/daily/20260906</guid>
-      <pubDate>Sun, 06 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-06. Sentiment(Fear &amp; Greed)=73, RSI=52.4, Trend=-0.3%. Overall: WAIT. Trending: FIRO/SHRUB/PONS. Top gainer: STONK(+432.01%)</description>
     </item>
   </channel>
 </rss>
