@@ -1,10 +1,10 @@
-【今日のBTC / 10/07】
-判定：BUY（SCORE 3）｜FGI 73（Greed）｜RSI 45.9
+【今日のBTC / 10/08】
+判定：BUY（SCORE 2）｜FGI 71（Greed）｜RSI 35.9
 
 ▼ 局面：方向感模索フェーズ
-熱狂は頂点で生まれる。
+市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：ORCA +36.3%
-Trending: ZIG / ORCA / PONS
+注目：MET +38.3%
+Trending: SWORDINU / TRUMP / PENGU
