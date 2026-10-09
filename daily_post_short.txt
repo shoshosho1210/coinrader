@@ -1,10 +1,10 @@
-【今日のBTC / 10/08】
-判定：BUY（SCORE 2）｜FGI 71（Greed）｜RSI 35.9
+【今日のBTC / 10/09】
+判定：WAIT（SCORE 1）｜FGI 64（Greed）｜RSI 41.0
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：MET +38.3%
-Trending: SWORDINU / TRUMP / PENGU
+注目：Q +25.1%
+Trending: SIMD / TRUMP / DRV
