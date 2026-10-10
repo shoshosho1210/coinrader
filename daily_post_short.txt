@@ -1,10 +1,10 @@
-【今日のBTC / 10/10】
-判定：BUY（SCORE 2）｜FGI 59（Greed）｜RSI 49.7
+【今日のBTC / 10/11】
+判定：BUY（SCORE 3）｜FGI 64（Greed）｜RSI 59.0
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+熱狂は頂点で生まれる。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：KAIA +62.4%
-Trending: TRUMP / PRL / DRV
+注目：STRK +41.0%
+Trending: SWARM / TRUMP / STRK
