@@ -1,10 +1,10 @@
-【今日のBTC / 10/12】
-判定：BUY（SCORE 2）｜FGI 61（Greed）｜RSI 57.4
+【今日のBTC / 10/13】
+判定：WAIT（SCORE 1）｜FGI 57（Greed）｜RSI 28.7
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：S +28.2%
-Trending: TAUFA / BUNKER / TRUMP
+注目：RSR +23.1%
+Trending: BUNKER / NEAR / PRL
