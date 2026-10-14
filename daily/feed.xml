@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Tue, 13 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-10-13｜Fear&amp;Greed 57 / RSI 28.7 / Trend 11.2%（CoinRader）</title>
+      <title>BTC AI分析 2026-10-14｜Fear&amp;Greed 57 / RSI 51.1 / Trend 11.2%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20261014</link>
+      <guid>https://coinrader.net/daily/20261014</guid>
+      <pubDate>Wed, 14 Oct 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が 11.17% で上向き。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-10-13｜Fear&amp;Greed 57 / RSI 61.1 / Trend 11.2%（CoinRader）</title>
       <link>https://coinrader.net/daily/20261013</link>
       <guid>https://coinrader.net/daily/20261013</guid>
       <pubDate>Tue, 13 Oct 2026 09:00:00 +0900</pubDate>
-      <description>BTC RSI が 28.72 で売られ過ぎ水準。</description>
+      <description>MA距離が 11.17% で上向き。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-10-12｜Fear&amp;Greed 69 / RSI 58.5 / Trend 11.2%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260915</guid>
       <pubDate>Tue, 15 Sep 2026 09:00:00 +0900</pubDate>
       <description>上昇トップは AKE +55.6% で強い動き。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-09-14｜Fear&amp;Greed 57 / RSI 54.9 / Trend 1%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260914</link>
-      <guid>https://coinrader.net/daily/20260914</guid>
-      <pubDate>Mon, 14 Sep 2026 09:00:00 +0900</pubDate>
-      <description>上昇トップは BR +103.51% で強い動き。</description>
     </item>
   </channel>
 </rss>
