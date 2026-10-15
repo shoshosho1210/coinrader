@@ -1,10 +1,10 @@
-【今日のBTC / 10/15】
-判定：WAIT（SCORE 1）｜FGI 62（Greed）｜RSI 34.1
+【今日のBTC / 10/16】
+判定：BUY（SCORE 2）｜FGI 53（Neutral）｜RSI 56.5
 
-▼ 局面：エネルギー圧縮局面
+▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：WAL +58.9%
-Trending: WAL / QTC / PENGU
+注目：BAT +27.3%
+Trending: STREAM / IGNITION / CASINO
