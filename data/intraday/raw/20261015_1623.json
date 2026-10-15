@@ -1,0 +1,8 @@
+{
+  "ts": "2026-10-15T16:23:33.849640+09:00",
+  "symbol": "BTC",
+  "score_overall": 1,
+  "signal_raw": "WAIT",
+  "reason_hint": "MA:bull,RSI:low,FGI:neutral",
+  "reason_top3": []
+}
