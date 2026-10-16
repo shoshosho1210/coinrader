@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 16 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 17 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-10-16 | Fear &amp; Greed 53 / RSI 56.5 / Trend 11.1% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-10-17 | Fear &amp; Greed 63 / RSI 45.5 / Trend 11% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261017</link>
+      <guid>https://coinrader.net/en/daily/20261017</guid>
+      <pubDate>Sat, 17 Oct 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-10-17. Sentiment(Fear &amp; Greed)=63, RSI=45.5, Trend=11%. Overall: BULL. Trending: DACITY/ZEC/SUI. Top gainer: BR(+19.41%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-10-16 | Fear &amp; Greed 63 / RSI 49.2 / Trend 11% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261016</link>
       <guid>https://coinrader.net/en/daily/20261016</guid>
       <pubDate>Fri, 16 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-16. Sentiment(Fear &amp; Greed)=53, RSI=56.5, Trend=11.1%. Overall: BULL. Trending: STREAM/IGNITION/CASINO. Top gainer: BAT(+27.29%)</description>
+      <description>Daily BTC AI analysis for 2026-10-16. Sentiment(Fear &amp; Greed)=63, RSI=49.2, Trend=11%. Overall: BULL. Trending: DACITY/ASTRO/STREAM. Top gainer: TIA(+29.07%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-10-15 | Fear &amp; Greed 53 / RSI 39.8 / Trend 11.1% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260918</guid>
       <pubDate>Fri, 18 Sep 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-09-18. Sentiment(Fear &amp; Greed)=56, RSI=79.5, Trend=1.8%. Overall: WAIT. Trending: ZANO/ZEC/FIRO. Top gainer: PRL(+38.03%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-09-17 | Fear &amp; Greed 5 / RSI 53.3 / Trend 1.5% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260917</link>
-      <guid>https://coinrader.net/en/daily/20260917</guid>
-      <pubDate>Thu, 17 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-17. Sentiment(Fear &amp; Greed)=5, RSI=53.3, Trend=1.5%. Overall: WAIT. Trending: TRUMP/ZEC/NEAR. Top gainer: JPYC(+127.05%)</description>
     </item>
   </channel>
 </rss>
