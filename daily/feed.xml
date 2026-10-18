@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Sun, 18 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-10-18｜Fear&amp;Greed 55 / RSI 50.8 / Trend 10.9%（CoinRader）</title>
+      <title>BTC AI分析 2026-10-19｜Fear&amp;Greed 53 / RSI 37 / Trend 10.9%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20261019</link>
+      <guid>https://coinrader.net/daily/20261019</guid>
+      <pubDate>Mon, 19 Oct 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が 10.92% で上向き。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-10-18｜Fear&amp;Greed 53 / RSI 57.2 / Trend 10.9%（CoinRader）</title>
       <link>https://coinrader.net/daily/20261018</link>
       <guid>https://coinrader.net/daily/20261018</guid>
       <pubDate>Sun, 18 Oct 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が 10.95% で上向き。</description>
+      <description>MA距離が 10.91% で上向き。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-10-17｜Fear&amp;Greed 55 / RSI 47.9 / Trend 10.9%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20260920</guid>
       <pubDate>Sun, 20 Sep 2026 09:00:00 +0900</pubDate>
       <description>上昇トップは BLORB +74.14% で強い動き。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-09-19｜Fear&amp;Greed 71 / RSI 69.8 / Trend 2.3%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20260919</link>
-      <guid>https://coinrader.net/daily/20260919</guid>
-      <pubDate>Sat, 19 Sep 2026 09:00:00 +0900</pubDate>
-      <description>上昇トップは AKE +142.04% で強い動き。</description>
     </item>
   </channel>
 </rss>
