@@ -1,10 +1,10 @@
-【今日のBTC / 10/19】
-判定：WAIT（SCORE 1）｜FGI 53（Neutral）｜RSI 37.0
+【今日のBTC / 10/20】
+判定：BUY（SCORE 2）｜FGI 59（Greed）｜RSI 47.8
 
-▼ 局面：エネルギー圧縮局面
+▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BR +13.6%
-Trending: COVENANT / TSI / DOPE
+注目：BR +39.5%
+Trending: STARTUPSI / QTC / PRL
