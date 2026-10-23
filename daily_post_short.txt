@@ -1,10 +1,10 @@
-【今日のBTC / 10/23】
-判定：BUY（SCORE 2）｜FGI 68（Greed）｜RSI 29.5
+【今日のBTC / 10/24】
+判定：WAIT（SCORE 1）｜FGI 50（Neutral）｜RSI 41.3
 
-▼ 局面：方向感模索フェーズ
+▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：AKE +26.9%
-Trending: UHI / DACITY / OA
+注目：IRYS +277.1%
+Trending: IRYS / BTC / NEAR
