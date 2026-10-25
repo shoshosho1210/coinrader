@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 25 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 26 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-10-25 | Fear &amp; Greed 51 / RSI 44.2 / Trend 10.8% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-10-26 | Fear &amp; Greed 54 / RSI 45.4 / Trend 10.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261026</link>
+      <guid>https://coinrader.net/en/daily/20261026</guid>
+      <pubDate>Mon, 26 Oct 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-10-26. Sentiment(Fear &amp; Greed)=54, RSI=45.4, Trend=10.8%. Overall: BULL. Trending: PEPINA/EVMZONE/DACITY. Top gainer: CAP(+37.13%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-10-25 | Fear &amp; Greed 54 / RSI 39.3 / Trend 10.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261025</link>
       <guid>https://coinrader.net/en/daily/20261025</guid>
       <pubDate>Sun, 25 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-25. Sentiment(Fear &amp; Greed)=51, RSI=44.2, Trend=10.8%. Overall: BULL. Trending: UHI/HYPE/DACITY. Top gainer: CAP(+8.93%)</description>
+      <description>Daily BTC AI analysis for 2026-10-25. Sentiment(Fear &amp; Greed)=54, RSI=39.3, Trend=10.8%. Overall: BULL. Trending: HYPE/DACITY/EVMZONE. Top gainer: CAP(+30.76%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-10-24 | Fear &amp; Greed 51 / RSI 36.7 / Trend 10.8% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260927</guid>
       <pubDate>Sun, 27 Sep 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-09-27. Sentiment(Fear &amp; Greed)=7, RSI=67.6, Trend=6%. Overall: BULL. Trending: EDEL/TRUMP/QNT. Top gainer: QNT(+59.18%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-09-26 | Fear &amp; Greed 74 / RSI 49.2 / Trend 5.5% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260926</link>
-      <guid>https://coinrader.net/en/daily/20260926</guid>
-      <pubDate>Sat, 26 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-26. Sentiment(Fear &amp; Greed)=74, RSI=49.2, Trend=5.5%. Overall: BULL. Trending: SI/M87/EDEL. Top gainer: Q(+52.34%)</description>
     </item>
   </channel>
 </rss>
