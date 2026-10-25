@@ -1,10 +1,10 @@
-【今日のBTC / 10/25】
-判定：BUY（SCORE 2）｜FGI 51（Neutral）｜RSI 44.2
+【今日のBTC / 10/26】
+判定：BUY（SCORE 2）｜FGI 54（Neutral）｜RSI 45.4
 
 ▼ 局面：方向感模索フェーズ
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：CAP +8.9%
-Trending: UHI / HYPE / DACITY
+注目：CAP +37.1%
+Trending: PEPINA / EVMZONE / DACITY
