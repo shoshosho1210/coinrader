@@ -1,10 +1,10 @@
-【今日のBTC / 10/27】
-判定：BUY（SCORE 2）｜FGI 50（Neutral）｜RSI 45.2
+【今日のBTC / 10/28】
+判定：BUY（SCORE 3）｜FGI 48（Neutral）｜RSI 61.5
 
 ▼ 局面：方向感模索フェーズ
-市場は次の方向を探している。
+熱狂は頂点で生まれる。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：Q +150.7%
-Trending: BTC / Q / PUMP
+注目：BTW +51.4%
+Trending: PENGU / ZEC / STONK
