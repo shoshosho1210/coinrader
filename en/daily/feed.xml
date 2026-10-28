@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Tue, 27 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-10-27 | Fear &amp; Greed 5 / RSI 45.2 / Trend 10.7% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-10-28 | Fear &amp; Greed 48 / RSI 61.5 / Trend 10.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261028</link>
+      <guid>https://coinrader.net/en/daily/20261028</guid>
+      <pubDate>Wed, 28 Oct 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-10-28. Sentiment(Fear &amp; Greed)=48, RSI=61.5, Trend=10.8%. Overall: BULL. Trending: PENGU/ZEC/STONK. Top gainer: BTW(+51.37%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-10-27 | Fear &amp; Greed 48 / RSI 47.2 / Trend 10.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261027</link>
       <guid>https://coinrader.net/en/daily/20261027</guid>
       <pubDate>Tue, 27 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-27. Sentiment(Fear &amp; Greed)=5, RSI=45.2, Trend=10.7%. Overall: BULL. Trending: BTC/Q/PUMP. Top gainer: Q(+150.65%)</description>
+      <description>Daily BTC AI analysis for 2026-10-27. Sentiment(Fear &amp; Greed)=48, RSI=47.2, Trend=10.8%. Overall: BULL. Trending: AIN/QTC/BTC. Top gainer: Q(+23.34%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-10-26 | Fear &amp; Greed 5 / RSI 54.8 / Trend 10.7% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20260929</guid>
       <pubDate>Tue, 29 Sep 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-09-29. Sentiment(Fear &amp; Greed)=73, RSI=60.4, Trend=6.8%. Overall: BULL. Trending: QNT/AVAX/NEAR. Top gainer: ZBCN(+25.14%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-09-28 | Fear &amp; Greed 74 / RSI 35.4 / Trend 6.4% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20260928</link>
-      <guid>https://coinrader.net/en/daily/20260928</guid>
-      <pubDate>Mon, 28 Sep 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-09-28. Sentiment(Fear &amp; Greed)=74, RSI=35.4, Trend=6.4%. Overall: BULL. Trending: QNT/NEAR/CASHCAT. Top gainer: SHFL(+68.56%)</description>
     </item>
   </channel>
 </rss>
