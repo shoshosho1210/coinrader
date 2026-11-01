@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sat, 31 Oct 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sun, 01 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-10-31 | Fear &amp; Greed 3 / RSI 38.1 / Trend 10.9% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-11-01 | Fear &amp; Greed 3 / RSI 49.8 / Trend 10.9% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261101</link>
+      <guid>https://coinrader.net/en/daily/20261101</guid>
+      <pubDate>Sun, 01 Nov 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-11-01. Sentiment(Fear &amp; Greed)=3, RSI=49.8, Trend=10.9%. Overall: BULL. Trending: SP/SI/PEARL. Top gainer: MORPHO(+15.50%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-10-31 | Fear &amp; Greed 3 / RSI 51.6 / Trend 10.9% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261031</link>
       <guid>https://coinrader.net/en/daily/20261031</guid>
       <pubDate>Sat, 31 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-31. Sentiment(Fear &amp; Greed)=3, RSI=38.1, Trend=10.9%. Overall: BULL. Trending: SP/BTC/BNB. Top gainer: BEAM(+38.50%)</description>
+      <description>Daily BTC AI analysis for 2026-10-31. Sentiment(Fear &amp; Greed)=3, RSI=51.6, Trend=10.9%. Overall: BULL. Trending: SI/SP/BTC. Top gainer: STX(+14.94%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-10-30 | Fear &amp; Greed 3 / RSI 40 / Trend 10.9% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20261003</guid>
       <pubDate>Sat, 03 Oct 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-10-03. Sentiment(Fear &amp; Greed)=67, RSI=52.5, Trend=8.8%. Overall: BULL. Trending: M87/PONS/QNT. Top gainer: SUPER(+19.95%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-10-02 | Fear &amp; Greed 72 / RSI 68.5 / Trend 8.3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20261002</link>
-      <guid>https://coinrader.net/en/daily/20261002</guid>
-      <pubDate>Fri, 02 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-02. Sentiment(Fear &amp; Greed)=72, RSI=68.5, Trend=8.3%. Overall: BULL. Trending: VRAX/QNT/SAND. Top gainer: GRX(+61.34%)</description>
     </item>
   </channel>
 </rss>
