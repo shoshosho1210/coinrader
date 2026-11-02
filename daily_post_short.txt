@@ -1,10 +1,10 @@
-【今日のBTC / 11/01】
-判定：WAIT（SCORE 1）｜FGI 30（Fear）｜RSI 49.8
+【今日のBTC / 11/02】
+判定：WAIT（SCORE 1）｜FGI 34（Fear）｜RSI 52.2
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：MORPHO +15.5%
-Trending: SP / SI / PEARL
+注目：TRUMP +7.2%
+Trending: DACITYCOIN / SI / PEARL
