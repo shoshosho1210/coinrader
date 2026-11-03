@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Mon, 02 Nov 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 03 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-11-02 | Fear &amp; Greed 34 / RSI 52.2 / Trend 11% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-11-03 | Fear &amp; Greed 26 / RSI 38.6 / Trend 11.1% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261103</link>
+      <guid>https://coinrader.net/en/daily/20261103</guid>
+      <pubDate>Tue, 03 Nov 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-11-03. Sentiment(Fear &amp; Greed)=26, RSI=38.6, Trend=11.1%. Overall: BULL. Trending: BTC/SUI/ZEC. Top gainer: RAIN(+13.67%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-11-02 | Fear &amp; Greed 37 / RSI 50.1 / Trend 11.1% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261102</link>
       <guid>https://coinrader.net/en/daily/20261102</guid>
       <pubDate>Mon, 02 Nov 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-11-02. Sentiment(Fear &amp; Greed)=34, RSI=52.2, Trend=11%. Overall: BULL. Trending: DACITYCOIN/SI/PEARL. Top gainer: TRUMP(+7.15%)</description>
+      <description>Daily BTC AI analysis for 2026-11-02. Sentiment(Fear &amp; Greed)=37, RSI=50.1, Trend=11.1%. Overall: BULL. Trending: DACITYCOIN/BTC/PENGU. Top gainer: PEARL(+4.24%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-11-01 | Fear &amp; Greed 34 / RSI 54 / Trend 11% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20261005</guid>
       <pubDate>Mon, 05 Oct 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-10-05. Sentiment(Fear &amp; Greed)=7, RSI=60.8, Trend=9.8%. Overall: BULL. Trending: HI/AGENTCAT/FET. Top gainer: FET(+14.81%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-10-04 | Fear &amp; Greed 65 / RSI 68.7 / Trend 9.3% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20261004</link>
-      <guid>https://coinrader.net/en/daily/20261004</guid>
-      <pubDate>Sun, 04 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-04. Sentiment(Fear &amp; Greed)=65, RSI=68.7, Trend=9.3%. Overall: BULL. Trending: SI/SOL/PUMP. Top gainer: BEAM(+32.06%)</description>
     </item>
   </channel>
 </rss>
