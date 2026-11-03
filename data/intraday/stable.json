@@ -1,10 +1,10 @@
 {
-  "ts": "2026-11-03T11:38:58.031364+09:00",
+  "ts": "2026-11-03T19:03:31.648186+09:00",
   "symbol": "BTC",
-  "signal_stable": "BUY",
-  "phase_label": "Uptrend",
-  "changed_at": "2026-11-02T18:57:12.206909+09:00",
-  "duration_hours": 16.7,
+  "signal_stable": "WAIT",
+  "phase_label": "Range",
+  "changed_at": "2026-11-03T19:03:31.648186+09:00",
+  "duration_hours": 0.0,
   "signal_raw": "WAIT",
   "score_overall": 0
 }
