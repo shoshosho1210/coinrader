@@ -3,8 +3,8 @@
   "symbol": "BTC",
   "stable_signal": "WAIT",
   "changed_at": "2026-11-03T19:03:31.648186+09:00",
-  "pending_signal": null,
-  "pending_count": 0,
-  "last_raw_signal": "WAIT",
-  "last_raw_ts": "2026-11-03T19:03:31.648186+09:00"
+  "pending_signal": "BUY",
+  "pending_count": 1,
+  "last_raw_signal": "BUY",
+  "last_raw_ts": "2026-11-04T02:53:40.261135+09:00"
 }
