@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 08 Nov 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 09 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-11-08 | Fear &amp; Greed 25 / RSI 40.4 / Trend 11.1% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-11-09 | Fear &amp; Greed 28 / RSI 51.5 / Trend 11% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261109</link>
+      <guid>https://coinrader.net/en/daily/20261109</guid>
+      <pubDate>Mon, 09 Nov 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-11-09. Sentiment(Fear &amp; Greed)=28, RSI=51.5, Trend=11%. Overall: BULL. Trending: WASTED/JOSÉ/DACITY. Top gainer: JCT(+378.92%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-11-08 | Fear &amp; Greed 28 / RSI 53.5 / Trend 11% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261108</link>
       <guid>https://coinrader.net/en/daily/20261108</guid>
       <pubDate>Sun, 08 Nov 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-11-08. Sentiment(Fear &amp; Greed)=25, RSI=40.4, Trend=11.1%. Overall: BULL. Trending: DACITY/PENGU/STONK. Top gainer: AKE(+47.41%)</description>
+      <description>Daily BTC AI analysis for 2026-11-08. Sentiment(Fear &amp; Greed)=28, RSI=53.5, Trend=11%. Overall: BULL. Trending: BTC/STONK/PENGU. Top gainer: CAP(+6.49%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-11-07 | Fear &amp; Greed 25 / RSI 49 / Trend 11.1% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20261011</guid>
       <pubDate>Sun, 11 Oct 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-10-11. Sentiment(Fear &amp; Greed)=61, RSI=59.2, Trend=11.2%. Overall: BULL. Trending: SWARM/STRK/TIA. Top gainer: STRK(+54.01%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-10-10 | Fear &amp; Greed 64 / RSI 54.8 / Trend 11.1% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20261010</link>
-      <guid>https://coinrader.net/en/daily/20261010</guid>
-      <pubDate>Sat, 10 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-10. Sentiment(Fear &amp; Greed)=64, RSI=54.8, Trend=11.1%. Overall: BULL. Trending: SWARM/NEAR/ZEC. Top gainer: DRV(+20.75%)</description>
     </item>
   </channel>
 </rss>
