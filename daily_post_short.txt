@@ -1,10 +1,10 @@
-【今日のBTC / 11/09】
-判定：WAIT（SCORE 1）｜FGI 28（Fear）｜RSI 51.5
+【今日のBTC / 11/10】
+判定：WAIT（SCORE 1）｜FGI 32（Fear）｜RSI 51.1
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：JCT +378.9%
-Trending: WASTED / JOSÉ / DACITY
+注目：PIEVERSE +39.3%
+Trending: DACITY / AVAX / BTC
