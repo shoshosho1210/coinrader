@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Wed, 11 Nov 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-11-11 | Fear &amp; Greed 32 / RSI 45.7 / Trend 10.6% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-11-12 | Fear &amp; Greed 28 / RSI 49.1 / Trend 10.1% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261112</link>
+      <guid>https://coinrader.net/en/daily/20261112</guid>
+      <pubDate>Thu, 12 Nov 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-11-12. Sentiment(Fear &amp; Greed)=28, RSI=49.1, Trend=10.1%. Overall: BULL. Trending: PENGU/ZIG/PONS. Top gainer: XCN(+16.43%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-11-11 | Fear &amp; Greed 29 / RSI 46.5 / Trend 10.3% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261111</link>
       <guid>https://coinrader.net/en/daily/20261111</guid>
       <pubDate>Wed, 11 Nov 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-11-11. Sentiment(Fear &amp; Greed)=32, RSI=45.7, Trend=10.6%. Overall: BULL. Trending: SI/DACITY/BTC. Top gainer: BTW(+13.15%)</description>
+      <description>Daily BTC AI analysis for 2026-11-11. Sentiment(Fear &amp; Greed)=29, RSI=46.5, Trend=10.3%. Overall: BULL. Trending: BTC/ZEC/SUI. Top gainer: XCN(+19.19%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-11-10 | Fear &amp; Greed 32 / RSI 48.7 / Trend 10.6% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20261014</guid>
       <pubDate>Wed, 14 Oct 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-10-14. Sentiment(Fear &amp; Greed)=62, RSI=46.7, Trend=11.2%. Overall: BULL. Trending: ZYLO/PRL/BTW. Top gainer: WAL(+43.23%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-10-13 | Fear &amp; Greed 57 / RSI 61.1 / Trend 11.2% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20261013</link>
-      <guid>https://coinrader.net/en/daily/20261013</guid>
-      <pubDate>Tue, 13 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-13. Sentiment(Fear &amp; Greed)=57, RSI=61.1, Trend=11.2%. Overall: BULL. Trending: WISP/CRAWLER/IMD6900. Top gainer: BAT(+25.42%)</description>
     </item>
   </channel>
 </rss>
