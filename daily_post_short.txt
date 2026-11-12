@@ -1,10 +1,10 @@
-【今日のBTC / 11/11】
-判定：WAIT（SCORE 1）｜FGI 32（Fear）｜RSI 45.7
+【今日のBTC / 11/12】
+判定：WAIT（SCORE 1）｜FGI 28（Fear）｜RSI 49.1
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BTW +13.2%
-Trending: SI / DACITY / BTC
+注目：XCN +16.4%
+Trending: PENGU / ZIG / PONS
