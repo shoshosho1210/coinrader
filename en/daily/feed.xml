@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Fri, 13 Nov 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 14 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-11-13 | Fear &amp; Greed 28 / RSI 22.9 / Trend 10% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-11-14 | Fear &amp; Greed 2 / RSI 31.6 / Trend 9.7% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261114</link>
+      <guid>https://coinrader.net/en/daily/20261114</guid>
+      <pubDate>Sat, 14 Nov 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-11-14. Sentiment(Fear &amp; Greed)=2, RSI=31.6, Trend=9.7%. Overall: BULL. Trending: MIHAO/SEPPUKU/BTC. Top gainer: AKE(+362.16%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-11-13 | Fear &amp; Greed 2 / RSI 25.7 / Trend 9.7% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261113</link>
       <guid>https://coinrader.net/en/daily/20261113</guid>
       <pubDate>Fri, 13 Nov 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-11-13. Sentiment(Fear &amp; Greed)=28, RSI=22.9, Trend=10%. Overall: WAIT. Trending: MIHAO/SEPPUKU/DACITYCOIN. Top gainer: TIA(+4.81%)</description>
+      <description>Daily BTC AI analysis for 2026-11-13. Sentiment(Fear &amp; Greed)=2, RSI=25.7, Trend=9.7%. Overall: WAIT. Trending: SEPPUKU/BTC/AKE. Top gainer: AKE(+153.83%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-11-12 | Fear &amp; Greed 28 / RSI 40.8 / Trend 10.1% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20261016</guid>
       <pubDate>Fri, 16 Oct 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-10-16. Sentiment(Fear &amp; Greed)=63, RSI=49.2, Trend=11%. Overall: BULL. Trending: DACITY/ASTRO/STREAM. Top gainer: TIA(+29.07%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-10-15 | Fear &amp; Greed 53 / RSI 39.8 / Trend 11.1% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20261015</link>
-      <guid>https://coinrader.net/en/daily/20261015</guid>
-      <pubDate>Thu, 15 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-15. Sentiment(Fear &amp; Greed)=53, RSI=39.8, Trend=11.1%. Overall: BULL. Trending: ZEREBRO/AERO/BTC. Top gainer: AKE(+29.87%)</description>
     </item>
   </channel>
 </rss>
