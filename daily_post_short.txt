@@ -1,10 +1,10 @@
-【今日のBTC / 11/14】
-判定：WAIT（SCORE 0）｜FGI 20（Extreme Fear）｜RSI 31.6
+【今日のBTC / 11/15】
+判定：WAIT（SCORE 0）｜FGI 13（Extreme Fear）｜RSI 26.1
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：AKE +362.2%
-Trending: MIHAO / SEPPUKU / BTC
+注目：PIEVERSE +5.8%
+Trending: BTC / ASTER / HYPE
