@@ -5,13 +5,20 @@
     <link>https://coinrader.net/en/daily/</link>
     <description>Daily BTC AI analysis updates with FGI / RSI / Trend.</description>
     <language>en-US</language>
-    <lastBuildDate>Sun, 15 Nov 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 16 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC Daily AI Analysis 2026-11-15 | Fear &amp; Greed 13 / RSI 26.1 / Trend 9.2% (CoinRader)</title>
+      <title>BTC Daily AI Analysis 2026-11-16 | Fear &amp; Greed 1 / RSI 47.3 / Trend 8.8% (CoinRader)</title>
+      <link>https://coinrader.net/en/daily/20261116</link>
+      <guid>https://coinrader.net/en/daily/20261116</guid>
+      <pubDate>Mon, 16 Nov 2026 09:00:00 +0900</pubDate>
+      <description>Daily BTC AI analysis for 2026-11-16. Sentiment(Fear &amp; Greed)=1, RSI=47.3, Trend=8.8%. Overall: BULL. Trending: MACCA/MIHAO/GATO. Top gainer: DRV(+24.93%)</description>
+    </item>
+    <item>
+      <title>BTC Daily AI Analysis 2026-11-15 | Fear &amp; Greed 1 / RSI 38.4 / Trend 8.8% (CoinRader)</title>
       <link>https://coinrader.net/en/daily/20261115</link>
       <guid>https://coinrader.net/en/daily/20261115</guid>
       <pubDate>Sun, 15 Nov 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-11-15. Sentiment(Fear &amp; Greed)=13, RSI=26.1, Trend=9.2%. Overall: WAIT. Trending: BTC/ASTER/HYPE. Top gainer: PIEVERSE(+5.83%)</description>
+      <description>Daily BTC AI analysis for 2026-11-15. Sentiment(Fear &amp; Greed)=1, RSI=38.4, Trend=8.8%. Overall: BULL. Trending: BTC/HYPE/KAVA. Top gainer: PIEVERSE(+6.79%)</description>
     </item>
     <item>
       <title>BTC Daily AI Analysis 2026-11-14 | Fear &amp; Greed 13 / RSI 35.2 / Trend 9.3% (CoinRader)</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/en/daily/20261018</guid>
       <pubDate>Sun, 18 Oct 2026 09:00:00 +0900</pubDate>
       <description>Daily BTC AI analysis for 2026-10-18. Sentiment(Fear &amp; Greed)=53, RSI=57.2, Trend=10.9%. Overall: BULL. Trending: BOOMER/CLAUDIA/COVENANT. Top gainer: Q(+32.34%)</description>
-    </item>
-    <item>
-      <title>BTC Daily AI Analysis 2026-10-17 | Fear &amp; Greed 55 / RSI 47.9 / Trend 10.9% (CoinRader)</title>
-      <link>https://coinrader.net/en/daily/20261017</link>
-      <guid>https://coinrader.net/en/daily/20261017</guid>
-      <pubDate>Sat, 17 Oct 2026 09:00:00 +0900</pubDate>
-      <description>Daily BTC AI analysis for 2026-10-17. Sentiment(Fear &amp; Greed)=55, RSI=47.9, Trend=10.9%. Overall: BULL. Trending: QTC/INJ/NEAR. Top gainer: Q(+41.41%)</description>
     </item>
   </channel>
 </rss>
