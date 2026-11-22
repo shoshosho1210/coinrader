@@ -1,10 +1,10 @@
-【今日のBTC / 11/21】
-判定：WAIT（SCORE 0）｜FGI 12（Extreme Fear）｜RSI 31.4
+【今日のBTC / 11/22】
+判定：WAIT（SCORE 1）｜FGI 11（Extreme Fear）｜RSI 55.4
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：BTW +10.5%
-Trending: BTC / BP / PEARL
+注目：DRV +35.8%
+Trending: BTC / DRV / SOL
