@@ -1,10 +1,10 @@
-【今日のBTC / 11/23】
-判定：WAIT（SCORE 1）｜FGI 11（Extreme Fear）｜RSI 55.9
+【今日のBTC / 11/24】
+判定：WAIT（SCORE 1）｜FGI 11（Extreme Fear）｜RSI 47.6
 
 ▼ 局面：エネルギー圧縮局面
 市場は次の方向を探している。
 
 判断が変わる目安：FGI>25 かつ RSI>50
 
-注目：DGAI +26.2%
-Trending: WSTAR / POPO / TRUMP
+注目：NVDAX +24.1%
+Trending: DRV / PEARL / BTC
