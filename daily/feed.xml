@@ -5,13 +5,20 @@
     <link>https://coinrader.net/daily/</link>
     <description>BTCのAI日次分析を毎日配信（FGI / RSI / Trend）。</description>
     <language>ja-JP</language>
-    <lastBuildDate>Tue, 24 Nov 2026 09:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 25 Nov 2026 09:00:00 +0900</lastBuildDate>
     <item>
-      <title>BTC AI分析 2026-11-24｜Fear&amp;Greed 11 / RSI 47.6 / Trend 5%（CoinRader）</title>
+      <title>BTC AI分析 2026-11-25｜Fear&amp;Greed 13 / RSI 41.4 / Trend 3.9%（CoinRader）</title>
+      <link>https://coinrader.net/daily/20261125</link>
+      <guid>https://coinrader.net/daily/20261125</guid>
+      <pubDate>Wed, 25 Nov 2026 09:00:00 +0900</pubDate>
+      <description>MA距離が 3.87% で上向き。</description>
+    </item>
+    <item>
+      <title>BTC AI分析 2026-11-24｜Fear&amp;Greed 11 / RSI 39.2 / Trend 4.5%（CoinRader）</title>
       <link>https://coinrader.net/daily/20261124</link>
       <guid>https://coinrader.net/daily/20261124</guid>
       <pubDate>Tue, 24 Nov 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が 5.01% で上向き。</description>
+      <description>MA距離が 4.45% で上向き。</description>
     </item>
     <item>
       <title>BTC AI分析 2026-11-23｜Fear&amp;Greed 11 / RSI 60.2 / Trend 5%（CoinRader）</title>
@@ -208,13 +215,6 @@
       <guid>https://coinrader.net/daily/20261027</guid>
       <pubDate>Tue, 27 Oct 2026 09:00:00 +0900</pubDate>
       <description>MA距離が 10.75% で上向き。</description>
-    </item>
-    <item>
-      <title>BTC AI分析 2026-10-26｜Fear&amp;Greed 5 / RSI 54.8 / Trend 10.7%（CoinRader）</title>
-      <link>https://coinrader.net/daily/20261026</link>
-      <guid>https://coinrader.net/daily/20261026</guid>
-      <pubDate>Mon, 26 Oct 2026 09:00:00 +0900</pubDate>
-      <description>MA距離が 10.71% で上向き。</description>
     </item>
   </channel>
 </rss>
