@@ -1,9 +1,9 @@
 name: Daily SNS Assets Preparation
 
 on:
-  schedule:
+#  schedule:
     # 毎日 日本時間 朝6:00 (UTC 21:00) に実行
-    - cron: "0 21 * * *"
+#    - cron: "0 21 * * *"
   workflow_dispatch: # 手動実行ボタンを有効化
 
 jobs:
