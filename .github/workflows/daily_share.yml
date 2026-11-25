@@ -1,10 +1,10 @@
 name: Daily Share Page
 
 on:
-  schedule:
+#  schedule:
     # 毎時13分・43分に実行（混雑しやすい時間を避ける）
     # 日本時間（JST）では 毎時13分/43分頃に動く設定です
-    - cron: "13,43 * * * *"
+#    - cron: "13,43 * * * *"
   workflow_dispatch:
 
 # 並走による生成物の競合を防ぐ（手動RUNとcronが被っても片方をキャンセル）
